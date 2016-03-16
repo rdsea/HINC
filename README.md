@@ -1,4 +1,4 @@
-## Distributed Resource Management for IoT Cloud Systems (name it D-Elise)
+## Distributed Resource Management for IoT Cloud Systems (DISTRO)
 
 
 **Target users:**  Software agents (edge/cloud app), global management services (resource provisioner) and developers/administrators. 
@@ -41,7 +41,7 @@ The flow of usage the framework as following:
   * Global resource management: to get the topology of the network, the relationship between component. Basically, the response will be a graph.
   * Local resource managemet: to get the detail information and capability of particular component.
 
-![Architecture](https://raw.githubusercontent.com/tuwiendsg/SALSA/master/information-management/architecture.png "The architecture of the tools")
+![Architecture](https://raw.githubusercontent.com/tuwiendsg/DISTRO/master/architecture.png "The architecture of the tools")
 
 
 Apendix:
