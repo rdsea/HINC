@@ -41,24 +41,8 @@ The flow of usage the framework as following:
   * Global resource management: to get the topology of the network, the relationship between component. Basically, the response will be a graph.
   * Local resource managemet: to get the detail information and capability of particular component.
 
-![Architecture](https://raw.githubusercontent.com/tuwiendsg/DISTRO/master/architecture.png "The architecture of the tools")
+![Architecture](https://raw.githubusercontent.com/tuwiendsg/HINC/master/architecture.png "The architecture of the tools")
 
 
-Apendix:
-1. The list of the message 
-```java
-        // broadcast: client->local/global: a syn message to check status of local/global managements
-        SYN_REQUEST,
-        SYN_REPLY,        
-        // unicast: Client->local, query information from local regarding to SD Gateway or NVF
-        RPC_QUERY_SDGATEWAY_LOCAL,
-        RPC_QUERY_NFV_LOCAL,
-        // unicast: Client->global, query information from global (which include relationship)
-        RPC_QUERY_INFORMATION_GLOBAL,
-        // unicast: Client->local, send a control command to local
-        RPC_CONTROL_LOCAL,
-        // unicast: Client->global, send a control command to global
-        RPC_CONTROL_GLOBAL,
-        // unicast: local/global --> client: send back the response
-        UPDATE_INFORMATION
+
 ```

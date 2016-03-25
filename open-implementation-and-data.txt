@@ -4,7 +4,6 @@ Some opensource of IoT data model:
  - https://github.com/upnpforum/IoTDataModels 
  
  
- 
 Open real-time/streaming data:
  - https://data.sparkfun.com
  - https://thingspeak.com/channels/public
@@ -19,3 +18,14 @@ Platform management
  
  
 Open Projects: http://techbeacon.com/67-open-source-tools-resources-iot
+
+A curated list of IoT
+  https://github.com/phodal/awesome-iot
+  
+  
+Platform without data model
+  https://github.com/solettaproject/soletta
+  https://www.iotivity.org/  ==> of Linux foundation
+    IoTivity-demo: https://github.com/gerald-yang/iotivity-demo
+    
+Similar to IoTivity: https://www.openhub.net/p/iotivity/similar

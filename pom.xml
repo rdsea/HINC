@@ -9,12 +9,12 @@
         <slf4j.version>1.7.5</slf4j.version>
     </properties>
 
-    <groupId>at.ac.tuwien.dsg.cloud.salsa.InformationManagement</groupId>
-    <artifactId>salsa-information-management-pom</artifactId>
+    <groupId>at.ac.tuwien.dsg.hinc</groupId>
+    <artifactId>hinc-pom</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
 
-    <name>salsa-information-management-pom</name>
+    <name>HINC-pom</name>
     <url>http://maven.apache.org</url>
 
     <modules>

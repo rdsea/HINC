@@ -1,0 +1,22 @@
+package at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource;
+
+public class AccessPoint {
+    String networkAddress;    
+
+    public AccessPoint() {
+    }
+
+    public AccessPoint(String networkAddress) {
+        this.networkAddress = networkAddress;
+    }
+
+    public String getNetworkAddress() {
+        return networkAddress;
+    }
+
+    public void setNetworkAddress(String networkAddress) {
+        this.networkAddress = networkAddress;
+    }
+    
+    
+}
