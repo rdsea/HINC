@@ -1,5 +1,4 @@
-## Distributed Information Systems for IoT, Network Function Virtualization and  Clouds (DISTRO)
-
+## HINC - A Novel Framework for Harmonizing Diverse Resource Information Across IoT, Networks and Clouds.
 
 **Target users:**  Software agents (edge/cloud app), global management services (resource provisioner) and developers/administrators. 
 
