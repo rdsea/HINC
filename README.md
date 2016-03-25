@@ -1,4 +1,4 @@
-## Distributed Resource Management for IoT Cloud Systems (DISTRO)
+## Distributed Information Systems for IoT, Network Function Virtualization and  Clouds (DISTRO)
 
 
 **Target users:**  Software agents (edge/cloud app), global management services (resource provisioner) and developers/administrators. 
