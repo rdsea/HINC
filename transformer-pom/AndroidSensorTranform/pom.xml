@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>at.ac.tuwien.dsg.cloud.salsa.InformationManagement</groupId>
+            <groupId>at.ac.tuwien.dsg.hinc</groupId>
             <artifactId>AbstractTransformer</artifactId>
             <version>1.0</version>
         </dependency>
