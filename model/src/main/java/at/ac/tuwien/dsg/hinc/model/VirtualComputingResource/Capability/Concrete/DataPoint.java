@@ -91,5 +91,8 @@ public class DataPoint extends Capability {
     public void setControlChangeRate(ControlPoint controlChangeRate) {
         this.controlChangeRate = controlChangeRate;
     }
+    
+    
+    
 
 }

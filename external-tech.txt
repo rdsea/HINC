@@ -1,0 +1,4 @@
+1. To build storage solution
+ - DB Rank: http://db-engines.com/en/ranking
+
+for localtion: GeoJSON, http://geojson.org/geojson-spec.html
