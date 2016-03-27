@@ -1,0 +1,11 @@
+Simple installation
+
+1)Setup a local management service with a specific provider
+
+2)Setup communication middleware
+
+3)Setup global management service
+
+4)Add new local management service 
+
+5)Test the installation
