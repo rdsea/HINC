@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>at.ac.tuwien.dsg.cloud.salsa.informationmanagement.clientgui.MainApp</mainClass>
+        <mainClass>at.ac.tuwien.dsg.hinc.clientgui.MainApp</mainClass>
     </properties>
 
     <organization>
@@ -25,7 +25,7 @@
     
     <dependencies>
         <dependency>
-            <groupId>at.ac.tuwien.dsg.cloud.salsa.InformationManagement</groupId>
+            <groupId>at.ac.tuwien.dsg.hinc</groupId>
             <artifactId>Client</artifactId>
             <version>1.0</version>
         </dependency>

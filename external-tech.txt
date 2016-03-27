@@ -1,4 +1,19 @@
 1. To build storage solution
  - DB Rank: http://db-engines.com/en/ranking
+ http://nosql-database.org/
+ - 5 popular DBMS for mobile: http://www.developereconomics.com/five-popular-databases-for-mobile/
+ 
+ candidates: 
+ http://hsqldb.org/web/hsqlFeatures.html
+ http://www.h2database.com/html/main.html
+ http://orientdb.com/docs/last/Concepts.html
+ http://www.iboxdb.com/ ==> interesting, fast ACID (Atomic Consistent Isolated And Durable) table style document nosql
+==> chose Orientdb, embbeded mode
 
-for localtion: GeoJSON, http://geojson.org/geojson-spec.html
+
+2. Information block
+ - for localtion: GeoJSON, http://geojson.org/geojson-spec.html
+ 
+ 
+ 
+

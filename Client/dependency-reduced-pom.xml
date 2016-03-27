@@ -21,7 +21,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>at.ac.tuwien.dsg.cloud.salsa.informationmanagement.client.cache.TESTRUN.Experiment1_Broadcast_ResponseTime</mainClass>
+                  <mainClass>at.ac.tuwien.dsg.hinc.client.cache.TESTRUN.Experiment1_Broadcast_ResponseTime</mainClass>
                 </transformer>
               </transformers>
               <filters>

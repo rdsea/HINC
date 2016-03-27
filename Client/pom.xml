@@ -11,12 +11,12 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>at.ac.tuwien.dsg.cloud.salsa.InformationManagement</groupId>                        
+            <groupId>at.ac.tuwien.dsg.hinc</groupId>                        
             <artifactId>model</artifactId>
             <version>1.0</version>
         </dependency>        
         <dependency>
-            <groupId>at.ac.tuwien.dsg.cloud.salsa.InformationManagement</groupId>
+            <groupId>at.ac.tuwien.dsg.hinc</groupId>
             <artifactId>Communication</artifactId>
             <version>1.0</version>
         </dependency>
@@ -44,7 +44,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>at.ac.tuwien.dsg.cloud.salsa.informationmanagement.client.cache.TESTRUN.Experiment1_Broadcast_ResponseTime</mainClass>
+                                    <mainClass>at.ac.tuwien.dsg.hinc.client.cache.TESTRUN.Experiment1_Broadcast_ResponseTime</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>                                
