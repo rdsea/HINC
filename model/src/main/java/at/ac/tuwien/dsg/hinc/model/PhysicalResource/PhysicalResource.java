@@ -1,6 +1,7 @@
 package at.ac.tuwien.dsg.hinc.model.PhysicalResource;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhysicalResource {
 
@@ -10,19 +11,15 @@ public class PhysicalResource {
      */
     private ResourceCategory category;
 
+    /**
+     * Supplement for the category, more concrete
+     */
     private ResourceType type;
 
-    private Map<String, String> attributes;
-
     /**
-     * The actual information, e.g. a sensor. Note: It is not the list, but a single instance of resource
+     * The domain model
      */
-    private String domainInfo;
-
-    /**
-     * The name of the model, which is used for the transformation This should be equal to the transformation
-     */
-    private String domainModelName;
+    protected List<ExtensibleModel> extensions;
 
     public PhysicalResource() {
     }
@@ -35,36 +32,23 @@ public class PhysicalResource {
         this.category = category;
     }
 
+    public List<ExtensibleModel> getExtensions() {
+        if (extensions == null) {
+            extensions = new ArrayList<>();
+        }
+        return extensions;
+    }
+
+    public void setExtensions(List<ExtensibleModel> extensions) {
+        this.extensions = extensions;
+    }
+
     public ResourceType getType() {
         return type;
     }
 
     public void setType(ResourceType type) {
         this.type = type;
-    }
-
-    public Map<String, String> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, String> attributes) {
-        this.attributes = attributes;
-    }
-
-    public String getDomainInfo() {
-        return domainInfo;
-    }
-
-    public void setDomainInfo(String domainInfo) {
-        this.domainInfo = domainInfo;
-    }
-
-    public String getDomainModelName() {
-        return domainModelName;
-    }
-
-    public void setDomainModelName(String domainModelName) {
-        this.domainModelName = domainModelName;
     }
 
 }

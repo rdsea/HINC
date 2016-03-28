@@ -24,3 +24,5 @@ config_TOSCA/
 .externalToolBuilders/
 *.ini
 *.pem
+hinc.db/
+local-management-service/log/

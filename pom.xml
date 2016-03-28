@@ -19,11 +19,12 @@
 
     <modules>
         <module>model</module>
-        <module>collector</module>
-        <module>transformer-pom</module>
-        <module>Communication</module>
-        <module>Client</module>
-    <module>ClientGUI</module>
+        <module>local-management-service</module>
+        <module>ext-pom</module>
+        <module>communication</module>
+        <module>global-management-service</module>
+    <module>client-gui</module>
+        <module>repository</module>
     </modules>
     
     

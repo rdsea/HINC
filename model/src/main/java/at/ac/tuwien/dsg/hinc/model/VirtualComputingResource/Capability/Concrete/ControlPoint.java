@@ -43,7 +43,7 @@ public class ControlPoint extends Capability {
      ***************
      */
     public ControlPoint() {
-        type = CapabilityType.ControlPoint;
+        capabilityType = CapabilityType.ControlPoint;
     }
     
     public ControlPoint(String resourceID, String name, String description) {        

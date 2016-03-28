@@ -2,15 +2,7 @@ package at.ac.tuwien.dsg.hinc.model.VirtualComputingResource;
 
 import at.ac.tuwien.dsg.hinc.model.PhysicalResource.PhysicalResource;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Capability;
-import static at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.CapabilityType.CloudConnectivity;
-import static at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.CapabilityType.ExecutionEnvironment;
-import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
-import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.AccessPoint;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -20,7 +12,6 @@ import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 
 public class SoftwareDefinedGateway {
 
@@ -35,15 +26,9 @@ public class SoftwareDefinedGateway {
     private String name;
 
     /**
-     * The List of control capabilities and data streams
+     * The List of datapoint, controlpoint, connectivity and execution
      */
     private List<Capability> capabilities;
-//    private List<DataStream> dataStreams;
-
-    /**
-     * The physical resource give info. of what Things this SDG manages
-     */
-    private List<PhysicalResource> physicalResources;
 
     /**
      * For custom data, e.g. created date, position, comments
@@ -51,7 +36,7 @@ public class SoftwareDefinedGateway {
     private Map<String, String> meta;
 
     private List<AccessPoint> accessPoints;
-    
+
     /**
      * Construction and get/set
      */
@@ -83,21 +68,6 @@ public class SoftwareDefinedGateway {
 
     public void setCapabilities(List<Capability> capabilities) {
         this.capabilities = capabilities;
-    }
-
-//    public List<DataStream> getDataStreams() {
-//        return dataStreams;
-//    }
-//
-//    public void setDataStreams(List<DataStream> dataStreams) {
-//        this.dataStreams = dataStreams;
-//    }
-    public List<PhysicalResource> getPhysicalResources() {
-        return physicalResources;
-    }
-
-    public void setPhysicalResources(List<PhysicalResource> physicalResources) {
-        this.physicalResources = physicalResources;
     }
 
     public Map<String, String> getMeta() {

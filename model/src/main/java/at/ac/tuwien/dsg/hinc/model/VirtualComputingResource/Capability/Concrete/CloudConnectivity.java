@@ -40,7 +40,7 @@ public class CloudConnectivity extends Capability {
      * GETER/SETTER * **************
      */
     public CloudConnectivity() {
-        type = CapabilityType.CloudConnectivity;
+        capabilityType = CapabilityType.CloudConnectivity;
     }
 
     public CloudConnectivity(String resourceID, String name, String description) {

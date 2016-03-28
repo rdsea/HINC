@@ -37,7 +37,7 @@ public class ExecutionEnvironment extends Capability {
      * GETER/SETTER * **************
      */
     public ExecutionEnvironment() {
-        type = CapabilityType.ExecutionEnvironment;
+        capabilityType = CapabilityType.ExecutionEnvironment;
     }
 
     public ExecutionEnvironment(String resourceID, String name, String description) {

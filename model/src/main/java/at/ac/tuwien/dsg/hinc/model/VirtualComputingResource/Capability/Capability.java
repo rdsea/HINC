@@ -1,11 +1,13 @@
 package at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability;
 
+import at.ac.tuwien.dsg.hinc.model.PhysicalResource.PhysicalResource;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.List;
 
 /**
  * The class represents for control point management
@@ -25,19 +27,29 @@ public class Capability {
     protected String name;
 
     /**
-     * The ID of the resource, e.g. capability of which sensor/actuator
+     * The ID of the resource, e.g. ID of sensor/actuator which was converted to the capability
      */
     protected String resourceID;
 
     /**
+     * The ID of the gateway that the capability belongs
+     */
+    protected String gatewayID;
+
+    /**
      * The type of the capability
      */
-    protected CapabilityType type;
+    protected CapabilityType capabilityType;
 
     /**
      * Description
      */
     protected String description;
+
+    /**
+     * The physical resource give info. of what Things this SDG manages
+     */
+    private List<PhysicalResource> physicalResources;
 
     /**
      * Constructor, get/set
@@ -48,7 +60,7 @@ public class Capability {
     public Capability(String resourceID, String name, CapabilityType type, String description) {
         this.resourceID = resourceID;
         this.name = name;
-        this.type = type;
+        this.capabilityType = type;
         this.description = description;
     }
 
@@ -60,12 +72,12 @@ public class Capability {
         this.name = name;
     }
 
-    public CapabilityType getType() {
-        return type;
+    public CapabilityType getCapabilityType() {
+        return capabilityType;
     }
 
-    public void setType(CapabilityType type) {
-        this.type = type;
+    public void setCapabilityType(CapabilityType capabilityType) {
+        this.capabilityType = capabilityType;
     }
 
     public String getDescription() {
@@ -82,6 +94,22 @@ public class Capability {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getGatewayID() {
+        return gatewayID;
+    }
+
+    public void setGatewayID(String gatewayID) {
+        this.gatewayID = gatewayID;
+    }
+
+    public List<PhysicalResource> getPhysicalResources() {
+        return physicalResources;
+    }
+
+    public void setPhysicalResources(List<PhysicalResource> physicalResources) {
+        this.physicalResources = physicalResources;
     }
 
 }

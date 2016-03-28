@@ -38,7 +38,7 @@ public class DataPoint extends Capability {
     ControlPoint controlChangeRate = null;
 
     public DataPoint() {
-        type = CapabilityType.DataPoint;
+        capabilityType = CapabilityType.DataPoint;
     }
 
     public DataPoint(String resourceID, String name, String description) {
