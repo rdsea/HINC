@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.hinc.collector.ResourceDriverImp;
+package at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl;
 
-import at.ac.tuwien.dsg.hinc.communication.protocol.InfoSourceSettings;
-import at.ac.tuwien.dsg.hinc.collector.RawInfoCollector;
-import at.ac.tuwien.dsg.hinc.collector.utils.HincConfiguration;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollector;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -21,15 +20,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Default driver to get raw information from file
  * @author hungld
  */
 public class RawInfoCollectorFromFile implements RawInfoCollector {
 
-    static org.slf4j.Logger logger = HincConfiguration.getLogger();
     InfoSourceSettings.InfoSource infoSource;
-    
-    
 
     @Override
     public Map<String, String> getRawInformation(InfoSourceSettings.InfoSource infoSource) {
@@ -58,7 +54,6 @@ public class RawInfoCollectorFromFile implements RawInfoCollector {
                 result.put(filePath, json);
             } catch (IOException ex) {
                 ex.printStackTrace();
-                logger.error("Cannot read data from file FILE: " + filePath);
             }
         }
         return result;

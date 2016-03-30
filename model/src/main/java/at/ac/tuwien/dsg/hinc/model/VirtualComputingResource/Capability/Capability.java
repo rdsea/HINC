@@ -36,6 +36,8 @@ public class Capability {
      */
     protected String gatewayID;
 
+    protected String uuid;
+
     /**
      * The type of the capability
      */
@@ -102,6 +104,15 @@ public class Capability {
 
     public void setGatewayID(String gatewayID) {
         this.gatewayID = gatewayID;
+        this.uuid = gatewayID + "/" + resourceID;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public List<PhysicalResource> getPhysicalResources() {

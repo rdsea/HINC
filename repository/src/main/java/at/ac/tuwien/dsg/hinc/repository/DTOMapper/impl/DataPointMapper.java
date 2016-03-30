@@ -14,30 +14,33 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
  *
  * @author hungld
  */
-public class DataPointMapper implements DTOMapperInterface<DataPoint>{
+public class DataPointMapper implements DTOMapperInterface<DataPoint> {
 
     @Override
     public DataPoint fromODocument(ODocument doc) {
+        System.out.println("Converting datapoint: " + doc.toJSON());
         DataPoint dp = new DataPoint();
-        dp.setName(doc.field("name").toString());
-        dp.setDatatype(doc.field("datatype").toString());
-        dp.setDescription(doc.field("description").toString());
-        dp.setMeasurementUnit(doc.field("measurementunit").toString());
-        dp.setResourceID(doc.field("resourceid").toString());
-        dp.setGatewayID(doc.field("gatewayid").toString());        
+        dp.setName(String.valueOf(doc.field("name")));
+        dp.setDatatype(String.valueOf(doc.field("datatype")));
+        dp.setDescription(String.valueOf(doc.field("description")));
+        dp.setMeasurementUnit(String.valueOf(doc.field("measurementunit")));
+        dp.setResourceID(String.valueOf(doc.field("resourceid")));
+        dp.setGatewayID(String.valueOf(doc.field("gatewayid")));
+        dp.setUuid(String.valueOf(doc.field("uuid")));
         return dp;
     }
 
     @Override
     public ODocument toODocument(DataPoint object) {
-        ODocument doc = new ODocument("SoftwareDefinedGateway");
+        ODocument doc = new ODocument("DataPoint");
+        doc.field("uuid", object.getUuid());
         doc.field("resourceid", object.getResourceID());
         doc.field("gatewayid", object.getGatewayID());
         doc.field("measurementunit", object.getMeasurementUnit());
         doc.field("description", object.getDescription());
         doc.field("datatype", object.getDatatype());
-        doc.field("name", object.getName());        
+        doc.field("name", object.getName());
         return doc;
     }
-    
+
 }

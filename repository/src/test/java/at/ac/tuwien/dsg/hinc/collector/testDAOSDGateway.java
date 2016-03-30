@@ -39,7 +39,7 @@ public class testDAOSDGateway {
         gw.setUuid("myUUID");
 
         DataPoint dp = new DataPoint("mySensorID", "datapoint-name", "This is a datapoint");
-        gw.getCapabilities().add(dp);
+        gw.hasCapability(dp);
 
         // write
         AbstractDAO<SoftwareDefinedGateway> gwDAO = new AbstractDAO<>(SoftwareDefinedGateway.class);

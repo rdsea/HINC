@@ -36,9 +36,9 @@ public class HincMessageTopic {
     public static String getCollectorTopicByID(String pioneerID) {
         return CLIENT_REQUEST_DELISE + "." + pioneerID;
     }
-    
-    public static String getCollectorTopicBroadcast() {
-        return CLIENT_REQUEST_DELISE + ".DELISE_BROADCAST";
+
+    public static String getCollectorTopicBroadcast(String groupName) {
+        return CLIENT_REQUEST_DELISE + ".HINC_BROADCAST." + groupName;
     }
 
     public static String getTemporaryTopic() {

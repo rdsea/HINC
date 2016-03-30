@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.hinc.collector.ResourceDriverImp;
+package at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl;
 
-import at.ac.tuwien.dsg.hinc.communication.protocol.InfoSourceSettings;
-import at.ac.tuwien.dsg.hinc.collector.RawInfoCollector;
-import java.util.List;
+
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollector;
 import java.util.Map;
 
 /**
- *
+ * Raw resource information to get data from REST
  * @author hungld
  */
 public class RawInfoCollectorFromREST implements RawInfoCollector {

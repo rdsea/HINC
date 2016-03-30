@@ -5,8 +5,7 @@
  */
 package at.ac.tuwien.dsg.hinc.collector.utils;
 
-import at.ac.tuwien.dsg.hinc.collector.InfoCollector;
-import at.ac.tuwien.dsg.hinc.communication.protocol.InfoSourceSettings;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
 import at.ac.tuwien.dsg.hinc.communication.Utils.HincUtils;
 import at.ac.tuwien.dsg.hinc.communication.messagePayloads.HincMeta;
 import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessageTopic;
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class HincConfiguration {
 
-    static Logger logger = LoggerFactory.getLogger("DELISE");
+    static Logger logger = LoggerFactory.getLogger("HINC");
 
     private static final String CURRENT_DIR = System.getProperty("user.dir");
     private static final String CONFIG_FILE = CURRENT_DIR + "/salsa.variables";
@@ -45,6 +44,10 @@ public class HincConfiguration {
 
     public static String getBrokerType() {
         return getGenericParameter("BROKER_TYPE", "mqtt");
+    }
+    
+    public static String getGroupName() {
+        return getGenericParameter("GROUP", "DEFAULT");
     }
 
     public static String getCURRENT_DIR() {

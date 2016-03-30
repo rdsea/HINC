@@ -20,6 +20,8 @@ package at.ac.tuwien.dsg.hinc.communication.protocol;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class define type of messages between GLOBAL and LOCAL resource manager
@@ -39,6 +41,8 @@ public class HincMessage {
     String payload;
 
     long timeStamp;
+
+    Map<String, String> extra;
 
     public HincMessage() {
     }
@@ -72,7 +76,6 @@ public class HincMessage {
         // unicast/broadcast: Client--> local: subscribe the changes in the gateway
         SUBSCRIBE_SDGATEWAY_LOCAL,
         SUBSCRIBE_SDGATEWAY_LOCAL_SET_PARAM,
-        
         // unicast: local/global --> client: send back the response
         UPDATE_INFORMATION
 
@@ -132,6 +135,17 @@ public class HincMessage {
 
     public void setFeedbackTopic(String feedbackTopic) {
         this.feedbackTopic = feedbackTopic;
+    }
+
+    public Map<String, String> getExtra() {
+        return extra;
+    }
+
+    public void hasExtra(String key, String value) {
+        if (extra == null) {
+            extra = new HashMap<>();
+        }
+        extra.put(key, value);
     }
 
     @Override

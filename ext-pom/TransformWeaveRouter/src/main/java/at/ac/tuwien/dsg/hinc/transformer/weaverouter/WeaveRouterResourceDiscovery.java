@@ -5,7 +5,6 @@
  */
 package at.ac.tuwien.dsg.hinc.transformer.weaverouter;
 
-import at.ac.tuwien.dsg.hinc.abstracttransformer.RouterResourceDiscoveryInterface;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.AccessPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.VNF;
@@ -14,12 +13,13 @@ import com.weaveworks.weave.WeaveRouter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import at.ac.tuwien.dsg.hinc.abstraction.transformer.RouterResourceTranformationInterface;
 
 /**
  *
  * @author hungld
  */
-public class WeaveRouterResourceDiscovery implements RouterResourceDiscoveryInterface<WeaveRouter> {
+public class WeaveRouterResourceDiscovery implements RouterResourceTranformationInterface<WeaveRouter> {
 
     @Override
     public WeaveRouter validateAndConvertToDomainModel(String rawData) {

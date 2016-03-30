@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.hinc.collector.ResourceDriverImp;
+package at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver;
 
-import at.ac.tuwien.dsg.hinc.communication.protocol.InfoSourceSettings;
-import at.ac.tuwien.dsg.hinc.collector.RawInfoCollector;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl.RawInfoCollectorFromFile;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl.RawInfoCollectorFromREST;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl.RawInfoCollectorFromSyscmd;
 
 /**
  *

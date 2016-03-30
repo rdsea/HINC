@@ -10,8 +10,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -20,7 +18,7 @@ import java.util.logging.Logger;
 public class Experiment1_Broadcast_ResponseTime {
 
     public static void main(String[] args) {
-        QueryManager client = new QueryManager("myClient", "amqp://128.130.172.215", "amqp");
+        QueryManager client = new QueryManager("hung", "amqp://128.130.172.215", "amqp");
         //client.synDelise(3000);
 
         // deploy new VM
@@ -34,7 +32,6 @@ public class Experiment1_Broadcast_ResponseTime {
         for (int i = 1; i < 4; i++) {
             client.querySoftwareDefinedGateway_Broadcast(40000);
         }
-
     }
 
     static private void deploy10Gateways() {

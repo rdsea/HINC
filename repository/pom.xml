@@ -23,6 +23,12 @@
         </dependency>
         
         <dependency>
+            <groupId>at.ac.tuwien.dsg.hinc</groupId>                        
+            <artifactId>communication</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
+        <dependency>
             <groupId>com.orientechnologies</groupId>
             <artifactId>orientdb-core</artifactId>
             <version>2.1.13</version>

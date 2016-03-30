@@ -42,10 +42,17 @@ public class OrientDBConnector {
             try {
                 connection = (ODatabaseDocumentTx) factory.getThreadDatabase();
             } catch (OStorageException e) {
-                System.out.println("DB is not create, creating a new one");
-                connection = new ODatabaseDocumentTx("plocal:" + dbPath).create();
+                try {
+                    e.printStackTrace();
+                    System.out.println("DB is not opened, trying to open it....");
+                    connection = new ODatabaseDocumentTx("plocal:" + dbPath).open(username, password);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    System.out.println("DB is not create, creating a new one");
+                    connection = new ODatabaseDocumentTx("plocal:" + dbPath).create();                    
+                }
             }
-            this.connection = (ODatabaseDocumentTx) factory.getThreadDatabase();
+
         }
         return this.connection;
     }
@@ -69,12 +76,10 @@ public class OrientDBConnector {
             return pool.acquire();
         }
     }
-    
-    public static void commit(){
+
+    public static void commit() {
         INSTANCE.getConnection().commit();
         INSTANCE.closeConnection();
     }
-
-    
 
 }

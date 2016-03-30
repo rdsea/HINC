@@ -24,14 +24,19 @@
         </dependency>
         <dependency>
             <groupId>at.ac.tuwien.dsg.hinc</groupId>
-            <artifactId>AbstractTransformer</artifactId>
+            <artifactId>collector</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>at.ac.tuwien.dsg.hinc</groupId>
-            <artifactId>Communication</artifactId>
+            <artifactId>communication</artifactId>
             <version>1.0</version>
-        </dependency>
+        </dependency>       
+         <dependency>
+            <groupId>at.ac.tuwien.dsg.hinc</groupId>
+            <artifactId>repository</artifactId>
+            <version>1.0</version>
+        </dependency>      
         
         
         

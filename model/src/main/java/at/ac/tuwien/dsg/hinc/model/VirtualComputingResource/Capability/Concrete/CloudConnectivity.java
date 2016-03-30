@@ -43,12 +43,12 @@ public class CloudConnectivity extends Capability {
         capabilityType = CapabilityType.CloudConnectivity;
     }
 
-    public CloudConnectivity(String resourceID, String name, String description) {
-        super(resourceID, name, CapabilityType.CloudConnectivity, description);
+    public CloudConnectivity( String resourceID, String name, String description) {
+        super( resourceID, name, CapabilityType.CloudConnectivity, description);
     }
 
-    public CloudConnectivity(String resourceID, String name, String description, String IP, String MAC) {
-        super(resourceID, name, CapabilityType.CloudConnectivity, description);
+    public CloudConnectivity( String resourceID, String name, String description, String IP, String MAC) {
+        super( resourceID, name, CapabilityType.CloudConnectivity, description);
         this.IP = IP;
         this.MAC = MAC;
     }

@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.hinc.collector;
+package at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver;
 
-import at.ac.tuwien.dsg.hinc.communication.protocol.InfoSourceSettings;
-import java.util.List;
+
 import java.util.Map;
 
 /**

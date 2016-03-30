@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>TransformAndroid</module>
-        <module>AbstractTransformer</module>
         <module>TransformOpenIoTSensor</module>
         <module>TransformWeaveRouter</module>
         <module>TranformSDSensor</module>

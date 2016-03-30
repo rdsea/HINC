@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.hinc.communication.protocol;
+package at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -92,12 +93,13 @@ public class InfoSourceSettings {
             this.settings = settings;
         }
         // below functions are hack for the simplicity
+        @JsonIgnore
         public boolean isVNFResource(){
             String[] values = new String[] {"WeaveRouterResourceDiscovery"};
             String tranformClassName = transformerClass.substring(transformerClass.lastIndexOf(".") + 1);
             return Arrays.asList(values).contains(tranformClassName);
         }
-        
+        @JsonIgnore
         public boolean isGatewayResource(){
             String[] values = new String[] {"SDSensorTranformer","AndroidSensorTransformer","OpenIoTSensorTransformer"};
             String tranformClassName = transformerClass.substring(transformerClass.lastIndexOf(".") + 1);

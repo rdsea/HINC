@@ -17,9 +17,10 @@ public class SoftwareDefinedGatewayMapper implements DTOMapperInterface<Software
 
     @Override
     public SoftwareDefinedGateway fromODocument(ODocument doc) {
+        System.out.println("Converting gateway: " + doc.toJSON());
         SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
-        gw.setUuid(doc.field("uuid").toString());
-        gw.setName(doc.field("name").toString());
+        gw.setUuid(String.valueOf(doc.field("uuid")));
+        gw.setName(String.valueOf(doc.field("name")));
         return gw;
     }
 

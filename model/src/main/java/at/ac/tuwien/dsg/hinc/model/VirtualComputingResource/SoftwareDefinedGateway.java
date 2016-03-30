@@ -70,6 +70,28 @@ public class SoftwareDefinedGateway {
         this.capabilities = capabilities;
     }
 
+    public SoftwareDefinedGateway hasCapability(Capability capa) {
+        capa.setGatewayID(this.getUuid());
+        if (capabilities == null) {
+            capabilities = new ArrayList<>();
+        }
+        this.capabilities.add(capa);
+        return this;
+    }
+
+    public SoftwareDefinedGateway hasCapabilities(List<? extends Capability> capas) {
+        if (capabilities == null) {
+            capabilities = new ArrayList<>();
+        }
+        if (capas != null) {
+            for (Capability capa : capas) {
+                capa.setGatewayID(this.getUuid());
+                this.capabilities.add(capa);
+            }
+        }
+        return this;
+    }
+
     public Map<String, String> getMeta() {
         if (meta == null) {
             meta = new HashMap<>();

@@ -5,16 +5,15 @@
  */
 package at.ac.tuwien.dsg.hinc.collector;
 
-import at.ac.tuwien.dsg.hinc.communication.protocol.InfoSourceSettings;
-import at.ac.tuwien.dsg.hinc.collector.ResourceDriverImp.RawInfoCollectorFactory;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollector;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollectorFactory;
 import at.ac.tuwien.dsg.hinc.collector.utils.HincConfiguration;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import at.ac.tuwien.dsg.hinc.abstracttransformer.GatewayResourceDiscoveryInterface;
-import at.ac.tuwien.dsg.hinc.abstracttransformer.RouterResourceDiscoveryInterface;
 import at.ac.tuwien.dsg.hinc.communication.Utils.HincUtils;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
@@ -28,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import org.slf4j.Logger;
+import at.ac.tuwien.dsg.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
+import at.ac.tuwien.dsg.hinc.abstraction.transformer.RouterResourceTranformationInterface;
 
 /**
  * A collector include a gatherer and a information transformer Information source --> Retriever --> transformer --> VirtualDefinedGateway data model This class
@@ -80,14 +81,14 @@ public class InfoCollector {
             // note: we are collect into for a single router, thus this map at the end should have only 1 entry
             Map<String, String> rawInfo = rawCollector.getRawInformation(source);
 
-            if (Class.forName(source.getTransformerClass()).getInterfaces()[0].getSimpleName().equals("RouterResourceDiscoveryInterface")) {
+            if (Class.forName(source.getTransformerClass()).getInterfaces()[0].getSimpleName().equals("RouterResourceTranformationInterface")) {
                 vnf = new VNF();
                 vnf.setUuid(HincConfiguration.getMyUUID());
                 vnf.setName(HincUtils.getHostName());
-                Class<? extends RouterResourceDiscoveryInterface> tranformClass = (Class<? extends RouterResourceDiscoveryInterface>) Class.forName(source.getTransformerClass());
+                Class<? extends RouterResourceTranformationInterface> tranformClass = (Class<? extends RouterResourceTranformationInterface>) Class.forName(source.getTransformerClass());
                 for (String routerInfo : rawInfo.keySet()) {
                     String raw = rawInfo.get(routerInfo);
-                    RouterResourceDiscoveryInterface t = tranformClass.newInstance();
+                    RouterResourceTranformationInterface t = tranformClass.newInstance();
                     System.out.println("Created tranformer instance done: ");
 
                     Object domain = t.validateAndConvertToDomainModel(raw);
@@ -105,6 +106,7 @@ public class InfoCollector {
         SoftwareDefinedGateway gw = null;
 
         if (!hasSettings()) {
+            System.out.println("There is no infoSource.conf, cannot collect info.");
             return null;
         }
 
@@ -114,31 +116,33 @@ public class InfoCollector {
             RawInfoCollector rawCollector = RawInfoCollectorFactory.getCollector(source.getType());
             Map<String, String> rawInfo = rawCollector.getRawInformation(source);
 
-            if (Class.forName(source.getTransformerClass()).getInterfaces()[0].getSimpleName().equals("GatewayResourceDiscoveryInterface")) {
+            if (Class.forName(source.getTransformerClass()).getInterfaces()[0].getSimpleName().equals("GatewayResourceTransformationInterface")) {
                 // only create if having class define in source
                 gw = new SoftwareDefinedGateway();
-                Class<? extends GatewayResourceDiscoveryInterface> tranformClass = (Class<? extends GatewayResourceDiscoveryInterface>) Class.forName(source.getTransformerClass());
+                Class<? extends GatewayResourceTransformationInterface> tranformClass = (Class<? extends GatewayResourceTransformationInterface>) Class.forName(source.getTransformerClass());
 
                 gw.setUuid(HincConfiguration.getMyUUID());
                 gw.setName(HincUtils.getHostName());
 
                 for (String entityURIorFilePath : rawInfo.keySet()) {
                     String raw = rawInfo.get(entityURIorFilePath);
-                    GatewayResourceDiscoveryInterface t = tranformClass.newInstance();
+                    GatewayResourceTransformationInterface t = tranformClass.newInstance();
                     System.out.println("Created tranformer instance done: ");
 
                     //DataPointTransformerInterface
                     Object domain = t.validateAndConvertToDomainModel(raw, entityURIorFilePath);
-                    DataPoint dp = t.toDataPoint(domain);
-                    List<ControlPoint> cps = t.toControlPoint(domain);
+                    DataPoint dp = t.updateDataPoint(domain);
+                    List<ControlPoint> cps = t.updateControlPoint(domain);
 
-                    gw.getCapabilities().add(dp);
-                    gw.getCapabilities().addAll(cps);
+                    gw.hasCapability(dp);
+                    gw.hasCapabilities(cps);
                 }
             }
 
         }
-        System.out.println("Getting information done. Number of datapoint: " + gw.getCapabilities().size());
+        if (gw != null) {
+            System.out.println("Getting information done. Number of datapoint: " + gw.getCapabilities().size());
+        }
         return gw;
     }
 
@@ -173,7 +177,7 @@ public class InfoCollector {
                         sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
                     }
                     String macStr = sb.toString();  // get MAC
-                    CloudConnectivity c = new CloudConnectivity(HincConfiguration.getMyUUID(), "Gateway-" + HincConfiguration.getMeta().getIp(), "SD Gateway", ipv4, macStr);
+                    CloudConnectivity c = new CloudConnectivity(HincConfiguration.getMyUUID(), "Interface-" + HincConfiguration.getMeta().getIp(), "SD Gateway", ipv4, macStr);
                     cons.add(c);
 
                 } else {

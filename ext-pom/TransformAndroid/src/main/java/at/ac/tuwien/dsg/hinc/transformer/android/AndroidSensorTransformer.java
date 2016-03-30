@@ -6,7 +6,6 @@
 package at.ac.tuwien.dsg.hinc.transformer.android;
 
 import android.hardware.AndroidSensor;
-import at.ac.tuwien.dsg.hinc.abstracttransformer.GatewayResourceDiscoveryInterface;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
@@ -14,13 +13,14 @@ import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
+import at.ac.tuwien.dsg.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
 
 /**
  * The transformer (should be renamed to DataPoint constructor later) that get data from the domain model and build the DataPoint
  *
  * @author hungld
  */
-public class AndroidSensorTransformer implements GatewayResourceDiscoveryInterface<AndroidSensor> {
+public class AndroidSensorTransformer implements GatewayResourceTransformationInterface<AndroidSensor> {
 
     @Override
     public AndroidSensor validateAndConvertToDomainModel(String data, String sourceData) {
@@ -34,7 +34,7 @@ public class AndroidSensorTransformer implements GatewayResourceDiscoveryInterfa
     }
 
     @Override
-    public DataPoint toDataPoint(AndroidSensor data) {
+    public DataPoint updateDataPoint(AndroidSensor data) {
         DataPoint datapoint = new DataPoint(data.getmName(), data.getmName(), "type:" + data.getmType() + ",version:" + data.getmVersion());
         datapoint.setMeasurementUnit("default_unit_for_android_type:" + data.getmType());
         datapoint.setRate(data.getmMinDelay());
@@ -44,17 +44,17 @@ public class AndroidSensorTransformer implements GatewayResourceDiscoveryInterfa
 
     // return null that means the resource have no such capability
     @Override
-    public List<ControlPoint> toControlPoint(AndroidSensor data) {
+    public List<ControlPoint> updateControlPoint(AndroidSensor data) {
         return null;
     }
 
     @Override
-    public ExecutionEnvironment toExecutionEnvironment(AndroidSensor data) {
+    public ExecutionEnvironment updateExecutionEnvironment(AndroidSensor data) {
         return null;
     }
 
     @Override
-    public CloudConnectivity toCloudConnectivity(AndroidSensor data) {
+    public CloudConnectivity updateCloudConnectivity(AndroidSensor data) {
         return null;
     }
 

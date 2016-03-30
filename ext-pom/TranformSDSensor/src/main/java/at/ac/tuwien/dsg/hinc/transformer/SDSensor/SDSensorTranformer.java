@@ -5,7 +5,6 @@
  */
 package at.ac.tuwien.dsg.hinc.transformer.SDSensor;
 
-import at.ac.tuwien.dsg.hinc.abstracttransformer.GatewayResourceDiscoveryInterface;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
@@ -17,13 +16,14 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import at.ac.tuwien.dsg.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
 
 /**
  * The rawData is the content of salsa.meta file, which defines the list of capability
  *
  * @author hungld
  */
-public class SDSensorTranformer implements GatewayResourceDiscoveryInterface<SDSensorMeta> {
+public class SDSensorTranformer implements GatewayResourceTransformationInterface<SDSensorMeta> {
 
     @Override
     public SDSensorMeta validateAndConvertToDomainModel(String rawData, String sensorMetaFilePath) {
@@ -48,13 +48,13 @@ public class SDSensorTranformer implements GatewayResourceDiscoveryInterface<SDS
     }
 
     @Override
-    public DataPoint toDataPoint(SDSensorMeta data) {
+    public DataPoint updateDataPoint(SDSensorMeta data) {
         DataPoint dp = new DataPoint(data.getName(), "DataPoint_"+data.getName(), "SD Sensor", data.getType(), "N/A", Integer.parseInt(data.getRate()));
         return dp;
     }
 
     @Override
-    public List<ControlPoint> toControlPoint(SDSensorMeta data) {
+    public List<ControlPoint> updateControlPoint(SDSensorMeta data) {
         List<ControlPoint> cps = new ArrayList<>();
         for(String key: data.getActions().keySet()){
             ControlPoint cp = new ControlPoint(data.getName(), key, "Action " + key, ControlPoint.InvokeProtocol.LOCAL_EXECUTE, data.getActions().get(key), "");
@@ -64,12 +64,12 @@ public class SDSensorTranformer implements GatewayResourceDiscoveryInterface<SDS
     }
 
     @Override
-    public ExecutionEnvironment toExecutionEnvironment(SDSensorMeta data) {
+    public ExecutionEnvironment updateExecutionEnvironment(SDSensorMeta data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public CloudConnectivity toCloudConnectivity(SDSensorMeta data) {
+    public CloudConnectivity updateCloudConnectivity(SDSensorMeta data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

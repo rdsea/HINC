@@ -15,6 +15,8 @@ import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessage;
 import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessageTopic;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.VNF;
+import java.io.IOException;
+import java.util.Date;
 import org.slf4j.Logger;
 
 /**
@@ -51,14 +53,18 @@ public class Main {
                 if (msg.getMsgType().equals(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL)) {
                     logger.debug("Server get request for SDG information");
                     try {
+                        Long timeStamp2 = (new Date()).getTime();
                         // response
                         SoftwareDefinedGateway gw = InfoCollector.getGatewayInfo();
-                        gw.getCapabilities().addAll(InfoCollector.getGatewayConnectivity());
+                        Long timeStamp3 = (new Date()).getTime();
+                        System.out.println("Collect information done. GW: " + gw.getUuid());
+                        gw.hasCapabilities(InfoCollector.getGatewayConnectivity());
                         String replyPayload = gw.toJson();
                         HincMessage replyMsg = new HincMessage(HincMessage.MESSAGE_TYPE.UPDATE_INFORMATION, HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
+                        replyMsg.hasExtra("timeStamp2", timeStamp2.toString());
                         pub.pushMessage(replyMsg);
                         return;
-                    } catch (Exception ex) {
+                    } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                         ex.printStackTrace();
                         logger.error(ex.getMessage());
                     }
@@ -103,7 +109,7 @@ public class Main {
 
         });
         subscribeClientUniCast.subscribe(HincMessageTopic.getCollectorTopicByID(HincConfiguration.getMyUUID()));
-        subscribeClientUniCast.subscribe(HincMessageTopic.getCollectorTopicBroadcast());
+        subscribeClientUniCast.subscribe(HincMessageTopic.getCollectorTopicBroadcast(HincConfiguration.getGroupName()));
 
         logger.debug("DELISE is ready. UUID: " + HincConfiguration.getMyUUID());
 

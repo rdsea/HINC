@@ -13,14 +13,14 @@ import java.io.IOException;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
-import at.ac.tuwien.dsg.hinc.abstracttransformer.GatewayResourceDiscoveryInterface;
 import java.util.List;
+import at.ac.tuwien.dsg.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
 
 /**
  *
  * @author hungld
  */
-public class OpenIoTSensorTransformer implements GatewayResourceDiscoveryInterface<OpenIoTSensorWrapper> {
+public class OpenIoTSensorTransformer implements GatewayResourceTransformationInterface<OpenIoTSensorWrapper> {
 
     @Override
     public OpenIoTSensorWrapper validateAndConvertToDomainModel(String data, String dataSource) {
@@ -34,7 +34,7 @@ public class OpenIoTSensorTransformer implements GatewayResourceDiscoveryInterfa
     }
 
     @Override
-    public DataPoint toDataPoint(OpenIoTSensorWrapper wrapper) {
+    public DataPoint updateDataPoint(OpenIoTSensorWrapper wrapper) {
         if (wrapper==null){
             System.out.println("Something happen, data is null");
             return null;
@@ -52,17 +52,17 @@ public class OpenIoTSensorTransformer implements GatewayResourceDiscoveryInterfa
     }
 
     @Override
-    public List<ControlPoint> toControlPoint(OpenIoTSensorWrapper data) {
+    public List<ControlPoint> updateControlPoint(OpenIoTSensorWrapper data) {
         return null;
     }
 
     @Override
-    public ExecutionEnvironment toExecutionEnvironment(OpenIoTSensorWrapper data) {
+    public ExecutionEnvironment updateExecutionEnvironment(OpenIoTSensorWrapper data) {
         return null;
     }
 
     @Override
-    public CloudConnectivity toCloudConnectivity(OpenIoTSensorWrapper data) {
+    public CloudConnectivity updateCloudConnectivity(OpenIoTSensorWrapper data) {
         return null;
     }
 

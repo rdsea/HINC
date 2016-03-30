@@ -34,10 +34,10 @@ public class SubscriptionManager {
     String prefixTopic = "";
     static Logger logger = LoggerFactory.getLogger("DELISE");
 
-    String name;
+    String groupName;
 
-    public SubscriptionManager(String name, String broker, String brokerType) {
-        this.name = name;
+    public SubscriptionManager(String groupName, String broker, String brokerType) {
+        this.groupName = groupName;
         this.FACTORY = new MessageClientFactory(broker, brokerType);
     }
 
@@ -93,7 +93,7 @@ public class SubscriptionManager {
         });
         sub.subscribe(feedBackTopic, timeout);
 
-        HincMessage queryMessage = new HincMessage(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL, name, HincMessageTopic.getCollectorTopicBroadcast(), feedBackTopic, "");
+        HincMessage queryMessage = new HincMessage(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL, groupName, HincMessageTopic.getCollectorTopicBroadcast(groupName), feedBackTopic, "");
         pub.pushMessage(queryMessage);
 
         // wait for a few second

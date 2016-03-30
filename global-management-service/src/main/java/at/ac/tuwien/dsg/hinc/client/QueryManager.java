@@ -5,9 +5,8 @@
  */
 package at.ac.tuwien.dsg.hinc.client;
 
-import at.ac.tuwien.dsg.hinc.cache.CacheHincs;
-import at.ac.tuwien.dsg.hinc.cache.CacheGateway;
-import at.ac.tuwien.dsg.hinc.cache.CacheVNF;
+import at.ac.tuwien.dsg.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
 import at.ac.tuwien.dsg.hinc.communication.messageInterface.MessageClientFactory;
 import at.ac.tuwien.dsg.hinc.communication.messageInterface.MessagePublishInterface;
 import at.ac.tuwien.dsg.hinc.communication.messageInterface.MessageSubscribeInterface;
@@ -15,9 +14,9 @@ import at.ac.tuwien.dsg.hinc.communication.messageInterface.SalsaMessageHandling
 import at.ac.tuwien.dsg.hinc.communication.messagePayloads.HincMeta;
 import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessage;
 import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessageTopic;
-import at.ac.tuwien.dsg.hinc.communication.protocol.InfoSourceSettings;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.VNF;
+import at.ac.tuwien.dsg.hinc.repository.DAO.orientDB.AbstractDAO;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -44,11 +43,11 @@ public class QueryManager {
     String prefixTopic = "";
     static Logger logger = LoggerFactory.getLogger("DELISE");
 
-    List<HincMeta> listOfDelise = new ArrayList<>();
-    String name;
+    List<HincMeta> listOfDelise = new ArrayList<>();    
+    String groupName;
 
-    public QueryManager(String name, String broker, String brokerType) {
-        this.name = name;
+    public QueryManager(String groupName, String broker, String brokerType) {
+        this.groupName = groupName;
         this.FACTORY = new MessageClientFactory(broker, brokerType);
     }
 
@@ -80,7 +79,7 @@ public class QueryManager {
         logger.debug("Subscribe done, now waiting for SYN message");
 
         MessagePublishInterface pub = FACTORY.getMessagePublisher();
-        HincMessage synRequestMsg = new HincMessage(HincMessage.MESSAGE_TYPE.SYN_REQUEST, this.name, HincMessageTopic.CLIENT_REQUEST_DELISE, "", "");
+        HincMessage synRequestMsg = new HincMessage(HincMessage.MESSAGE_TYPE.SYN_REQUEST, this.groupName, HincMessageTopic.CLIENT_REQUEST_DELISE, "", "");
         logger.debug("Client starts to send SYN message to many DESLISE...");
         pub.pushMessage(synRequestMsg);
         try {
@@ -91,28 +90,30 @@ public class QueryManager {
         logger.debug("Done, should close the subscribe now.. ");
         // write to cache
 
-        (new CacheHincs()).writeDeliseCache(listOfDelise);
+        AbstractDAO<HincMeta> metaDAO = new AbstractDAO<>(HincMeta.class);
+        metaDAO.deleteAll();
+        metaDAO.saveAll(listOfDelise);
 
+//        (new CacheHincs()).writeDeliseCache(listOfDelise);
         return listOfDelise;
     }
 
     public List<HincMeta> ReadCacheOrSyncDElise() {
-        CacheHincs dliseCache = new CacheHincs();
-        List<HincMeta> list = dliseCache.loadDelisesCache();
+        AbstractDAO<HincMeta> metaDAO = new AbstractDAO<>(HincMeta.class);
+        List<HincMeta> list = metaDAO.readAll();
         if (list == null || list.isEmpty()) {
             // return the syn command
-            logger.debug("There is no d-elise cache found, try to run a query ...");
-            synDelise(3000);
+            logger.debug("There is no local-management-service found, try to run a SYN ...");
+            list = synDelise(3000);
         }
-        // second try        
-        list = dliseCache.loadDelisesCache();
+
         if (list == null || list.isEmpty()) {
-            logger.debug("No D-Elise found. Cannot send query");
+            logger.debug("No local-management-service found. Cannot send query");
             return null;
         }
         this.listOfDelise.clear();
         this.listOfDelise = list;
-        return this.listOfDelise;
+        return list;
     }
 
     public SoftwareDefinedGateway querySoftwareDefinedGateway_Unicast(String deliseUUID) {
@@ -121,7 +122,7 @@ public class QueryManager {
 
         MessagePublishInterface pub = FACTORY.getMessagePublisher();
         // note that when using callFunction, no need to declare the feedbackTopic. This will be filled by the call
-        HincMessage queryMessage = new HincMessage(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL, name, unicastDeliseTopic, "", "");
+        HincMessage queryMessage = new HincMessage(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL, groupName, unicastDeliseTopic, "", "");
         logger.debug("Calling the function: " + queryMessage.toJson());
         HincMessage responseMessage = pub.callFunction(queryMessage);
         logger.debug("Query done !");
@@ -140,7 +141,7 @@ public class QueryManager {
 
         MessagePublishInterface pub = FACTORY.getMessagePublisher();
         // note that when using callFunction, no need to declare the feedbackTopic. This will be filled by the call
-        HincMessage queryMessage = new HincMessage(HincMessage.MESSAGE_TYPE.RPC_QUERY_NFV_LOCAL, name, unicastDeliseTopic, "", "");
+        HincMessage queryMessage = new HincMessage(HincMessage.MESSAGE_TYPE.RPC_QUERY_NFV_LOCAL, groupName, unicastDeliseTopic, "", "");
         HincMessage responseMessage = pub.callFunction(queryMessage);
         String vnfInfo = responseMessage.getPayload();
         if (vnfInfo.equals("null")) {
@@ -157,25 +158,27 @@ public class QueryManager {
         List<SoftwareDefinedGateway> gateways = new ArrayList<>();
         System.out.println("Number of gateway syn: " + delises.size() + ". Now start unicast querying information...");
 
-        for (HincMeta delise : delises) {
-            logger.debug("Checking delise id: " + delise.getUuid() + ", ip: " + delise.getIp());
-            InfoSourceSettings settings = InfoSourceSettings.fromJson(delise.getSettings());
+        for (HincMeta meta : delises) {
+            logger.debug("Checking delise id: " + meta.getUuid() + ", ip: " + meta.getIp());
+            InfoSourceSettings settings = InfoSourceSettings.fromJson(meta.getSettings());
             if (settings.getSource() != null && !settings.getSource().isEmpty()) {
                 InfoSourceSettings.InfoSource firstSource = settings.getSource().get(0);
                 if (firstSource.isGatewayResource()) {
-                    logger.debug("It is a gateway, the delise id: " + delise.getUuid() + ", ip: " + delise.getIp());
-                    SoftwareDefinedGateway g = querySoftwareDefinedGateway_Unicast(delise.getUuid());
+                    logger.debug("It is a gateway, the delise id: " + meta.getUuid() + ", ip: " + meta.getIp());
+                    SoftwareDefinedGateway g = querySoftwareDefinedGateway_Unicast(meta.getUuid());
                     gateways.add(g);
                 } else {
-                    logger.debug("Delise is: " + delise.getUuid() + " is not a gateway !");
+                    logger.debug("Delise is: " + meta.getUuid() + " is not a gateway !");
                 }
             }
 
         }
 
-        logger.debug("Now start to write the list of gateway to cache ....");
-        (new CacheGateway()).writeGatewayCache(gateways);
+        logger.debug("Now start to write the list of gateway to database ....");
+        SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
+        gwDAO.saveAll(gateways);
 
+//        (new CacheGateway()).writeGatewayCache(gateways);
         return gateways;
     }
 
@@ -201,13 +204,17 @@ public class QueryManager {
         }
 
         logger.debug("Now start to write the list of router to cache ....");
-        (new CacheVNF()).writeGatewayCache(routers);
+        AbstractDAO<VNF> vnfDAO = new AbstractDAO<>(VNF.class);
+        vnfDAO.saveAll(routers);
+        
+//        (new CacheVNF()).writeGatewayCache(routers);
         return routers;
     }
 
     /**
      * This function broadcast a message and wait for a few seconds Also, it record the last message to log file
      *
+     * @param timeout
      * @return
      */
     public List<SoftwareDefinedGateway> querySoftwareDefinedGateway_Broadcast(long timeout) {
@@ -215,10 +222,10 @@ public class QueryManager {
         File dir = new File("log/queries/data");
         dir.mkdirs();
         System.out.println("Data is stored in: " + dir.getAbsolutePath());
-        final long startTimeStamp = (new Date()).getTime();
+        final long timeStamp1 = (new Date()).getTime();
 
-        String eventFileName = "log/queries/" + startTimeStamp + ".event";
-        String dataFileName = "log/queries/data/" + startTimeStamp + ".data";
+        String eventFileName = "log/queries/" + timeStamp1 + ".event";
+        String dataFileName = "log/queries/data/" + timeStamp1 + ".data";
         //final List<SoftwareDefinedGateway> gateways = new ArrayList<>();
         final List<String> gatewayInfo = new ArrayList<>();
         final List<String> events = new LinkedList<>();
@@ -240,25 +247,30 @@ public class QueryManager {
                     System.out.println("Payload is null, or cannot be converted");
                     return;
                 }
-                Long currentTS = (new Date()).getTime();
+                Long timeStamp5 = (new Date()).getTime();
 
-                latestTime = currentTS - startTimeStamp;
+                latestTime = timeStamp5 - timeStamp1;
                 currentSum = currentSum + latestTime;
                 quantity += 1;
                 double avg = (double) currentSum / (double) quantity;
-                String eventStr = gw.getUuid() + "," + currentTS + "," + latestTime + "," + String.format("%.3f", avg) + "," + quantity;
+                String eventStr = gw.getUuid() + "," + timeStamp5 + "," + latestTime + "," + String.format("%.3f", avg) + "," + quantity;
                 System.out.println("Got an event: " + eventStr);
 
                 events.add(eventStr);
 //                gateways.add(gw);
                 String gwStr = gw.toJson();
                 gatewayInfo.add("Gateway " + gw.getUuid() + ", capas: " + gw.getCapabilities().size() + ", size: " + gwStr.length() + "," + String.format("%.3f", (double) gwStr.length() / 1024 / 1024) + " MB");
+                
+                
+                SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
+                gwDAO.save(gw);
+                Long timeStamp6 = (new Date()).getTime();
 
             }
         });
         sub.subscribe(feedBackTopic, timeout);
 
-        HincMessage queryMessage = new HincMessage(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL, name, HincMessageTopic.getCollectorTopicBroadcast(), feedBackTopic, "");
+        HincMessage queryMessage = new HincMessage(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL, groupName, HincMessageTopic.getCollectorTopicBroadcast(groupName), feedBackTopic, "");
         pub.pushMessage(queryMessage);
 
         // wait for a few second
@@ -277,6 +289,8 @@ public class QueryManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        
 
         // write result to cache        
         //CacheGateway gwCache = new CacheGateway();
@@ -304,7 +318,7 @@ public class QueryManager {
     }
 
     public String getName() {
-        return name;
+        return groupName;
     }
 
 }

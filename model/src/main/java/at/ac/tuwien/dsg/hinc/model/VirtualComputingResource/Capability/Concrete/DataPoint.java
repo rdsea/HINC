@@ -41,12 +41,12 @@ public class DataPoint extends Capability {
         capabilityType = CapabilityType.DataPoint;
     }
 
-    public DataPoint(String resourceID, String name, String description) {
-        super(resourceID, name, CapabilityType.DataPoint, description);
+    public DataPoint( String resourceID, String name, String description) {
+        super( resourceID, name, CapabilityType.DataPoint, description);
     }
 
-    public DataPoint(String resourceID, String name, String description, String datatype, String measurementUnit, int rate) {
-        super(resourceID, name, CapabilityType.DataPoint, description);
+    public DataPoint( String resourceID, String name, String description, String datatype, String measurementUnit, int rate) {
+        super( resourceID, name, CapabilityType.DataPoint, description);
         this.datatype = datatype;
         this.measurementUnit = measurementUnit;
         this.rate = rate;

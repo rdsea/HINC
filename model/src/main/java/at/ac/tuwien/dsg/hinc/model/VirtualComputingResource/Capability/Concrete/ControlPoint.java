@@ -46,12 +46,12 @@ public class ControlPoint extends Capability {
         capabilityType = CapabilityType.ControlPoint;
     }
     
-    public ControlPoint(String resourceID, String name, String description) {        
-        super(resourceID, name, CapabilityType.ControlPoint, description);
+    public ControlPoint( String resourceID, String name, String description) {        
+        super( resourceID, name, CapabilityType.ControlPoint, description);
     }
 
-    public ControlPoint(String resourceID, String name, String description, InvokeProtocol invokeProtocol, String reference, String postData) {
-        super(resourceID, name, CapabilityType.ControlPoint, description);
+    public ControlPoint( String resourceID, String name, String description, InvokeProtocol invokeProtocol, String reference, String postData) {
+        super( resourceID, name, CapabilityType.ControlPoint, description);
         this.invokeProtocol = invokeProtocol;
         this.reference = reference;
         this.postData = postData;

@@ -8,8 +8,11 @@ package at.ac.tuwien.dsg.hinc.client;
 import at.ac.tuwien.dsg.hinc.cache.CacheGateway;
 import at.ac.tuwien.dsg.hinc.cache.CacheVNF;
 import at.ac.tuwien.dsg.hinc.client.RelationshipManagement.NetworkGraphGenerator;
+import at.ac.tuwien.dsg.hinc.communication.messagePayloads.HincMeta;
+import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.VNF;
+import at.ac.tuwien.dsg.hinc.repository.DAO.orientDB.AbstractDAO;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,24 +23,39 @@ import java.util.List;
 public class TestBroadCast {
 
     public static void main(String[] args) throws Exception {
-        QueryManager client = new QueryManager("myClient", "amqp://128.130.172.215", "amqp");
+        AbstractDAO<HincMeta> metaDao = new AbstractDAO<>(HincMeta.class);
+
+        QueryManager client = new QueryManager("hung", "amqp://128.130.172.215", "amqp");
         client.synDelise(3000);
 
+        List<HincMeta> metas = metaDao.readAll();
+        System.out.println("Number of local services: " + metas.size());
+        for (HincMeta meta : metas) {
+            System.out.println(meta.toJson());
+        }
+
         List<SoftwareDefinedGateway> gateways = client.querySoftwareDefinedGateway_Multicast();
-        (new CacheGateway()).writeGatewayCache(gateways);
-
-        List<VNF> routers = client.queryVNF_Multicast();
-        (new CacheVNF()).writeGatewayCache(routers);
         System.out.println("Gateway number: " + gateways.size());
-        System.out.println("Router number: " + routers.size());
+        
+        AbstractDAO<SoftwareDefinedGateway> gwDAO = new AbstractDAO<>(SoftwareDefinedGateway.class);
+        for (SoftwareDefinedGateway gw: gwDAO.readAll()){
+            System.out.println("Gateway UUID: " + gw.getUuid());
+        }
+                
+        AbstractDAO<DataPoint> dpDAO = new AbstractDAO<>(DataPoint.class);
+        for (DataPoint dp: dpDAO.readAll()){
+            System.out.println("DataPoint UUID: " + dp.getUuid());
+        }
 
-        NetworkGraphGenerator generator = new NetworkGraphGenerator();
-        String graph = generator.generateGraph(gateways, routers);
-        System.out.println(graph);
+//        List<VNF> routers = client.queryVNF_Multicast();
+//        System.out.println("Router number: " + routers.size());
+//        NetworkGraphGenerator generator = new NetworkGraphGenerator();
+//        String graph = generator.generateGraph(gateways, routers);
+//        System.out.println(graph);
     }
 
     public static void main1(String[] args) throws Exception {
-        QueryManager client = new QueryManager("myClient", "amqp://128.130.172.215", "amqp");
+        QueryManager client = new QueryManager("hung", "amqp://128.130.172.215", "amqp");
         client.synDelise(3000);
 
 //        List<SoftwareDefinedGateway> gateways = client.querySoftwareDefinedGatewayBroadcast();

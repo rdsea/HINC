@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.hinc.abstracttransformer;
+package at.ac.tuwien.dsg.hinc.abstraction.transformer;
 
 
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
@@ -14,11 +14,11 @@ import java.util.List;
 
 /**
  * The transformer convert the data (in text format like JSON, XML) into the model The implementation of transformer may need to include its model by itself
- *
+ * 
  * @author hungld
  * @param <ResourceDomainClass> the class to tranform from
  */
-public interface GatewayResourceDiscoveryInterface<ResourceDomainClass> {
+public interface GatewayResourceTransformationInterface<ResourceDomainClass> {
 
     /**
      * This is a general processes to read raw information for all transformers
@@ -29,6 +29,7 @@ public interface GatewayResourceDiscoveryInterface<ResourceDomainClass> {
      * The constructor should implement how to convert from e.g JSON or XML to the DomainClass
      * This comply with the VALIDATE step
      * @param rawData is raw information read from the Driver
+     * @param dataSource is the source of the data
      * @return a DomainClass to use later
      */
     public ResourceDomainClass validateAndConvertToDomainModel(String rawData, String dataSource);
@@ -39,12 +40,12 @@ public interface GatewayResourceDiscoveryInterface<ResourceDomainClass> {
      * @param data
      * @return
      */
-    public DataPoint toDataPoint(ResourceDomainClass data);
+    public DataPoint updateDataPoint(ResourceDomainClass data);
     
-    public List<ControlPoint> toControlPoint(ResourceDomainClass data);
+    public List<ControlPoint> updateControlPoint(ResourceDomainClass data);
     
-    public ExecutionEnvironment toExecutionEnvironment(ResourceDomainClass data);
+    public ExecutionEnvironment updateExecutionEnvironment(ResourceDomainClass data);
     
-    public CloudConnectivity toCloudConnectivity(ResourceDomainClass data);
+    public CloudConnectivity updateCloudConnectivity(ResourceDomainClass data);
 
 }

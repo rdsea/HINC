@@ -3,17 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.hinc.collector.ResourceDriverImp;
+package at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl;
 
-import at.ac.tuwien.dsg.hinc.communication.protocol.InfoSourceSettings;
-import at.ac.tuwien.dsg.hinc.collector.RawInfoCollector;
+
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
