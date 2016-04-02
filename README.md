@@ -24,7 +24,8 @@ The flow of usage the framework as following:
 4. User can execute a query from the client, which interact with Global Management Service.
 
 ------------------------
-Copyright by TU Wien, 2016.
+Copyright 2016, by TU Wien.
+Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0).
 
 
 
