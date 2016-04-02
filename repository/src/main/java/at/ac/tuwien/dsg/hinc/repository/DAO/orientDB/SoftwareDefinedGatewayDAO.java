@@ -7,8 +7,13 @@ import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
-import at.ac.tuwien.dsg.hinc.repository.DAO.orientDB.AbstractDAO;
+import at.ac.tuwien.dsg.hinc.repository.DTOMapper.DTOMapperInterface;
+import at.ac.tuwien.dsg.hinc.repository.DTOMapper.MapperFactory;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -28,20 +33,30 @@ public class SoftwareDefinedGatewayDAO extends AbstractDAO<SoftwareDefinedGatewa
 
     @Override
     public ODocument save(SoftwareDefinedGateway gw) {
-        AbstractDAO<DataPoint> dpDAO = new AbstractDAO<>(DataPoint.class);
-        AbstractDAO<ControlPoint> cpDAO = new AbstractDAO<>(ControlPoint.class);
-        AbstractDAO<CloudConnectivity> ccDAO = new AbstractDAO<>(CloudConnectivity.class);
-        AbstractDAO<ExecutionEnvironment> eeDAO = new AbstractDAO<>(ExecutionEnvironment.class);
-        AbstractDAO gwDAO = new AbstractDAO(SoftwareDefinedGateway.class);
+//        AbstractDAO<DataPoint> dpDAO = new AbstractDAO<>(DataPoint.class);
+//        AbstractDAO<ControlPoint> cpDAO = new AbstractDAO<>(ControlPoint.class);
+//        AbstractDAO<CloudConnectivity> ccDAO = new AbstractDAO<>(CloudConnectivity.class);
+//        AbstractDAO<ExecutionEnvironment> eeDAO = new AbstractDAO<>(ExecutionEnvironment.class);
+//        AbstractDAO gwDAO = new AbstractDAO(SoftwareDefinedGateway.class);
 
-        gwDAO.save(gw);
+        long time1 = (new Date()).getTime();
+        System.out.println("Start saving gateway to DB: " + gw.getUuid());
+        DTOMapperInterface<DataPoint> dpMapper = MapperFactory.getMapper(DataPoint.class);
+        DTOMapperInterface<ControlPoint> cpMapper = MapperFactory.getMapper(ControlPoint.class);
+        DTOMapperInterface<CloudConnectivity> ccMapper = MapperFactory.getMapper(CloudConnectivity.class);
+        DTOMapperInterface<ExecutionEnvironment> eeMapper = MapperFactory.getMapper(ExecutionEnvironment.class);
+        DTOMapperInterface<SoftwareDefinedGateway> gwMapper = MapperFactory.getMapper(SoftwareDefinedGateway.class);
+
+        List<ODocument> docs = new ArrayList<>();
+        docs.add(gwMapper.toODocument(gw));
+
         for (Capability capa : gw.getCapabilities()) {
             switch (capa.getCapabilityType()) {
                 case DataPoint:
-                    dpDAO.save((DataPoint) capa);
+                    docs.add(dpMapper.toODocument((DataPoint) capa));
                     break;
                 case ControlPoint:
-//                    cpDAO.save((ControlPoint)capa);
+                    docs.add(cpMapper.toODocument((ControlPoint) capa));
                     break;
                 case CloudConnectivity:
 //                    ccDAO.save((CloudConnectivity)capa);
@@ -51,6 +66,43 @@ public class SoftwareDefinedGatewayDAO extends AbstractDAO<SoftwareDefinedGatewa
                     break;
             }
         }
+        long time2 = (new Date()).getTime();        
+        
+        OrientDBConnector manager = new OrientDBConnector();
+        ODatabaseDocumentTx db = manager.getConnection();        
+        try {
+            System.out.println("Start to save all oDoc: " + docs.size() +" items");
+            for (ODocument odoc : docs) {
+                String uuid = odoc.field("uuid");
+                ODocument existed = null;
+
+                // Search for exist record
+                if (db.getMetadata().getSchema().existsClass(className)) {
+                    String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
+//                    System.out.println("I will execute a query: " + query1);
+                    List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
+                    if (!existed_items.isEmpty()) {
+                        existed = existed_items.get(0);
+                    }
+                }
+                                // merge or create new
+                if (uuid != null && existed != null) {
+                    existed.merge(odoc, true, false);
+//                    System.out.println("Merging and saving odoc object: " + existed.toJSON());
+                     db.save(existed);
+                } else {
+//                    System.out.println("Saving odoc object: " + odoc.toJSON());
+                     db.save(odoc);
+                }
+//                System.out.println("Save done: " + result.toJSON());
+            }
+        } finally {
+            manager.closeConnection();
+        }
+        long time3 = (new Date()).getTime();
+        System.out.println("Convert time to oDoc take: " + (((double)time2-(double)time1)/1000) + " seconds");
+        System.out.println("Saving to DB done, take: " + (((double)time3-(double)time2)/1000) + " seconds");
+        System.out.println("Tocal time take for DB saving DB: " + (((double)time3-(double)time1)/1000) + " seconds");
         return null;
     }
 
@@ -59,32 +111,9 @@ public class SoftwareDefinedGatewayDAO extends AbstractDAO<SoftwareDefinedGatewa
         if (objects == null) {
             return null;
         }
-        AbstractDAO dpDAO = new AbstractDAO(DataPoint.class);
-        AbstractDAO cpDAO = new AbstractDAO(ControlPoint.class);
-        AbstractDAO ccDAO = new AbstractDAO(CloudConnectivity.class);
-        AbstractDAO eeDAO = new AbstractDAO(ExecutionEnvironment.class);
-        AbstractDAO gwDAO = new AbstractDAO(SoftwareDefinedGateway.class);
-
         for (SoftwareDefinedGateway gw : objects) {
-            gwDAO.save(gw);
-            for (Capability capa : gw.getCapabilities()) {
-                switch (capa.getCapabilityType()) {
-                    case DataPoint:
-                        dpDAO.save((DataPoint) capa);
-                        break;
-                    case ControlPoint:
-//                        cpDAO.save((ControlPoint)capa);
-                        break;
-                    case CloudConnectivity:
-//                        ccDAO.save((CloudConnectivity)capa);
-                        break;
-                    case ExecutionEnvironment:
-//                        eeDAO.save((ExecutionEnvironment)capa);
-                        break;
-                }
-            }
+            save(gw);
         }
-
         return null;
     }
 }

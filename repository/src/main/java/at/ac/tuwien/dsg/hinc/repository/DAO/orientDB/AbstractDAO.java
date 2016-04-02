@@ -43,7 +43,7 @@ public class AbstractDAO<T> {
             // Search for exist record
             if (db.getMetadata().getSchema().existsClass(className)) {
                 String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
-                System.out.println("I will execute a query: " + query1);
+//                System.out.println("I will execute a query: " + query1);
                 List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
                 if (!existed_items.isEmpty()) {
                     existed = existed_items.get(0);
@@ -53,10 +53,10 @@ public class AbstractDAO<T> {
             // merge or create new
             if (uuid != null && existed != null) {
                 existed.merge(odoc, true, false);
-                System.out.println("Merging and saving odoc object: " + existed.toJSON());
+//                System.out.println("Merging and saving odoc object: " + existed.toJSON());
                 result = db.save(existed);
             } else {
-                System.out.println("Saving odoc object: " + odoc.toJSON());
+//                System.out.println("Saving odoc object: " + odoc.toJSON());
                 result = db.save(odoc);
             }
             System.out.println("Save done: " + result.toJSON());
@@ -81,7 +81,7 @@ public class AbstractDAO<T> {
                 // Search for exist record                
                 if (!checked && db.getMetadata().getSchema().existsClass(className)) {
                     String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
-                    System.out.println("I will execute a query: " + query1);
+//                    System.out.println("I will execute a query: " + query1);
                     List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
                     if (!existed_items.isEmpty()) {
                         existed = existed_items.get(0);
@@ -94,11 +94,11 @@ public class AbstractDAO<T> {
                     existed.merge(odoc, true, false);
                     ODocument r = db.save(existed);
                     result.add(r);
-                    System.out.println("Merging and saving done odoc object: " + existed.toJSON());
+//                    System.out.println("Merging and saving done odoc object: " + existed.toJSON());
                 } else {
                     ODocument r = db.save(odoc);
                     result.add(r);
-                    System.out.println("Saving done for odoc object: " + odoc.toJSON());
+//                    System.out.println("Saving done for odoc object: " + odoc.toJSON());
                 }
                 return result;
             }

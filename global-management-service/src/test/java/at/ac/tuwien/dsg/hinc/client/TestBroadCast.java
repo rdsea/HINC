@@ -21,6 +21,8 @@ import java.util.List;
  * @author hungld
  */
 public class TestBroadCast {
+    
+   
 
     public static void main(String[] args) throws Exception {
         AbstractDAO<HincMeta> metaDao = new AbstractDAO<>(HincMeta.class);

@@ -15,6 +15,9 @@ import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessage;
 import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessageTopic;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.VNF;
+import at.ac.tuwien.dsg.hinc.repository.DAO.orientDB.OrientDBConnector;
+import at.ac.tuwien.dsg.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import java.io.IOException;
 import java.util.Date;
 import org.slf4j.Logger;
@@ -30,6 +33,11 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting collector...");
+        Long time1 = (new Date()).getTime();        
+        OrientDBConnector manager = new OrientDBConnector();
+        ODatabaseDocumentTx db = manager.getConnection();    
+        Long time2 = (new Date()).getTime();        
+        System.out.println("Time to bring up DB is: " + (time2-time1)/1000);
 
         final MessagePublishInterface pub = FACTORY.getMessagePublisher();
 
@@ -55,13 +63,24 @@ public class Main {
                     try {
                         Long timeStamp2 = (new Date()).getTime();
                         // response
-                        SoftwareDefinedGateway gw = InfoCollector.getGatewayInfo();
-                        Long timeStamp3 = (new Date()).getTime();
+                        SoftwareDefinedGateway gw = InfoCollector.getGatewayInfo();                        
                         System.out.println("Collect information done. GW: " + gw.getUuid());
-                        gw.hasCapabilities(InfoCollector.getGatewayConnectivity());
+//                        gw.hasCapabilities(InfoCollector.getGatewayConnectivity());
+                        
+                        Long timeStamp3 = (new Date()).getTime(); // time2 to time3: query provider
                         String replyPayload = gw.toJson();
+                        System.out.println("Size of the reply message: " + (replyPayload.length()/1024)+"KB");
                         HincMessage replyMsg = new HincMessage(HincMessage.MESSAGE_TYPE.UPDATE_INFORMATION, HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
+                        
+                        System.out.println("Now saving data to local repository");
+                        SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
+                        gwDAO.save(gw);
+                        
+                        Long timeStamp4 = (new Date()).getTime(); // time3 -> time4: local service process the data
+                        
                         replyMsg.hasExtra("timeStamp2", timeStamp2.toString());
+                        replyMsg.hasExtra("timeStamp3", timeStamp3.toString());
+                        replyMsg.hasExtra("timeStamp4", timeStamp4.toString());
                         pub.pushMessage(replyMsg);
                         return;
                     } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
@@ -111,7 +130,8 @@ public class Main {
         subscribeClientUniCast.subscribe(HincMessageTopic.getCollectorTopicByID(HincConfiguration.getMyUUID()));
         subscribeClientUniCast.subscribe(HincMessageTopic.getCollectorTopicBroadcast(HincConfiguration.getGroupName()));
 
-        logger.debug("DELISE is ready. UUID: " + HincConfiguration.getMyUUID());
+        Long time3 = (new Date()).getTime();        
+        logger.info("Local management service startup in "+((double)time3-(double)time2)/1000+" seconds, uuid: " + HincConfiguration.getMyUUID());        
 
     }
 }

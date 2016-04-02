@@ -6,6 +6,8 @@
 package at.ac.tuwien.dsg.hinc.TESTRUN;
 
 import at.ac.tuwien.dsg.hinc.client.QueryManager;
+import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
+import at.ac.tuwien.dsg.hinc.repository.DAO.orientDB.AbstractDAO;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -17,6 +19,20 @@ import java.net.URL;
  */
 public class Experiment1_Broadcast_ResponseTime {
 
+    
+//     public static void main(String[] args) throws Exception {
+//         
+//        AbstractDAO<SoftwareDefinedGateway> gwDAO = new AbstractDAO<>(SoftwareDefinedGateway.class);
+//        
+//        SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
+//        gw.setName("testGW");
+//        gw.setUuid("uuid1");
+//        gwDAO.save(gw);
+//        
+//        for (SoftwareDefinedGateway gw1: gwDAO.readAll()){
+//            System.out.println("Gateway UUID: " + gw1.getUuid());
+//        }
+//    }
     public static void main(String[] args) {
         QueryManager client = new QueryManager("hung", "amqp://128.130.172.215", "amqp");
         //client.synDelise(3000);
@@ -29,9 +45,9 @@ public class Experiment1_Broadcast_ResponseTime {
 //                client.querySoftwareDefinedGateway_Broadcast(10000);
 //            }
 //        }
-        for (int i = 1; i < 4; i++) {
-            client.querySoftwareDefinedGateway_Broadcast(40000);
-        }
+//        for (int i = 1; i < 4; i++) {
+            client.querySoftwareDefinedGateway_Broadcast(70000);
+//        }
     }
 
     static private void deploy10Gateways() {

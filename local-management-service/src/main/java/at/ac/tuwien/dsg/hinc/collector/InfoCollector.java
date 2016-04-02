@@ -126,8 +126,7 @@ public class InfoCollector {
 
                 for (String entityURIorFilePath : rawInfo.keySet()) {
                     String raw = rawInfo.get(entityURIorFilePath);
-                    GatewayResourceTransformationInterface t = tranformClass.newInstance();
-                    System.out.println("Created tranformer instance done: ");
+                    GatewayResourceTransformationInterface t = tranformClass.newInstance();                    
 
                     //DataPointTransformerInterface
                     Object domain = t.validateAndConvertToDomainModel(raw, entityURIorFilePath);

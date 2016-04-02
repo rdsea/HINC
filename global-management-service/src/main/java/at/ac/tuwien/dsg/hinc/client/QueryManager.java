@@ -43,7 +43,7 @@ public class QueryManager {
     String prefixTopic = "";
     static Logger logger = LoggerFactory.getLogger("DELISE");
 
-    List<HincMeta> listOfDelise = new ArrayList<>();    
+    List<HincMeta> listOfDelise = new ArrayList<>();
     String groupName;
 
     public QueryManager(String groupName, String broker, String brokerType) {
@@ -206,7 +206,7 @@ public class QueryManager {
         logger.debug("Now start to write the list of router to cache ....");
         AbstractDAO<VNF> vnfDAO = new AbstractDAO<>(VNF.class);
         vnfDAO.saveAll(routers);
-        
+
 //        (new CacheVNF()).writeGatewayCache(routers);
         return routers;
     }
@@ -222,10 +222,7 @@ public class QueryManager {
         File dir = new File("log/queries/data");
         dir.mkdirs();
         System.out.println("Data is stored in: " + dir.getAbsolutePath());
-        final long timeStamp1 = (new Date()).getTime();
-
-        String eventFileName = "log/queries/" + timeStamp1 + ".event";
-        String dataFileName = "log/queries/data/" + timeStamp1 + ".data";
+        
         //final List<SoftwareDefinedGateway> gateways = new ArrayList<>();
         final List<String> gatewayInfo = new ArrayList<>();
         final List<String> events = new LinkedList<>();
@@ -234,6 +231,10 @@ public class QueryManager {
         // note that when using callFunction, no need to declare the feedbackTopic. This will be filled by the call
         String feedBackTopic = HincMessageTopic.getTemporaryTopic();
 
+        final long timeStamp1 = (new Date()).getTime();
+        String eventFileName = "log/queries/" + timeStamp1 + ".event";
+        String dataFileName = "log/queries/data/" + timeStamp1 + ".data";
+        
         MessageSubscribeInterface sub = FACTORY.getMessageSubscriber(new SalsaMessageHandling() {
             long latestTime = 0;
             long quantity = 0;
@@ -241,31 +242,42 @@ public class QueryManager {
 
             @Override
             public void handleMessage(HincMessage message) {
+                Long timeStamp5 = (new Date()).getTime();
                 System.out.println("Get a response message from " + message.getFromSalsa());
                 SoftwareDefinedGateway gw = SoftwareDefinedGateway.fromJson(message.getPayload());
                 if (gw == null) {
                     System.out.println("Payload is null, or cannot be converted");
                     return;
                 }
-                Long timeStamp5 = (new Date()).getTime();
-
-                latestTime = timeStamp5 - timeStamp1;
-                currentSum = currentSum + latestTime;
-                quantity += 1;
-                double avg = (double) currentSum / (double) quantity;
-                String eventStr = gw.getUuid() + "," + timeStamp5 + "," + latestTime + "," + String.format("%.3f", avg) + "," + quantity;
-                System.out.println("Got an event: " + eventStr);
-
-                events.add(eventStr);
 //                gateways.add(gw);
                 String gwStr = gw.toJson();
                 gatewayInfo.add("Gateway " + gw.getUuid() + ", capas: " + gw.getCapabilities().size() + ", size: " + gwStr.length() + "," + String.format("%.3f", (double) gwStr.length() / 1024 / 1024) + " MB");
-                
-                
+
                 SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
                 gwDAO.save(gw);
                 Long timeStamp6 = (new Date()).getTime();
 
+//                latestTime = timeStamp5 - timeStamp1;
+//                currentSum = currentSum + latestTime;
+//                quantity += 1;
+//                double avg = (double) currentSum / (double) quantity;
+//                String eventStr = gw.getUuid() + "," + timeStamp5 + "," + latestTime + "," + String.format("%.3f", avg) + "," + quantity;
+//                System.out.println("Got an event: " + eventStr);
+                Long timeStamp2 = Long.parseLong(message.getExtra().get("timeStamp2"));
+                Long timeStamp3 = Long.parseLong(message.getExtra().get("timeStamp3"));
+                Long timeStamp4 = Long.parseLong(message.getExtra().get("timeStamp4"));
+
+                Long local_global_latency = timeStamp2 - timeStamp1;
+                Long provider_process = timeStamp3 - timeStamp2;
+                Long local_process = timeStamp4 - timeStamp3;
+                Long reply_latency = timeStamp5 - timeStamp4;
+                Long global_latency = timeStamp6 - timeStamp5;
+                Long end2end = timeStamp6 - timeStamp1;
+
+                String eventStr = gw.getUuid() + "," + timeStamp1 + "," + timeStamp2 + "," + timeStamp3 + "," + timeStamp4 + "," + timeStamp5 + "," + timeStamp6 + ","
+                        + local_global_latency + "," + provider_process + "," + local_process + "," + reply_latency + "," + global_latency +"," +end2end;
+
+                events.add(eventStr);
             }
         });
         sub.subscribe(feedBackTopic, timeout);
@@ -289,8 +301,6 @@ public class QueryManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        
 
         // write result to cache        
         //CacheGateway gwCache = new CacheGateway();
