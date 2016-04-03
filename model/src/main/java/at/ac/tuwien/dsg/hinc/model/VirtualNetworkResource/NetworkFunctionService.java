@@ -1,14 +1,16 @@
 package at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource;
 
+import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.extensions.NetworkQuality;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NetworkService {
+public class NetworkFunctionService {
 
     private List<VNFForwardGraph> vnfForwardGraphs;
     private List<AccessPoint> accessPoints;
+    private NetworkQuality quality;
 
-    public NetworkService() {
+    public NetworkFunctionService() {
     }
 
     public List<VNFForwardGraph> getVnfForwardGraphs() {
@@ -32,5 +34,15 @@ public class NetworkService {
     public void setAccessPoints(List<AccessPoint> accessPoints) {
         this.accessPoints = accessPoints;
     }
+
+    public NetworkQuality getQuality() {
+        return quality;
+    }
+
+    public void setQuality(NetworkQuality quality) {
+        this.quality = quality;
+    }
+    
+    
 
 }

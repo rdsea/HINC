@@ -12,7 +12,7 @@ import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.AccessPoint;
-import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.NetworkService;
+import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.VNF;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.VNFForwardGraph;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +53,7 @@ public class MockData {
         System.out.println(mapper.writeValueAsString(gateway));
 
         // network
-        NetworkService network = new NetworkService();        
+        NetworkFunctionService network = new NetworkFunctionService();        
         
         network.getAccessPoints().add(new AccessPoint("172.17.0.150"));
         network.getAccessPoints().add(new AccessPoint("172.17.0.152"));

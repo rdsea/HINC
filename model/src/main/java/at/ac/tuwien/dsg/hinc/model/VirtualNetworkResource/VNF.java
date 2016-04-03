@@ -2,6 +2,7 @@ package at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource;
 
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
+import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.extensions.NetworkQuality;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;

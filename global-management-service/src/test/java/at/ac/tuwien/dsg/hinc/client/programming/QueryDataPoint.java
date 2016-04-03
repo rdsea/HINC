@@ -10,7 +10,7 @@ import at.ac.tuwien.dsg.hinc.client.QueryManager;
 import at.ac.tuwien.dsg.hinc.model.PhysicalResource.PhysicalResource;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.extensions.SensorExtension;
+import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.extensions.SensorProps;
 import java.util.List;
 
 /**
@@ -21,10 +21,10 @@ public class QueryDataPoint {
 
     public static void main(String[] args) throws Exception {
         DataPoint template = new DataPoint("BodyTemperature");        
-        SensorExtension sensorExt = new SensorExtension();
-        sensorExt.setRate(5);
+        SensorProps sensorProps = new SensorProps();
+        sensorProps.setRate(5);
 
-        template.getExtra().add(new PhysicalResource(sensorExt));
+        template.getExtra().add(new PhysicalResource(sensorProps));
         final QueryManager queryMng = new QueryManager("myClient", "ampq://10.0..", "ampq");
         List<DataPoint> datapoints = queryMng.QueryDataPoints(template);
 
@@ -32,12 +32,12 @@ public class QueryDataPoint {
         for (DataPoint dp : datapoints) {
             DataPointObservator obs = new DataPointObservator(dp) {
                 @Override
-                public void onChange(DataPoint newValue) {
-                    newValue.getExtraByType(SensorExtension.class);
-                    if (newValue.getRate() > 5) {
-                        newValue.setRate(5);
+                public void onChange(DataPoint newVal) {
+                    SensorProps props = (SensorProps)newVal.getExtraByType(SensorProps.class);
+                    if (props.getRate() > 5) {
+                        props.setRate(5);
                     }
-                    ControlPoint control = newValue.getControlByName("changeRate");
+                    ControlPoint control = newVal.getControlByName("changeRate");
                     queryMng.SendControl(control);
                 }
             };

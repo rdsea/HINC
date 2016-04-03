@@ -11,12 +11,12 @@ import at.ac.tuwien.dsg.hinc.model.PhysicalResource.ExtensibleModel;
  *
  * @author hungld
  */
-public class SensorExtension extends ExtensibleModel{
+public class SensorProps extends ExtensibleModel{
 
     Integer rate;
 
-    public SensorExtension() {
-        super(SensorExtension.class);
+    public SensorProps() {
+        super(SensorProps.class);
     }
 
     public Integer getRate() {
