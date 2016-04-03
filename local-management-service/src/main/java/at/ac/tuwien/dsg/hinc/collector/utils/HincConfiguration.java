@@ -28,7 +28,7 @@ public class HincConfiguration {
     static Logger logger = LoggerFactory.getLogger("HINC");
 
     private static final String CURRENT_DIR = System.getProperty("user.dir");
-    private static final String CONFIG_FILE = CURRENT_DIR + "/salsa.variables";
+    private static final String CONFIG_FILE = CURRENT_DIR + "/hinc.conf";
     private static final String myUUID = UUID.randomUUID().toString();
 
     public static HincMeta getMeta() {

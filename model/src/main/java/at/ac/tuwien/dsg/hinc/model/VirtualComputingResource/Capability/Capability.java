@@ -1,5 +1,6 @@
 package at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability;
 
+import at.ac.tuwien.dsg.hinc.model.PhysicalResource.ExtensibleModel;
 import at.ac.tuwien.dsg.hinc.model.PhysicalResource.PhysicalResource;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
@@ -7,6 +8,7 @@ import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,7 +53,7 @@ public class Capability {
     /**
      * The physical resource give info. of what Things this SDG manages
      */
-    private List<PhysicalResource> physicalResources;
+    private List<PhysicalResource> extra;
 
     /**
      * Constructor, get/set
@@ -115,12 +117,20 @@ public class Capability {
         this.uuid = uuid;
     }
 
-    public List<PhysicalResource> getPhysicalResources() {
-        return physicalResources;
+    public List<PhysicalResource> getExtra() {
+        if (this.extra == null){
+            this.extra = new ArrayList<>();
+        }
+        return extra;
     }
 
-    public void setPhysicalResources(List<PhysicalResource> physicalResources) {
-        this.physicalResources = physicalResources;
+    public void setExtra(List<PhysicalResource> extra) {
+        this.extra = extra;
+    }
+    
+    public ExtensibleModel getExtraByType(Class clazz){
+        // TODO: implement this
+        return new ExtensibleModel(clazz);
     }
 
 }

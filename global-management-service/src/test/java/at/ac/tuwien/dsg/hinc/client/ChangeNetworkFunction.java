@@ -24,8 +24,8 @@ public class ChangeNetworkFunction {
         List<SoftwareDefinedGateway> gws = client.querySoftwareDefinedGateway_Multicast();
 
         Map<SoftwareDefinedGateway, VNF> linkMap = Algorithms.reconfigureNetworks(gws, vnfs);
-        for (SoftwareDefinedGateway gw : linkMap.keySet()) {
-            client.redirectGateway(gw, linkMap.get(gw));
-        }
+//        for (SoftwareDefinedGateway gw : linkMap.keySet()) {
+//            client.redirectGateway(gw, linkMap.get(gw));
+//        }
     }
 }

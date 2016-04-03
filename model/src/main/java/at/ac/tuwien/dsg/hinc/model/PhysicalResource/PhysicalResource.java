@@ -1,6 +1,7 @@
 package at.ac.tuwien.dsg.hinc.model.PhysicalResource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PhysicalResource {
@@ -22,6 +23,11 @@ public class PhysicalResource {
     protected List<ExtensibleModel> extensions;
 
     public PhysicalResource() {
+    }
+
+    public PhysicalResource(ExtensibleModel... exts) {
+        this.extensions = new ArrayList<>();
+        this.extensions.addAll(Arrays.asList(exts));
     }
 
     public ResourceCategory getCategory() {

@@ -14,6 +14,8 @@ import at.ac.tuwien.dsg.hinc.communication.messageInterface.SalsaMessageHandling
 import at.ac.tuwien.dsg.hinc.communication.messagePayloads.HincMeta;
 import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessage;
 import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessageTopic;
+import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
+import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.VNF;
 import at.ac.tuwien.dsg.hinc.repository.DAO.orientDB.AbstractDAO;
@@ -115,6 +117,7 @@ public class QueryManager {
         this.listOfDelise = list;
         return list;
     }
+    
 
     public SoftwareDefinedGateway querySoftwareDefinedGateway_Unicast(String deliseUUID) {
         logger.debug("Trying to query DELISE with ID: " + deliseUUID);
@@ -319,16 +322,34 @@ public class QueryManager {
         return null;
     }
 
-    public void redirectGateway(SoftwareDefinedGateway gw, VNF vnf) {
-        // TODO: implement this
-    }
-
+    
     public List<HincMeta> getListOfDelise() {
         return listOfDelise;
     }
 
     public String getName() {
         return groupName;
+    }
+    
+    
+    
+    /**
+     * This method query data points.
+     * @param dpTemplate This contain basic information, which will be mapped with actual data. This object work like a predefined requirements.
+     * @return a list of data points
+     */
+    public List<DataPoint> QueryDataPoints(DataPoint dpTemplate){
+        // TODO: Implement this to query data points
+        return null;
+    }
+    
+    public List<VNF> QueryVNF(VNF vnfTemplate){
+        // TODO: Implement this to query data points
+        return null;
+    }
+    
+    public void SendControl(ControlPoint controlPoint){
+        // TODO: implement this
     }
 
 }

@@ -17,11 +17,9 @@ import java.io.IOException;
 public class ExtensibleModel {
 
     Class clazz;
-    Object object;
 
-    public ExtensibleModel(Class clazz, Object object) {
+    public ExtensibleModel(Class clazz) {
         this.clazz = clazz;
-        this.object = object;
     }
 
     public Object readFromJson(String json) {
@@ -33,10 +31,10 @@ public class ExtensibleModel {
         }
     }
 
-    public String writeToJson(Object object) {
+    public String writeToJson() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.writeValueAsString(object);
+            return mapper.writeValueAsString(this);
         } catch (JsonProcessingException ex) {
             return null;
         }

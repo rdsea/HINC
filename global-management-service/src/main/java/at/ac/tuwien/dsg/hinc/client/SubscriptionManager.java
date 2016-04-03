@@ -12,6 +12,7 @@ import at.ac.tuwien.dsg.hinc.communication.messageInterface.SalsaMessageHandling
 import at.ac.tuwien.dsg.hinc.communication.messagePayloads.UpdateGatewayStatus;
 import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessage;
 import at.ac.tuwien.dsg.hinc.communication.protocol.HincMessageTopic;
+import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -104,4 +105,8 @@ public class SubscriptionManager {
             ex.printStackTrace();
         }
     }
+    
+    
+   
+    
 }

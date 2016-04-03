@@ -7,6 +7,7 @@ package at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete
 
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Capability;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.CapabilityType;
+import java.util.List;
 
 /**
  *
@@ -22,8 +23,6 @@ public class DataPoint extends Capability {
 
     // reading rate
     int rate;
-    
-    
 
     /**
      * The class which implementation functions to interact with this DataPoint Some function can be: - onStateChanged() - onBufferChanged(String bufferName,
@@ -33,20 +32,28 @@ public class DataPoint extends Capability {
     String managementClass;
 
     /**
-     * List of capability if available
+     * List of control point for this data point
      */
-    ControlPoint controlChangeRate = null;
+    List<ControlPoint> controlpoints;
 
     public DataPoint() {
         capabilityType = CapabilityType.DataPoint;
     }
-
-    public DataPoint( String resourceID, String name, String description) {
-        super( resourceID, name, CapabilityType.DataPoint, description);
+    
+    /**
+     * In the case we have 1 parameter, it is data type. Use this for building data point template.
+     * @param dataType 
+     */
+    public DataPoint(String dataType){
+        this.datatype = dataType;
     }
 
-    public DataPoint( String resourceID, String name, String description, String datatype, String measurementUnit, int rate) {
-        super( resourceID, name, CapabilityType.DataPoint, description);
+    public DataPoint(String resourceID, String name, String description) {
+        super(resourceID, name, CapabilityType.DataPoint, description);
+    }
+
+    public DataPoint(String resourceID, String name, String description, String datatype, String measurementUnit, int rate) {
+        super(resourceID, name, CapabilityType.DataPoint, description);
         this.datatype = datatype;
         this.measurementUnit = measurementUnit;
         this.rate = rate;
@@ -84,15 +91,23 @@ public class DataPoint extends Capability {
         this.managementClass = managementClass;
     }
 
-    public ControlPoint getControlChangeRate() {
-        return controlChangeRate;
+    public List<ControlPoint> getControlpoints() {
+        return controlpoints;
     }
 
-    public void setControlChangeRate(ControlPoint controlChangeRate) {
-        this.controlChangeRate = controlChangeRate;
+    public void setControlpoints(List<ControlPoint> controlpoints) {
+        this.controlpoints = controlpoints;
     }
-    
-    
-    
+
+    public ControlPoint getControlByName(String name) {
+        if (this.controlpoints != null) {
+            for (ControlPoint cp : this.controlpoints) {
+                if (cp.getName().equals(name)) {
+                    return cp;
+                }
+            }
+        }
+        return null;
+    }
 
 }
