@@ -47,8 +47,13 @@ public class SoftwareDefinedGatewayDAO extends AbstractDAO<SoftwareDefinedGatewa
         DTOMapperInterface<ExecutionEnvironment> eeMapper = MapperFactory.getMapper(ExecutionEnvironment.class);
         DTOMapperInterface<SoftwareDefinedGateway> gwMapper = MapperFactory.getMapper(SoftwareDefinedGateway.class);
 
+        OrientDBConnector manager = new OrientDBConnector();
+        ODatabaseDocumentTx db = manager.getConnection(); 
+        
+        ODocument gatewayDB = db.save(gwMapper.toODocument(gw));
+        
         List<ODocument> docs = new ArrayList<>();
-        docs.add(gwMapper.toODocument(gw));
+        
 
         for (Capability capa : gw.getCapabilities()) {
             switch (capa.getCapabilityType()) {
@@ -66,10 +71,8 @@ public class SoftwareDefinedGatewayDAO extends AbstractDAO<SoftwareDefinedGatewa
                     break;
             }
         }
-        long time2 = (new Date()).getTime();        
-        
-        OrientDBConnector manager = new OrientDBConnector();
-        ODatabaseDocumentTx db = manager.getConnection();        
+        long time2 = (new Date()).getTime();                
+               
         try {
             System.out.println("Start to save all oDoc: " + docs.size() +" items");
             for (ODocument odoc : docs) {
@@ -103,7 +106,7 @@ public class SoftwareDefinedGatewayDAO extends AbstractDAO<SoftwareDefinedGatewa
         System.out.println("Convert time to oDoc take: " + (((double)time2-(double)time1)/1000) + " seconds");
         System.out.println("Saving to DB done, take: " + (((double)time3-(double)time2)/1000) + " seconds");
         System.out.println("Tocal time take for DB saving DB: " + (((double)time3-(double)time1)/1000) + " seconds");
-        return null;
+        return gatewayDB;
     }
 
     @Override
@@ -111,9 +114,10 @@ public class SoftwareDefinedGatewayDAO extends AbstractDAO<SoftwareDefinedGatewa
         if (objects == null) {
             return null;
         }
+        List<ODocument> docs = new ArrayList<>();
         for (SoftwareDefinedGateway gw : objects) {
-            save(gw);
+            docs.add(save(gw));
         }
-        return null;
+        return docs;
     }
 }

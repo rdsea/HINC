@@ -19,8 +19,8 @@
 
     <modules>
         <module>model</module>
-        <module>collector</module>
         <module>communication</module>
+        <module>collector</module>
         <module>local-management-service</module>
         <module>global-management-service</module>
         <module>ext-pom</module>
