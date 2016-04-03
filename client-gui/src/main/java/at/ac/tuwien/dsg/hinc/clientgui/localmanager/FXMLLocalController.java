@@ -185,7 +185,7 @@ public class FXMLLocalController implements Initializable {
             ObservableList<DataPointTableModel> dataPointTable = FXCollections.observableArrayList();
             if (gw != null) {
                 for (Capability capa : gw.getCapabilities()) {
-                    if (capa.getType().equals(CapabilityType.DataPoint)) {
+                    if (capa.getCapabilityType().equals(CapabilityType.DataPoint)) {
                         DataPoint dp = (DataPoint) capa;
                         dataPointTable.add(new DataPointTableModel(dp.getName(), dp.getResourceID(), dp.getDescription(), dp.getMeasurementUnit(), dp.getRate() + ""));
                     }
@@ -216,7 +216,7 @@ public class FXMLLocalController implements Initializable {
             ObservableList<ControlPointTableModel> controlPointTable = FXCollections.observableArrayList();
             if (gw != null) {
                 for (Capability capa : gw.getCapabilities()) {
-                    if (capa.getType().equals(CapabilityType.ControlPoint)) {
+                    if (capa.getCapabilityType().equals(CapabilityType.ControlPoint)) {
                         ControlPoint cp = (ControlPoint) capa;
                         controlPointTable.add(new ControlPointTableModel(cp.getName(), cp.getResourceID(), cp.getDescription(), cp.getInvokeProtocol().toString(), cp.getReference()));
                     }

@@ -1,11 +1,11 @@
 package at.ac.tuwien.dsg.hinc.clientgui.globalmanager;
 
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
 import at.ac.tuwien.dsg.hinc.cache.CacheHincs;
 import at.ac.tuwien.dsg.hinc.client.QueryManager;
 import at.ac.tuwien.dsg.hinc.clientgui.UserSettings;
 import at.ac.tuwien.dsg.hinc.clientgui.localmanager.FXMLLocalController;
 import at.ac.tuwien.dsg.hinc.communication.messagePayloads.HincMeta;
-import at.ac.tuwien.dsg.hinc.communication.protocol.InfoSourceSettings;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
