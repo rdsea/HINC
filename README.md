@@ -24,8 +24,7 @@ The flow of usage the framework as following:
 4. User can execute a query from the client, which interact with Global Management Service.
 
 ** Reference **
-If you are using HINC for your work, pls. cite the following paper:
-
+If you are using HINC for your work, pls. cite the following paper: 
 D.-H. Le, N. Narendra, and H.-L. Truong, “Hinc harmonizing diverse resource information across iot, network functions and clouds,” in Proceedings of the 2016 International Conference on Future Internet of Things and Cloud (FICLOUD ’16), 2016, submitted.
 ------------------------
 Copyright 2016, by TU Wien.
