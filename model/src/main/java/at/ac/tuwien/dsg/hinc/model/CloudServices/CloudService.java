@@ -1,6 +1,8 @@
 package at.ac.tuwien.dsg.hinc.model.CloudServices;
 
 import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.AccessPoint;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,6 +65,15 @@ public class CloudService {
             this.attributes = new HashMap<>();
         }
         this.attributes.put(key, val);
+    }
+    
+    public String toJson(){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException ex) {
+            return null;
+        }
     }
     
 }

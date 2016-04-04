@@ -1,8 +1,12 @@
 package at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource;
 
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.extensions.NetworkQuality;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NetworkFunctionService {
 
@@ -36,6 +40,9 @@ public class NetworkFunctionService {
     }
 
     public NetworkQuality getQuality() {
+        if (quality == null){
+            quality = new NetworkQuality();
+        }
         return quality;
     }
 
@@ -43,6 +50,14 @@ public class NetworkFunctionService {
         this.quality = quality;
     }
     
+    public String toJson(){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException ex) {
+            return null;
+        }
+    }
     
 
 }

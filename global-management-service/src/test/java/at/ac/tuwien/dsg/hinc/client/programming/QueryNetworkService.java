@@ -18,7 +18,7 @@ public class QueryNetworkService {
         NetworkFunctionService nfsTemplate = new NetworkFunctionService();
         nfsTemplate.getQuality().setBandwidth("16 GB/s");
         CloudService cloudTemplate = new CloudService("storage");
-        cloudTemplate.hasAttribute("storage:capacity", "1 TB");
+        cloudTemplate.hasAttribute("capacity", "1 TB");
 
     }
 }

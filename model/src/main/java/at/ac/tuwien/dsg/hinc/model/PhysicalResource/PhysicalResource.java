@@ -2,7 +2,9 @@ package at.ac.tuwien.dsg.hinc.model.PhysicalResource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PhysicalResource {
 
@@ -20,14 +22,16 @@ public class PhysicalResource {
     /**
      * The domain model
      */
-    protected List<ExtensibleModel> extensions;
+    protected Map<String, ExtensibleModel> domain;
 
     public PhysicalResource() {
     }
 
     public PhysicalResource(ExtensibleModel... exts) {
-        this.extensions = new ArrayList<>();
-        this.extensions.addAll(Arrays.asList(exts));
+        this.domain = new HashMap<>();
+        for (ExtensibleModel e : exts) {
+            this.domain.put(e.getClass().getSimpleName(), e);
+        }
     }
 
     public ResourceCategory getCategory() {
@@ -38,15 +42,15 @@ public class PhysicalResource {
         this.category = category;
     }
 
-    public List<ExtensibleModel> getExtensions() {
-        if (extensions == null) {
-            extensions = new ArrayList<>();
+    public Map<String, ExtensibleModel> getDomain() {
+        if (domain == null) {
+            domain = new HashMap<>();
         }
-        return extensions;
+        return domain;
     }
 
-    public void setExtensions(List<ExtensibleModel> extensions) {
-        this.extensions = extensions;
+    public void setDomain(Map<String, ExtensibleModel> domain) {
+        this.domain = domain;
     }
 
     public ResourceType getType() {

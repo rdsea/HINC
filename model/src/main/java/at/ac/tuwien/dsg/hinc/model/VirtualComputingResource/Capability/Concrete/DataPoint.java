@@ -7,6 +7,7 @@ package at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete
 
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Capability;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.CapabilityType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,6 +47,7 @@ public class DataPoint extends Capability {
      */
     public DataPoint(String dataType){
         this.datatype = dataType;
+        this.capabilityType = CapabilityType.DataPoint;
     }
 
     public DataPoint(String resourceID, String name, String description) {
@@ -92,6 +94,9 @@ public class DataPoint extends Capability {
     }
 
     public List<ControlPoint> getControlpoints() {
+        if (controlpoints == null){
+            controlpoints = new ArrayList<>();
+        }
         return controlpoints;
     }
 
