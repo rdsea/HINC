@@ -19,7 +19,7 @@ import java.util.Arrays;
  *
  * @author hungld
  */
-public class SlideExamples {
+public class SliceExamples {
     public static void main(String[] args){
         SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
         gw.setName("gateway1");
