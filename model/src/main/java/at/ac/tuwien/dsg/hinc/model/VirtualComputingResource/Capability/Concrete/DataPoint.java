@@ -23,14 +23,18 @@ public class DataPoint extends Capability {
     String measurementUnit;
 
     // reading rate
-    int rate;
-
+//    int rate;
     /**
      * The class which implementation functions to interact with this DataPoint Some function can be: - onStateChanged() - onBufferChanged(String bufferName,
      * Object oldData, Object newData); - Stream<Object> getDataStream(String buffer); - setData(String bufferName, Object newData); - changeDataRate(DataPoint
      * datapoint, Long rate);
      */
     String managementClass;
+
+    /**
+     * Any kind of URI link related to the datapoint. This can be domain model, MQTT/AMPQ persistent, streamming to read/write data.
+     */
+    String link;
 
     /**
      * List of control point for this data point
@@ -40,12 +44,13 @@ public class DataPoint extends Capability {
     public DataPoint() {
         capabilityType = CapabilityType.DataPoint;
     }
-    
+
     /**
      * In the case we have 1 parameter, it is data type. Use this for building data point template.
-     * @param dataType 
+     *
+     * @param dataType
      */
-    public DataPoint(String dataType){
+    public DataPoint(String dataType) {
         this.datatype = dataType;
         this.capabilityType = CapabilityType.DataPoint;
     }
@@ -54,11 +59,10 @@ public class DataPoint extends Capability {
         super(resourceID, name, CapabilityType.DataPoint, description);
     }
 
-    public DataPoint(String resourceID, String name, String description, String datatype, String measurementUnit, int rate) {
+    public DataPoint(String resourceID, String name, String description, String datatype, String measurementUnit) {
         super(resourceID, name, CapabilityType.DataPoint, description);
         this.datatype = datatype;
-        this.measurementUnit = measurementUnit;
-        this.rate = rate;
+        this.measurementUnit = measurementUnit;        
     }
 
     public String getDatatype() {
@@ -77,12 +81,19 @@ public class DataPoint extends Capability {
         this.measurementUnit = measurementUnit;
     }
 
-    public int getRate() {
-        return rate;
+//    public int getRate() {
+//        return rate;
+//    }
+//
+//    public void setRate(int rate) {
+//        this.rate = rate;
+//    }
+    public String getLink() {
+        return link;
     }
 
-    public void setRate(int rate) {
-        this.rate = rate;
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public String getManagementClass() {
@@ -94,7 +105,7 @@ public class DataPoint extends Capability {
     }
 
     public List<ControlPoint> getControlpoints() {
-        if (controlpoints == null){
+        if (controlpoints == null) {
             controlpoints = new ArrayList<>();
         }
         return controlpoints;

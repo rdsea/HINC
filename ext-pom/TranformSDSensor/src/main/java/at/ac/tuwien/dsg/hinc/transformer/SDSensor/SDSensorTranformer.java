@@ -49,7 +49,7 @@ public class SDSensorTranformer implements GatewayResourceTransformationInterfac
 
     @Override
     public DataPoint updateDataPoint(SDSensorMeta data) {
-        DataPoint dp = new DataPoint(data.getName(), "DataPoint_"+data.getName(), "SD Sensor", data.getType(), "N/A", Integer.parseInt(data.getRate()));
+        DataPoint dp = new DataPoint(data.getName(), "DataPoint_"+data.getName(), "SD Sensor", data.getType(), "N/A");
         return dp;
     }
 

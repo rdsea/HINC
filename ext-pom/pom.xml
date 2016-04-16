@@ -14,5 +14,7 @@
         <module>TransformWeaveRouter</module>
         <module>TranformSDSensor</module>
         <module>TranformIoTivity</module>
+        <module>TransformOpenHAB</module>
+        <module>TransformFiwareContextBroker</module>
     </modules>
 </project>

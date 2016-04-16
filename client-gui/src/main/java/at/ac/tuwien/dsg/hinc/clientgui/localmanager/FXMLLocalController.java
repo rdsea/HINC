@@ -175,7 +175,7 @@ public class FXMLLocalController implements Initializable {
             descriptionCol.setCellValueFactory(new PropertyValueFactory<DataPointTableModel, String>("description"));
             TableColumn measurementUnitCol = new TableColumn("measurementUnit");
             measurementUnitCol.setCellValueFactory(new PropertyValueFactory<DataPointTableModel, String>("measurementUnit"));
-            TableColumn rateCol = new TableColumn("rate");
+            TableColumn rateCol = new TableColumn("Link");
             rateCol.setCellValueFactory(new PropertyValueFactory<DataPointTableModel, String>("rate"));
 
             table.getColumns().addAll(nameCol, resourceIDCol, descriptionCol, measurementUnitCol, rateCol);
@@ -187,7 +187,7 @@ public class FXMLLocalController implements Initializable {
                 for (Capability capa : gw.getCapabilities()) {
                     if (capa.getCapabilityType().equals(CapabilityType.DataPoint)) {
                         DataPoint dp = (DataPoint) capa;
-                        dataPointTable.add(new DataPointTableModel(dp.getName(), dp.getResourceID(), dp.getDescription(), dp.getMeasurementUnit(), dp.getRate() + ""));
+                        dataPointTable.add(new DataPointTableModel(dp.getName(), dp.getResourceID(), dp.getDescription(), dp.getMeasurementUnit(), dp.getLink()+ ""));
                     }
                 }
             }

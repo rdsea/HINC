@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author hungld
  */
-public interface RawInfoCollector {
+public interface ProviderAdaptor {
 
     // return a list of <ResourceURI,raw_information>, e.g. a set of <sensorID,sensors> in domain model, or <file_storing_sensor,sensorInfo>
     public Map<String, String> getRawInformation(InfoSourceSettings.InfoSource infoSource);

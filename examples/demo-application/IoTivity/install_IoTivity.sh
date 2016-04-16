@@ -1,8 +1,11 @@
+cd /root
+
 # install g++
 sudo apt-get update
 sudo apt-get install -y build-essential g++
 sudo apt-get install -y python-dev autotools-dev libicu-dev build-essential libbz2-dev pkg-config sudo libglib2.0-dev
-sudo apt-get install libboost-dev libboost-program-options-dev libexpat1-dev libboost-thread-dev uuid-dev libssl-dev
+sudo apt-get install -y libboost-dev libboost-program-options-dev libexpat1-dev libboost-thread-dev uuid-dev libssl-dev
+sudo apt-get install -y scons
 
 # install Boost 1.55
 wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz/download -O boost_1_55_0.tar.gz
@@ -16,17 +19,21 @@ sudo ldconfig
 # Doxigen for the documentation generation
 #sudo apt-get install doxygen
 
+
+
+wget http://mirrors.kernel.org/iotivity/1.0.1/iotivity-1.0.1.tar.gz
+tar -xvzf iotivity-1.0.1.tar.gz
+cd iotivity-1.0.1
+
 # install tinycbor
 wget https://github.com/01org/tinycbor/archive/master.zip
 apt-get install unzip
 unzip master.zip
 mv tinycbor-master/ extlibs/tinycbor/tinycbor
 
-wget http://mirrors.kernel.org/iotivity/1.0.1/iotivity-1.0.1.tar.gz
-tar -xvzf iotivity-1.0.1.tar.gz
-cd iotivity-1.0.1
+scons
 
-make linux
+#make linux
 
 # run sample server
 cd /root/iotivity-1.0.1/out/linux/x86_64/release

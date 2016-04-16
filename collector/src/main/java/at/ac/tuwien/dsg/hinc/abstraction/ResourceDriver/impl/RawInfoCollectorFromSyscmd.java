@@ -7,22 +7,22 @@ package at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl;
 
 
 import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
-import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 
 /**
  *
  * @author hungld
  */
-public class RawInfoCollectorFromSyscmd implements RawInfoCollector {
+public class RawInfoCollectorFromSyscmd implements ProviderAdaptor {
 
     @Override
     public Map<String, String> getRawInformation(InfoSourceSettings.InfoSource infoSource) {
-        String cmd = infoSource.getEndpoint();
+        String cmd = infoSource.getSettings().get("endpoint");
 
         Process p;
         try {

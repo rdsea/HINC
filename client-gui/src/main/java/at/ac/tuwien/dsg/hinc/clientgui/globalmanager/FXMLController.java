@@ -136,7 +136,7 @@ public class FXMLController implements Initializable {
                 for (InfoSourceSettings.InfoSource source : settings.getSource()) {
                     String transClass = source.getTransformerClass();
                     System.out.println("data add: " + meta.getUuid());
-                    data.add(new HincMetaModel(meta.getUuid(), meta.getIp(), transClass.substring(transClass.lastIndexOf(".") + 1), source.getType().toString(), source.getEndpoint(), source.getSettings()));
+                    data.add(new HincMetaModel(meta.getUuid(), meta.getIp(), transClass.substring(transClass.lastIndexOf(".") + 1), source.getType().toString(), source.getSettings().get("endpoint"), source.getSettings().toString()));
                 }
             }
         }

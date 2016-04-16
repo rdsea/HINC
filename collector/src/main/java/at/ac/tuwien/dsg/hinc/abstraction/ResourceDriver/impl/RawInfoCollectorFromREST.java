@@ -7,14 +7,14 @@ package at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl;
 
 
 import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
-import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollector;
 import java.util.Map;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 
 /**
  * Raw resource information to get data from REST
  * @author hungld
  */
-public class RawInfoCollectorFromREST implements RawInfoCollector {
+public class RawInfoCollectorFromREST implements ProviderAdaptor {
 
     @Override
     public Map<String, String> getRawInformation(InfoSourceSettings.InfoSource infoSource) {

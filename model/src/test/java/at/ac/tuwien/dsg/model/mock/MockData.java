@@ -37,8 +37,8 @@ public class MockData {
         gateway.hasCapability(connectivity1);
         gateway.hasCapability(connectivity2);
 
-        Capability data1 = new DataPoint("sensor1","temperature1", "temperature of room1", "temperature", "C", 5);
-        Capability data2 = new DataPoint("sensor1","humidity1", "humidity of room1", "humidity", "%", 60);        
+        Capability data1 = new DataPoint("sensor1","temperature1", "temperature of room1", "temperature", "C");
+        Capability data2 = new DataPoint("sensor1","humidity1", "humidity of room1", "humidity", "%");        
         gateway.hasCapability(data1);
         gateway.hasCapability(data2);
         

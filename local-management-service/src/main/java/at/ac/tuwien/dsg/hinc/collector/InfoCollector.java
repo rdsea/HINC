@@ -6,7 +6,7 @@
 package at.ac.tuwien.dsg.hinc.collector;
 
 import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
-import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollector;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollectorFactory;
 import at.ac.tuwien.dsg.hinc.collector.utils.HincConfiguration;
 import at.ac.tuwien.dsg.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import org.slf4j.Logger;
 import at.ac.tuwien.dsg.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
 import at.ac.tuwien.dsg.hinc.abstraction.transformer.RouterResourceTranformationInterface;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 
 /**
  * A collector include a gatherer and a information transformer Information source --> Retriever --> transformer --> VirtualDefinedGateway data model This class
@@ -76,7 +77,7 @@ public class InfoCollector {
         }
         for (InfoSourceSettings.InfoSource source : settings.getSource()) {
             System.out.println("Checking resource: " + source.getType());
-            RawInfoCollector rawCollector = RawInfoCollectorFactory.getCollector(source.getType());
+            ProviderAdaptor rawCollector = RawInfoCollectorFactory.getCollector(source.getType());
 
             // note: we are collect into for a single router, thus this map at the end should have only 1 entry
             Map<String, String> rawInfo = rawCollector.getRawInformation(source);
@@ -112,8 +113,12 @@ public class InfoCollector {
 
         for (InfoSourceSettings.InfoSource source : settings.getSource()) {
             System.out.println("Checking resource: " + source.getType());
-
-            RawInfoCollector rawCollector = RawInfoCollectorFactory.getCollector(source.getType());
+            
+            ProviderAdaptor rawCollector = RawInfoCollectorFactory.getCollector(source.getType());
+            if (rawCollector == null) {                
+                System.out.println("Do not found default adaptor, loading class: " + source.getAdaptorClass());
+                rawCollector = (ProviderAdaptor) Class.forName(source.getAdaptorClass()).newInstance();                
+            }
             Map<String, String> rawInfo = rawCollector.getRawInformation(source);
 
             if (Class.forName(source.getTransformerClass()).getInterfaces()[0].getSimpleName().equals("GatewayResourceTransformationInterface")) {
@@ -126,7 +131,7 @@ public class InfoCollector {
 
                 for (String entityURIorFilePath : rawInfo.keySet()) {
                     String raw = rawInfo.get(entityURIorFilePath);
-                    GatewayResourceTransformationInterface t = tranformClass.newInstance();                    
+                    GatewayResourceTransformationInterface t = tranformClass.newInstance();
 
                     //DataPointTransformerInterface
                     Object domain = t.validateAndConvertToDomainModel(raw, entityURIorFilePath);

@@ -12,20 +12,22 @@ Open real-time/streaming data:
 Open datasets
  - http://iot.ee.surrey.ac.uk:8080/datasets.html#traffic
 
-Platform management
- - http://130.206.80.47:5371/m2m/v2/services/OpenIoT/models/
- - http://130.206.80.47:5371/m2m/v2/services/OpenIoT/assets/ 
- 
- 
+IoT management services, information providers:
+ - FIWARE: https://www.fiware.org/. Running instance:
+    - http://130.206.80.47:5371/m2m/v2/services/OpenIoT/models/
+    - http://130.206.80.47:5371/m2m/v2/services/OpenIoT/assets/ 
+    - Tutorial: http://fiware-orion.readthedocs.org/en/develop/user/walkthrough_apiv1/#starting-the-broker-for-the-tutorials
+    - Install broker for the tutotial: http://fiware-orion.readthedocs.org/en/develop/admin/install/index.html
+ - https://github.com/solettaproject/soletta ==> only for developer
+ - https://www.iotivity.org/  ==> of Linux foundation
+    - IoTivity-demo: https://github.com/gerald-yang/iotivity-demo
+ - OpenHAB: http://www.openhab.org/
+ - NEST: https://developer.nest.com/documentation/api-reference/
+
+
 Open Projects: http://techbeacon.com/67-open-source-tools-resources-iot
 
 A curated list of IoT
   https://github.com/phodal/awesome-iot
-  
-  
-Platform without data model
-  https://github.com/solettaproject/soletta
-  https://www.iotivity.org/  ==> of Linux foundation
-    IoTivity-demo: https://github.com/gerald-yang/iotivity-demo
     
 Similar to IoTivity: https://www.openhub.net/p/iotivity/similar

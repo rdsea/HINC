@@ -37,7 +37,7 @@ public class AndroidSensorTransformer implements GatewayResourceTransformationIn
     public DataPoint updateDataPoint(AndroidSensor data) {
         DataPoint datapoint = new DataPoint(data.getmName(), data.getmName(), "type:" + data.getmType() + ",version:" + data.getmVersion());
         datapoint.setMeasurementUnit("default_unit_for_android_type:" + data.getmType());
-        datapoint.setRate(data.getmMinDelay());
+//        datapoint.setRate(data.getmMinDelay());
         datapoint.setDatatype("type:" + data.getmType());
         return datapoint;
     }

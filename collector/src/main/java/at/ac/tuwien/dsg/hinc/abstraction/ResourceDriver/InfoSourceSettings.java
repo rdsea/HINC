@@ -13,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -23,13 +25,17 @@ public class InfoSourceSettings {
 
     public static enum InformationSourceType {
         // FILE type scan all the files in one folder, recursively
-        FILE,        
+        FILE,
         // call the REST endpoint
         REST,
         // run system command and get result
-        SYSCMD
+        SYSCMD,
+        // some specific providers
+        FiWARE, OpenHAB, IoTivity, WeaveRouter,
+        MiniNet,
+        OpenStack
     }
-    
+
     // by default
     static final String DEFAULT_CONFIG_FILE = "./info-source.conf";
     List<InfoSource> source = new ArrayList<>();
@@ -46,19 +52,19 @@ public class InfoSourceSettings {
     }
 
     public static class InfoSource {
-        InformationSourceType type;        
-        String endpoint;
+
+        InformationSourceType type;
+        String adaptorClass;
         String transformerClass;
-        String settings;
+        Map<String, String> settings = new HashMap<>();
 
         public InfoSource() {
         }
 
-        public InfoSource(InformationSourceType type, String endpoint, String transformerClass, String settings) {
+        public InfoSource(InformationSourceType type, String adaptorClass, String transformerClass) {
             this.type = type;
-            this.endpoint = endpoint;
+            this.adaptorClass = adaptorClass;
             this.transformerClass = transformerClass;
-            this.settings = settings;
         }
 
         public InformationSourceType getType() {
@@ -69,14 +75,13 @@ public class InfoSourceSettings {
             this.type = type;
         }
 
-        public String getEndpoint() {
-            return endpoint;
-        }
-
-        public void setEndpoint(String endpoint) {
-            this.endpoint = endpoint;
-        }
-
+//        public String getEndpoint() {
+//            return endpoint;
+//        }
+//
+//        public void setEndpoint(String endpoint) {
+//            this.endpoint = endpoint;
+//        }
         public String getTransformerClass() {
             return transformerClass;
         }
@@ -85,23 +90,38 @@ public class InfoSourceSettings {
             this.transformerClass = transformerClass;
         }
 
-        public String getSettings() {
+        public String getAdaptorClass() {
+            return adaptorClass;
+        }
+
+        public void setAdaptorClass(String adaptorClass) {
+            this.adaptorClass = adaptorClass;
+        }
+
+        public Map<String, String> getSettings() {
             return settings;
         }
 
-        public void setSettings(String settings) {
+        public void setSettings(Map<String, String> settings) {
             this.settings = settings;
         }
+
+        public InfoSource hasSetting(String key, String value) {
+            this.settings.put(key, value);
+            return this;
+        }
+
         // below functions are hack for the simplicity
         @JsonIgnore
-        public boolean isVNFResource(){
-            String[] values = new String[] {"WeaveRouterResourceDiscovery"};
+        public boolean isVNFResource() {
+            String[] values = new String[]{"WeaveRouterResourceDiscovery"};
             String tranformClassName = transformerClass.substring(transformerClass.lastIndexOf(".") + 1);
             return Arrays.asList(values).contains(tranformClassName);
         }
+
         @JsonIgnore
-        public boolean isGatewayResource(){
-            String[] values = new String[] {"SDSensorTranformer","AndroidSensorTransformer","OpenIoTSensorTransformer"};
+        public boolean isGatewayResource() {
+            String[] values = new String[]{"SDSensorTranformer", "AndroidSensorTransformer", "OpenIoTSensorTransformer"};
             String tranformClassName = transformerClass.substring(transformerClass.lastIndexOf(".") + 1);
             return Arrays.asList(values).contains(tranformClassName);
         }
@@ -145,9 +165,16 @@ public class InfoSourceSettings {
 
     public static void main(String[] args) {
         InfoSourceSettings settings = new InfoSourceSettings();
-        settings.getSource().add(new InfoSource(InformationSourceType.FILE, "/home/hungld/test/SENSOR_TEST/android.sensor", "at.ac.tuwien.dsg.cloud.salsa.informationmanagement.androidsensortranform.AndroidSensorTransformer", null));
-        settings.getSource().add(new InfoSource(InformationSourceType.FILE, "/home/hungld/test/SENSOR_TEST/OpenIoT", "at.ac.tuwien.dsg.cloud.salsa.informationmanagement.transformopeniotsensor.transformer.OpenIoTSensorTransformer", null));
-        settings.getSource().add(new InfoSource(InformationSourceType.FILE, "/opt/iCOMOT/bin/compact/workspace/iCOMOT-Platform/", "at.ac.tuwien.dsg.cloud.salsa.informationmanagement.tranformsdsensor.SDSensorTranformer", "sensor.meta"));
+//        settings.getSource().add(new InfoSource(InformationSourceType.FILE, "/home/hungld/test/SENSOR_TEST/android.sensor", "at.ac.tuwien.dsg.cloud.salsa.informationmanagement.androidsensortranform.AndroidSensorTransformer", null));
+//        settings.getSource().add(new InfoSource(InformationSourceType.FILE, "/home/hungld/test/SENSOR_TEST/OpenIoT", "at.ac.tuwien.dsg.cloud.salsa.informationmanagement.transformopeniotsensor.transformer.OpenIoTSensorTransformer", null));
+//        settings.getSource().add(new InfoSource(InformationSourceType.FILE, "/opt/iCOMOT/bin/compact/workspace/iCOMOT-Platform/", "at.ac.tuwien.dsg.cloud.salsa.informationmanagement.tranformsdsensor.SDSensorTranformer", "sensor.meta"));
+        InfoSource info1 = new InfoSource(InformationSourceType.OpenHAB, "at.ac..adapterClass1", "at.ac...tranformclass1");
+        info1.hasSetting("endpoint", "http://anURL");
+        InfoSource info2 = new InfoSource(InformationSourceType.FILE, "at.ac..adapterClass1", "at.ac...tranformclass1");
+        info1.hasSetting("folder", "/tmp");
+        
+        settings.getSource().add(info1);
+        settings.getSource().add(info2);
         System.out.println(settings.toJson());
     }
 

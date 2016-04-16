@@ -6,7 +6,6 @@
 package at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl;
 
 import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.InfoSourceSettings;
-import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.RawInfoCollector;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -18,25 +17,29 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 
 /**
  * Default driver to get raw information from file
+ * Needed settings:
+ *  - endpoint: the folder to scan
+ *  - filter: the file name pattern
  * @author hungld
  */
-public class RawInfoCollectorFromFile implements RawInfoCollector {
+public class RawInfoCollectorFromFile implements ProviderAdaptor {
 
     InfoSourceSettings.InfoSource infoSource;
-
+    
     @Override
     public Map<String, String> getRawInformation(InfoSourceSettings.InfoSource infoSource) {
-        String mainFolder = infoSource.getEndpoint();
+        String mainFolder = infoSource.getSettings().get("endpoint");
         System.out.println("Checking folder:" + mainFolder);
         // scan and read all file in dir recursively
 
         List<String> fileNames = new ArrayList<>();
         getFileNames(fileNames, Paths.get(mainFolder));
 
-        final String nameFilter = infoSource.getSettings();
+        final String nameFilter = infoSource.getSettings().get("filter");
         if (nameFilter != null && !nameFilter.isEmpty()) {
             filterFileNames(fileNames, nameFilter);
         }

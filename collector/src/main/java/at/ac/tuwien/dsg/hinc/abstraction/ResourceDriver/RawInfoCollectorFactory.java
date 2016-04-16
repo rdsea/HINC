@@ -15,7 +15,7 @@ import at.ac.tuwien.dsg.hinc.abstraction.ResourceDriver.impl.RawInfoCollectorFro
  */
 public class RawInfoCollectorFactory {
 
-    public static RawInfoCollector getCollector(InfoSourceSettings.InformationSourceType type) {
+    public static ProviderAdaptor getCollector(InfoSourceSettings.InformationSourceType type) {
         switch (type) {
             case FILE: {
                 return new RawInfoCollectorFromFile();
@@ -25,7 +25,7 @@ public class RawInfoCollectorFactory {
             }
             case SYSCMD:{
                 return new RawInfoCollectorFromSyscmd();
-            }
+            }            
             default: {
                 return null;
             }

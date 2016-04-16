@@ -27,6 +27,17 @@ public class ExtensibleModel {
         try {
             return mapper.readValue(json, clazz);
         } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    public static ExtensibleModel fromJson(String json){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(json, ExtensibleModel.class);
+        } catch (IOException ex) {
+            ex.printStackTrace();
             return null;
         }
     }
@@ -36,6 +47,7 @@ public class ExtensibleModel {
         try {
             return mapper.writeValueAsString(this);
         } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
             return null;
         }
     }
