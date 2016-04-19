@@ -5,7 +5,8 @@
  */
 package at.ac.tuwien.dsg.hinc.transformer.weaverouter;
 
-import at.ac.tuwien.dsg.hinc.model.VirtualNetworkResource.VNF;
+import sinc.hinc.transformer.weave.WeaveRouterResourceDiscovery;
+import sinc.hinc.model.VirtualNetworkResource.VNF;
 import com.weaveworks.weave.WeaveRouter;
 import java.util.Scanner;
 
