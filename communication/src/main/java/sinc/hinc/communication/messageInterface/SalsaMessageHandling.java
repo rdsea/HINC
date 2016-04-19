@@ -13,6 +13,9 @@ import sinc.hinc.communication.protocol.HincMessage;
  *
  * @author Duc-Hung LE
  */
+/*
+ * Linh @Hung: change the name "Salsa"
+ */
 public interface SalsaMessageHandling {
     
     // handling incoming message, and reply another

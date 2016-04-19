@@ -20,6 +20,7 @@ import java.util.Map;
 /**
  *
  * @author hungld
+ * TODO: resource info is read from a file and all information should be in a file
  */
 public class InfoSourceSettings {
 
@@ -114,6 +115,7 @@ public class InfoSourceSettings {
         // below functions are hack for the simplicity
         @JsonIgnore
         public boolean isVNFResource() {
+        	//TODO: this is a specific code for WeaveRouter, we have to change it. no hardcode here
             String[] values = new String[]{"WeaveRouterResourceDiscovery"};
             String tranformClassName = transformerClass.substring(transformerClass.lastIndexOf(".") + 1);
             return Arrays.asList(values).contains(tranformClassName);
@@ -121,6 +123,7 @@ public class InfoSourceSettings {
 
         @JsonIgnore
         public boolean isGatewayResource() {
+        	//This is a hardcode that must be changed.
             String[] values = new String[]{"SDSensorTranformer", "AndroidSensorTransformer", "OpenIoTSensorTransformer"};
             String tranformClassName = transformerClass.substring(transformerClass.lastIndexOf(".") + 1);
             return Arrays.asList(values).contains(tranformClassName);

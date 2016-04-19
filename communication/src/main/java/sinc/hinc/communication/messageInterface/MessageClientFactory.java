@@ -14,10 +14,15 @@ import sinc.hinc.communication.MQTTAdaptor.MQTTSubscribe;
 /**
  *
  * @author Duc-Hung LE
+ * Modified by Hong-Linh Truong
  */
 public class MessageClientFactory {
 
-    String broker;
+	
+	//TODO: move static members to a global file
+	public final static String MQTT="mqtt";
+    public final static String AMQP ="amqp";
+	String broker;
     String brokerType;
 
     String exportBroker;
@@ -34,9 +39,9 @@ public class MessageClientFactory {
 
     public MessagePublishInterface getMessagePublisher() {
         switch (getBrokerType()) {
-            case "mqtt":
+            case MessageClientFactory.MQTT:
                 return new MQTTPublish(getBroker());
-            case "amqp":
+            case MessageClientFactory.AMQP:
                 return new AMQPPublish(getBroker());            
             default:
                 return null;
@@ -45,9 +50,9 @@ public class MessageClientFactory {
 
     public MessageSubscribeInterface getMessageSubscriber(SalsaMessageHandling handler) {
         switch (getBrokerType()) {
-            case "mqtt":
+            case MessageClientFactory.MQTT:
                 return new MQTTSubscribe(getBroker(), handler);
-            case "amqp":
+            case MessageClientFactory.AMQP:
                 return new AMQPSubscribe(getBroker(), handler);            
             default:
                 return null;
