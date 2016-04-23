@@ -20,7 +20,7 @@ public class testMessage {
         /**
          * This part connect the client to the message queue, get the list of DElise
          */
-        QueryManager client = new QueryManager("myClient", "amqp://128.130.172.215", "amqp");
+    	QueryManager client = new QueryManager(args[0], args[1], args[2]);
         client.synDelise(2000);
 
         ObjectMapper mapper = new ObjectMapper();

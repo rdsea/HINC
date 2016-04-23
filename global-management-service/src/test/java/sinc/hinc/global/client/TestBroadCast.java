@@ -28,7 +28,7 @@ public class TestBroadCast {
     public static void main(String[] args) throws Exception {
         AbstractDAO<HincMeta> metaDao = new AbstractDAO<>(HincMeta.class);
 
-        QueryManager client = new QueryManager("hung", "amqp://128.130.172.215", "amqp");
+        QueryManager client = new QueryManager(args[0], args[1], args[2]);
         client.synDelise(3000);
 
         List<HincMeta> metas = metaDao.readAll();

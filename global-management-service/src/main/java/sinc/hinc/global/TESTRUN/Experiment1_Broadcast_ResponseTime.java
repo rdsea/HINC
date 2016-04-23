@@ -34,7 +34,8 @@ public class Experiment1_Broadcast_ResponseTime {
 //        }
 //    }
     public static void main(String[] args) {
-        QueryManager client = new QueryManager("hung", "amqp://128.130.172.215", "amqp");
+    	//Linh: document this
+        QueryManager client = new QueryManager(args[0], args[1], args[2]);
         //client.synDelise(3000);
 
         // deploy new VM

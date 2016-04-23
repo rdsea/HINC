@@ -16,7 +16,7 @@ import java.util.List;
 public class TestCallSingleLocalManagement {
 
     public static void main(String[] args) throws Exception {
-        QueryManager client = new QueryManager("test", "amqp://128.130.172.215", "amqp");
+    	QueryManager client = new QueryManager(args[0], args[1], args[2]);
 
 //        SoftwareDefinedGateway gw = client.querySoftwareDefinedGateway_Unicast("9945aa57-54fb-4a21-9a04-1230c9c288ee");
         List<SoftwareDefinedGateway> list = client.querySoftwareDefinedGateway_Broadcast(15000);

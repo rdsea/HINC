@@ -1,24 +1,34 @@
-Simple installation
+Simple installation of HINC
 
-1)Setup a local management service with a specific provider
-The Local Management Service is standalone .jar achive. It requires a set of plug-ins (also .jar) to interface with providers. Currently, plug-in is load via Java ClassPath. The steps are followings:
+1)Build the code by using maven
+
+2)Setup a local management service with a specific provider
+The Local Management Service is standalone .jar achive. It requires a set of plug-ins (also .jar) to interface with providers. 
+Currently, plug-in is load via Java ClassPath. The steps are followings:
  - Copy the local-management-service-1.0.jar and needed the plug-in in to a same folder.
  - Write and place the configuration files in the same folder, see examples of info-sources.conf and hinc.conf
- - Run the command: java -cp "*.jar" at.ac.tuwien.dsg.hinc.collector.Main
+ - Run the command: java -cp "*.jar" sinc.hinc.local.Main
 
-2)Setup communication middleware
+3)Setup communication middleware
+
  - The underlying communication is AMQP. We need to install a RabbitMQ server. In Ubuntu, simply run command:
-$ sudo apt-get install rabbitmq-server
-The IP of the RabbitMQ server is put into the hinc.conf file
 
-3)Setup global management service
+$ sudo apt-get install rabbitmq-server
+
+You can also use a free RabbitMQ from CloudAMQP (cloudamqp.com)
+
+The IP/URL of the RabbitMQ server is put into the hinc.conf file. 
+
+
+4)Setup global management service
 The Global Management Service is embedded with the client, which can be execute via command line or using as a Java library for programming.
 TODO: Develop the client.
 
-4)Add new local management service 
+5)Add new local management service 
+
 Adding a new Local Management Service to interface with a new provider including implement following interfaces:
  - RawInfoCollector: to collect raw information from provider APIs or data sources.
  - GatewayResourceTransformationInterface: to transform SD Gateway information.
  - RouterResourceTranformationInterface: to transform Router information.
  
-5)Test the installation
+6)Test the installation
