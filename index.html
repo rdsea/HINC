@@ -11,12 +11,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    
     <![endif]-->
+    <script type="text/javascript">
+      function OpenDiv(divname){ 
+          var divStyle = document.getElementById(divname).style;
+          divStyle.display='block';        
+        return false;
+      } 
+    </script>
+    
+    
   </head>
   <body>
     <div class="wrapper">
       <header>
         <h1 class="header">HINC</h1>
+        <p>Harmonizing Diverse Resource Information Across IoT, Network Functions and Clouds</p>
         <p class="header"></p>
 
         <ul>
@@ -31,17 +42,106 @@
       </header>
       <section>
         <h3>
-<a id="hinc---hamonizing-iot-netoworks-and-clouds" class="anchor" href="#hinc---hamonizing-iot-netoworks-and-clouds" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HINC - Harmonizing Diverse Resource Information
-Across IoT, Network Functions and Clouds</h3>
+<a id="hinc---hamonizing-iot-netoworks-and-clouds" class="anchor" href="#hinc---hamonizing-iot-netoworks-and-clouds" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
+Introduction
+</h3>
 
 <p>
-	HINC implements the lowest layer of <a href="http://sincconcept.github.io">the SINC Concept</a> by interfacing to different providers to obtain resource metadata and to control resources.
+	HINC implements the lowest layer of <a href="http://sincconcept.github.io">the SINC Concept</a> by interfacing to different providers to obtain resource metadata and to control resources.	
 </p>
-<h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<u>Features:</u>
+<ul>
+  
+  <li> High level view of distributed resources for IoT, Network functions and Clouds.
+  <a onclick="OpenDiv('div1')" style="cursor:pointer;" >More...</a>
+  <div id="div1" style="display:none;"> <blockquote> HINC proposes a high level model to capture the information of IoT without caring about the low level resources like sensor, actuator and gateway. The novel idea is to focus on high level concept of Software-Defined Gateway, which includes 4 aspects: data, control, connection and execution environment. HINC also targets to novel Network functions models to leverage network slicing technology. Conbining with cloud services and resources, HINC aim to supporting end-to-end slicing techologies crossing IoT, Network functions and Clouds. </blockquote></div>
+  
+  <li> Easy-to-use API and management mechanisms for diverse type of available resources.
+  <a onclick="OpenDiv('div2')" style="cursor:pointer;" >More...</a>
+  <div id="div2" style="display:none;"> <blockquote> HINC interfaces with multiple providers who directly manage the resources (IoT, Network functions and Cloud providers). Via an adaption and tranformation process, the information is abtracted to convert to higher level model. The API enables to route the query to distributed provider to gather the information and to send the control for resources. We are continueing to work on Model-Driven </blockquote></div>
+  
+  <li> Information-centric communication and query for large-scale cloud-based IoT systems.
+    <a onclick="OpenDiv('div3')" style="cursor:pointer;" >More...</a>
+  <div id="div3" style="display:none;"> <blockquote>HINC leverages the message queue for the communication. We are continueing to develop a novel protocol atop of the message-oriented middleware to support information-centric query, aiming to enhance the protocol for complex resource models.</blockquote></div>
+  
+  <li> Extensible design for integrating more providers.
+  <a onclick="OpenDiv('div4')" style="cursor:pointer;" >More...</a>
+  <div id="div4" style="display:none;"> <blockquote>HINC provides a set of interface for querying information (one-time query and subscription), and control IoT resource. Based on such interface, we can add more adaptors to interface more providers. A new provider can join the existing system without any interuption.</blockquote></div>
 
-<p>Duc-Hung Le (<a href="https://github.com/leduchung" class="user-mention">@leduchung</a>) and Hong-Linh Truong (<a href="https://github.com/linhsolar" class="user-mention">@linhsolar</a>)</p>
+  
+  
+</ul>
 
+HINC is under active development. The followings sections provide overview of current states and ongoing work.
+
+
+<h3><a id="Contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Architecture</h3>
+HINC architecture is fully distributed, which mean each components can run individually. At runtime, two types of components can be run:
+<ul>
+<li> Local Management Services: To interface with providers to tranform the information and send the control.
+</li>
+<li> Global Management Services: To interface with providers to tranform the information and send the control.
+</li>
+</ul>
+
+<p> The system that HINC aim to manage include following components:
+<ul>
+  <li>Cloud provider: can be private cloud like Openstack, or public service like AmazonEC2.
+  <li>Network provider: cooporate with NFV provider such as OpenDaylight, OpenBaton.
+  <li>IoT provider: manage edge services/platform such as IoTivity, OpenHAB
+</ul>
+
+
+<p>We are setting up a testbed to further developing HINC, which is shown in the figure below. The testbed will be spread in distributed sites: in Vienna, in Hanoi and several public service (AmazonEC, CloudAMQP). We aim to demonstrate the ability to manage distributed and large scale system and network.</p>
+<img src="images/testbedstructure.png" alt="testbed structure" >
+
+<p>For more detail about the design and code, please check the GitHub repository (on the left menu).</p>
+
+<h3>Build and installation</h3>
+HINC can be build with Java 1.7+ and Maven as followings:
+<ol>
+  <li>Clone the project from <a href="https://github.com/SINCConcept/HINC">GitHub</a>
+  <li>Run <code>$ mvn clean install</code>
+  <li>Take 2 artifacts corresponding to the component: local-management-service-1.0.jar and global-management-service-1.0.jar.
+</ol>
+
+The local management service runs with a set of adaptor, which interface with providers. A set of adaptors can be found on <a href="https://github.com/SINCConcept/HINC/tree/master/ext-pom">Github</a>. Each adaptor is build as a .jar archive and put in the same folder with the local management service to load in the Java classpath. The next step is to put the list of providers and their configuration in a configuration file name "info-resource.conf". This file has following format:
+<code>
+<pre>
+{
+    "source": [
+        {
+            "adaptorClass": "sinc.hinc.transformer.openhab.RawInfoCollectorOpenHAB",
+            "transformerClass": "sinc.hinc.transformer.openhab.TranformOpenHABInfo",
+            "settings": {
+                "endpoint": "http://localhost:8080"
+            }
+        },
+        {         
+            "adaptorClass": "sinc.hinc.transformer.iotivity.IoTivityCollector",
+            "transformerClass": "sinc.hinc.transformer.iotivity.IoTivityTransformer",
+            "settings": {
+                "endpoint": "http://localhost:7474"
+            }
+        }
+    ]
+}
+</pre>
+</code>
+The local management service can be run with the below command. Note that we need to provide the jar of the local management service and the list of adaptor together.
+<code><pre>java -cp "local-management-service-1.0.jar:TranformIoTivity-1.0.jar:TransformOpenHAB-1.0.jar" sinc.hinc.local.Main</code></pre>
+
+
+<h3><a id="Contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<ul>
+<li> <a href="http://dsg.tuwien.ac.at/staff/dle/">Duc-Hung Le</a> - PhD student, TU Wien (main developer)
+<li> <a href="http://dsg.tuwien.ac.at/staff/truong/">Hong-Linh Truong</a> - Priv.Doz, TU Wien
+<li> <a href="https://sites.google.com/site/ncnaren/">Nanjangud Narendra</a> - Research Scientist, Ericsson Research India
+<li> <a href="http://is.hust.edu.vn/~trinhvt/">Tuyet-Trinh Vu</a> - Lecturer, HUST, Vietnam
+<li> <a href="http://is.hust.edu.vn/~minhnb/">Binh-Minh Nguyen</a> - Lecturer, HUST, Vietnam
+
+
+</ul>
 <hr>
 
 <p>Copyright 2016, by TU Wien. Licensed under the Apache License, Version 2.0 (<a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>).</p>
