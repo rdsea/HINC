@@ -7,6 +7,8 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-light.css">
+    <link rel="stylesheet" href="stylesheets/cssreset-context-min.css">
+
     <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
@@ -27,24 +29,33 @@
     <div class="wrapper">
       <header>
         <h1 class="header">HINC</h1>
-        <p>Harmonizing Diverse Resource Information Across IoT, Network Functions and Clouds</p>
+          <p>Harmonizing Diverse Resource Information Across IoT, Network Functions and Clouds</p>
         <p class="header"></p>
-
+        <h3 class="header">Download</h3>
         <ul>
-          <li class="download"><a class="buttons" href="https://github.com/SINCConcept/HINC/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/SINCConcept/HINC/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/SINCConcept/HINC">View On GitHub</a></li>
+          <li><a href="https://github.com/SINCConcept/HINC/zipball/master">Download ZIP</a></li>
+          <li><a href="https://github.com/SINCConcept/HINC/tarball/master">Download TAR</a></li>
+          <li><a href="https://github.com/SINCConcept/HINC">View On GitHub</a></li>
         </ul>
+        <h3 class="header">Documentation</h3>
+        <ul>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#architecture">Architecture</a></li>
+          <li><a href="#installation">Installation</a></li>
+          <li><a href="#testbed">Simple testbed</a></li>
+        </ul>
+
+
 
         <p class="header">This project is maintained by <a class="header name" href="https://github.com/SINCConcept">SINCConcept</a></p>
 
 
       </header>
       <section>
-        <h3>
-<a id="hinc---hamonizing-iot-netoworks-and-clouds" class="anchor" href="#hinc---hamonizing-iot-netoworks-and-clouds" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
+        <h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
 Introduction
-</h3>
+</h2>
 
 <p>
 	HINC implements the lowest layer of <a href="http://sincconcept.github.io">the SINC Concept</a> by interfacing to different providers to obtain resource metadata and to control resources.	
@@ -75,7 +86,7 @@ Introduction
 HINC is under active development. The followings sections provide overview of current states and ongoing work.
 
 
-<h3><a id="Contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Architecture</h3>
+<h2><a id="architecture" class="anchor" href="#architecture" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Architecture</h2>
 HINC architecture is fully distributed, which mean each components can run individually. At runtime, two types of components can be run:
 <ul>
 <li> Local Management Services: To interface with providers to tranform the information and send the control.
@@ -97,7 +108,11 @@ HINC architecture is fully distributed, which mean each components can run indiv
 
 <p>For more detail about the design and code, please check the GitHub repository (on the left menu).</p>
 
-<h3>Build and installation</h3>
+
+
+
+<h2><a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
 HINC can be build with Java 1.7+ and Maven as followings:
 <ol>
   <li>Clone the project from <a href="https://github.com/SINCConcept/HINC">GitHub</a>
@@ -105,34 +120,66 @@ HINC can be build with Java 1.7+ and Maven as followings:
   <li>Take 2 artifacts corresponding to the component: local-management-service-1.0.jar and global-management-service-1.0.jar.
 </ol>
 
-The local management service runs with a set of adaptor, which interface with providers. A set of adaptors can be found on <a href="https://github.com/SINCConcept/HINC/tree/master/ext-pom">Github</a>. Each adaptor is build as a .jar archive and put in the same folder with the local management service to load in the Java classpath. The next step is to put the list of providers and their configuration in a configuration file name "info-resource.conf". This file has following format:
-<code>
-<pre>
-{
-    "source": [
-        {
-            "adaptorClass": "sinc.hinc.transformer.openhab.RawInfoCollectorOpenHAB",
-            "transformerClass": "sinc.hinc.transformer.openhab.TranformOpenHABInfo",
-            "settings": {
-                "endpoint": "http://localhost:8080"
-            }
-        },
-        {         
-            "adaptorClass": "sinc.hinc.transformer.iotivity.IoTivityCollector",
-            "transformerClass": "sinc.hinc.transformer.iotivity.IoTivityTransformer",
-            "settings": {
-                "endpoint": "http://localhost:7474"
-            }
-        }
-    ]
-}
-</pre>
-</code>
+The local management service runs with a set of adaptor, which interface with providers. A set of adaptors can be found on <a href="https://github.com/SINCConcept/HINC/tree/master/ext-pom">Github</a>. Each adaptor is build as a .jar archive and put in the same folder with the local management service to load in the Java classpath. There are 2 configuration files need to be edited. For the concrete contents, please see the next section about testbed setup.
+<ul>
+<li> <strong>hinc.conf</strong>: Contain parameters for HINC Local, e.g. group name, queue service.
+<li> <strong>info-source.conf</strong>: Contain the list of provider and their settings.
+</ul>
+
 The local management service can be run with the below command. Note that we need to provide the jar of the local management service and the list of adaptor together.
 <code><pre>java -cp "local-management-service-1.0.jar:TranformIoTivity-1.0.jar:TransformOpenHAB-1.0.jar" sinc.hinc.local.Main</code></pre>
 
 
-<h3><a id="Contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<h2><a id="testbed" class="anchor" href="#testbed" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple testbed</h2>
+In order to test HINC, we need a couple of providers and and message oriented middleware. Followings show a short tutorial to settings up OpenHAB as provider and using HINC to capture information. We choose OpenHAB because of its easy installation and lightweight.
+<p><strong>1. Run OpenHAB demo</strong>
+<br/>1.1. On the <a href="http://www.openhab.org/getting-started/downloads.html">OpenHAB website</a>, download the <strong>Runtime core</strong> and the <strong>Demo setup</strong>.
+<br/>1.2. Extract both package to the same folder. Note that the Demo setup package will be merged into the Runtime core after extracting.
+<br/>1.3. Open a shell in the extracted folder and run: <code>./start.sh</code>.
+<br/>1.4. Run a simple query to make sure OpenHAB is running: <code>curl http://localhost:8080/rest/items</code>
+<p>
+<strong>2. Prepare a AMQP service</strong>
+<br/>2.1. Option 1: Install a local RabbitMQ. In Ubuntu, this can be done by the command: <code>$ sudo apt-get install -y rabbitmq-server</code>
+
+<br/>2.2. Option 2: Create a free plan of <a href="https://www.cloudamqp.com/">CloudAMQP</a>.
+
+<p><strong>3. Run HINC Local</strong>
+<br/>3.1. Build the project following previous section.
+<br/>3.2. Create a <code>hinc.conf</code> for HINC related settings as followings:
+<pre><code># if using local RabbitMQ
+BROKER=amqp://localhost 
+# if using CloudAMQP, username and password is attached in URL
+# BROKER=amqp://uluzkylq:jk8ETV-nwCRek6dm5KurNztmlEot4uSs@bunny.cloudamqp.com/uluzkylq
+BROKER_TYPE=amqp
+GROUP=test</code></pre>
+3.3. Create a <code>info-source.conf</code> to define the provider. With OpenHAB running locally, the configuration as followngs:
+<pre><code>{
+    "source": [
+        {
+            "name": "openHAB",
+            "type": "IoT",
+            "interval": 0,
+            "adaptorClass": "sinc.hinc.transformer.openhab.OpenHABAdaptor",
+            "transformerClass": "sinc.hinc.transformer.openhab.TranformOpenHABInfo",
+            "settings": {
+                "endpoint": "http://localhost:8080/rest"
+            }
+        }
+    ]
+}</code></pre>
+3.4. Copy all needed jar file (in below command) to the same folder with above configuration files. Then run the command:
+<pre><code>java -cp "local-management-service-1.0.jar:TransformOpenHAB-1.0.jar" sinc.hinc.local.Main</code></pre>
+The HINC Local should run and start to contact to OpenHAB to get the information.
+
+<br/><strong>Using HINC Global to query information</strong>
+</br>To be filled....
+
+
+
+
+
+
+<h3><a id="author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 <ul>
 <li> <a href="http://dsg.tuwien.ac.at/staff/dle/">Duc-Hung Le</a> - PhD student, TU Wien (main developer)
 <li> <a href="http://dsg.tuwien.ac.at/staff/truong/">Hong-Linh Truong</a> - Priv.Doz, TU Wien
