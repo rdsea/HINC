@@ -5,53 +5,55 @@
  */
 package sinc.hinc.transformer.openhab;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
 
-import java.util.Map;
 import sinc.hinc.transformer.openhab.model.Item;
 import sinc.hinc.transformer.openhab.model.Items;
-import java.util.HashMap;
+import java.util.Map;
 import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 
 /**
- * Adaptor for OpenHAB Require settings: - endpoint: to the REST API, e.g. http://localhost:8080/rest (without /)
- *
+ * Adaptor for OpenHAB Require settings.
+ * <p>
+ * endpoint: to the REST API. The default should be: http://localhost:8080/rest (without /)
+ * 
  * @author hungld
  */
-public class RawInfoCollectorOpenHAB implements ProviderAdaptor {
-
-    public RawInfoCollectorOpenHAB() {
-    }
+public class OpenHABAdaptor implements ProviderAdaptor<Item> {
 
     @Override
-    public Map<String, String> getRawInformation(InfoSourceSettings.InfoSource infoSource) {
-        String endpoint = infoSource.getSettings().get("endpoint").trim();
+    public Collection<Item> getItems(Map<String, String> settings) {
+        String endpoint = settings.get("endpoint").trim();
         if (endpoint.endsWith("/")) {
             endpoint = endpoint.substring(0, endpoint.length() - 1);
         }
 
-        HashMap<String, String> result = new HashMap<>();
+        Collection<Item> result = new ArrayList<>();
         // read Item and add
         String itemListJson = RestHandler.callRest(endpoint + "/items", RestHandler.HttpVerb.GET, null, "*/*", "application/json");
 //        System.out.println(itemListJson);
         Items items = new Items();
         items = (Items) items.readFromJson(itemListJson);
-        for (Item i : items.getItem()) {
-            result.put(i.getName(), i.writeToJson());
-        }
-        return result;
+        return items.getItem();
     }
 
     // generate the settings for this collector
     public static void main(String[] args) {
-        RawInfoCollectorOpenHAB adaptor = new RawInfoCollectorOpenHAB();
+        OpenHABAdaptor adaptor = new OpenHABAdaptor();
         InfoSourceSettings settings = new InfoSourceSettings();
-        InfoSourceSettings.InfoSource source = new InfoSourceSettings.InfoSource(InfoSourceSettings.InformationSourceType.OpenHAB, "at.ac.tuwien.dsg.hinc.transformopenhab.RawInfoCollectorOpenHAB", "at.ac.tuwien.dsg.hinc.transformopenhab.TranformOpenHABInfo");
+        InfoSourceSettings.InfoSource source = new InfoSourceSettings.InfoSource("openHABAdaptor",InfoSourceSettings.ProviderType.IoT,10, "sinc.hinc.transformer.openhab.OpenHABAdaptor", "sinc.hinc.transformer.openhab.TranformOpenHABInfo");
         source.hasSetting("endpoint", "http://localhost:8080/rest");
         settings.getSource().add(source);
 
         System.out.println(settings.toJson());
-        System.out.println(adaptor.getRawInformation(source).toString());
+        System.out.println(adaptor.getItems(source.getSettings()));
+    }
+
+    @Override
+    public void sendControl(String controlAction, Map<String, String> parameters) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -12,7 +12,7 @@ import sinc.hinc.model.VirtualNetworkResource.VNF;
  * @author hungld
  * @param <ResourceDomainClass> Depending on the router
  */
-public interface RouterResourceTranformationInterface<ResourceDomainClass> {
+public interface NetworkResourceTranformationInterface<ResourceDomainClass> {
 
     public ResourceDomainClass validateAndConvertToDomainModel(String rawData);
 

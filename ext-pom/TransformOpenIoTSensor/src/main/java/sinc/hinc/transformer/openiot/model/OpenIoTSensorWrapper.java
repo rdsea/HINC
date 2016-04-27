@@ -5,8 +5,6 @@
  */
 package sinc.hinc.transformer.openiot.model;
 
-import java.util.List;
-
 /**
  *
  * @author hungld

@@ -5,7 +5,6 @@
  */
 package sinc.hinc.transformer.openhab;
 
-import sinc.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
 import sinc.hinc.model.PhysicalResource.PhysicalResource;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
@@ -13,18 +12,14 @@ import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
 import sinc.hinc.transformer.openhab.model.Item;
 import java.util.List;
+import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
 
 /**
  *
  * @author hungld
  */
-public class TranformOpenHABInfo implements GatewayResourceTransformationInterface<Item> {
+public class TranformOpenHABInfo implements IoTResourceTransformation<Item> {
 
-    @Override
-    public Item validateAndConvertToDomainModel(String rawData, String dataSource) {
-        Item item = new Item();
-        return (Item)item.readFromJson(rawData);
-    }
 
     @Override
     public DataPoint updateDataPoint(Item data) {

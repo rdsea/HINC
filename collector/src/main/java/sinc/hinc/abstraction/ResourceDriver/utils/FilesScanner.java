@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.abstraction.ResourceDriver.impl;
+package sinc.hinc.abstraction.ResourceDriver.utils;
 
 import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
 import java.io.File;
@@ -13,38 +13,38 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 
 /**
- * Default driver to get raw information from file
- * Needed settings:
- *  - endpoint: the folder to scan
- *  - filter: the file name pattern
+ * Default driver to get raw information from list of files. Needed settings:
+ * <p>
+ * <ul>
+ * <li>path: the folder to scan
+ * <li>filter: the file name pattern
+ * </ul><p>
  * @author hungld
  */
-public class RawInfoCollectorFromFile implements ProviderAdaptor {
+public class FilesScanner {
 
-    InfoSourceSettings.InfoSource infoSource;
-    
-    @Override
-    public Map<String, String> getRawInformation(InfoSourceSettings.InfoSource infoSource) {
-        String mainFolder = infoSource.getSettings().get("endpoint");
+    public static Collection<String> getItems(Map<String, String> settings) {
+        final String mainFolder = settings.get("path");
+        final String nameFilter = settings.get("filter");
+
         System.out.println("Checking folder:" + mainFolder);
         // scan and read all file in dir recursively
 
         List<String> fileNames = new ArrayList<>();
         getFileNames(fileNames, Paths.get(mainFolder));
 
-        final String nameFilter = infoSource.getSettings().get("filter");
         if (nameFilter != null && !nameFilter.isEmpty()) {
             filterFileNames(fileNames, nameFilter);
         }
 
-        HashMap<String,String> result = new HashMap<>();
+        Collection<String> result = new ArrayList<>();
 
         System.out.println("There are " + fileNames.size() + " files in the folder to read !");
         // each file contains info of single sensor/actuator
@@ -54,7 +54,7 @@ public class RawInfoCollectorFromFile implements ProviderAdaptor {
             try {
                 json = new String(Files.readAllBytes(Paths.get(filePath)));
                 System.out.println("OK, Loaded the Json file content: \n " + json);
-                result.put(filePath, json);
+                result.add(json);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

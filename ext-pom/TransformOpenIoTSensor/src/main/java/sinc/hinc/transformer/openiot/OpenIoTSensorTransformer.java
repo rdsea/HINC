@@ -8,30 +8,17 @@ package sinc.hinc.transformer.openiot;
 import sinc.hinc.transformer.openiot.model.OpenIoTSensor;
 import sinc.hinc.transformer.openiot.model.OpenIoTSensorWrapper;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
 import java.util.List;
-import sinc.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
+import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
 
 /**
  *
  * @author hungld
  */
-public class OpenIoTSensorTransformer implements GatewayResourceTransformationInterface<OpenIoTSensorWrapper> {
-
-    @Override
-    public OpenIoTSensorWrapper validateAndConvertToDomainModel(String data, String dataSource) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(data, OpenIoTSensorWrapper.class);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
+public class OpenIoTSensorTransformer implements IoTResourceTransformation<OpenIoTSensorWrapper> {
 
     @Override
     public DataPoint updateDataPoint(OpenIoTSensorWrapper wrapper) {

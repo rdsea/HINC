@@ -24,7 +24,7 @@ import java.util.List;
 public class Capability {
 
     /**
-     * The name of the capability, e.g. start/stop/reconfigureXYZ
+     * The name of the capability. E.g. data1/data2,control_start/stop
      */
     protected String name;
 
@@ -38,6 +38,9 @@ public class Capability {
      */
     protected String gatewayID;
 
+    /**
+     * The uuid = gatewayID/name
+     */
     protected String uuid;
 
     /**
@@ -66,6 +69,8 @@ public class Capability {
         this.name = name;
         this.capabilityType = type;
         this.description = description;
+        this.gatewayID = "unknown";
+        this.uuid = gatewayID + "/" + name;
     }
 
     public String getName() {

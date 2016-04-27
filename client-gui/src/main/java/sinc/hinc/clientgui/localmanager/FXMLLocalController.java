@@ -7,7 +7,7 @@ package sinc.hinc.clientgui.localmanager;
 
 import sinc.hinc.global.cache.CacheHincs;
 import sinc.hinc.global.cache.CacheGateway;
-import sinc.hinc.global.client.QueryManager;
+import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.clientgui.UserSettings;
 import sinc.hinc.clientgui.globalmanager.HincMetaModel;
 import sinc.hinc.clientgui.globalmanager.GenericMetaData;
@@ -115,7 +115,7 @@ public class FXMLLocalController implements Initializable {
                 System.out.println("Reload the list");
                 infoLabel.setText("Querying information ... ");
 
-                QueryManager client = UserSettings.getQueryManager();
+                CommunicationManager client = UserSettings.getQueryManager();
 
                 System.out.println("Querying individual gateway information, id: " + deliseInfo.uuidProperty().get());
                 SoftwareDefinedGateway gateway = client.querySoftwareDefinedGateway_Unicast(deliseInfo.uuidProperty().get());

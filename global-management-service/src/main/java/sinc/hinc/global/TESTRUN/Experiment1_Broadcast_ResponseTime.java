@@ -5,7 +5,7 @@
  */
 package sinc.hinc.global.TESTRUN;
 
-import sinc.hinc.global.client.QueryManager;
+import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 import java.io.BufferedReader;
@@ -35,7 +35,7 @@ public class Experiment1_Broadcast_ResponseTime {
 //    }
     public static void main(String[] args) {
     	//Linh: document this
-        QueryManager client = new QueryManager(args[0], args[1], args[2]);
+        CommunicationManager client = new CommunicationManager(args[0], args[1], args[2]);
         //client.synDelise(3000);
 
         // deploy new VM

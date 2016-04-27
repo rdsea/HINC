@@ -5,7 +5,7 @@
  */
 package sinc.hinc.clientgui;
 
-import sinc.hinc.global.client.QueryManager;
+import sinc.hinc.global.management.CommunicationManager;
 
 /**
  *
@@ -25,7 +25,7 @@ public class UserSettings {
         return "myClient";
     }
 
-    public static QueryManager getQueryManager() {
-        return new QueryManager(getUserName(), getBroker(), getBrokerType());
+    public static CommunicationManager getQueryManager() {
+        return new CommunicationManager(getUserName(), getBroker(), getBrokerType());
     }
 }

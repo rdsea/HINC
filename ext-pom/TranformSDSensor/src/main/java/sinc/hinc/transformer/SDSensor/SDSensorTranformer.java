@@ -16,47 +16,25 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sinc.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
+import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
 
 /**
  * The rawData is the content of salsa.meta file, which defines the list of capability
  *
  * @author hungld
  */
-public class SDSensorTranformer implements GatewayResourceTransformationInterface<SDSensorMeta> {
-
-    @Override
-    public SDSensorMeta validateAndConvertToDomainModel(String rawData, String sensorMetaFilePath) {
-        Properties p = new Properties();
-        StringReader reader = new StringReader(rawData);
-        String baseDir=sensorMetaFilePath.substring(0,sensorMetaFilePath.lastIndexOf("/"));
-        try {
-            p.load(reader);
-            SDSensorMeta meta = new SDSensorMeta(p.getProperty("name"), p.getProperty("type"), p.getProperty("rate"), p.getProperty("protocol"));
-            for (Object keyObj : p.keySet()) {
-                String key = (String) keyObj;
-                if (key.startsWith("action.")) {
-                    String actionName = key.substring(key.indexOf(".") + 1);
-                    meta.getActions().put(actionName, baseDir+"/"+p.getProperty(key));
-                }
-            }
-            return meta;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
+public class SDSensorTranformer implements IoTResourceTransformation<SDSensorMeta> {
 
     @Override
     public DataPoint updateDataPoint(SDSensorMeta data) {
-        DataPoint dp = new DataPoint(data.getName(), "DataPoint_"+data.getName(), "SD Sensor", data.getType(), "N/A");
+        DataPoint dp = new DataPoint(data.getName(), "DataPoint_" + data.getName(), "SD Sensor", data.getType(), "N/A");
         return dp;
     }
 
     @Override
     public List<ControlPoint> updateControlPoint(SDSensorMeta data) {
         List<ControlPoint> cps = new ArrayList<>();
-        for(String key: data.getActions().keySet()){
+        for (String key : data.getActions().keySet()) {
             ControlPoint cp = new ControlPoint(data.getName(), key, "Action " + key, ControlPoint.InvokeProtocol.LOCAL_EXECUTE, data.getActions().get(key), "");
             cps.add(cp);
         }
@@ -72,7 +50,5 @@ public class SDSensorTranformer implements GatewayResourceTransformationInterfac
     public CloudConnectivity updateCloudConnectivity(SDSensorMeta data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    
 
 }

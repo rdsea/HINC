@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.global.client;
+package sinc.hinc.global.management;
 
 import sinc.hinc.communication.messageInterface.MessageClientFactory;
 import sinc.hinc.communication.messageInterface.MessagePublishInterface;

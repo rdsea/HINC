@@ -19,6 +19,10 @@
             "measurementUnit": "default_unit_for_android_type:1",
             "rate": 5000,
             "managementClass": null
+            extension{
+            
+            
+            }
         },
         {
             "name": "3F:2A:1A:Hum_CPBR8",

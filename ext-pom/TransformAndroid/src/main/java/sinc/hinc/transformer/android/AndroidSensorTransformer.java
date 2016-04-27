@@ -10,28 +10,15 @@ import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnect
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.List;
-import sinc.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
+import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
 
 /**
  * The transformer (should be renamed to DataPoint constructor later) that get data from the domain model and build the DataPoint
  *
  * @author hungld
  */
-public class AndroidSensorTransformer implements GatewayResourceTransformationInterface<AndroidSensor> {
-
-    @Override
-    public AndroidSensor validateAndConvertToDomainModel(String data, String sourceData) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(data, AndroidSensor.class);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
+public class AndroidSensorTransformer implements IoTResourceTransformation<AndroidSensor> {
 
     @Override
     public DataPoint updateDataPoint(AndroidSensor data) {

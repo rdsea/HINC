@@ -5,7 +5,7 @@
  */
 package sinc.hinc.global.client;
 
-import sinc.hinc.global.client.QueryManager;
+import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.communication.messagePayloads.HincMeta;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,19 +20,19 @@ public class testMessage {
         /**
          * This part connect the client to the message queue, get the list of DElise
          */
-    	QueryManager client = new QueryManager(args[0], args[1], args[2]);
-        client.synDelise(2000);
+    	CommunicationManager client = new CommunicationManager(args[0], args[1], args[2]);
+        client.synHINC(2000);
 
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(client.getListOfDelise()));
+        System.out.println(mapper.writeValueAsString(client.getListOfHINCLocal()));
 
         System.out.println("SYN DONE, GOING TO PHASE 2");
-        System.out.println("There are " + client.getListOfDelise().size() + " gateway");
+        System.out.println("There are " + client.getListOfHINCLocal().size() + " gateway");
 
         /**
          * Query information from each DElise, unicast pattern
          */
-        for (HincMeta delise : client.getListOfDelise()) {
+        for (HincMeta delise : client.getListOfHINCLocal()) {
             System.out.println("QUERYING DELISE: " + delise.getUuid());
 //            SoftwareDefinedGateway gw = client.querySoftwareDefinedGateway(delise.getUuid());
 //            if (gw != null) {

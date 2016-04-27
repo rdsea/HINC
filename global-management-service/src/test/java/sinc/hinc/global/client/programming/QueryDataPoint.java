@@ -5,13 +5,14 @@
  */
 package sinc.hinc.global.client.programming;
 
-import sinc.hinc.global.client.DataPointObservator;
-import sinc.hinc.global.client.QueryManager;
+import sinc.hinc.global.management.DataPointObservator;
+import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.model.PhysicalResource.PhysicalResource;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.extensions.SensorProps;
 import java.util.List;
+import sinc.hinc.global.management.QueryManager;
 
 /**
  *
@@ -25,8 +26,10 @@ public class QueryDataPoint {
         sensorProps.setRate(5);
 
         template.getExtra().add(new PhysicalResource(sensorProps));
-        final QueryManager queryMng = new QueryManager("myClient", "ampq://10.0..", "ampq");
-        List<DataPoint> datapoints = queryMng.QueryDataPoints(template);
+        final CommunicationManager communicationMng = new CommunicationManager("myClient", "ampq://10.0..", "ampq");
+        communicationMng.querySoftwareDefinedGateway_Broadcast(3000);
+        List<DataPoint> datapoints = QueryManager.QueryDataPoints(template);
+        
 
         // some obmitted code
         for (DataPoint dp : datapoints) {
@@ -38,7 +41,7 @@ public class QueryDataPoint {
                         props.setRate(5);
                     }
                     ControlPoint control = newVal.getControlByName("changeRate");
-                    queryMng.SendControl(control);
+                    communicationMng.SendControl(control);
                 }
             };
         }

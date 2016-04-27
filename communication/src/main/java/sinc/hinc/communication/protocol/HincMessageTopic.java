@@ -25,20 +25,20 @@ import java.util.UUID;
  */
 public class HincMessageTopic {
 
-    private static final String PREFIX = "ac.at.tuwien.dsg.cloud.delise.";
+    private static final String PREFIX = "sinc.hinc.";
     // From CENTER to PIONEER: send request
-    public static final String CLIENT_REQUEST_DELISE = PREFIX + "request";
+    public static final String CLIENT_REQUEST_HINC = PREFIX + "request";
     // From Pioneer to Center: heartbeat, register
     public static final String REGISTER_AND_HEARBEAT = PREFIX + "sync";
 
     public static final String CLIENT_WAIT_FOR_INFORMATION = PREFIX + "client";
 
     public static String getCollectorTopicByID(String pioneerID) {
-        return CLIENT_REQUEST_DELISE + "." + pioneerID;
+        return CLIENT_REQUEST_HINC + "." + pioneerID;
     }
 
     public static String getCollectorTopicBroadcast(String groupName) {
-        return CLIENT_REQUEST_DELISE + ".HINC_BROADCAST." + groupName;
+        return CLIENT_REQUEST_HINC + ".HINC_BROADCAST." + groupName;
     }
 
     public static String getTemporaryTopic() {

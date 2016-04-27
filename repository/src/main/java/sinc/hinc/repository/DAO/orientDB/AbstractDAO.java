@@ -18,6 +18,7 @@ import java.util.List;
 /**
  *
  * @author hungld
+ * @param <T> The type of object to be persisted in DB
  */
 public class AbstractDAO<T> {
 
@@ -43,8 +44,8 @@ public class AbstractDAO<T> {
             // Search for exist record
             if (db.getMetadata().getSchema().existsClass(className)) {
                 String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
-//                System.out.println("I will execute a query: " + query1);
                 List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
+                System.out.println("Query: " + query1 +". Result: " + existed_items.size());
                 if (!existed_items.isEmpty()) {
                     existed = existed_items.get(0);
                 }
@@ -81,8 +82,8 @@ public class AbstractDAO<T> {
                 // Search for exist record                
                 if (!checked && db.getMetadata().getSchema().existsClass(className)) {
                     String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
-//                    System.out.println("I will execute a query: " + query1);
                     List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
+                    System.out.println("Query: " + query1 +". Result: " + existed_items.size());
                     if (!existed_items.isEmpty()) {
                         existed = existed_items.get(0);
                     }
@@ -148,10 +149,15 @@ public class AbstractDAO<T> {
     public T read(String uuid) {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
+        
+        if (!db.getMetadata().getSchema().existsClass(className)){
+            return null;
+        }
+        
         try {
-            String query = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
-            System.out.println("I will execute a query: " + query);
+            String query = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";            
             List<ODocument> result = db.query(new OSQLSynchQuery<ODocument>(query));
+            System.out.println("Query: " + query +". Result: " + result.size());
             if (!result.isEmpty()) {
                 ODocument doc = result.get(0);
                 System.out.println("Read odoc JSON:" + doc.toJSON());
@@ -161,6 +167,29 @@ public class AbstractDAO<T> {
             manager.closeConnection();
         }
         return null;
+    }
+    
+    public List<T> readWithCondition(String whereClause) {
+        OrientDBConnector manager = new OrientDBConnector();
+        ODatabaseDocumentTx db = manager.getConnection();
+        if (!db.getMetadata().getSchema().existsClass(className)){
+            return null;
+        }
+        try {
+            String query = "SELECT * FROM " + className + " WHERE " + whereClause;            
+            List<ODocument> result = db.query(new OSQLSynchQuery<ODocument>(query));
+            System.out.println("Query: " + query +". Result: " + result.size());
+            List<T> convertedResult = new ArrayList<>();                        
+            if (!result.isEmpty()) {
+                for (ODocument doc: result){
+                    System.out.println("Read odoc JSON:" + doc.toJSON());
+                    convertedResult.add(mapper.fromODocument(doc));
+                }                
+            }
+            return convertedResult;
+        } finally {
+            manager.closeConnection();
+        }        
     }
 
 //    private ODocument readOdocKeepConnection(String uuid) {
@@ -179,11 +208,13 @@ public class AbstractDAO<T> {
     public List<T> readAll() {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
+        if (!db.getMetadata().getSchema().existsClass(className)){
+            return null;
+        }
         try {
-            String query = "SELECT * FROM " + className;
-            System.out.println("I will execute a query: " + query);
+            String query = "SELECT * FROM " + className;            
             List<ODocument> oResult = db.query(new OSQLSynchQuery<ODocument>(query));
-
+            System.out.println("Query: " + query +". Result: " + oResult.size());
             List<T> tResult = new ArrayList<>();
             for (ODocument o : oResult) {
                 tResult.add(mapper.fromODocument(o));

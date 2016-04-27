@@ -6,7 +6,6 @@
 package sinc.hinc.repository.DTOMapper.impl;
 
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
-import sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 

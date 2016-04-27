@@ -5,24 +5,19 @@
  */
 package sinc.hinc.transformer.fiwarecontextbroker;
 
-import sinc.hinc.abstraction.transformer.GatewayResourceTransformationInterface;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
 import sinc.hinc.transformer.fiwarecontextbroker.model.ContextElement;
 import java.util.List;
+import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
 
 /**
  *
  * @author hungld
  */
-public class TranformFiwareContextBroker implements GatewayResourceTransformationInterface<ContextElement>{
-
-    @Override
-    public ContextElement validateAndConvertToDomainModel(String rawData, String dataSource) {
-        return ContextElement.fromJson(rawData);
-    }
+public class TranformFiwareContextBroker implements IoTResourceTransformation<ContextElement> {
 
     @Override
     public DataPoint updateDataPoint(ContextElement data) {
@@ -47,5 +42,5 @@ public class TranformFiwareContextBroker implements GatewayResourceTransformatio
     public CloudConnectivity updateCloudConnectivity(ContextElement data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

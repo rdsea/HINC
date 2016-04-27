@@ -18,12 +18,17 @@ import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DAO.orientDB.OrientDBConnector;
 import sinc.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
+import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
 
 /**
- * 
+ *
  * @author hungld
  */
 public class Main {
@@ -31,107 +36,76 @@ public class Main {
     static Logger logger = HincConfiguration.getLogger();
     static final MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
 
+    /**
+     * Below is some metadata of the Local Management Service
+     */
+    String uuid;
+    String ip;
+    //Any other meta data of the environment where collector is deployed e.g. machine name, uname -a, cpu, max ram.     
+    Map<String, String> meta;
+    static InfoSourceSettings settings;
+
+    private static boolean hasSettings() {
+        System.out.println("Loadding settings file...");
+        settings = InfoSourceSettings.loadDefaultFile();
+        System.out.println("Load resource file done !");
+        if (settings == null || settings.getSource().isEmpty()) {
+            logger.error("ERROR: No source information found. Please check configuration file.");
+            System.out.println("ERROR: No source information found. Please check configuration file.");
+            return false;
+        }
+        return true;
+    }
+
     public static void main(String[] args) throws Exception {
         System.out.println("Starting collector...");
-        Long time1 = (new Date()).getTime();        
+        Long time1 = (new Date()).getTime();
         OrientDBConnector manager = new OrientDBConnector();
-        ODatabaseDocumentTx db = manager.getConnection();    
-        Long time2 = (new Date()).getTime();        
-        System.out.println("Time to bring up DB is: " + (time2-time1)/1000);
+        ODatabaseDocumentTx db = manager.getConnection();
+        Long time2 = (new Date()).getTime();
+        System.out.println("Time to bring up DB is: " + (time2 - time1) / 1000);
 
-        final MessagePublishInterface pub = FACTORY.getMessagePublisher();
+        /**
+         * ************************
+         * HINC listens to some queue channels to answer the query.
+         *************************
+         */
+        QueueListener.listenSynMessage();
+        QueueListener.listenQueryMessage();
 
-        MessageSubscribeInterface subscribeClientBroadCast = FACTORY.getMessageSubscriber(new SalsaMessageHandling() {
-            @Override
-            public void handleMessage(HincMessage msg) {
-                if (msg.getMsgType().equals(HincMessage.MESSAGE_TYPE.SYN_REQUEST)) {
-                    String payload = HincConfiguration.getMeta().toJson();
-                    HincMessage replyMsg = new HincMessage(HincMessage.MESSAGE_TYPE.SYN_REPLY, HincConfiguration.getMyUUID(), HincMessageTopic.REGISTER_AND_HEARBEAT, "", payload);
-                    pub.pushMessage(replyMsg);
-
+        /**
+         * ************************
+         * HINC start threads to collect information from providers.
+         *************************
+         */
+        Long time3 = (new Date()).getTime();
+        logger.info("Local management service startup in " + ((double) time3 - (double) time2) / 1000 + " seconds, uuid: " + HincConfiguration.getMyUUID());
+        logger.info("Starting to interact with providers ...");
+        
+        if (hasSettings()) {
+            for (InfoSourceSettings.InfoSource source : settings.getSource()) {
+                switch (source.getType()) {
+                    case IoT: {
+                        CollectResourceIoT collectorThread = new CollectResourceIoT(source);
+                        collectorThread.run();      
+                        break;
+                    }
+                    case Cloud: {
+                        CollectResourceCloud collectorThread = new CollectResourceCloud(source);
+                        collectorThread.run();
+                        break;
+                    }
+                    case Network: {
+                        CollectResourceNetwork collectorThread = new CollectResourceNetwork(source);
+                        collectorThread.run();
+                        break;
+                    }
                 }
+                Thread.sleep(1000); // a short break between sources
             }
-        }); // end new SalsaMessageHandling
-
-        subscribeClientBroadCast.subscribe(HincMessageTopic.CLIENT_REQUEST_DELISE);
-
-        MessageSubscribeInterface subscribeClientUniCast = FACTORY.getMessageSubscriber(new SalsaMessageHandling() {
-            @Override
-            public void handleMessage(HincMessage msg) {
-                if (msg.getMsgType().equals(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL)) {
-                    logger.debug("Server get request for SDG information");
-                    try {
-                        Long timeStamp2 = (new Date()).getTime();
-                        // response
-                        SoftwareDefinedGateway gw = InfoCollector.getGatewayInfo();                        
-                        System.out.println("Collect information done. GW: " + gw.getUuid());
-//                        gw.hasCapabilities(InfoCollector.getGatewayConnectivity());
-                        
-                        Long timeStamp3 = (new Date()).getTime(); // time2 to time3: query provider
-                        String replyPayload = gw.toJson();
-                        System.out.println("Size of the reply message: " + (replyPayload.length()/1024)+"KB");
-                        HincMessage replyMsg = new HincMessage(HincMessage.MESSAGE_TYPE.UPDATE_INFORMATION, HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
-                        
-                        System.out.println("Now saving data to local repository");
-                        SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
-                        gwDAO.save(gw);
-                        
-                        Long timeStamp4 = (new Date()).getTime(); // time3 -> time4: local service process the data
-                        
-                        replyMsg.hasExtra("timeStamp2", timeStamp2.toString());
-                        replyMsg.hasExtra("timeStamp3", timeStamp3.toString());
-                        replyMsg.hasExtra("timeStamp4", timeStamp4.toString());
-                        pub.pushMessage(replyMsg);
-                        return;
-                    } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                        ex.printStackTrace();
-                        logger.error(ex.getMessage());
-                    }
-                }
-
-                if (msg.getMsgType().equals(HincMessage.MESSAGE_TYPE.RPC_QUERY_NFV_LOCAL)) {
-                    logger.debug("Server get request for SDG information");
-                    try {
-                        // response
-                        VNF vnf = InfoCollector.getRouterInfo();
-                        vnf.getConnectivities().addAll(InfoCollector.getGatewayConnectivity());
-                        String replyPayload = vnf.toJson();
-                        HincMessage replyMsg = new HincMessage(HincMessage.MESSAGE_TYPE.UPDATE_INFORMATION, HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
-                        pub.pushMessage(replyMsg);
-                        return;
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        logger.error(ex.getMessage());
-                    }
-                }
-
-                if (msg.getMsgType().equals(HincMessage.MESSAGE_TYPE.SUBSCRIBE_SDGATEWAY_LOCAL)) {
-                    logger.debug("Client wants to subscribe to this collector");
-                    InfoMonitor mon = new InfoMonitor();
-                    // this will loop forever, thus need to be implement more, e.g. the timeout
-                    while (true) {
-                        UpdateGatewayStatus update = mon.getSimulatedUpdate();
-                        HincMessage replyMsg = new HincMessage(HincMessage.MESSAGE_TYPE.UPDATE_INFORMATION, HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", update.toJson());
-                        pub.pushMessage(replyMsg);
-                    }
-                }
-
-                if (msg.getMsgType().equals(HincMessage.MESSAGE_TYPE.SUBSCRIBE_SDGATEWAY_LOCAL_SET_PARAM)) {
-                    logger.debug("Set parameter for the subscription");
-                    // assume that the payload is: rate;simulatedRatio, e.g. 5;0.2
-                    String[] settings = msg.getPayload().split(";");
-                    InfoMonitor.monitorRate = Integer.parseInt(settings[0]);
-                    InfoMonitor.simulatedChangeRatio = Double.parseDouble(settings[1]);
-
-                }
-            }
-
-        });
-        subscribeClientUniCast.subscribe(HincMessageTopic.getCollectorTopicByID(HincConfiguration.getMyUUID()));
-        subscribeClientUniCast.subscribe(HincMessageTopic.getCollectorTopicBroadcast(HincConfiguration.getGroupName()));
-
-        Long time3 = (new Date()).getTime();        
-        logger.info("Local management service startup in "+((double)time3-(double)time2)/1000+" seconds, uuid: " + HincConfiguration.getMyUUID());        
-
+        } else {
+            System.out.println("Do not query any provider. Configuration file not found.");
+        }
     }
+    
 }

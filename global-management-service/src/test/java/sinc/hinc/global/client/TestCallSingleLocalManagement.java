@@ -5,7 +5,7 @@
  */
 package sinc.hinc.global.client;
 
-import sinc.hinc.global.client.QueryManager;
+import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import java.util.List;
 
@@ -16,13 +16,14 @@ import java.util.List;
 public class TestCallSingleLocalManagement {
 
     public static void main(String[] args) throws Exception {
-    	QueryManager client = new QueryManager(args[0], args[1], args[2]);
+    	
+        CommunicationManager client = new CommunicationManager("test", "amqp://localhost","amqp");
 
-//        SoftwareDefinedGateway gw = client.querySoftwareDefinedGateway_Unicast("9945aa57-54fb-4a21-9a04-1230c9c288ee");
-        List<SoftwareDefinedGateway> list = client.querySoftwareDefinedGateway_Broadcast(15000);
-        for (SoftwareDefinedGateway gw : list) {
-            gw.toJson();
-            System.out.println("===============");
+        List<SoftwareDefinedGateway> list = client.querySoftwareDefinedGateway_Broadcast(5000);
+        System.out.println("list of gateway has: " + list.size() + " items");
+        for (SoftwareDefinedGateway gw : list) {            
+            System.out.println(gw.toJson());
+            System.out.println("==============");
         }
     }
 }

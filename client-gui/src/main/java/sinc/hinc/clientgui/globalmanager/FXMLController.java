@@ -1,7 +1,7 @@
 package sinc.hinc.clientgui.globalmanager;
 
 import sinc.hinc.global.cache.CacheHincs;
-import sinc.hinc.global.client.QueryManager;
+import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.clientgui.UserSettings;
 import sinc.hinc.clientgui.localmanager.FXMLLocalController;
 
@@ -100,8 +100,8 @@ public class FXMLController implements Initializable {
     }
 
     private List<HincMeta> getHincMetaQuery() {
-        QueryManager query = new QueryManager(UserSettings.getUserName(), UserSettings.getBroker(), UserSettings.getBrokerType());
-        List<HincMeta> meta = query.synDelise(3000);
+        CommunicationManager query = new CommunicationManager(UserSettings.getUserName(), UserSettings.getBroker(), UserSettings.getBrokerType());
+        List<HincMeta> meta = query.synHINC(3000);
         System.out.println("Query delises: " + meta.size() + " items");
         return meta;
     }

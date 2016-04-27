@@ -81,5 +81,6 @@ public class OrientDBConnector {
         INSTANCE.getConnection().commit();
         INSTANCE.closeConnection();
     }
-
+    
+    
 }

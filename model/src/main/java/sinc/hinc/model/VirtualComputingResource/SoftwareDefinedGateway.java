@@ -72,6 +72,7 @@ public class SoftwareDefinedGateway {
 
     public SoftwareDefinedGateway hasCapability(Capability capa) {
         capa.setGatewayID(this.getUuid());
+        capa.setUuid(this.getUuid()+"/"+capa.getName());
         if (capabilities == null) {
             capabilities = new ArrayList<>();
         }

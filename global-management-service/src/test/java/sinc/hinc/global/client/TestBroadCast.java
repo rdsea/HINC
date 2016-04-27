@@ -5,7 +5,7 @@
  */
 package sinc.hinc.global.client;
 
-import sinc.hinc.global.client.QueryManager;
+import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.global.cache.CacheGateway;
 import sinc.hinc.global.cache.CacheVNF;
 import sinc.hinc.global.client.RelationshipManagement.NetworkGraphGenerator;
@@ -28,8 +28,8 @@ public class TestBroadCast {
     public static void main(String[] args) throws Exception {
         AbstractDAO<HincMeta> metaDao = new AbstractDAO<>(HincMeta.class);
 
-        QueryManager client = new QueryManager(args[0], args[1], args[2]);
-        client.synDelise(3000);
+        CommunicationManager client = new CommunicationManager(args[0], args[1], args[2]);
+        client.synHINC(3000);
 
         List<HincMeta> metas = metaDao.readAll();
         System.out.println("Number of local services: " + metas.size());
@@ -58,8 +58,8 @@ public class TestBroadCast {
     }
 
     public static void main1(String[] args) throws Exception {
-        QueryManager client = new QueryManager("hung", "amqp://128.130.172.215", "amqp");
-        client.synDelise(3000);
+        CommunicationManager client = new CommunicationManager("hung", "amqp://128.130.172.215", "amqp");
+        client.synHINC(3000);
 
 //        List<SoftwareDefinedGateway> gateways = client.querySoftwareDefinedGatewayBroadcast();
         List<SoftwareDefinedGateway> gateways = new ArrayList<>();

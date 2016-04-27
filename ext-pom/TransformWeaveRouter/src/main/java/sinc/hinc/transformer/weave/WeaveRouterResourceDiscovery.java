@@ -13,13 +13,13 @@ import com.weaveworks.weave.WeaveRouter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import sinc.hinc.abstraction.transformer.RouterResourceTranformationInterface;
+import sinc.hinc.abstraction.transformer.NetworkResourceTranformationInterface;
 
 /**
  *
  * @author hungld
  */
-public class WeaveRouterResourceDiscovery implements RouterResourceTranformationInterface<WeaveRouter> {
+public class WeaveRouterResourceDiscovery implements NetworkResourceTranformationInterface<WeaveRouter> {
 
     @Override
     public WeaveRouter validateAndConvertToDomainModel(String rawData) {
