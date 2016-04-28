@@ -148,9 +148,10 @@ In order to test HINC, we need a couple of providers and and message oriented mi
 <br/>3.2. Create a <code>hinc.conf</code> for HINC related settings as followings:
 <pre><code># if using local RabbitMQ
 BROKER=amqp://localhost 
-# if using CloudAMQP, username and password is attached in URL
-# BROKER=amqp://uluzkylq:jk8ETV-nwCRek6dm5KurNztmlEot4uSs@bunny.cloudamqp.com/uluzkylq
+# if using CloudAMQP, username and password is attached in URL (put your own URL in your CloudAMQP account)
+# BROKER=amqp://<username>:<password>@bunny.cloudamqp.com/abc
 BROKER_TYPE=amqp
+# Multiple HINC Local service can be group to a communication channel.
 GROUP=test</code></pre>
 3.3. Create a <code>info-source.conf</code> to define the provider. With OpenHAB running locally, the configuration as followngs:
 <pre><code>{
