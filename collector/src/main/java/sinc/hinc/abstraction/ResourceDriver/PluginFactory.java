@@ -5,6 +5,7 @@
  */
 package sinc.hinc.abstraction.ResourceDriver;
 
+
 import sinc.hinc.abstraction.transformer.CloudResourceTransformation;
 import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
 import sinc.hinc.abstraction.transformer.NetworkResourceTranformationInterface;
@@ -15,9 +16,9 @@ import sinc.hinc.abstraction.transformer.NetworkResourceTranformationInterface;
  */
 public class PluginFactory {
 
-    public static ProviderAdaptor<Object> getProviderAdaptor(InfoSourceSettings.InfoSource source) {
+    public static ProviderAdaptor<Object> getProviderAdaptor(String adaptorClass) {
         try {
-            ProviderAdaptor<Object> adaptor = (ProviderAdaptor<Object>) Class.forName(source.adaptorClass).newInstance();
+            ProviderAdaptor<Object> adaptor = (ProviderAdaptor<Object>) Class.forName(adaptorClass).newInstance();
             return adaptor;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             ex.printStackTrace();
@@ -25,9 +26,9 @@ public class PluginFactory {
         }
     }
 
-    public static IoTResourceTransformation<Object> getIoTResourceTransformer(InfoSourceSettings.InfoSource source) {
+    public static IoTResourceTransformation<Object> getIoTResourceTransformer(String transformerClass) {
         try {
-            IoTResourceTransformation<Object> transformer = (IoTResourceTransformation<Object>) Class.forName(source.transformerClass).newInstance();
+            IoTResourceTransformation<Object> transformer = (IoTResourceTransformation<Object>) Class.forName(transformerClass).newInstance();
             return transformer;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             ex.printStackTrace();
@@ -35,9 +36,9 @@ public class PluginFactory {
         }
     }
 
-    public static NetworkResourceTranformationInterface<Object> getNetworkResourceTransformer(InfoSourceSettings.InfoSource source) {
+    public static NetworkResourceTranformationInterface<Object> getNetworkResourceTransformer(String transformerClass) {
         try {
-            NetworkResourceTranformationInterface<Object> transformer = (NetworkResourceTranformationInterface<Object>) Class.forName(source.transformerClass).newInstance();
+            NetworkResourceTranformationInterface<Object> transformer = (NetworkResourceTranformationInterface<Object>) Class.forName(transformerClass).newInstance();
             return transformer;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             ex.printStackTrace();
@@ -45,9 +46,9 @@ public class PluginFactory {
         }
     }
 
-    public static CloudResourceTransformation<Object> getCloudResourceTransformer(InfoSourceSettings.InfoSource source) {
+    public static CloudResourceTransformation<Object> getCloudResourceTransformer(String transformerClass) {
         try {
-            CloudResourceTransformation<Object> transformer = (CloudResourceTransformation<Object>) Class.forName(source.transformerClass).newInstance();
+            CloudResourceTransformation<Object> transformer = (CloudResourceTransformation<Object>) Class.forName(transformerClass).newInstance();
             return transformer;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             ex.printStackTrace();

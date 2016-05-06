@@ -5,27 +5,15 @@
  */
 package sinc.hinc.local;
 
-import sinc.hinc.local.utils.HincConfiguration;
+
 import sinc.hinc.communication.messageInterface.MessageClientFactory;
-import sinc.hinc.communication.messageInterface.MessagePublishInterface;
-import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
-import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
-import sinc.hinc.communication.messagePayloads.UpdateGatewayStatus;
-import sinc.hinc.communication.protocol.HincMessage;
-import sinc.hinc.communication.protocol.HincMessageTopic;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
-import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DAO.orientDB.OrientDBConnector;
-import sinc.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
-import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
-import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+import sinc.hinc.common.metadata.InfoSourceSettings;
+import sinc.hinc.common.utils.HincConfiguration;
 
 /**
  *

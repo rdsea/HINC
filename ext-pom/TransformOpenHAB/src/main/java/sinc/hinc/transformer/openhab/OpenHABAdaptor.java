@@ -7,7 +7,6 @@ package sinc.hinc.transformer.openhab;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
 
 import sinc.hinc.transformer.openhab.model.Item;
 import sinc.hinc.transformer.openhab.model.Items;
@@ -18,7 +17,7 @@ import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
  * Adaptor for OpenHAB Require settings.
  * <p>
  * endpoint: to the REST API. The default should be: http://localhost:8080/rest (without /)
- * 
+ *
  * @author hungld
  */
 public class OpenHABAdaptor implements ProviderAdaptor<Item> {
@@ -37,18 +36,6 @@ public class OpenHABAdaptor implements ProviderAdaptor<Item> {
         Items items = new Items();
         items = (Items) items.readFromJson(itemListJson);
         return items.getItem();
-    }
-
-    // generate the settings for this collector
-    public static void main(String[] args) {
-        OpenHABAdaptor adaptor = new OpenHABAdaptor();
-        InfoSourceSettings settings = new InfoSourceSettings();
-        InfoSourceSettings.InfoSource source = new InfoSourceSettings.InfoSource("openHABAdaptor",InfoSourceSettings.ProviderType.IoT,10, "sinc.hinc.transformer.openhab.OpenHABAdaptor", "sinc.hinc.transformer.openhab.TranformOpenHABInfo");
-        source.hasSetting("endpoint", "http://localhost:8080/rest");
-        settings.getSource().add(source);
-
-        System.out.println(settings.toJson());
-        System.out.println(adaptor.getItems(source.getSettings()));
     }
 
     @Override

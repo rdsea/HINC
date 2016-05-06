@@ -19,13 +19,12 @@ package sinc.hinc.communication.MQTTAdaptor;
 
 import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
 import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
-import sinc.hinc.communication.protocol.HincMessage;
-import sinc.hinc.communication.protocol.HincMessageTopic;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import sinc.hinc.common.metadata.HincMessage;
 
 /**
  *

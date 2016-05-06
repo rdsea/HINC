@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.local.utils;
+package sinc.hinc.common.utils;
 
-import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
-import sinc.hinc.communication.Utils.HincUtils;
-import sinc.hinc.communication.messagePayloads.HincMeta;
-import sinc.hinc.communication.protocol.HincMessageTopic;
+//import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+//import sinc.hinc.communication.Utils.HincUtils;
+//import sinc.hinc.API.metadata.HincLocalMeta;
+//import sinc.hinc.communication.protocol.HincMessageTopic;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,6 +18,9 @@ import java.util.Properties;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sinc.hinc.common.metadata.HincLocalMeta;
+import sinc.hinc.common.metadata.HincMessageTopic;
+import sinc.hinc.common.metadata.InfoSourceSettings;
 
 /**
  *
@@ -31,12 +34,13 @@ public class HincConfiguration {
     private static final String CONFIG_FILE = CURRENT_DIR + "/hinc.conf";
     private static final String myUUID = UUID.randomUUID().toString();
 
-    public static HincMeta getMeta() {
-        HincMeta meta = new HincMeta(myUUID, HincUtils.getEth0Address(), HincMessageTopic.getCollectorTopicByID(myUUID));        
+    public static HincLocalMeta getMeta() {
+        HincLocalMeta meta = new HincLocalMeta(myUUID, HincUtils.getEth0Address(), HincMessageTopic.getCollectorTopicByID(myUUID));        
         InfoSourceSettings settings = InfoSourceSettings.loadDefaultFile();
         meta.setSettings(settings.toJson());
         return meta;
     }
+    
 
     public static String getBroker() {
         return getGenericParameter("BROKER", "tcp://iot.eclipse.org:1883");

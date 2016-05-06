@@ -5,15 +5,13 @@
  */
 package sinc.hinc.local;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+import sinc.hinc.common.metadata.InfoSourceSettings;
 import sinc.hinc.abstraction.ResourceDriver.PluginFactory;
 import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 import sinc.hinc.abstraction.transformer.NetworkResourceTranformationInterface;
-import sinc.hinc.communication.Utils.HincUtils;
-import sinc.hinc.local.utils.HincConfiguration;
+import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.common.utils.HincUtils;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
@@ -38,13 +36,13 @@ public class CollectResourceNetwork implements Runnable {
         if (!source.getType().equals(InfoSourceSettings.ProviderType.Network)) {
             return;
         }
-        ProviderAdaptor rawCollector = PluginFactory.getProviderAdaptor(source);
+        ProviderAdaptor rawCollector = PluginFactory.getProviderAdaptor(source.getAdaptorClass());
         Collection<Object> rawInfo = rawCollector.getItems(source.getSettings());
         for (Object routerInfo : rawInfo) {
             VNF vnf = new VNF();
             vnf.setUuid(HincConfiguration.getMyUUID());
             vnf.setName(HincUtils.getHostName());
-            NetworkResourceTranformationInterface transformer = PluginFactory.getNetworkResourceTransformer(source);
+            NetworkResourceTranformationInterface transformer = PluginFactory.getNetworkResourceTransformer(source.getTransformerClass());
             System.out.println("Created tranformer instance done: " + transformer.getClass());
             vnf = transformer.toVNF(routerInfo);
             AbstractDAO<VNF> vnfDAO = new AbstractDAO<>(VNF.class);

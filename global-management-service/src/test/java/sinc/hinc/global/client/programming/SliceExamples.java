@@ -28,8 +28,8 @@ public class SliceExamples {
         dp.setMeasurementUnit("celcius");
         ControlPoint cp = new ControlPoint(dp.getResourceID(), "changeRate", "change sensor rate");
         
-        gw.getCapabilities().add(dp);
-        gw.getCapabilities().add(cp);
+        gw.getDataPoints().add(dp);
+        gw.getControlPoints().add(cp);
         
         Location location = new Location("48.172955", "16.325684", "25");
         dp.getExtra().add(new PhysicalResource(location));

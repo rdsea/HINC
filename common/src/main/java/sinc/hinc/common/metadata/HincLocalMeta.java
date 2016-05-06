@@ -3,29 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.communication.messagePayloads;
+package sinc.hinc.common.metadata;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author hungld
  */
-public class HincMeta {
+public class HincLocalMeta {
 
     String uuid;
     String ip;
     String unicastTopic;
     String settings;
+    String groupName;
+    String broker;
+    String brokerType;
 
-    public HincMeta() {
+    public HincLocalMeta() {
     }
 
-    public HincMeta(String uuid, String ip, String unicastTopic) {
+    public HincLocalMeta(String uuid, String ip, String unicastTopic) {
         this.uuid = uuid;
         this.ip = ip;
         this.unicastTopic = unicastTopic;
@@ -63,6 +64,30 @@ public class HincMeta {
         this.settings = settings;
     }
 
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getBroker() {
+        return broker;
+    }
+
+    public void setBroker(String broker) {
+        this.broker = broker;
+    }
+
+    public String getBrokerType() {
+        return brokerType;
+    }
+
+    public void setBrokerType(String brokerType) {
+        this.brokerType = brokerType;
+    }
+
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -73,11 +98,11 @@ public class HincMeta {
         }
     }
 
-    public static HincMeta fromJson(String json) {
+    public static HincLocalMeta fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            return mapper.readValue(json, HincMeta.class);
+            return mapper.readValue(json, HincLocalMeta.class);
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;

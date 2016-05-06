@@ -18,15 +18,13 @@
 package sinc.hinc.communication.AMQPAdaptor;
 
 import sinc.hinc.communication.messageInterface.MessagePublishInterface;
-import sinc.hinc.communication.protocol.HincMessage;
-import sinc.hinc.communication.protocol.HincMessageTopic;
-import com.rabbitmq.client.AMQP.BasicProperties;
+
 import com.rabbitmq.client.ConsumerCancelledException;
 import com.rabbitmq.client.QueueingConsumer;
 import com.rabbitmq.client.ShutdownSignalException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.common.metadata.HincMessageTopic;
 
 /**
  *

@@ -48,15 +48,13 @@ public class NetworkGraphGenerator {
         List<NwComponent> components = new ArrayList<>();
 
         for (SoftwareDefinedGateway gw : gateways) {
-            for (Capability capa : gw.getCapabilities()) {
-                if (capa.getCapabilityType().equals(CapabilityType.CloudConnectivity)) {
-                    CloudConnectivity con = (CloudConnectivity) capa;
-                    // TODO: this subnet is hack, need collect real subnet
-                    System.out.println("IP is: " + con.getIP() + ". can it have subnet?");
-                    if (!con.getIP().isEmpty()) {
-                        String subnet = con.getIP().substring(0, con.getIP().indexOf("."));
-                        components.add(new NwComponent(gw.getName(), con.getIP(), subnet, NetworkComponentType.Gateway));
-                    }
+            for (CloudConnectivity con : gw.getConnectivity()) {
+                // TODO: this subnet is hack, need collect real subnet
+                System.out.println("IP is: " + con.getIP() + ". can it have subnet?");
+                if (!con.getIP().isEmpty()) {
+                    String subnet = con.getIP().substring(0, con.getIP().indexOf("."));
+                    components.add(new NwComponent(gw.getName(), con.getIP(), subnet, NetworkComponentType.Gateway));
+
                 }
             }
         }

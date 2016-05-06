@@ -14,6 +14,8 @@ import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -24,13 +26,31 @@ public class AbstractDAO<T> {
 
     DTOMapperInterface<T> mapper;
     String className;
+    static Logger logger = LoggerFactory.getLogger("HINC");
 
     public AbstractDAO(Class clazz) {
         mapper = MapperFactory.getMapper(clazz);
         this.className = clazz.getSimpleName();
         if (mapper == null) {
-            System.out.println("No mapper for class " + className + " is found. Error!");
+            logger.error("No mapper for class " + className + " is found. Error!");
         }
+        // if class name is not existed, create one
+        OrientDBConnector manager = new OrientDBConnector();
+        ODatabaseDocumentTx db = manager.getConnection();
+        try {
+            if (!db.getMetadata().getSchema().existsClass(className)) {
+                logger.debug("Class: " + className + " does not existed, now create it...");
+                db.getMetadata().getSchema().createClass(className);
+                if (!db.getMetadata().getSchema().existsClass(className)) {
+                    logger.debug("Cannot create class: " + className +", an error of persistent could happen later!");
+                } else {
+                    logger.debug("Class " + className + " is created sucessfully !");
+                }
+            }
+        } finally {
+            manager.closeConnection();
+        }
+
     }
 
     public ODocument save(T object) {
@@ -45,22 +65,24 @@ public class AbstractDAO<T> {
             if (db.getMetadata().getSchema().existsClass(className)) {
                 String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
                 List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
-                System.out.println("Query: " + query1 +". Result: " + existed_items.size());
+                logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
                 if (!existed_items.isEmpty()) {
                     existed = existed_items.get(0);
                 }
+            } else {
+                logger.debug("No class exist: " + className);
             }
             ODocument result;
             // merge or create new
             if (uuid != null && existed != null) {
                 existed.merge(odoc, true, false);
-//                System.out.println("Merging and saving odoc object: " + existed.toJSON());
+//                logger.debug("Merging and saving odoc object: " + existed.toJSON());
                 result = db.save(existed);
             } else {
-//                System.out.println("Saving odoc object: " + odoc.toJSON());
+//                logger.debug("Saving odoc object: " + odoc.toJSON());
                 result = db.save(odoc);
             }
-            System.out.println("Save done: " + result.toJSON());
+            logger.debug("Save done: " + result.toJSON());
             return result;
         } finally {
             manager.closeConnection();
@@ -73,21 +95,27 @@ public class AbstractDAO<T> {
         List<ODocument> result = new ArrayList<>();
         boolean checked = false; // only check 1 time
         try {
-            System.out.println("Prepare to save " + objects.size() + " items");
+            logger.debug("Prepare to save " + objects.size() + " items");
             for (T obj : objects) {
                 ODocument odoc = mapper.toODocument(obj);
                 String uuid = odoc.field("uuid");
+                logger.debug("Ok, now saving item with uuid = " + uuid);
                 ODocument existed = null;
 
                 // Search for exist record                
                 if (!checked && db.getMetadata().getSchema().existsClass(className)) {
                     String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
                     List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
-                    System.out.println("Query: " + query1 +". Result: " + existed_items.size());
+                    logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
                     if (!existed_items.isEmpty()) {
+                        logger.debug("There is an existing item with id: " + uuid);
                         existed = existed_items.get(0);
+                    } else {
+                        logger.debug("There is NO existing item with id: " + uuid);
                     }
                     checked = true;
+                } else {
+                    logger.debug("No class exist: " + className);
                 }
 
                 // save new or update it
@@ -95,15 +123,14 @@ public class AbstractDAO<T> {
                     existed.merge(odoc, true, false);
                     ODocument r = db.save(existed);
                     result.add(r);
-//                    System.out.println("Merging and saving done odoc object: " + existed.toJSON());
+//                    logger.debug("Merging and saving done odoc object: " + existed.toJSON());
                 } else {
                     ODocument r = db.save(odoc);
                     result.add(r);
-//                    System.out.println("Saving done for odoc object: " + odoc.toJSON());
-                }
-                return result;
+//                    logger.debug("Saving done for odoc object: " + odoc.toJSON());
+                }                
             }
-            System.out.println("Save done: " + result.size() + " ODocument(s)");
+            logger.debug("Save done: " + result.size() + " ODocument(s)");
             return result;
         } finally {
             manager.closeConnection();
@@ -116,15 +143,17 @@ public class AbstractDAO<T> {
         if (db.getMetadata().getSchema().existsClass(className)) {
             try {
                 ODocument odoc = mapper.toODocument(object);
-                System.out.println("Deleting odoc object: " + odoc.toJSON());
+                logger.debug("Deleting odoc object: " + odoc.toJSON());
                 String uuid = odoc.field("uuid");
                 String command = "DELETE FROM " + className + " WHERE uuid = '" + uuid + "'";
-                System.out.println("I will execute a query: " + command);
+                logger.debug("I will execute a query: " + command);
                 db.command(new OCommandSQL(command)).execute();
                 return object;
             } finally {
                 manager.closeConnection();
             }
+        } else {
+            logger.debug("No class exist: " + className);
         }
         return null;
     }
@@ -136,11 +165,13 @@ public class AbstractDAO<T> {
         if (db.getMetadata().getSchema().existsClass(className)) {
             try {
                 String command = "DELETE FROM " + className;
-                System.out.println("I will execute a query: " + command);
+                logger.debug("I will execute a query: " + command);
                 db.command(new OCommandSQL(command)).execute();
             } finally {
                 manager.closeConnection();
             }
+        } else {
+            logger.debug("No class exist: " + className);
         }
 
         return null;
@@ -149,18 +180,19 @@ public class AbstractDAO<T> {
     public T read(String uuid) {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
-        
-        if (!db.getMetadata().getSchema().existsClass(className)){
+
+        if (!db.getMetadata().getSchema().existsClass(className)) {
+            logger.debug("No class exist: " + className);
             return null;
         }
-        
+
         try {
-            String query = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";            
+            String query = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
             List<ODocument> result = db.query(new OSQLSynchQuery<ODocument>(query));
-            System.out.println("Query: " + query +". Result: " + result.size());
+            logger.debug("Query: " + query + ". Result: " + result.size());
             if (!result.isEmpty()) {
                 ODocument doc = result.get(0);
-                System.out.println("Read odoc JSON:" + doc.toJSON());
+//                logger.debug("Read odoc JSON:" + doc.toJSON());
                 return mapper.fromODocument(doc);
             }
         } finally {
@@ -168,28 +200,29 @@ public class AbstractDAO<T> {
         }
         return null;
     }
-    
+
     public List<T> readWithCondition(String whereClause) {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
-        if (!db.getMetadata().getSchema().existsClass(className)){
+        if (!db.getMetadata().getSchema().existsClass(className)) {
+            logger.debug("No class exist: " + className);
             return null;
         }
         try {
-            String query = "SELECT * FROM " + className + " WHERE " + whereClause;            
+            String query = "SELECT * FROM " + className + " WHERE " + whereClause;
             List<ODocument> result = db.query(new OSQLSynchQuery<ODocument>(query));
-            System.out.println("Query: " + query +". Result: " + result.size());
-            List<T> convertedResult = new ArrayList<>();                        
+            logger.debug("Query: " + query + ". Result: " + result.size());
+            List<T> convertedResult = new ArrayList<>();
             if (!result.isEmpty()) {
-                for (ODocument doc: result){
-                    System.out.println("Read odoc JSON:" + doc.toJSON());
+                for (ODocument doc : result) {
+//                    logger.debug("Read odoc JSON:" + doc.toJSON());
                     convertedResult.add(mapper.fromODocument(doc));
-                }                
+                }
             }
             return convertedResult;
         } finally {
             manager.closeConnection();
-        }        
+        }
     }
 
 //    private ODocument readOdocKeepConnection(String uuid) {
@@ -197,7 +230,7 @@ public class AbstractDAO<T> {
 //        ODatabaseDocumentTx db = manager.getConnection();
 //
 //        String query = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
-//        System.out.println("I will execute a query: " + query);
+//        logger.debug("I will execute a query: " + query);
 //        List<ODocument> result = db.query(new OSQLSynchQuery<ODocument>(query));
 //        if (!result.isEmpty()) {
 //            return result.get(0);
@@ -208,13 +241,14 @@ public class AbstractDAO<T> {
     public List<T> readAll() {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
-        if (!db.getMetadata().getSchema().existsClass(className)){
+        if (!db.getMetadata().getSchema().existsClass(className)) {
+            logger.debug("No class exist: " + className);
             return null;
         }
         try {
-            String query = "SELECT * FROM " + className;            
+            String query = "SELECT * FROM " + className;
             List<ODocument> oResult = db.query(new OSQLSynchQuery<ODocument>(query));
-            System.out.println("Query: " + query +". Result: " + oResult.size());
+            logger.debug("Query: " + query + ". Result: " + oResult.size());
             List<T> tResult = new ArrayList<>();
             for (ODocument o : oResult) {
                 tResult.add(mapper.fromODocument(o));

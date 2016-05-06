@@ -8,13 +8,13 @@ package sinc.hinc.local;
 import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
+import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.common.metadata.HincMessageTopic;
+import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.messageInterface.MessagePublishInterface;
 import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
 import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
-import sinc.hinc.communication.protocol.HincMessage;
-import sinc.hinc.communication.protocol.HincMessageTopic;
 import static sinc.hinc.local.Main.FACTORY;
-import sinc.hinc.local.utils.HincConfiguration;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
@@ -52,7 +52,7 @@ public class QueueListener {
             @Override
             public void handleMessage(HincMessage msg) {
                 if (msg.getMsgType().equals(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL)) {
-                    logger.debug("Server get request for SDG information");
+                    logger.debug("Server get request for SDG information: " + msg.toJson());
                     Long timeStamp2 = (new Date()).getTime();
                     Long timeStamp3 = (new Date()).getTime();
                     SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
@@ -62,7 +62,7 @@ public class QueueListener {
                         System.out.println("Size of the reply message: " + (replyPayload.length() / 1024) + "KB");
                         HincMessage replyMsg = new HincMessage(HincMessage.MESSAGE_TYPE.UPDATE_INFORMATION, HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
 
-                        System.out.println("Now send the message back global");
+                        System.out.println("Now send the message back global via topic: " + msg.getFeedbackTopic());
 
                         Long timeStamp4 = (new Date()).getTime(); // time3 -> time4: local service process the data
 

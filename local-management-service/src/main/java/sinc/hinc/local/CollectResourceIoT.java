@@ -15,12 +15,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+import sinc.hinc.common.metadata.InfoSourceSettings;
 import sinc.hinc.abstraction.ResourceDriver.PluginFactory;
 import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
-import sinc.hinc.communication.Utils.HincUtils;
-import sinc.hinc.local.utils.HincConfiguration;
+import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.common.utils.HincUtils;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
@@ -50,8 +50,8 @@ public class CollectResourceIoT implements Runnable {
             System.out.println("The source " + source.getType() + " is not IoT provider, you are calling wrong HINC's method.");
             return;
         }
-        ProviderAdaptor adaptor = PluginFactory.getProviderAdaptor(source);
-        IoTResourceTransformation transformer = PluginFactory.getIoTResourceTransformer(source);
+        ProviderAdaptor adaptor = PluginFactory.getProviderAdaptor(source.getAdaptorClass());
+        IoTResourceTransformation transformer = PluginFactory.getIoTResourceTransformer(source.getTransformerClass());
 
         System.out.println("Loading plugin done: " + adaptor.getClass().getSimpleName() + ", and: " + transformer.getClass().getSimpleName());
         // query provider to get information
@@ -70,7 +70,7 @@ public class CollectResourceIoT implements Runnable {
                 gw.hasCapability(dp);
                 gw.hasCapabilities(cps);
             }
-            System.out.println("Transform GW done, number of capability: " + gw.getCapabilities().size());
+            System.out.println("Transform GW done, number of datapoint: " + gw.getDataPoints().size() +", controlpoint:" + gw.getControlPoints().size());
             SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
             gwDAO.save(gw);
 

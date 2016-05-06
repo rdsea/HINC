@@ -5,7 +5,9 @@
  */
 package sinc.hinc.local;
 
-import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+import sinc.hinc.common.metadata.InfoSourceSettings;
+
+
 
 /**
  *

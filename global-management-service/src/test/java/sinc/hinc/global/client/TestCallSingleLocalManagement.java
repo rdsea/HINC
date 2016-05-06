@@ -5,9 +5,13 @@
  */
 package sinc.hinc.global.client;
 
-import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import java.util.List;
+import sinc.hinc.common.API.HINCGlobalAPI;
+import sinc.hinc.common.API.HINCManagementAPI;
+import sinc.hinc.common.metadata.HINCGlobalMeta;
+import sinc.hinc.global.API.HINCGlobalAPIImpl;
+import sinc.hinc.global.API.HINCManagementImpl;
 
 /**
  *
@@ -16,12 +20,14 @@ import java.util.List;
 public class TestCallSingleLocalManagement {
 
     public static void main(String[] args) throws Exception {
-    	
-        CommunicationManager client = new CommunicationManager("test", "amqp://localhost","amqp");
 
-        List<SoftwareDefinedGateway> list = client.querySoftwareDefinedGateway_Broadcast(5000);
+        HINCGlobalAPI api = new HINCGlobalAPIImpl();
+        HINCManagementAPI mngAPI = new HINCManagementImpl();
+        mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
+
+        List<SoftwareDefinedGateway> list = api.querySoftwareDefinedGateways(5000, "");
         System.out.println("list of gateway has: " + list.size() + " items");
-        for (SoftwareDefinedGateway gw : list) {            
+        for (SoftwareDefinedGateway gw : list) {
             System.out.println(gw.toJson());
             System.out.println("==============");
         }

@@ -5,10 +5,15 @@
  */
 package sinc.hinc.global.client;
 
-import sinc.hinc.global.management.CommunicationManager;
-import sinc.hinc.communication.messagePayloads.HincMeta;
-import sinc.hinc.model.VirtualNetworkResource.VNF;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Collections;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import sinc.hinc.common.API.HINCGlobalAPI;
+import sinc.hinc.common.API.HINCManagementAPI;
+import sinc.hinc.common.metadata.HINCGlobalMeta;
+import sinc.hinc.global.API.HINCGlobalAPIImpl;
+import sinc.hinc.global.API.HINCManagementImpl;
 
 /**
  *
@@ -20,45 +25,20 @@ public class testMessage {
         /**
          * This part connect the client to the message queue, get the list of DElise
          */
-    	CommunicationManager client = new CommunicationManager(args[0], args[1], args[2]);
-        client.synHINC(2000);
+    	HINCGlobalAPI api = new HINCGlobalAPIImpl();
+        HINCManagementAPI mngAPI = new HINCManagementImpl();
+        mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
+        mngAPI.queryHINCLocal(2000);
 
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(client.getListOfHINCLocal()));
+        System.out.println(mapper.writeValueAsString(mngAPI.queryHINCLocal(2000)));
 
-        System.out.println("SYN DONE, GOING TO PHASE 2");
-        System.out.println("There are " + client.getListOfHINCLocal().size() + " gateway");
-
-        /**
-         * Query information from each DElise, unicast pattern
-         */
-        for (HincMeta delise : client.getListOfHINCLocal()) {
-            System.out.println("QUERYING DELISE: " + delise.getUuid());
-//            SoftwareDefinedGateway gw = client.querySoftwareDefinedGateway(delise.getUuid());
-//            if (gw != null) {
-//                System.out.println("Number of capabilities: " + gw.getCapabilities().size());
-//                System.out.println("GW Info: " + gw.toJson());
-//            } else {
-//                System.out.println("GW is null !");
-//            }
-
-            System.out.println("NOW QUERYING NVF IF AVAILABLE...");
-            VNF vnf = client.queryVNF_Unicast(delise.getUuid());
-            if (vnf != null) {
-                System.out.println(vnf.toJson());
-            } else {
-                System.out.println("VNF is null !");
-            }
-
-        }
-
-        /**
-         * Query information from all, broad cast pattern + filter
-         */
-        /**
-         * Call the control point to reconfigure the component
-         */
-        System.out.println("Should quit here ! (or queue are not closed yet)");
+     
+        // test similar will RESTcall
+        String hincGlobalEndpoint = "http://localhost:8888/global-management-service-1.0/rest";
+        
+        HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(hincGlobalEndpoint, HINCGlobalAPI.class, Collections.singletonList(new JacksonJsonProvider()));
+        System.out.println("service date: "+rest.health());
 
     }
 }

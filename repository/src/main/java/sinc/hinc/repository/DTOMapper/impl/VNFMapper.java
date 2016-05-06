@@ -19,13 +19,13 @@ public class VNFMapper implements DTOMapperInterface<VNF>{
     @Override
     public VNF fromODocument(ODocument doc) {
         VNF dp = new VNF();
-        dp.setName(doc.field("name").toString());        
+        dp.setName(String.valueOf(doc.field("name")));        
         return dp;
     }
 
     @Override
     public ODocument toODocument(VNF object) {
-        ODocument doc = new ODocument("VNF");
+        ODocument doc = new ODocument(VNF.class.getSimpleName());
         doc.field("name", object.getName());        
         return doc;
     }

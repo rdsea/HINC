@@ -18,14 +18,14 @@ public class DataPointTableModel {
         private final StringProperty description;
         // for data point
         private final StringProperty measurementUnit;
-        private final StringProperty rate;
+        private final StringProperty link;
         
-        public DataPointTableModel(String name, String resourceID, String description, String measurementUnit, String rate) {
+        public DataPointTableModel(String name, String resourceID, String description, String measurementUnit, String link) {
             this.name = new SimpleStringProperty(name);
             this.resourceID = new SimpleStringProperty(resourceID);
             this.description = new SimpleStringProperty(description);
             this.measurementUnit = new SimpleStringProperty(measurementUnit);
-            this.rate = new SimpleStringProperty(rate);            
+            this.link = new SimpleStringProperty(link);            
         }
 
         public StringProperty nameProperty() {
@@ -44,8 +44,8 @@ public class DataPointTableModel {
             return measurementUnit;
         }
 
-        public StringProperty rateProperty() {
-            return rate;
+        public StringProperty linkProperty() {
+            return link;
         }
 
         

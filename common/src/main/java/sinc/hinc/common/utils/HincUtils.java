@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.communication.Utils;
+package sinc.hinc.common.utils;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;

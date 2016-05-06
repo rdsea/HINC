@@ -6,12 +6,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A generic class to view the cloud services (which is the instances of the services). A service can be atomic, e.g. VMs, volumes or composite, e.g. the
+ * DataBase cluster, Elastic EventProcessing Unit
+ *
+ * @author hungld
+ */
 public class CloudService {
-    private AccessPoint connectVia;    
-    private DataCenter dataCenter;
-    
+
+    // a service should have an access point. The most basic is its IP address (local/public), or RESTful endpoint.
+    // service can be access only via localhost.
+    private AccessPoint accessPoint;
+
+    // the provider who managed this. The IaaS can manage VM/docker, the higher tool like SALSA, Chef can manage application level services.
+    private String providerUUID;
+
+    // the service are hosted on particular VM/docker/container. If this can be capture, we know how to reconfigure the service.
+    private String hostedOnUUID;
+
+    // the generic type of the service. We do not standalize it yet.
     private String type;
-    
+
+    // the generic map for describing the service
     private Map<String, String> attributes;
 
     public CloudService() {
@@ -19,27 +35,42 @@ public class CloudService {
 
     /**
      * This construction is used for creating template, which take type as parameter
-     * @param type 
+     *
+     * @param type
      */
     public CloudService(String type) {
         this.type = type;
     }
-    
 
-    public AccessPoint getConnectVia() {
-        return connectVia;
+    public void hasAttribute(String key, String val) {
+        if (this.attributes == null) {
+            this.attributes = new HashMap<>();
+        }
+        this.attributes.put(key, val);
     }
 
-    public void setConnectVia(AccessPoint connectVia) {
-        this.connectVia = connectVia;
+    public AccessPoint getAccessPoint() {
+        return accessPoint;
     }
 
-    public DataCenter getDataCenter() {
-        return dataCenter;
+    public void setAccessPoint(AccessPoint accessPoint) {
+        this.accessPoint = accessPoint;
     }
 
-    public void setDataCenter(DataCenter dataCenter) {
-        this.dataCenter = dataCenter;
+    public String getProviderUUID() {
+        return providerUUID;
+    }
+
+    public void setProviderUUID(String providerUUID) {
+        this.providerUUID = providerUUID;
+    }
+
+    public String getHostedOnUUID() {
+        return hostedOnUUID;
+    }
+
+    public void setHostedOnUUID(String hostedOnUUID) {
+        this.hostedOnUUID = hostedOnUUID;
     }
 
     public String getType() {
@@ -57,17 +88,8 @@ public class CloudService {
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
     }
-    
-    
-    
-    public void hasAttribute(String key, String val){
-        if (this.attributes == null) {
-            this.attributes = new HashMap<>();
-        }
-        this.attributes.put(key, val);
-    }
-    
-    public String toJson(){
+
+    public String toJson() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
@@ -75,5 +97,5 @@ public class CloudService {
             return null;
         }
     }
-    
+
 }

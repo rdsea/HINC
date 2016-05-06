@@ -5,8 +5,7 @@
  */
 package sinc.hinc.communication.messageInterface;
 
-import sinc.hinc.communication.protocol.HincMessage;
-
+import sinc.hinc.common.metadata.HincMessage;
 
 
 /**

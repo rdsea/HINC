@@ -1,13 +1,12 @@
 package sinc.hinc.clientgui.globalmanager;
 
-import sinc.hinc.global.cache.CacheHincs;
-import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.clientgui.UserSettings;
 import sinc.hinc.clientgui.localmanager.FXMLLocalController;
 
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -32,11 +31,23 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
-import sinc.hinc.communication.messagePayloads.HincMeta;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import sinc.hinc.common.API.HINCGlobalAPI;
+import sinc.hinc.common.API.HINCManagementAPI;
+import sinc.hinc.common.metadata.HincLocalMeta;
+import sinc.hinc.common.metadata.InfoSourceSettings;
 
 public class FXMLController implements Initializable {
 
+    HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(UserSettings.getDefaultEndpoint(), HINCGlobalAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+    HINCManagementAPI mngAPI = (HINCManagementAPI) JAXRSClientFactory.create(UserSettings.getDefaultEndpoint(), HINCManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+
+    {
+        JacksonJsonProvider p = new JacksonJsonProvider();
+        
+    }
     @FXML
     private Label label;
 
@@ -60,7 +71,8 @@ public class FXMLController implements Initializable {
             public void handle(MouseEvent event) {
                 System.out.println("Reload the list");
                 infoLabel.setText("Querying information ... ");
-                TableView table = getHincMetaTable(getHincMetaQuery());
+                List<HincLocalMeta> meta = mngAPI.queryHINCLocal(2000);
+                TableView table = getHincMetaTable(meta);
                 mainPane.getChildren().addAll(table);
 
                 anchorNodeIntoPane(table, 100.0, 0.0, 0.0, 0.0);
@@ -92,21 +104,21 @@ public class FXMLController implements Initializable {
         AnchorPane.setBottomAnchor(obj, bottom);
     }
 
-    private List<HincMeta> getHincMetaFromCache() {
-        CacheHincs cache = new CacheHincs();
-        List<HincMeta> meta = cache.loadDelisesCache();
-//        System.out.println("Load delises from cache: " + meta.size() + " items");
+    private List<HincLocalMeta> getHincMetaFromCache() {        
+        System.out.println("service date: " + rest.health());
+
+        if (rest == null) {
+            System.out.println("REST proxy is NULL, QUIT !");
+            return null;
+        }
+        List<HincLocalMeta> meta = mngAPI.queryHINCLocal(0);
+        System.out.println("Load delises from cache: " + meta.size() + " items");
         return meta;
     }
 
-    private List<HincMeta> getHincMetaQuery() {
-        CommunicationManager query = new CommunicationManager(UserSettings.getUserName(), UserSettings.getBroker(), UserSettings.getBrokerType());
-        List<HincMeta> meta = query.synHINC(3000);
-        System.out.println("Query delises: " + meta.size() + " items");
-        return meta;
-    }
 
-    private TableView getHincMetaTable(List<HincMeta> metas) {
+
+    private TableView getHincMetaTable(List<HincLocalMeta> metas) {
         TableView table = new TableView();
 
         TableColumn uuidCol = new TableColumn("Gateway UUID");
@@ -132,7 +144,7 @@ public class FXMLController implements Initializable {
         // add data
         ObservableList<HincMetaModel> data = FXCollections.observableArrayList();
         if (metas != null) {
-            for (HincMeta meta : metas) {
+            for (HincLocalMeta meta : metas) {
                 InfoSourceSettings settings = InfoSourceSettings.fromJson(meta.getSettings());
                 for (InfoSourceSettings.InfoSource source : settings.getSource()) {
                     String transClass = source.getTransformerClass();

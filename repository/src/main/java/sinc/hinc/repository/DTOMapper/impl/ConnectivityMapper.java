@@ -6,7 +6,6 @@
 package sinc.hinc.repository.DTOMapper.impl;
 
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
@@ -18,12 +17,26 @@ public class ConnectivityMapper implements DTOMapperInterface<CloudConnectivity>
 
     @Override
     public CloudConnectivity fromODocument(ODocument doc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CapabilityMapper capa = new CapabilityMapper(CloudConnectivity.class);
+        CloudConnectivity con = (CloudConnectivity) capa.fromODocument(doc);
+        con.setDefaultGateway(String.valueOf(doc.field("defaultgateway")));
+        con.setIP(String.valueOf(doc.field("ip")));
+        con.setMAC(String.valueOf(doc.field("mac")));
+        con.setMode(String.valueOf(doc.field("mode")));
+        return con;
     }
 
     @Override
     public ODocument toODocument(CloudConnectivity object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CapabilityMapper capa = new CapabilityMapper(CloudConnectivity.class);
+        ODocument doc = capa.toODocument(object);
+        doc.setClassName(CloudConnectivity.class.getSimpleName());
+        doc.field("defaultgatewayip", object.getDefaultGateway());
+        doc.field("ip", object.getIP());
+        doc.field("mac", object.getMAC());
+        doc.field("mode", object.getMode());
+
+        return doc;
     }
-    
+
 }

@@ -6,12 +6,13 @@
 package sinc.hinc.global.TESTRUN;
 
 import sinc.hinc.global.management.CommunicationManager;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import sinc.hinc.common.API.HINCGlobalAPI;
+
+import sinc.hinc.global.API.HINCGlobalAPIImpl;
 
 /**
  *
@@ -19,7 +20,6 @@ import java.net.URL;
  */
 public class Experiment1_Broadcast_ResponseTime {
 
-    
 //     public static void main(String[] args) throws Exception {
 //         
 //        AbstractDAO<SoftwareDefinedGateway> gwDAO = new AbstractDAO<>(SoftwareDefinedGateway.class);
@@ -34,8 +34,9 @@ public class Experiment1_Broadcast_ResponseTime {
 //        }
 //    }
     public static void main(String[] args) {
-    	//Linh: document this
+        //Linh: document this
         CommunicationManager client = new CommunicationManager(args[0], args[1], args[2]);
+        HINCGlobalAPI api = new HINCGlobalAPIImpl();
         //client.synDelise(3000);
 
         // deploy new VM
@@ -47,7 +48,8 @@ public class Experiment1_Broadcast_ResponseTime {
 //            }
 //        }
 //        for (int i = 1; i < 4; i++) {
-            client.querySoftwareDefinedGateway_Broadcast(70000);
+//            client.querySoftwareDefinedGateway_Broadcast(70000);
+        api.querySoftwareDefinedGateways(70000, null);
 //        }
     }
 

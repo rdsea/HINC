@@ -5,29 +5,30 @@
  */
 package sinc.hinc.repository.DTOMapper.impl;
 
-import sinc.hinc.communication.messagePayloads.HincMeta;
+
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import sinc.hinc.common.metadata.HincLocalMeta;
 
 /**
  *
  * @author hungld
  */
-public class HINCMetaMapper implements DTOMapperInterface<HincMeta> {
+public class HINCMetaMapper implements DTOMapperInterface<HincLocalMeta> {
 
     @Override
-    public HincMeta fromODocument(ODocument doc) {
-        HincMeta meta = new HincMeta();
-        meta.setIp(doc.field("ip").toString());
-        meta.setSettings(doc.field("settings").toString());
-        meta.setUnicastTopic(doc.field("unicasttopic").toString());
-        meta.setUuid(doc.field("uuid").toString());
+    public HincLocalMeta fromODocument(ODocument doc) {
+        HincLocalMeta meta = new HincLocalMeta();
+        meta.setIp(String.valueOf(doc.field("ip")));
+        meta.setSettings(String.valueOf(doc.field("settings")));
+        meta.setUnicastTopic(String.valueOf(doc.field("unicasttopic")));
+        meta.setUuid(String.valueOf(doc.field("uuid")));
         return meta;
     }
 
     @Override
-    public ODocument toODocument(HincMeta object) {
-        ODocument doc = new ODocument("HINCMeta");
+    public ODocument toODocument(HincLocalMeta object) {
+        ODocument doc = new ODocument(HincLocalMeta.class.getSimpleName());
         doc.field("ip", object.getIp());
         doc.field("settings", object.getSettings());
         doc.field("unicasttopic", object.getUnicastTopic());

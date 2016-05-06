@@ -5,7 +5,7 @@
  */
 package sinc.hinc.repository.DTOMapper;
 
-import sinc.hinc.communication.messagePayloads.HincMeta;
+import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
@@ -54,7 +54,7 @@ public class MapperFactory {
             return new VNFMapper();
         }
 
-        if (clazz.equals(HincMeta.class)) {
+        if (clazz.equals(HincLocalMeta.class)) {
             return new HINCMetaMapper();
         }
 

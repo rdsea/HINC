@@ -10,9 +10,6 @@ import sinc.hinc.communication.messageInterface.MessagePublishInterface;
 import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
 import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
 import sinc.hinc.communication.messagePayloads.UpdateGatewayStatus;
-import sinc.hinc.communication.protocol.HincMessage;
-import sinc.hinc.communication.protocol.HincMessageTopic;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -21,6 +18,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.common.metadata.HincMessageTopic;
 
 /**
  *

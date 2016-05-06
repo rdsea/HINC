@@ -18,12 +18,23 @@ public class ControlPointMapper implements DTOMapperInterface<ControlPoint>{
 
     @Override
     public ControlPoint fromODocument(ODocument doc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CapabilityMapper capa = new CapabilityMapper(ControlPoint.class);
+        ControlPoint con = (ControlPoint) capa.fromODocument(doc);
+        con.setInvokeProtocol(ControlPoint.InvokeProtocol.valueOf(doc.field("invokeprotocol").toString()));
+        con.setPostData(String.valueOf(doc.field("postdata")));
+        con.setReference(String.valueOf(doc.field("reference")));
+        return con;
     }
 
     @Override
     public ODocument toODocument(ControlPoint object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CapabilityMapper capa = new CapabilityMapper(ControlPoint.class);
+        ODocument doc = capa.toODocument(object);
+        doc.setClassName(ControlPoint.class.getSimpleName());
+        doc.field("invokeprotocol", object.getInvokeProtocol().toString());
+        doc.field("postdata", object.getPostData());
+        doc.field("reference", object.getReference());
+        return doc;
     }
     
 }

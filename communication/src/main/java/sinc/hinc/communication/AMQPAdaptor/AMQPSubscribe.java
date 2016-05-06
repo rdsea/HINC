@@ -19,16 +19,13 @@ package sinc.hinc.communication.AMQPAdaptor;
 
 import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
 import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
-import sinc.hinc.communication.protocol.HincMessage;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.ConsumerCancelledException;
 import com.rabbitmq.client.QueueingConsumer;
 import com.rabbitmq.client.ShutdownSignalException;
 import java.io.IOException;
 import java.util.Date;
+import sinc.hinc.common.metadata.HincMessage;
 
 /**
  *

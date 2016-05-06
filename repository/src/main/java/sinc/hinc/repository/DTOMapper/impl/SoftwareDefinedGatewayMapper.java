@@ -26,7 +26,7 @@ public class SoftwareDefinedGatewayMapper implements DTOMapperInterface<Software
 
     @Override
     public ODocument toODocument(SoftwareDefinedGateway object) {
-        ODocument doc = new ODocument("SoftwareDefinedGateway");
+        ODocument doc = new ODocument(SoftwareDefinedGateway.class.getSimpleName());
         doc.field("uuid", object.getUuid());
         doc.field("name", object.getName());
         return doc;

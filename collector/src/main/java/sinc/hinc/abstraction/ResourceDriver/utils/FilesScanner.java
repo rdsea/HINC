@@ -5,7 +5,7 @@
  */
 package sinc.hinc.abstraction.ResourceDriver.utils;
 
-import sinc.hinc.abstraction.ResourceDriver.InfoSourceSettings;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 
 /**
  * Default driver to get raw information from list of files. Needed settings:

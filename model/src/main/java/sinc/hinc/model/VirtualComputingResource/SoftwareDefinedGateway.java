@@ -1,6 +1,7 @@
 package sinc.hinc.model.VirtualComputingResource;
 
-import sinc.hinc.model.PhysicalResource.PhysicalResource;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,7 +13,20 @@ import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 
+import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = DataPoint.class, name = "DataPoint"),
+    @JsonSubTypes.Type(value = ControlPoint.class, name = "ControlPoint"),
+    @JsonSubTypes.Type(value = CloudConnectivity.class, name = "CloudConectivity"),
+    @JsonSubTypes.Type(value = ExecutionEnvironment.class, name = "ExecutionEnvironment"),
+    @JsonSubTypes.Type(value = SoftwareDefinedGateway.class, name = "SoftwareDefinedGateway")
+})
 public class SoftwareDefinedGateway {
 
     /**
@@ -28,7 +42,11 @@ public class SoftwareDefinedGateway {
     /**
      * The List of datapoint, controlpoint, connectivity and execution
      */
-    private List<Capability> capabilities;
+//    private List<Capability> capabilities;
+    private List<DataPoint> dataPoints;
+    private List<ControlPoint> controlPoints;
+    private List<CloudConnectivity> connectivity;
+    private List<ExecutionEnvironment> executionEnvironment;
 
     /**
      * For custom data, e.g. created date, position, comments
@@ -59,35 +77,71 @@ public class SoftwareDefinedGateway {
         this.name = name;
     }
 
-    public List<Capability> getCapabilities() {
-        if (capabilities == null) {
-            capabilities = new ArrayList<>();
+    public List<DataPoint> getDataPoints() {
+        if (dataPoints == null) {
+            dataPoints = new ArrayList<>();
         }
-        return capabilities;
+        return dataPoints;
     }
 
-    public void setCapabilities(List<Capability> capabilities) {
-        this.capabilities = capabilities;
+    public List<ControlPoint> getControlPoints() {
+        if (controlPoints == null) {
+            controlPoints = new ArrayList<>();
+        }
+        return controlPoints;
+    }
+
+    public List<CloudConnectivity> getConnectivity() {
+        if (connectivity == null) {
+            connectivity = new ArrayList<>();
+        }
+        return connectivity;
+    }
+
+    public List<ExecutionEnvironment> getExecutionEnvironment() {
+        if (executionEnvironment == null) {
+            executionEnvironment = new ArrayList<>();
+        }
+        return executionEnvironment;
+    }
+
+    public void setDataPoints(List<DataPoint> dataPoints) {
+        this.dataPoints = dataPoints;
+    }
+
+    public void setControlPoints(List<ControlPoint> controlPoints) {
+        this.controlPoints = controlPoints;
+    }
+
+    public void setConnectivity(List<CloudConnectivity> connectivity) {
+        this.connectivity = connectivity;
+    }
+
+    public void setExecutionEnvironment(List<ExecutionEnvironment> executionEnvironment) {
+        this.executionEnvironment = executionEnvironment;
     }
 
     public SoftwareDefinedGateway hasCapability(Capability capa) {
         capa.setGatewayID(this.getUuid());
-        capa.setUuid(this.getUuid()+"/"+capa.getName());
-        if (capabilities == null) {
-            capabilities = new ArrayList<>();
+        capa.setUuid(this.getUuid() + "/" + capa.getName());
+        if (capa.getClass().equals(DataPoint.class)) {
+            this.getDataPoints().add((DataPoint) capa);
+        } else if (capa.getClass().equals(ControlPoint.class)) {
+            this.getControlPoints().add((ControlPoint) capa);
+        } else if (capa.getClass().equals(CloudConnectivity.class)) {
+            this.getConnectivity().add((CloudConnectivity) capa);
+        } else if (capa.getClass().equals(ExecutionEnvironment.class)) {
+            this.getExecutionEnvironment().add((ExecutionEnvironment) capa);
+        } else {
+            System.out.println("Error when adding capablity: " + capa.getUuid());
         }
-        this.capabilities.add(capa);
         return this;
     }
 
     public SoftwareDefinedGateway hasCapabilities(List<? extends Capability> capas) {
-        if (capabilities == null) {
-            capabilities = new ArrayList<>();
-        }
         if (capas != null) {
             for (Capability capa : capas) {
-                capa.setGatewayID(this.getUuid());
-                this.capabilities.add(capa);
+                hasCapability(capa);
             }
         }
         return this;
@@ -132,45 +186,4 @@ public class SoftwareDefinedGateway {
         }
     }
 
-    /**
-     *
-     * @author hungld
-     */
-//    public class CapabilityEffect {
-//
-//        /**
-//         * The id of the physical resource is affect
-//         */
-//        private PhysicalResource affectedEntity;
-//
-//        /**
-//         * This show a list of effect that change the resource attribute, e.g. [sensorRate,+1] or [connectProtocol,mqtt]
-//         */
-//        private Map<String, String> effects = new HashMap<>();
-//
-//        public CapabilityEffect() {
-//        }
-//
-//        public CapabilityEffect(PhysicalResource entity, String attribute, String effect) {
-//            this.affectedEntity = entity;
-//            effects.put(attribute, effect);
-//        }
-//
-//        public PhysicalResource getAffectedEntity() {
-//            return affectedEntity;
-//        }
-//
-//        public void setAffectedEntity(PhysicalResource affectedEntity) {
-//            this.affectedEntity = affectedEntity;
-//        }
-//
-//        public Map<String, String> getEffects() {
-//            return effects;
-//        }
-//
-//        public void setEffects(Map<String, String> effects) {
-//            this.effects = effects;
-//        }
-//
-//    }
 }

@@ -5,14 +5,12 @@
  */
 package sinc.hinc.clientgui.localmanager;
 
-import sinc.hinc.global.cache.CacheHincs;
-import sinc.hinc.global.cache.CacheGateway;
-import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.clientgui.UserSettings;
 import sinc.hinc.clientgui.globalmanager.HincMetaModel;
 import sinc.hinc.clientgui.globalmanager.GenericMetaData;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -32,7 +30,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
-import sinc.hinc.communication.messagePayloads.HincMeta;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import sinc.hinc.common.API.HINCGlobalAPI;
+import sinc.hinc.common.API.HINCManagementAPI;
+import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
 import sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
@@ -46,7 +49,10 @@ import sinc.hinc.model.VirtualNetworkResource.VNF;
  */
 public class FXMLLocalController implements Initializable {
 
-    HincMetaModel deliseInfo;
+    HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(UserSettings.getDefaultEndpoint(), HINCGlobalAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+    HINCManagementAPI mngAPI = (HINCManagementAPI) JAXRSClientFactory.create(UserSettings.getDefaultEndpoint(), HINCManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+
+    HincMetaModel hincLocalInfo;
 
     @FXML
     private AnchorPane mainPane;
@@ -61,7 +67,7 @@ public class FXMLLocalController implements Initializable {
     private void handleButtonLocalResourceManager() {
         mainPane.getChildren().clear();
         System.out.println("Handling button Local resource manager");
-        Label label = new Label("Gateway " + deliseInfo.uuidProperty().get());
+        Label label = new Label("Gateway " + hincLocalInfo.uuidProperty().get());
         label.setFont(new Font(20));
 
         //anchorNodeIntoPane(label, 10.0, 10.0, 0.0, 0.0);
@@ -82,7 +88,7 @@ public class FXMLLocalController implements Initializable {
 
         // a button to query data point, control point
         System.out.println("Handling button query manager");
-        Label label = new Label("Gateway " + deliseInfo.uuidProperty().get());
+        Label label = new Label("Gateway " + hincLocalInfo.uuidProperty().get());
 
         label.setFont(new Font(20));
         AnchorPane.setTopAnchor(label, 10.0);
@@ -98,8 +104,7 @@ public class FXMLLocalController implements Initializable {
         AnchorPane.setTopAnchor(infoLabel, 55.0);
         AnchorPane.setLeftAnchor(infoLabel, 170.0);
 
-        CacheHincs cache = new CacheHincs();
-        List<HincMeta> metas = cache.loadDelisesCache();
+        List<HincLocalMeta> metas = mngAPI.queryHINCLocal(0);
 //        InfoSourceSettings sourceSettings = null;
 //        for (HincMeta meta1 : metas) {
 //            System.out.println("Now checking Delise (" + meta1.getUuid() + ") to match with table data:" + deliseInfo.uuidProperty().get());
@@ -115,31 +120,30 @@ public class FXMLLocalController implements Initializable {
                 System.out.println("Reload the list");
                 infoLabel.setText("Querying information ... ");
 
-                CommunicationManager client = UserSettings.getQueryManager();
-
-                System.out.println("Querying individual gateway information, id: " + deliseInfo.uuidProperty().get());
-                SoftwareDefinedGateway gateway = client.querySoftwareDefinedGateway_Unicast(deliseInfo.uuidProperty().get());
-                showGatewayDetails(gateway);
+                System.out.println("Querying individual gateway information, id: " + hincLocalInfo.uuidProperty().get());
+                List<SoftwareDefinedGateway> gateways = rest.querySoftwareDefinedGateways(2000, hincLocalInfo.uuidProperty().get());
+                if (gateways != null && !gateways.isEmpty()) {
+                    showGatewayDetails(gateways.get(0));
+                }
 
                 infoLabel.setText("The gateway information is updated at: " + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()));
             }
         });
         mainPane.getChildren().add(refreshBtn);
 
-        showGatewayDetails(getGatewayFromCache(deliseInfo.uuidProperty().get()));
+        showGatewayDetails(getGatewayFromCache(hincLocalInfo.uuidProperty().get()));
 
     }
 
     private SoftwareDefinedGateway getGatewayFromCache(String uuid) {
-        CacheGateway cacheGateway = new CacheGateway();
-        List<SoftwareDefinedGateway> gws = cacheGateway.loadGatewaysCache();
+        List<SoftwareDefinedGateway> gws = rest.querySoftwareDefinedGateways(0, null);
         if (gws == null) {
             return null;
         }
         for (SoftwareDefinedGateway g : gws) {
             System.out.println("g.getUUID: " + g.getUuid());
-            System.out.println("meta.uuid: " + deliseInfo.uuidProperty().get() + "\n");
-            if (g.getUuid().equals(deliseInfo.uuidProperty().get())) {
+            System.out.println("meta.uuid: " + hincLocalInfo.uuidProperty().get() + "\n");
+            if (g.getUuid().equals(hincLocalInfo.uuidProperty().get())) {
                 return g;
             }
         }
@@ -184,11 +188,10 @@ public class FXMLLocalController implements Initializable {
 
             ObservableList<DataPointTableModel> dataPointTable = FXCollections.observableArrayList();
             if (gw != null) {
-                for (Capability capa : gw.getCapabilities()) {
-                    if (capa.getCapabilityType().equals(CapabilityType.DataPoint)) {
-                        DataPoint dp = (DataPoint) capa;
-                        dataPointTable.add(new DataPointTableModel(dp.getName(), dp.getResourceID(), dp.getDescription(), dp.getMeasurementUnit(), dp.getLink() + ""));
-                    }
+                System.out.println("Get the gateway data to view: " + gw.toJson());
+                for (DataPoint dp : gw.getDataPoints()) {
+                    System.out.println("BUiling table field: " + dp.getName() +","+ dp.getResourceID()+","+ dp.getDescription()+","+ dp.getMeasurementUnit()+","+ dp.getLink());
+                    dataPointTable.add(new DataPointTableModel(dp.getName(), dp.getResourceID(), dp.getDescription(), dp.getMeasurementUnit(), dp.getLink()));
                 }
             }
             table.setItems(dataPointTable);
@@ -215,11 +218,8 @@ public class FXMLLocalController implements Initializable {
 
             ObservableList<ControlPointTableModel> controlPointTable = FXCollections.observableArrayList();
             if (gw != null) {
-                for (Capability capa : gw.getCapabilities()) {
-                    if (capa.getCapabilityType().equals(CapabilityType.ControlPoint)) {
-                        ControlPoint cp = (ControlPoint) capa;
-                        controlPointTable.add(new ControlPointTableModel(cp.getName(), cp.getResourceID(), cp.getDescription(), cp.getInvokeProtocol().toString(), cp.getReference()));
-                    }
+                for (ControlPoint cp : gw.getControlPoints()) {
+                    controlPointTable.add(new ControlPointTableModel(cp.getName(), cp.getResourceID(), cp.getDescription(), cp.getInvokeProtocol().toString(), cp.getReference()));
                 }
             }
             table.setItems(controlPointTable);
@@ -254,12 +254,12 @@ public class FXMLLocalController implements Initializable {
         table.getColumns().addAll(uuidCol, ipCol);
 
         ObservableList<GenericMetaData> data = FXCollections.observableArrayList();
-        if (deliseInfo != null) {
-            data.add(new GenericMetaData("UUID", deliseInfo.uuidProperty().get()));
-            data.add(new GenericMetaData("IP", deliseInfo.ipProperty().get()));
-            data.add(new GenericMetaData("Information source ref.", deliseInfo.sourceProperty().get()));
-            data.add(new GenericMetaData("Information source type", deliseInfo.sourceTypeProperty().get()));
-            data.add(new GenericMetaData("Adaptor class", deliseInfo.adaptorProperty().get()));
+        if (hincLocalInfo != null) {
+            data.add(new GenericMetaData("UUID", hincLocalInfo.uuidProperty().get()));
+            data.add(new GenericMetaData("IP", hincLocalInfo.ipProperty().get()));
+            data.add(new GenericMetaData("Information source ref.", hincLocalInfo.sourceProperty().get()));
+            data.add(new GenericMetaData("Information source type", hincLocalInfo.sourceTypeProperty().get()));
+            data.add(new GenericMetaData("Adaptor class", hincLocalInfo.adaptorProperty().get()));
         }
         table.setItems(data);
         table.setColumnResizePolicy(new Callback<TableView.ResizeFeatures, Boolean>() {
@@ -319,11 +319,11 @@ public class FXMLLocalController implements Initializable {
     }
 
     public HincMetaModel getMetadata() {
-        return deliseInfo;
+        return hincLocalInfo;
     }
 
     public void setMetadata(HincMetaModel metadata) {
-        this.deliseInfo = metadata;
+        this.hincLocalInfo = metadata;
     }
 
 }

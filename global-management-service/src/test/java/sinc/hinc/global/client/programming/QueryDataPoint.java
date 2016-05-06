@@ -6,12 +6,16 @@
 package sinc.hinc.global.client.programming;
 
 import sinc.hinc.global.management.DataPointObservator;
-import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.model.PhysicalResource.PhysicalResource;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.extensions.SensorProps;
 import java.util.List;
+import sinc.hinc.common.API.HINCGlobalAPI;
+import sinc.hinc.common.API.HINCManagementAPI;
+import sinc.hinc.common.metadata.HINCGlobalMeta;
+import sinc.hinc.global.API.HINCGlobalAPIImpl;
+import sinc.hinc.global.API.HINCManagementImpl;
 import sinc.hinc.global.management.QueryManager;
 
 /**
@@ -21,27 +25,28 @@ import sinc.hinc.global.management.QueryManager;
 public class QueryDataPoint {
 
     public static void main(String[] args) throws Exception {
-        DataPoint template = new DataPoint("BodyTemperature");        
+        DataPoint template = new DataPoint("BodyTemperature");
         SensorProps sensorProps = new SensorProps();
         sensorProps.setRate(5);
 
         template.getExtra().add(new PhysicalResource(sensorProps));
-        final CommunicationManager communicationMng = new CommunicationManager("myClient", "ampq://10.0..", "ampq");
-        communicationMng.querySoftwareDefinedGateway_Broadcast(3000);
+        HINCGlobalAPI api = new HINCGlobalAPIImpl();
+        HINCManagementAPI mngAPI = new HINCManagementImpl();
+        mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
+        api.queryDataPoint(3000, null);
         List<DataPoint> datapoints = QueryManager.QueryDataPoints(template);
-        
 
         // some obmitted code
         for (DataPoint dp : datapoints) {
             DataPointObservator obs = new DataPointObservator(dp) {
                 @Override
                 public void onChange(DataPoint newVal) {
-                    SensorProps props = (SensorProps)newVal.getExtraByType(SensorProps.class);
+                    SensorProps props = (SensorProps) newVal.getExtraByType(SensorProps.class);
                     if (props.getRate() > 5) {
                         props.setRate(5);
                     }
                     ControlPoint control = newVal.getControlByName("changeRate");
-                    communicationMng.SendControl(control);
+//                    api.sendControl(control);
                 }
             };
         }

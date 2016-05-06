@@ -18,10 +18,9 @@
 package sinc.hinc.communication.MQTTAdaptor;
 
 import sinc.hinc.communication.messageInterface.MessagePublishInterface;
-import sinc.hinc.communication.protocol.HincMessage;
-
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import sinc.hinc.common.metadata.HincMessage;
 
 /**
  *

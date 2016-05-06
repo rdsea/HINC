@@ -5,8 +5,6 @@
  */
 package sinc.hinc.clientgui;
 
-import sinc.hinc.global.management.CommunicationManager;
-
 /**
  *
  * @author hungld
@@ -14,7 +12,7 @@ import sinc.hinc.global.management.CommunicationManager;
 public class UserSettings {
 
     public static String getBroker() {
-        return "amqp://128.130.172.215";
+        return "amqp://localhost";
     }
 
     public static String getBrokerType() {
@@ -24,8 +22,10 @@ public class UserSettings {
     public static String getUserName() {
         return "myClient";
     }
-
-    public static CommunicationManager getQueryManager() {
-        return new CommunicationManager(getUserName(), getBroker(), getBrokerType());
+    
+    public static String getDefaultEndpoint() {
+        return "http://localhost:8888/global-management-service-1.0/rest";
     }
+
+//
 }
