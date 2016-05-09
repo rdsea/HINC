@@ -12,6 +12,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author hungld
  */
+@Deprecated
 public class GenericMetaData {
     private final StringProperty key;
     private final StringProperty value;

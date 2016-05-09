@@ -1,7 +1,7 @@
 package sinc.hinc.clientgui.globalmanager;
 
+import sinc.hinc.clientgui.mainpanel.HincMetaModel;
 import sinc.hinc.clientgui.UserSettings;
-import sinc.hinc.clientgui.localmanager.FXMLLocalController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -39,6 +39,7 @@ import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.metadata.InfoSourceSettings;
 
+@Deprecated
 public class FXMLController implements Initializable {
 
     HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(UserSettings.getDefaultEndpoint(), HINCGlobalAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));

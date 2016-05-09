@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.clientgui.globalmanager;
+package sinc.hinc.clientgui.mainpanel;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

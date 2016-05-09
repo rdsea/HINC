@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--prefHeight="600.0" prefWidth="800.0" style="-fx-pref-width: 800; -fx-pref-height: 600;"-->
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" style="-fx-pref-width: 800; -fx-pref-height: 600;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sinc.hinc.clientgui.mainpanel.MainPanelController">
+    <children>
+        <BorderPane id="mainPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+                    <children>
+                        <Label prefHeight="43.0" prefWidth="418.0" text="HINC Global Management Service" textAlignment="CENTER">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+            </top>
+            <center>
+                <VBox fx:id="centerVbox" layoutX="2.0" layoutY="1.0" prefHeight="500.0" style="-fx-border-color: #2e8b57; -fx-border-width: 2px;">
+                    <children>
+                        <VBox maxHeight="90.0" minHeight="90.0" prefWidth="100.0" style="-fx-background-color: #e6e6e6;">
+                            <children>
+                                <Label alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="448.0" text="Resource query and control" />
+                                <HBox alignment="CENTER_LEFT" maxHeight="60.0" minHeight="60.0" prefWidth="480.0">
+                                    <children>
+                                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="15.0" prefWidth="81.0" text="Condition" />                               
+                                        <TextField prefHeight="25.0" prefWidth="150" />
+                                        <Button mnemonicParsing="false" onAction="#handleButtonQuery" text="Query Datapoint" />                                
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <Separator prefWidth="200.0" style="-fx-border-radius: 2; -fx-background-color: #000000;" />
+                        <ScrollPane prefWidth="100.0" style="-fx-fit-to-height: true; -fx-fit-to-width: true;">
+                            <content>
+                                <VBox fx:id="CapabilityContainer" />
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </VBox>
+            </center>
+            <left>
+                <VBox fx:id="leftVbox" prefHeight="500.0" prefWidth="350.0" style="-fx-border-color: #2e8b57; -fx-border-width: 2px;" BorderPane.alignment="CENTER">
+                    <children>
+                        <VBox maxHeight="90.0" minHeight="90.0" prefWidth="100.0" style="-fx-background-color: #e6e6e6;">
+                            <children>
+                                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="347.0" text="HINC Local Management Service" />
+                                <HBox alignment="CENTER" maxHeight="60.0" minHeight="60.0">
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#handleButtonUpdateHINCLocal" prefHeight="51.0" prefWidth="90.0" text="Update" />
+                                        <Button fx:id="switchButton" mnemonicParsing="false" onAction="#handleButtonSwitchView" prefHeight="52.0" prefWidth="90.0" text="HINC View" />
+                                        <Button fx:id="expandButton" onAction="#handleButtonExpand" prefHeight="53.0" prefWidth="90.0" text="Expand" />
+                                        <Button fx:id="checkAllButton" mnemonicParsing="false" onAction="#handleButtonCheckAll" prefHeight="52.0" prefWidth="90.0" text="Check All" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <Separator prefWidth="200.0" style="-fx-background-color: #000000; -fx-background-radius: 2;" />
+                        <ScrollPane style="-fx-fit-to-height: true; -fx-fit-to-width: true;">
+                            <content>
+      
+                                <VBox fx:id="HINCLocalContainer" />
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </VBox>
+            </left>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+            <bottom>
+                <VBox prefHeight="115.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <TextArea fx:id="logTextArea" prefHeight="100.0" prefWidth="554.0" />
+                        <Label fx:id="globalMetaText" prefHeight="15.0" prefWidth="379.0" text="Label">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

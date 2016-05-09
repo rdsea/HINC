@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.clientgui.localmanager;
+package sinc.hinc.clientgui.globalmanager;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -12,6 +12,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author hungld
  */
+@Deprecated
 public class DataPointTableModel {            
         private final StringProperty name;
         private final StringProperty resourceID ;

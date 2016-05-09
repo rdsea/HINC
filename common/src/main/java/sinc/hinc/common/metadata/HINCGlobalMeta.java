@@ -15,6 +15,9 @@ public class HINCGlobalMeta {
     String broker;
     String brokerType;
 
+    public HINCGlobalMeta() {
+    }
+
     public HINCGlobalMeta(String group, String broker, String brokerType) {
 
         this.group = group;
