@@ -40,8 +40,8 @@ GROUP=test</code></pre>
 3.4. Copy all needed jar file (in below command) to the same folder with above configuration files. Then run the command:
 <pre><code>java -cp "local-management-service-1.0.jar:TransformOpenHAB-1.0.jar" sinc.hinc.local.Main</code></pre>
 The HINC Local should run and start to contact to OpenHAB to get the information.
-
-<br/><strong>4. Using HINC Global to query information</strong>
+<p>
+<strong>4. Using HINC Global to query information</strong>
 <br/>
 4.1. Copy the artifact <code>global-management-service-1.0-war-exec.jar</code> in to a new folder and add the <code>hinc.conf</code> file similar 3.2. HINC Global and HINC Local need to interact via the same MOM.
 <br/>
@@ -49,9 +49,9 @@ The HINC Local should run and start to contact to OpenHAB to get the information
 
 <pre><code>java -jar global-management-service-1.0-war-exec.jar -httpPort 8888</code></pre>
 
-4.3. Global service can be test by <pre><code>curl http://localhost:8888/global-management-service-1.0/rest/meta</code></pre>. Please refer to the Global API to see how to manipulate queries.
-
-<br/><strong>5. Using HINC Client GUI to view some data</strong>
+4.3. Please refer to the Global API to see how to manipulate queries. Global service can be test by <pre><code>curl http://localhost:8888/global-management-service-1.0/rest/meta</code></pre>
+<p>
+<strong>5. Using HINC Client GUI to view some data</strong>
 <br/>
 5.1. Get the artifact of the client-gui and run <pre><code>java -jar client-gui-1.0.jar</code></pre>
 <br/>
