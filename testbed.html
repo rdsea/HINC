@@ -49,12 +49,14 @@ The HINC Local should run and start to contact to OpenHAB to get the information
 
 <pre><code>java -jar global-management-service-1.0-war-exec.jar -httpPort 8888</code></pre>
 
-4.3. Please refer to the Global API to see how to manipulate queries. Global service can be test by <pre><code>curl http://localhost:8888/global-management-service-1.0/rest/meta</code></pre>
+4.3. Please refer to the Global API to see how to manipulate queries. Global service can be test by
+<pre><code>curl http://localhost:8888/global-management-service-1.0/rest/meta</code></pre>
 <p>
 <strong>5. Using HINC Client GUI to view some data</strong>
 <br/>
-5.1. Get the artifact of the client-gui and run <pre><code>java -jar client-gui-1.0.jar</code></pre>
-<br/>
+5.1. Get the artifact of the client-gui and run. The client by default will check HINC Global at http://localhost:8888 for testing purpose.
+<pre><code>java -jar client-gui-1.0.jar</code></pre>
+
 5.2. The GUI will show the list of providers on the left and the list of data points on the right. See figure below.
 <p>
 <img src="images/gui.png" alt="GUI" width="600">
