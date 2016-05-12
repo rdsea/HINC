@@ -1,0 +1,22 @@
+
+HINC architecture is fully distributed, which mean each components can run individually. At runtime, two types of components can be run:
+<ul>
+<li> Local Management Services: To interface with providers to tranform the information and send the control.
+</li>
+<li> Global Management Services: To interface with providers to tranform the information and send the control.
+</li>
+</ul>
+
+<p> The system that HINC aim to manage include following components:
+<ul>
+  <li>Cloud provider: can be private cloud like Openstack, or public service like AmazonEC2.
+  <li>Network provider: cooporate with NFV provider such as OpenDaylight, OpenBaton.
+  <li>IoT provider: manage edge services/platform such as IoTivity, OpenHAB
+</ul>
+
+
+<p>We are setting up a testbed to further developing HINC, which is shown in the figure below. The testbed will be spread in distributed sites: in Vienna, in Hanoi and several public service (AmazonEC, CloudAMQP). We aim to demonstrate the ability to manage distributed and large scale system and network.</p>
+<img src="images/testbedstructure.png" alt="testbed structure" >
+
+<p>For more detail about the design and code, please check the GitHub repository (on the left menu).</p>
+

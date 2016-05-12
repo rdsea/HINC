@@ -1,0 +1,15 @@
+HINC can be build with Java 1.7+ and Maven as followings:
+<ol>
+  <li>Clone the project from <a href="https://github.com/SINCConcept/HINC">GitHub</a>
+  <li>Run <code>$ mvn clean install</code>
+  <li>Take 2 artifacts corresponding to the component: local-management-service-1.0.jar and global-management-service-1.0.jar.
+</ol>
+
+The local management service runs with a set of adaptor, which interface with providers. A set of adaptors can be found on <a href="https://github.com/SINCConcept/HINC/tree/master/ext-pom">Github</a>. Each adaptor is build as a .jar archive and put in the same folder with the local management service to load in the Java classpath. There are 2 configuration files need to be edited. For the concrete contents, please see the next section about testbed setup.
+<ul>
+<li> <strong>hinc.conf</strong>: Contain parameters for HINC Local, e.g. group name, queue service.
+<li> <strong>info-source.conf</strong>: Contain the list of provider and their settings.
+</ul>
+
+The local management service can be run with the below command. Note that we need to provide the jar of the local management service and the list of adaptor together.
+<code><pre>java -cp "local-management-service-1.0.jar:TranformIoTivity-1.0.jar:TransformOpenHAB-1.0.jar" sinc.hinc.local.Main</code></pre>

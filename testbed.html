@@ -1,0 +1,56 @@
+In order to test HINC, we need a couple of providers and and message oriented middleware. Followings show a short tutorial to settings up OpenHAB as provider and using HINC to capture information. We choose OpenHAB because of its easy installation and lightweight.
+<p>
+The configuration in this example aim to run everything on a single machine, e.g. user's laptop. For distributed deployment, please edit the settings accordingly.
+<p><strong>1. Run OpenHAB demo</strong>
+<br/>1.1. On the <a href="http://www.openhab.org/getting-started/downloads.html">OpenHAB website</a>, download the <strong>Runtime core</strong> and the <strong>Demo setup</strong>.
+<br/>1.2. Extract both package to the same folder. Note that the Demo setup package will be merged into the Runtime core after extracting.
+<br/>1.3. Open a shell in the extracted folder and run: <code>./start.sh</code>.
+<br/>1.4. Run a simple query to make sure OpenHAB is running: <code>curl http://localhost:8080/rest/items</code>
+<p>
+<strong>2. Prepare a AMQP service</strong>
+<br/>2.1. Option 1: Install a local RabbitMQ. In Ubuntu, this can be done by the command: <code>$ sudo apt-get install -y rabbitmq-server</code>
+
+<br/>2.2. Option 2: Create a free plan of <a href="https://www.cloudamqp.com/">CloudAMQP</a>.
+
+<p><strong>3. Run HINC Local</strong>
+<br/>3.1. Build the project following previous section.
+<br/>3.2. Create a <code>hinc.conf</code> for HINC related settings as followings:
+<pre><code># if using local RabbitMQ
+BROKER=amqp://localhost 
+# if using CloudAMQP, username and password is attached in URL (put your own URL in your CloudAMQP account)
+# BROKER=amqp://<username>:<password>@bunny.cloudamqp.com/abc
+BROKER_TYPE=amqp
+# Multiple HINC Local service can be group to a communication channel.
+GROUP=test</code></pre>
+3.3. Create a <code>info-source.conf</code> to define the provider. With OpenHAB running locally, the configuration as followngs:
+<pre><code>{
+    "source": [
+        {
+            "name": "openHAB",
+            "type": "IoT",
+            "interval": 0,
+            "adaptorClass": "sinc.hinc.transformer.openhab.OpenHABAdaptor",
+            "transformerClass": "sinc.hinc.transformer.openhab.TranformOpenHABInfo",
+            "settings": {
+                "endpoint": "http://localhost:8080/rest"
+            }
+        }
+    ]
+}</code></pre>
+3.4. Copy all needed jar file (in below command) to the same folder with above configuration files. Then run the command:
+<pre><code>java -cp "local-management-service-1.0.jar:TransformOpenHAB-1.0.jar" sinc.hinc.local.Main</code></pre>
+The HINC Local should run and start to contact to OpenHAB to get the information.
+
+<br/><strong>4. Using HINC Global to query information</strong>
+<p>
+4.1. Copy the artifact <code>global-management-service-1.0-war-exec.jar</code> in to a new folder and add the <code>hinc.conf</code> file similar 3.2.
+4.2. Run the global service by following command. Note that we use different port because OpenHAB is taking the port 8080.
+<pre><code>java -jar global-management-service-1.0-war-exec.jar -httpPort 8888</code></pre>
+4.3. Global service can be test by <pre><code>curl http://localhost:8888/global-management-service-1.0/rest/meta</code></pre>. Please refer to the Global API to see how to manipulate queries.
+
+<br/><strong>5. Using HINC Client GUI to view some data</strong>
+5.1. Get the artifact of the client-gui and run <pre><code>java -jar client-gui-1.0.jar</code></pre>
+5.2. The GUI will show the list of providers on the left and the list of data points on the right. See figure below.
+<p>
+<img src="images/gui.png" alt="GUI" width="600">
+</p>

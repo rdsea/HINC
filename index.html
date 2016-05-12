@@ -9,19 +9,60 @@
     <link rel="stylesheet" href="stylesheets/github-light.css">
     <link rel="stylesheet" href="stylesheets/cssreset-context-min.css">
 
-    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     
     <![endif]-->
+
     <script type="text/javascript">
       function OpenDiv(divname){ 
           var divStyle = document.getElementById(divname).style;
           divStyle.display='block';        
         return false;
       } 
+      // to load other html by div
+       window.onload = function() {
+	          var elements = document.getElementsByTagName('*'),
+		          i;
+	          for (i in elements) {
+		          if (elements[i].hasAttribute && elements[i].hasAttribute('data-include')) {
+			          fragment(elements[i], elements[i].getAttribute('data-include'));
+		          }
+	          }
+	          function fragment(el, url) {
+		          var localTest = /^(?:file):/,
+			          xmlhttp = new XMLHttpRequest(),
+			          status = 0;
+
+		          xmlhttp.onreadystatechange = function() {
+			          /* if we are on a local protocol, and we have response text, we'll assume
+           *  				things were sucessful */
+			          if (xmlhttp.readyState == 4) {
+				          status = xmlhttp.status;
+			          }
+			          if (localTest.test(location.href) && xmlhttp.responseText) {
+				          status = 200;
+			          }
+			          if (xmlhttp.readyState == 4 && status == 200) {
+				          el.outerHTML = xmlhttp.responseText;
+			          }
+		          }
+
+		          try { 
+			          xmlhttp.open("GET", url, true);
+			          
+			          xmlhttp.send();
+		          } catch(err) {
+			          /* todo catch error */
+		          }
+	          }
+          }
     </script>
+    
+    
+    
+    
     
     
   </head>
@@ -57,128 +98,26 @@
 Introduction
 </h2>
 
-<p>
-	HINC implements the lowest layer of <a href="http://sincconcept.github.io">the SINC Concept</a> by interfacing to different providers to obtain resource metadata and to control resources.	
-</p>
-<u>Features:</u>
-<ul>
-  
-  <li> High level view of distributed resources for IoT, Network functions and Clouds.
-  <a onclick="OpenDiv('div1')" style="cursor:pointer;" >More...</a>
-  <div id="div1" style="display:none;"> <blockquote> HINC proposes a high level model to capture the information of IoT without caring about the low level resources like sensor, actuator and gateway. The novel idea is to focus on high level concept of Software-Defined Gateway, which includes 4 aspects: data, control, connection and execution environment. HINC also targets to novel Network functions models to leverage network slicing technology. Conbining with cloud services and resources, HINC aim to supporting end-to-end slicing techologies crossing IoT, Network functions and Clouds. </blockquote></div>
-  
-  <li> Easy-to-use API and management mechanisms for diverse type of available resources.
-  <a onclick="OpenDiv('div2')" style="cursor:pointer;" >More...</a>
-  <div id="div2" style="display:none;"> <blockquote> HINC interfaces with multiple providers who directly manage the resources (IoT, Network functions and Cloud providers). Via an adaption and tranformation process, the information is abtracted to convert to higher level model. The API enables to route the query to distributed provider to gather the information and to send the control for resources. We are continueing to work on Model-Driven </blockquote></div>
-  
-  <li> Information-centric communication and query for large-scale cloud-based IoT systems.
-    <a onclick="OpenDiv('div3')" style="cursor:pointer;" >More...</a>
-  <div id="div3" style="display:none;"> <blockquote>HINC leverages the message queue for the communication. We are continueing to develop a novel protocol atop of the message-oriented middleware to support information-centric query, aiming to enhance the protocol for complex resource models.</blockquote></div>
-  
-  <li> Extensible design for integrating more providers.
-  <a onclick="OpenDiv('div4')" style="cursor:pointer;" >More...</a>
-  <div id="div4" style="display:none;"> <blockquote>HINC provides a set of interface for querying information (one-time query and subscription), and control IoT resource. Based on such interface, we can add more adaptors to interface more providers. A new provider can join the existing system without any interuption.</blockquote></div>
-
-  
-  
-</ul>
-
-HINC is under active development. The followings sections provide overview of current states and ongoing work.
-
+<div data-include="introduction.html"></div>
 
 <h2><a id="architecture" class="anchor" href="#architecture" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Architecture</h2>
-HINC architecture is fully distributed, which mean each components can run individually. At runtime, two types of components can be run:
-<ul>
-<li> Local Management Services: To interface with providers to tranform the information and send the control.
-</li>
-<li> Global Management Services: To interface with providers to tranform the information and send the control.
-</li>
-</ul>
 
-<p> The system that HINC aim to manage include following components:
-<ul>
-  <li>Cloud provider: can be private cloud like Openstack, or public service like AmazonEC2.
-  <li>Network provider: cooporate with NFV provider such as OpenDaylight, OpenBaton.
-  <li>IoT provider: manage edge services/platform such as IoTivity, OpenHAB
-</ul>
-
-
-<p>We are setting up a testbed to further developing HINC, which is shown in the figure below. The testbed will be spread in distributed sites: in Vienna, in Hanoi and several public service (AmazonEC, CloudAMQP). We aim to demonstrate the ability to manage distributed and large scale system and network.</p>
-<img src="images/testbedstructure.png" alt="testbed structure" >
-
-<p>For more detail about the design and code, please check the GitHub repository (on the left menu).</p>
-
+<div data-include="architecture.html"></div>
 
 
 
 <h2><a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
-HINC can be build with Java 1.7+ and Maven as followings:
-<ol>
-  <li>Clone the project from <a href="https://github.com/SINCConcept/HINC">GitHub</a>
-  <li>Run <code>$ mvn clean install</code>
-  <li>Take 2 artifacts corresponding to the component: local-management-service-1.0.jar and global-management-service-1.0.jar.
-</ol>
-
-The local management service runs with a set of adaptor, which interface with providers. A set of adaptors can be found on <a href="https://github.com/SINCConcept/HINC/tree/master/ext-pom">Github</a>. Each adaptor is build as a .jar archive and put in the same folder with the local management service to load in the Java classpath. There are 2 configuration files need to be edited. For the concrete contents, please see the next section about testbed setup.
-<ul>
-<li> <strong>hinc.conf</strong>: Contain parameters for HINC Local, e.g. group name, queue service.
-<li> <strong>info-source.conf</strong>: Contain the list of provider and their settings.
-</ul>
-
-The local management service can be run with the below command. Note that we need to provide the jar of the local management service and the list of adaptor together.
-<code><pre>java -cp "local-management-service-1.0.jar:TranformIoTivity-1.0.jar:TransformOpenHAB-1.0.jar" sinc.hinc.local.Main</code></pre>
+<div data-include="installation.html"></div>
 
 
 <h2><a id="testbed" class="anchor" href="#testbed" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple testbed</h2>
-In order to test HINC, we need a couple of providers and and message oriented middleware. Followings show a short tutorial to settings up OpenHAB as provider and using HINC to capture information. We choose OpenHAB because of its easy installation and lightweight.
-<p><strong>1. Run OpenHAB demo</strong>
-<br/>1.1. On the <a href="http://www.openhab.org/getting-started/downloads.html">OpenHAB website</a>, download the <strong>Runtime core</strong> and the <strong>Demo setup</strong>.
-<br/>1.2. Extract both package to the same folder. Note that the Demo setup package will be merged into the Runtime core after extracting.
-<br/>1.3. Open a shell in the extracted folder and run: <code>./start.sh</code>.
-<br/>1.4. Run a simple query to make sure OpenHAB is running: <code>curl http://localhost:8080/rest/items</code>
-<p>
-<strong>2. Prepare a AMQP service</strong>
-<br/>2.1. Option 1: Install a local RabbitMQ. In Ubuntu, this can be done by the command: <code>$ sudo apt-get install -y rabbitmq-server</code>
 
-<br/>2.2. Option 2: Create a free plan of <a href="https://www.cloudamqp.com/">CloudAMQP</a>.
+<div data-include="testbed.html"></div>
 
-<p><strong>3. Run HINC Local</strong>
-<br/>3.1. Build the project following previous section.
-<br/>3.2. Create a <code>hinc.conf</code> for HINC related settings as followings:
-<pre><code># if using local RabbitMQ
-BROKER=amqp://localhost 
-# if using CloudAMQP, username and password is attached in URL (put your own URL in your CloudAMQP account)
-# BROKER=amqp://<username>:<password>@bunny.cloudamqp.com/abc
-BROKER_TYPE=amqp
-# Multiple HINC Local service can be group to a communication channel.
-GROUP=test</code></pre>
-3.3. Create a <code>info-source.conf</code> to define the provider. With OpenHAB running locally, the configuration as followngs:
-<pre><code>{
-    "source": [
-        {
-            "name": "openHAB",
-            "type": "IoT",
-            "interval": 0,
-            "adaptorClass": "sinc.hinc.transformer.openhab.OpenHABAdaptor",
-            "transformerClass": "sinc.hinc.transformer.openhab.TranformOpenHABInfo",
-            "settings": {
-                "endpoint": "http://localhost:8080/rest"
-            }
-        }
-    ]
-}</code></pre>
-3.4. Copy all needed jar file (in below command) to the same folder with above configuration files. Then run the command:
-<pre><code>java -cp "local-management-service-1.0.jar:TransformOpenHAB-1.0.jar" sinc.hinc.local.Main</code></pre>
-The HINC Local should run and start to contact to OpenHAB to get the information.
+<h2><a id="writePlugin" class="anchor" href="#testbed" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Write a plugin</h2>
 
-<br/><strong>4. Using HINC Global to query information</strong>
-</br>To be filled....
-
-
-
-
-
+<div data-include="developNewPlugin.html"></div>
 
 <h3><a id="author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 <ul>
