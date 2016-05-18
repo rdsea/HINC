@@ -28,7 +28,7 @@ sed '1,/^START OF DATA/d' $0 > data.csv
 mv data.csv ./config-files/data.csv
 
 # configure the sensor in META-INF
-sed -i 's#<bean id="producer" class="at.ac.tuwien.infosys.cloudconnectivity.dryrun.Dryrun" />#<bean id="producer" class="at.ac.tuwien.infosys.cloudconnectivity.dryrun.Dryrun" />#' config-files/META-INF/wire.xml
+sed -i 's#<bean id="producer" class="at.ac.tuwien.infosys.cloudconnectivity.dryrun.Dryrun" />#<bean id="producer" class="at.ac.tuwien.infosys.cloudconnectivity.mqtt.MQProducer" />#' config-files/META-INF/wire.xml
 sed -i 's#<property name="updateRate" value=.*#<property name="updateRate" value="3"/>#' config-files/META-INF/wire.xml
 
 # With the distributed version, sensor is not started.

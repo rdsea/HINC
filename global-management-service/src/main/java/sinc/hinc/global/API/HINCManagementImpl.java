@@ -37,11 +37,13 @@ public class HINCManagementImpl implements HINCManagementAPI{
         }
         return this.comMng;
     }
+       
     
     @Override
     public HINCGlobalMeta getHINCGlobalMeta() {
         if (meta == null) {
-            meta = new HINCGlobalMeta("DEFAULT", "amqp://localhost", "amqp");
+            meta = HincConfiguration.getGlobalMeta();
+            return meta;
         }
         return meta;
     }

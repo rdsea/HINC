@@ -11,21 +11,29 @@ package sinc.hinc.clientgui;
  */
 public class UserSettings {
 
-    public static String getBroker() {
-        return "amqp://localhost";
+    static String ip = "localhost";
+    static String port = "8888";
+
+    public static String getHINCGlobalRESTEndpoint() {
+        return "http://" + ip + ":" + port + "/global-management-service-1.0/rest";
     }
 
-    public static String getBrokerType() {
-        return "amqp";
+    public static String getIp() {
+        return ip;
     }
 
-    public static String getUserName() {
-        return "myClient";
+    public static void setIp(String ip) {
+        UserSettings.ip = ip;
+    }
+
+    public static String getPort() {
+        return port;
+    }
+
+    public static void setPort(String port) {
+        UserSettings.port = port;
     }
     
-    public static String getDefaultEndpoint() {
-        return "http://localhost:8888/global-management-service-1.0/rest";
-    }
+    
 
-//
 }

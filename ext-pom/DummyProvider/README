@@ -1,0 +1,7 @@
+This DummyProvider project contains the API to pull and push IoT resource information.
+The IoT resource can be generated, updated, removed frequently.
+The provider use only memory-based storage, that mean when stop it will generate a new set of resource.
+The update rate can be change with the parameters file.
+
+The DummyProvider also include the adaptor and transformer that match with HINC.
+Please include it in the classpath when running HINC provider and configure it.

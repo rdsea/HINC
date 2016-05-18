@@ -9,15 +9,22 @@ package sinc.hinc.common.utils;
 //import sinc.hinc.communication.Utils.HincUtils;
 //import sinc.hinc.API.metadata.HincLocalMeta;
 //import sinc.hinc.communication.protocol.HincMessageTopic;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sinc.hinc.common.metadata.HINCGlobalMeta;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.metadata.InfoSourceSettings;
@@ -34,22 +41,48 @@ public class HincConfiguration {
     private static final String CONFIG_FILE = CURRENT_DIR + "/hinc.conf";
     private static final String myUUID = UUID.randomUUID().toString();
 
-    public static HincLocalMeta getMeta() {
-        HincLocalMeta meta = new HincLocalMeta(myUUID, HincUtils.getEth0Address(), HincMessageTopic.getCollectorTopicByID(myUUID));        
-        InfoSourceSettings settings = InfoSourceSettings.loadDefaultFile();
-        meta.setSettings(settings.toJson());
-        return meta;
+    static HincLocalMeta localMeta;
+    static HINCGlobalMeta globalMeta;
+
+    // only HINC Local use this
+    public static HincLocalMeta getLocalMeta() {
+        if (localMeta == null) {
+            localMeta = new HincLocalMeta(myUUID, HincUtils.getEth0Address(), HincMessageTopic.getCollectorTopicByID(myUUID));
+            InfoSourceSettings settings = InfoSourceSettings.loadDefaultFile();
+            localMeta.setSettings(settings.toJson());
+
+            IPLocationData locationMeta = getIpLocationMeta();
+            localMeta.setCity(locationMeta.getCity());
+            localMeta.setCountry(locationMeta.getCountry());
+            localMeta.setIsp(locationMeta.getIsp());
+            localMeta.setLat(locationMeta.getLat());
+            localMeta.setLon(locationMeta.getLon());
+        }
+        return localMeta;
     }
     
+    // only HINC Global use this
+    public static HINCGlobalMeta getGlobalMeta(){
+        if (globalMeta == null){
+            globalMeta = new HINCGlobalMeta(getGroupName(), getBroker(), getBrokerType());
+            IPLocationData locationMeta = getIpLocationMeta();
+            globalMeta.setCity(locationMeta.getCity());
+            globalMeta.setCountry(locationMeta.getCountry());
+            globalMeta.setIsp(locationMeta.getIsp());
+            globalMeta.setLat(locationMeta.getLat());
+            globalMeta.setLon(locationMeta.getLon());
+        }
+        return globalMeta;
+    }
 
     public static String getBroker() {
-        return getGenericParameter("BROKER", "tcp://iot.eclipse.org:1883");
+        return getGenericParameter("BROKER", "ampq://localhost");
     }
 
     public static String getBrokerType() {
-        return getGenericParameter("BROKER_TYPE", "mqtt");
+        return getGenericParameter("BROKER_TYPE", "ampq");
     }
-    
+
     public static String getGroupName() {
         return getGenericParameter("GROUP", "DEFAULT");
     }
@@ -88,5 +121,34 @@ public class HincConfiguration {
             ex.printStackTrace();
         }
         return theDefault;
+    }
+
+    private static IPLocationData getIpLocationMeta() {
+        try {
+            URL url = new URL("http://ip-api.com/json");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            StringBuilder json = new StringBuilder();
+            while ((line = rd.readLine()) != null) {
+                json.append(line + "\n");
+            }
+            rd.close();
+
+            if (!json.toString().isEmpty()) {
+                ObjectMapper mapper = new ObjectMapper();
+                IPLocationData ipLocation = mapper.readValue(json.toString(), IPLocationData.class);
+                return ipLocation;
+            }
+
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+            System.out.println("Cannot enhance the metadata, this is not an error.");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("Cannot enhance the metadata, this is not an error.");
+        }
+        return null;
     }
 }

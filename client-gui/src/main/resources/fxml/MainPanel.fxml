@@ -31,17 +31,24 @@
                         <VBox maxHeight="90.0" minHeight="90.0" prefWidth="100.0" style="-fx-background-color: #e6e6e6;">
                             <children>
                                 <Label alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="448.0" text="Resource query and control" />
-                                <HBox alignment="CENTER_LEFT" maxHeight="60.0" minHeight="60.0" prefWidth="480.0">
+                                <HBox alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefWidth="480.0">
                                     <children>
-                                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="15.0" prefWidth="81.0" text="Condition" />                               
+                                        <Label alignment="CENTER_LEFT" contentDisplay="CENTER" prefHeight="15.0" prefWidth="81.0" text="Condition" />                               
                                         <TextField prefHeight="25.0" prefWidth="150" />
                                         <Button mnemonicParsing="false" onAction="#handleButtonQuery" text="Query Datapoint" />                                
                                     </children>
                                 </HBox>
+                                <HBox alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefWidth="480.0">
+                                    <children>
+                                         <Label text="Query timeout (seconds)" />
+                                        <Slider fx:id="timeoutSlider" maxHeight="30.0" minHeight="30.0" prefWidth="200"/>                              
+                                    </children>
+                                </HBox>
+                                
                             </children>
                         </VBox>
                         <Separator prefWidth="200.0" style="-fx-border-radius: 2; -fx-background-color: #000000;" />
-                        <ScrollPane prefWidth="100.0" style="-fx-fit-to-height: true; -fx-fit-to-width: true;">
+                        <ScrollPane prefWidth="100.0" style="-fx-fit-to-width: true;">
                             <content>
                                 <VBox fx:id="CapabilityContainer" />
                             </content>
@@ -50,6 +57,7 @@
                 </VBox>
             </center>
             <left>
+                
                 <VBox fx:id="leftVbox" prefHeight="500.0" prefWidth="350.0" style="-fx-border-color: #2e8b57; -fx-border-width: 2px;" BorderPane.alignment="CENTER">
                     <children>
                         <VBox maxHeight="90.0" minHeight="90.0" prefWidth="100.0" style="-fx-background-color: #e6e6e6;">
@@ -58,7 +66,7 @@
                                 <HBox alignment="CENTER" maxHeight="60.0" minHeight="60.0">
                                     <children>
                                         <Button mnemonicParsing="false" onAction="#handleButtonUpdateHINCLocal" prefHeight="51.0" prefWidth="90.0" text="Update" />
-                                        <Button fx:id="switchButton" mnemonicParsing="false" onAction="#handleButtonSwitchView" prefHeight="52.0" prefWidth="90.0" text="HINC View" />
+                                        <Button fx:id="switchButton" mnemonicParsing="false" onAction="#handleButtonSwitchView" prefHeight="52.0" prefWidth="90.0" text="Provider view" />
                                         <Button fx:id="expandButton" onAction="#handleButtonExpand" prefHeight="53.0" prefWidth="90.0" text="Expand" />
                                         <Button fx:id="checkAllButton" mnemonicParsing="false" onAction="#handleButtonCheckAll" prefHeight="52.0" prefWidth="90.0" text="Check All" />
                                     </children>
@@ -66,27 +74,30 @@
                             </children>
                         </VBox>
                         <Separator prefWidth="200.0" style="-fx-background-color: #000000; -fx-background-radius: 2;" />
-                        <ScrollPane style="-fx-fit-to-height: true; -fx-fit-to-width: true;">
+                        <ScrollPane style=" -fx-fit-to-width: true;">
                             <content>
-      
+                                
                                 <VBox fx:id="HINCLocalContainer" />
+                       
                             </content>
                         </ScrollPane>
                     </children>
                 </VBox>
+                            
+                
             </left>
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>
             <bottom>
-                <VBox prefHeight="115.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                <VBox prefHeight="130.0" prefWidth="100.0" BorderPane.alignment="CENTER" fx:id="statusBar">
                     <children>
                         <TextArea fx:id="logTextArea" prefHeight="100.0" prefWidth="554.0" />
-                        <Label fx:id="globalMetaText" prefHeight="15.0" prefWidth="379.0" text="Label">
+                        <Label fx:id="globalMetaText" prefHeight="30.0" prefWidth="554.0" text="Label">
                             <font>
-                                <Font size="14.0" />
+                                <Font size="12.0" />
                             </font>
-                        </Label>
+                        </Label>                        
                     </children>
                 </VBox>
             </bottom>

@@ -5,12 +5,19 @@
  */
 package sinc.hinc.local;
 
-
+import sinc.hinc.common.utils.IPLocationData;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import sinc.hinc.communication.messageInterface.MessageClientFactory;
 import sinc.hinc.repository.DAO.orientDB.OrientDBConnector;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import sinc.hinc.common.metadata.InfoSourceSettings;
 import sinc.hinc.common.utils.HincConfiguration;
@@ -55,27 +62,25 @@ public class Main {
 
         /**
          * ************************
-         * HINC listens to some queue channels to answer the query.
-         *************************
+         * HINC listens to some queue channels to answer the query. ************************
          */
         QueueListener.listenSynMessage();
         QueueListener.listenQueryMessage();
 
         /**
          * ************************
-         * HINC start threads to collect information from providers.
-         *************************
+         * HINC start threads to collect information from providers. ************************
          */
         Long time3 = (new Date()).getTime();
         logger.info("Local management service startup in " + ((double) time3 - (double) time2) / 1000 + " seconds, uuid: " + HincConfiguration.getMyUUID());
         logger.info("Starting to interact with providers ...");
-        
+
         if (hasSettings()) {
             for (InfoSourceSettings.InfoSource source : settings.getSource()) {
                 switch (source.getType()) {
                     case IoT: {
                         CollectResourceIoT collectorThread = new CollectResourceIoT(source);
-                        collectorThread.run();      
+                        collectorThread.run();
                         break;
                     }
                     case Cloud: {
@@ -95,5 +100,7 @@ public class Main {
             System.out.println("Do not query any provider. Configuration file not found.");
         }
     }
-    
+
+   
+
 }

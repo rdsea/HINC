@@ -14,6 +14,13 @@ public class HINCGlobalMeta {
     String group;
     String broker;
     String brokerType;
+    
+    // some location meta
+    String city;
+    String country;
+    String isp;
+    Double lat;
+    Double lon;
 
     public HINCGlobalMeta() {
     }
@@ -48,5 +55,47 @@ public class HINCGlobalMeta {
     public void setGroup(String group) {
         this.group = group;
     }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getIsp() {
+        return isp;
+    }
+
+    public void setIsp(String isp) {
+        this.isp = isp;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
+    }
+    
+    
 
 }

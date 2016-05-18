@@ -8,6 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,10 +20,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -35,10 +47,10 @@ import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 
 public class MainPanelController implements Initializable {
 
-    HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(UserSettings.getDefaultEndpoint(), HINCGlobalAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
-    HINCManagementAPI mngAPI = (HINCManagementAPI) JAXRSClientFactory.create(UserSettings.getDefaultEndpoint(), HINCManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
-    final int updateHINCTimeout = 2000;
-    final int queryDatapointTimeout = 3000;
+    HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), HINCGlobalAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+    HINCManagementAPI mngAPI = (HINCManagementAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), HINCManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+    int updateHINCTimeout = 2000;
+    int queryDatapointTimeout = 3000;
 
     @FXML
     VBox CapabilityContainer;
@@ -52,6 +64,11 @@ public class MainPanelController implements Initializable {
     TextArea logTextArea;
     @FXML
     Label globalMetaText;
+        
+    @FXML
+    Slider timeoutSlider;
+    @FXML
+    VBox statusBar;
 
     @FXML
     @Override
@@ -73,14 +90,41 @@ public class MainPanelController implements Initializable {
 
         HINCGlobalMeta globalMeta = mngAPI.getHINCGlobalMeta();
 
-        writeLog("HINC Global configure: \n  MOM: " + globalMeta.getBroker() + "\n  Com. group: " + globalMeta.getGroup());
+        writeLog("HINC Global configure: \n  MOM: " + globalMeta.getBroker() + "\n  Group: " + globalMeta.getGroup() + "\n  ISP: " + globalMeta.getIsp() + "\n  Location: " + globalMeta.getCity()+"/"+globalMeta.getCountry());
 
         StringBuilder builder = new StringBuilder();
-        builder.append("MOM: ").append(globalMeta.getBroker()).append(". ");
-        builder.append("Com. group: ").append(globalMeta.getGroup());
+        builder.append("MOM: ").append(globalMeta.getBroker()).append(" -- ");
+        builder.append("Group: ").append(globalMeta.getGroup()).append("\n");
+        builder.append("Location: ").append(globalMeta.getCity()).append("/").append(globalMeta.getCountry()).append(" -- ");
+        builder.append("ISP: ").append(globalMeta.getIsp());
         globalMetaText.setText(builder.toString());
 
-        writeLog("Loading list of provider and HINC Local done.");
+        writeLog("Loading list of provider and HINC Local done!"); 
+
+        // create a slider to define the timeout
+        
+        timeoutSlider.setMin(2);
+        timeoutSlider.setMax(15);
+        timeoutSlider.setValue(8);
+        timeoutSlider.setShowTickLabels(true);
+        timeoutSlider.setShowTickMarks(true);
+        timeoutSlider.setMajorTickUnit(1);
+        timeoutSlider.setMinorTickCount(0);
+        timeoutSlider.setSnapToTicks(true);
+        timeoutSlider.setBlockIncrement(1);        
+        Tooltip tt = new Tooltip("Timeout defines the time that HINC Global waiting for HINC Local to reply.\n Higher timeout ensures a query returns all the information.");
+        tt.setStyle("color:black;background-color:orange;");
+        timeoutSlider.setTooltip(tt);
+        timeoutSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                Number old_val, Number new_val) {
+                    if (updateHINCTimeout!=new_val.intValue()*1000){
+                        writeLog("Timeout changed to : " + new_val.intValue() +" seconds");
+                    }
+                    updateHINCTimeout = new_val.intValue() * 1000;
+                    queryDatapointTimeout = new_val.intValue() * 1000;
+            }
+        });
     }
 
     boolean providerView = true;
@@ -91,11 +135,11 @@ public class MainPanelController implements Initializable {
     private void showBaseOnSwitch(List<HincLocalMeta> metas, boolean switchOrNot) {
         if (providerView == switchOrNot) {
             showListOfHINCLocal(metas);
-            switchButton.setText("Provider view");
+            switchButton.setText("HINC view");
             providerView = false;
         } else {
             showListOfProvider(metas);
-            switchButton.setText("HINC view");
+            switchButton.setText("Provider view");
             providerView = true;
         }
     }
@@ -192,42 +236,59 @@ public class MainPanelController implements Initializable {
         HINCLocalContainer.getChildren().clear();
         hincLocalList.clear();
         for (HincLocalMeta local : metas) {
+            final TableView<BasicPropertyData> table = new TableView<>();
             System.out.println("Get HINC Local: " + local.toJson());
-            String ip = local.getIp();
-            String settingsJson = local.getSettings();
-            String uuid = local.getUuid();
-            String group = local.getGroupName();
 
             HBox hincItemHbox = new HBox();
             CheckBox checkBox = new CheckBox();
             checkBox.setSelected(true);
-            InfoSourceSettings sourceSettings = InfoSourceSettings.fromJson(settingsJson);
-            StringBuilder settingsText = new StringBuilder();
-            for (InfoSourceSettings.InfoSource source : sourceSettings.getSource()) {
-                String adaptorClass = source.getAdaptorClass().substring(source.getAdaptorClass().lastIndexOf(".") + 1);
-                String transformerClass = source.getTransformerClass().substring(source.getTransformerClass().lastIndexOf(".") + 1);
-                settingsText.append("Source       : ").append(source.getName()).append("\n");
-                settingsText.append("  Type       : ").append(source.getType()).append("\n");
-                settingsText.append("  Interval   : ").append(source.getInterval()).append("\n");
-                settingsText.append("  Adaptor    : ").append(adaptorClass).append("\n");
-                settingsText.append("  Transformer: ").append(transformerClass).append("\n");
-                for (String s : source.getSettings().keySet()) {
-                    settingsText.append("  ").append(s).append(": ").append(source.getSettings().get(s));
+            InfoSourceSettings sourceSettings = InfoSourceSettings.fromJson(local.getSettings());
+            ObservableList<BasicPropertyData> data
+                    = FXCollections.observableArrayList(
+                            new BasicPropertyData("IP", local.getIp()),
+                            new BasicPropertyData("City", local.getCity() + "/" + local.getCountry()),
+                            new BasicPropertyData("Lat/lon", local.getLat() + "/" + local.getLon()),
+                            new BasicPropertyData("ISP", local.getIsp()),
+                            new BasicPropertyData("Provider", sourceSettings.getSource().size() + "")
+                    );
+
+            table.setEditable(true);
+            table.setPrefHeight(130);
+
+            TableColumn firstNameCol = new TableColumn("Name");
+            firstNameCol.setCellValueFactory(new PropertyValueFactory<BasicPropertyData, String>("name"));
+
+            TableColumn secondNameCol = new TableColumn("Value");
+            secondNameCol.setCellValueFactory(new PropertyValueFactory<BasicPropertyData, String>("value"));
+
+            table.setItems(data);
+            table.getColumns().addAll(firstNameCol, secondNameCol);
+
+            table.setBorder(Border.EMPTY);
+            table.setStyle("-fx-table-cell-border-color: transparent;");
+            table.setBackground(Background.EMPTY);
+
+            table.widthProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+                    // Get the table header
+                    Pane header = (Pane) table.lookup("TableHeaderRow");
+                    if (header != null && header.isVisible()) {
+                        header.setMaxHeight(0);
+                        header.setMinHeight(0);
+                        header.setPrefHeight(0);
+                        header.setVisible(false);
+                        header.setManaged(false);
+                    }
                 }
-            }
-            Font font = new Font(java.awt.Font.MONOSPACED, 14);
+            });
 
-            Text theText = new Text(settingsText.toString());
-            theText.setFont(font);
-            theText.setTextAlignment(TextAlignment.LEFT);
-
-            TitledPane titlePanel = new TitledPane(ip + " | " + uuid.substring(0, 12), theText);
-            titlePanel.setFont(font);
+            TitledPane titlePanel = new TitledPane(local.getUuid().substring(0, 32), table);
             titlePanel.setExpanded(true);
             titlePanel.setStyle("-fx-pref-width: 350;");
             titlePanel.setContentDisplay(ContentDisplay.LEFT);
 
-            hincLocalList.add(new HINCLocalItem(uuid, checkBox, titlePanel));
+            hincLocalList.add(new HINCLocalItem(local.getUuid(), checkBox, titlePanel));
 
             hincItemHbox.getChildren().add(checkBox);
             hincItemHbox.getChildren().add(titlePanel);
@@ -237,39 +298,66 @@ public class MainPanelController implements Initializable {
     }
 
     public void showListOfProvider(List<HincLocalMeta> metas) {
+
         System.out.println("Generating provider list...");
         HINCLocalContainer.getChildren().clear();
         hincLocalList.clear();
         Font font = new Font(java.awt.Font.MONOSPACED, 14);
+
         for (HincLocalMeta local : metas) {
             System.out.println("Get HINC Local: " + local.toJson());
-            String ip = local.getIp();
-            String settingsJson = local.getSettings();
-            String uuid = local.getUuid();
-            String group = local.getGroupName();
 
-            InfoSourceSettings sourceSettings = InfoSourceSettings.fromJson(settingsJson);
-            StringBuilder settingsText = new StringBuilder();
+            InfoSourceSettings sourceSettings = InfoSourceSettings.fromJson(local.getSettings());
+
             for (InfoSourceSettings.InfoSource source : sourceSettings.getSource()) {
-                String adaptorClass = source.getAdaptorClass().substring(source.getAdaptorClass().lastIndexOf(".") + 1);
-                String transformerClass = source.getTransformerClass().substring(source.getTransformerClass().lastIndexOf(".") + 1);
-                settingsText.append("Type       : ").append(source.getType()).append("\n");
-                settingsText.append("Interval   : ").append(source.getInterval()).append("\n");
-                settingsText.append("Adaptor    : ").append(adaptorClass).append("\n");
-                settingsText.append("Transformer: ").append(transformerClass).append("\n");
-                settingsText.append("HINC Local:").append(ip).append("\n");
-                for (String s : source.getSettings().keySet()) {
-                    settingsText.append("  ").append(s).append(": ").append(source.getSettings().get(s));
-                }
+                ObservableList<BasicPropertyData> data
+                        = FXCollections.observableArrayList(
+                                new BasicPropertyData("Type", source.getType() + ""),
+                                new BasicPropertyData("Interval", source.getInterval() + ""),
+                                new BasicPropertyData("Adaptor", source.getAdaptorClass()),
+                                new BasicPropertyData("Transformer", source.getTransformerClass()),
+                                new BasicPropertyData("HINC/IP:", local.getIp()),
+                                new BasicPropertyData("HINC/uuid:", local.getUuid())
+                        );
 
-                Text theText = new Text(settingsText.toString());
-                theText.setFont(font);
-                theText.setTextAlignment(TextAlignment.LEFT);
-                TitledPane titlePane = new TitledPane(source.getType() + " provider: " + source.getName(), theText);
+                final TableView<BasicPropertyData> table = new TableView<>();
+                table.setEditable(true);
+                table.setPrefHeight(170);
+
+                TableColumn firstNameCol = new TableColumn("Name");
+                firstNameCol.setCellValueFactory(new PropertyValueFactory<BasicPropertyData, String>("name"));
+
+                TableColumn secondNameCol = new TableColumn("Value");
+                secondNameCol.setCellValueFactory(new PropertyValueFactory<BasicPropertyData, String>("value"));
+
+                table.setItems(data);
+                table.getColumns().addAll(firstNameCol, secondNameCol);
+
+                table.setBorder(Border.EMPTY);
+                table.setStyle("-fx-table-cell-border-color: transparent;");
+                table.setBackground(Background.EMPTY);
+
+                table.widthProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+                        // Get the table header
+                        Pane header = (Pane) table.lookup("TableHeaderRow");
+                        if (header != null && header.isVisible()) {
+                            header.setMaxHeight(0);
+                            header.setMinHeight(0);
+                            header.setPrefHeight(0);
+                            header.setVisible(false);
+                            header.setManaged(false);
+                        }
+                    }
+                });
+
+                TitledPane titlePane = new TitledPane(source.getType() + " provider: " + source.getName(), table);
                 titlePane.setExpanded(true);
 
-                hincLocalList.add(new HINCLocalItem(uuid, null, titlePane));
+                hincLocalList.add(new HINCLocalItem(local.getUuid(), null, titlePane));
                 HINCLocalContainer.getChildren().add(titlePane);
+
             }
         }
     }

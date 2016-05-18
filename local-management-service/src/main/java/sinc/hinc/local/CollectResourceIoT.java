@@ -121,7 +121,7 @@ public class CollectResourceIoT implements Runnable {
                         sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
                     }
                     String macStr = sb.toString();  // get MAC
-                    CloudConnectivity c = new CloudConnectivity(HincConfiguration.getMyUUID(), "Interface-" + HincConfiguration.getMeta().getIp(), "SD Gateway", ipv4, macStr);
+                    CloudConnectivity c = new CloudConnectivity(HincConfiguration.getMyUUID(), "Interface-" + HincConfiguration.getLocalMeta().getIp(), "SD Gateway", ipv4, macStr);
                     cons.add(c);
 
                 } else {

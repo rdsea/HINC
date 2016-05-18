@@ -8,6 +8,8 @@ package sinc.hinc.common.metadata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -22,6 +24,12 @@ public class HincLocalMeta {
     String groupName;
     String broker;
     String brokerType;
+    // some location meta
+    String city;
+    String country;
+    String isp;
+    Double lat;
+    Double lon;
 
     public HincLocalMeta() {
     }
@@ -31,6 +39,8 @@ public class HincLocalMeta {
         this.ip = ip;
         this.unicastTopic = unicastTopic;
     }
+
+   
 
     public String getUnicastTopic() {
         return unicastTopic;
@@ -97,6 +107,50 @@ public class HincLocalMeta {
             return null;
         }
     }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getIsp() {
+        return isp;
+    }
+
+    public void setIsp(String isp) {
+        this.isp = isp;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
+    }
+
+    
+    
+    
 
     public static HincLocalMeta fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper();

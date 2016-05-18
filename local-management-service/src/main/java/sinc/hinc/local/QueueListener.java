@@ -35,7 +35,7 @@ public class QueueListener {
             @Override
             public void handleMessage(HincMessage msg) {
                 if (msg.getMsgType().equals(HincMessage.MESSAGE_TYPE.SYN_REQUEST)) {
-                    String payload = HincConfiguration.getMeta().toJson();
+                    String payload = HincConfiguration.getLocalMeta().toJson();
                     HincMessage replyMsg = new HincMessage(HincMessage.MESSAGE_TYPE.SYN_REPLY, HincConfiguration.getMyUUID(), HincMessageTopic.REGISTER_AND_HEARBEAT, "", payload);
                     pub.pushMessage(replyMsg);
 

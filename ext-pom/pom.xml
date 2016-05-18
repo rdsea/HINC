@@ -16,5 +16,6 @@
         <module>TranformIoTivity</module>
         <module>TransformOpenHAB</module>
         <module>TransformFiwareContextBroker</module>
+        <module>DummyProvider</module>
     </modules>
 </project>
