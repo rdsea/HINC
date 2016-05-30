@@ -8,6 +8,7 @@ package sinc.hinc.global.API;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.common.API.HINCManagementAPI;
@@ -24,6 +25,7 @@ import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
  *
  * @author hungld
  */
+//@Path("/")
 public class HINCManagementImpl implements HINCManagementAPI{
     
     static HINCGlobalMeta meta;

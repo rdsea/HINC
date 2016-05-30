@@ -1,0 +1,1083 @@
+[#ftl]
+
+[#assign soapAvailable=docsxml.soap.wsdls.wsdl.endpointInterface?size > 0/]
+
+[#assign restAvailable=docsxml.rest.resources.resource?size > 0/]
+
+[#function scrubPathToFilename path]
+  [#return "path_" + path?string?replace(" ", "_")?replace("/", "_")?replace(":","-")?replace("{", "-")?replace("}", "-") + ".html"/]
+[/#function]
+
+[#function scrubDownloadToFilename download]
+  [#return "download_" + download.@name?string?replace(" ", "_")?replace("/", "_")?replace(":","-")?replace("{", "-")?replace("}", "-") + ".html"/]
+[/#function]
+
+[#function tocNeeded(nodelist)]
+  [#return nodelist?size > 2/]
+[/#function]
+
+[#function attributeExists(node)]
+  [#if node?size??]
+    [#--if there is a 'size' property, then it's not an attribute--]
+    [#return node?size > 0/]
+  [#else]
+    [#return node?node_type = "attribute"/]
+  [/#if]
+[/#function]
+
+[#function facetApplicable element facetName]
+  [#list element.facets.facet as facet]
+    [#if facet.name = facetName]
+      [#return true/]
+    [/#if]
+  [/#list]
+  [#return false/]
+[/#function]
+
+[#function isDeprecated element]
+  [#return (getTagValues(element, "deprecated")?size > 0)/]
+[/#function]
+
+[#function getTagValues element tagName]
+  [#assign tagvalues = [] /]
+  [#list element.tag as tag]
+    [#if tag.@name=tagName]
+      [#assign tagvalues = tagvalues + [ tag ] /]
+    [/#if]
+  [/#list]
+  [#if element?node_name = "resource"]
+    [#assign operationtags = [] /]
+    [#list element.operation as operation]
+      [#list operation.tag as tag]
+        [#if tag.@name=tagName]
+          [#assign operationtags = operationtags + [ tag ] /]
+        [/#if]
+      [/#list]
+    [/#list]
+    [#if operationtags?size = element.operation?size]
+      [#assign tagvalues = tagvalues + [ operationtags[0] ]/]
+    [/#if]
+  [/#if]
+  [#return tagvalues/]
+[/#function]
+
+[#--set up the subnavigation menus--]
+[#assign nav_sections = { "Data Model" : "model.html"} /]
+[#if soapAvailable]
+  [#assign nav_sections = nav_sections + { "SOAP" : "soap.html" }/]
+[/#if]
+[#if restAvailable]
+  [#assign nav_sections = nav_sections + { "REST" : "rest.html" }/]
+[/#if]
+[#if ((downloadsxml??) && (downloadsxml.download?size > 0))]
+  [#assign nav_sections = nav_sections + { "Files and Libraries" : "downloads.html"} /]
+[/#if]
+
+[#assign nav_resource_facets = {}/]
+[#if groupRestResources??]
+  [#list docsxml.rest.facets.facet?sort_by("value") as facet]
+    [#if facet.name = groupRestResources]
+      [#assign nav_resource_facets = nav_resource_facets + { facet.value : "resource_" + facet.value + ".html"}/]
+    [/#if]
+  [/#list]
+[/#if]
+
+[#assign nav_paths = {}/]
+[#list docsxml.rest.resources.resource?sort_by("@name") as resource]
+  [#assign nav_paths = nav_paths + {resource.@name?string : scrubPathToFilename(resource.@name)}/]
+[/#list]
+
+[#assign nav_wsdls = {}/]
+[#assign nav_eis_by_ns = {}/]
+[#list docsxml.soap.wsdls.wsdl as wsdl]
+  [#assign nav_wsdls = nav_wsdls + {wsdl.@namespaceId?string : "soap_" + wsdl.@namespaceId?string + ".html"}/]
+  [#assign nav_eis_by_ns = nav_eis_by_ns + {wsdl.@namespaceId?string : {}}/]
+  [#list wsdl.endpointInterface?sort_by("@name") as endpointInterface]
+    [#assign tmp = nav_eis_by_ns[wsdl.@namespaceId?string] + {endpointInterface.@name?string : "soap_" + wsdl.@namespaceId?string + "_" + endpointInterface.@name?string + ".html"}/]
+    [#assign nav_eis_by_ns = nav_eis_by_ns + {wsdl.@namespaceId?string : tmp}/]
+  [/#list]
+[/#list]
+
+[#assign nav_models = {}/]
+[#assign nav_typedefs_by_ns = {}/]
+[#assign nav_elements_by_ns = {}/]
+[#list docsxml.data.schema as schema]
+  [#assign nav_models = nav_models + {schema.@namespaceId?string : schema.@namespaceId?string + ".html"}/]
+  [#assign nav_elements_by_ns = nav_elements_by_ns + {schema.@namespaceId?string : {}}/]
+  [#list schema.elements.element?sort_by("@name") as element]
+    [#assign tmp = nav_elements_by_ns[schema.@namespaceId?string] + { element.@name?string + " element" : "el_" + schema.@namespaceId?string + "_" + element.@name?string + ".html"}/]
+    [#assign nav_elements_by_ns = nav_elements_by_ns + {schema.@namespaceId?string : tmp}/]
+  [/#list]
+  [#assign nav_typedefs_by_ns = nav_typedefs_by_ns + {schema.@namespaceId?string : {}}/]
+  [#list schema.types.type?sort_by("@name") as type]
+    [#assign tmp = nav_typedefs_by_ns[schema.@namespaceId?string] + {type.@name?string : schema.@namespaceId?string + "_" + type.@name?string + ".html"}/]
+    [#assign nav_typedefs_by_ns = nav_typedefs_by_ns + {schema.@namespaceId?string : tmp}/]
+  [/#list]
+[/#list]
+
+[#macro boilerplate title=docsxml.@title!"Web API" subnav=[{"title" : "Home", "href" : indexPageName}] breadcrumbs=false codeblocks=true]
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+
+  <title>${title}</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- jquery AND plugins -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+
+  <!-- bootstrap -->
+  <link rel="stylesheet" href="https://d2cits3ogc9htg.cloudfront.net/jam/todc-bootstrap/3.3.4/css/bootstrap.css">
+  <link rel="stylesheet" href="https://d2cits3ogc9htg.cloudfront.net/jam/todc-bootstrap/3.3.4/css/todc-bootstrap.min.css">
+  <script src="https://d2cits3ogc9htg.cloudfront.net/jam/todc-bootstrap/3.3.4/js/bootstrap.js"></script>
+  
+  <!-- skin -->
+  <link href="./css/style.css" rel="stylesheet">  
+  
+  <!-- code highlights -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://highlightjs.org/static/demo/styles/obsidian.css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <!-- icons -->
+  <link href="https://d2cits3ogc9htg.cloudfront.net/jam/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- search -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/1.2.2/fuse.min.js"></script>
+  <!-- keywords to search on attaches to global scope window.keywords -->
+  <script src="./keywords.js"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+
+    var options = {
+      caseSensitive: false,
+      includeScore: false,
+      shouldSort: true,
+      threshold: 0.5,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      keys: ["keywords", "desc"]
+    };
+    var fuse = new Fuse(window.keywords, options); // "list" is the item array
+
+    var clear = function() {
+      var $el = $('#searchbox');
+
+      var $types = $el.find('dl.types');
+      $types.html('');
+
+      var $properties = $el.find('dl.properties');
+      $properties.html('');
+
+      $el.find('dl').hide();
+
+      return {
+        $el: $el,
+        $properties: $properties,
+        $types: $types
+      }
+    }
+
+    var search = function(term) {
+      var result = fuse.search(term);
+
+      var dom = clear();
+      dom.$el.find('dl').show();
+
+      var topN = _.first(result, 10);
+
+      // spit out types first...
+      _.each(topN, function(item) {
+
+        if (item.noun == 'type') {
+          dom.$types.append($('<dt>' + 
+                    '<a href="' + item.link + '">' + item.name + '</a>' + 
+                    '</dt>' + 
+                    '<dd>' + (item.desc) + '...</dd>'));
+        } else {
+          dom.$properties.append($('<dt>' + 
+                    '<a href="' + item.link + '">' + item.name + ' <em>' + item.type + '</em></a>' + 
+                    '</dt>' + 
+                    '<dd>' + (item.desc) + '...</dd>'));
+        }
+
+      });
+    }
+
+    $('body').on('click', function(e) {
+      if ($(e.delegateTarget).closest('#searchbox dl').length <= 0) {
+        clear();
+      }
+    });
+
+    $('.search-text').on('keyup', _.debounce(_.bind(function(e) {
+      if (e.keyCode == 27) { // escape key maps to keycode `27`
+        clear();
+      } else {
+        search($('.search-text').val());
+      }
+    }, this), 100));
+
+    clear();
+
+  })
+  </script>
+  
+  <style>
+  .submenu {
+    padding: 0px !important;
+    margin: 0px !important;
+    border-left: 1px solid #50A5E6;
+    margin-left: 1.1em !important;
+  }
+  .submenu .list-group-item-wrapper {
+    margin: 0px !important;
+    padding: 0px !important;
+  }
+  .submenu .list-group-item-wrapper a {
+    font-size: 11px !important;
+  }
+  </style>
+
+</head>
+
+<body>
+
+[#if restAvailable]
+
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="./index.html">${title}</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          
+            <!-- packages -->
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button">Packages <i class="fa fa-angle-down"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                [@renderUniquePackagesList/]
+              </ul>
+            </li>
+
+            <!-- resources -->
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button">Resources <i class="fa fa-angle-down"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="application.wadl">Service WADL</a></li>
+                <li><a href="ns0.xsd">Type Schemas</a></li>
+              </ul>
+            </li>
+
+            [#if ((downloadsxml??) && (downloadsxml.download?size > 0))]
+            <!-- downloads -->
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button">Downloads <i class="fa fa-angle-down"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                [#list downloadsxml.download as download]
+                    <li><a href="download_${download.@name?replace(" ", "_")}.html">${download.@name}</a></li>
+                [/#list]
+              </ul>
+            </li>            
+            [/#if]
+          
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+  <div class="container-fluid">
+    
+    <div class="row row-fluid">
+    
+      <div class="col-md-4" id="sidebar">
+        <div id="searchbox">
+          <input type="text" placeholder="search..." class="form-control search-text"/>
+          <div class="autocomplete">
+            <dl class="types"></dl>
+            <dl class="properties"></dl>
+          </div>
+        </div>
+        
+        <div id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="nav nav-tabs nav-stacked panel-collapse collapse in" id="services_list" aria-expanded="true">
+              [#list docsxml.rest.groups.group as endpoint]
+                <a href="path_${endpoint.name}.html" class="list-group-item">${endpoint.name}</a>
+              [/#list]
+            </div>
+        </div>
+        
+      </div>
+    
+      <div class="col-md-8">
+      
+          [#nested/]
+
+      </div>
+      
+    </div>
+    
+  </div>
+  
+  <!-- footer -->
+  <footer>
+    <div class="container-fluid">
+      <div class="row row-fluid">
+        
+        <div class="col-md-2 col-md-offset-4">
+          <label>Packages</label>
+          <ul>
+            [@renderUniquePackagesList/]
+          </ul>
+        </div>
+        <div class="col-md-2">
+          <label>Resources</label>
+          <ul>
+            <li><a href="application.wadl">Service WADL</a></li>
+            <li><a href="ns0.xsd">Type Schemas</a></li>
+          </ul>
+        </div>
+        
+        [#if ((downloadsxml??) && (downloadsxml.download?size > 0))]
+        <div class="col-md-2">
+          <label>Downloads</label>
+          <ul>
+            [#list downloadsxml.download as download]
+                <li><a href="download_${download.@name?replace(" ", "_")}.html">${download.@name}</a></li>
+            [/#list]
+          </ul>
+        </div>
+        [/#if]
+
+      </div>
+    </div>
+  </footer>
+         
+</body>
+</html>
+[/#if]
+[/#macro]
+
+[#------------- INDEX.html ----------------]
+
+[@file name=indexPageName charset="utf-8"]
+  [@boilerplate]
+    
+    [#-- TABLE OF CONTENTS --]
+    <div class="panel panel-default" class="service index">
+        <div class="panel-body">
+            
+            <h4 class="endpoint">${docsxml.@title}</h4>
+            
+            <h5>Packages</h5>
+            <p>
+            This API is build from the core package(s) listed below. Browse packages to see
+            objects and their definitions logically grouped by domain so you can fast track
+            your understanding.
+            </p>
+            <ul class="packages-list">
+                [@renderUniquePackagesList/]
+            </ul>
+            [#-- packages --]
+            
+            <h5>Introduction</h5>
+            [#if docsxml.documentation?size > 0]
+                ${docsxml.documentation}
+            [/#if]
+        </div>
+    </div>
+    
+  [/@boilerplate]
+[/@file]
+
+[#------------- MODEL.html ----------------]
+
+[@file name="model.html" charset="utf-8"]
+  [@boilerplate]
+  [/@boilerplate]
+[/@file]
+
+[#------------- download_XXX.html ----------------]
+
+[#if ((downloadsxml??) && (downloadsxml.download?size > 0))]
+    [#list downloadsxml.download as download]
+        [#assign sanitized_filename=scrubDownloadToFilename(download)/]
+        [@file name=sanitized_filename charset="utf-8"]
+            [@boilerplate]
+                <div class="panel panel-default" class="service">
+                    <div class="panel-body">
+                        <h4 class="endpoint">${download.@name}</h4>
+                        
+                        <p class="well well-sm" style="margin-top: .5em;">
+                        [#list download.files.file as file]
+                            <a href="${file.@name}">${file.@name}</a> - ${file?string} (${file.@size})<br/>
+                        [/#list]
+                        </p>
+                        
+                        [#-- grab the real language so we can use with highlight.js for code examples --]                        
+                        [#assign language=download.platform?string?lower_case?split(" ")?first/]
+                        
+                        [#-- fix html created by enunciate --]
+                        [#assign body=download.description?string?replace("h1","h4")?replace("<code","<pre><code")?replace("</code>","</code></pre>")?replace("prettyprint", language)/]
+                        
+                        [#-- fix comments and spaces when ruby code (uses '//' instead of '#') --]
+                        [#if language == "ruby"]
+                        ${body?replace("//","# ")}
+                        [#else]
+                        ${body?replace("//","// ")}
+                        [/#if]
+                        
+                    </div>
+                </div>
+            [/@boilerplate]
+        [/@file]
+    [/#list]
+[/#if]
+
+[#------------- path_XXX.html ----------------]
+
+[#macro processRestEndpoint endpoint]
+  [#assign resource_filename=scrubPathToFilename(endpoint.name)/]
+  [@file name=resource_filename charset="utf-8"]
+    [@boilerplate]
+      <div class="panel panel-default" id="__${endpoint.name}" class="service">
+        <div class="panel-body">
+        
+          <h4 class="endpoint">${endpoint.name}</h4>
+          <p>
+            ${endpoint.documentation}
+          </p>
+          
+          <h4 class="operation">Operations</h4>
+
+          [#list docsxml.rest.resources.resource?sort_by("@name") as resource]
+            [#if resource.groups.group == endpoint.name]
+                [#list resource.operation as method]
+                    <div class="panel panel-default method" id="${resource.@name?replace("/", "_")?replace("{","")?replace("}","")}_${method.@name}">
+                        <div class="panel-heading">
+                            <h4 class="rest-method-name">
+                                ${resource.@subcontext}${resource.@name} <small>${method.@name}</small>
+                            </h4>
+                        </div>
+                        <div class="panel-body">
+                            <p>
+                            [#list method.documentation as documentation]
+                                ${documentation}
+                            [/#list]
+                            </p>
+                            
+                            <div id="${resource.@name?replace("/", "_")?replace("{","")?replace("}","")}_${method.@name}_parameters">
+                                
+                                [#if (method.inValue?has_content || method.parameter?has_content)]
+                                <h5 class="request-header"><i class="fa fa-arrow-circle-right"></i> Request</h5>
+                                
+                                    <table class="table table-condensed table-striped table-parameters table-request-parameters">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 15%;">Field</th>
+                                            <th style="width: 10%;">Type</th>
+                                            <th style="width: 75%;">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    [#if method.parameter?has_content]
+                                        [#list method.parameter as parameter]
+                                            <tr>
+                                                <td>${parameter.@name}</td>
+                                                <td>${parameter.@type}</td>
+                                                <td>${parameter}</td>
+                                            </tr>
+                                        [/#list]
+                                    [/#if]
+                                    [#if method.inValue?has_content]
+                                        [#list method.inValue as inValue]
+                                            <tr>
+                                                <td>(body)</td>
+                                                <td>
+                                                    [#list method.inValue.xmlElement as xmlElement]
+                                                        [#if attributeExists(xmlElement.@elementSchemaId)]
+                                                            <a href="type_${xmlElement.@elementName?cap_first}.html">${xmlElement.@elementName?cap_first}</a>
+                                                        [#else]
+                                                            ${xmlElement.@elementName?capitalize}
+                                                        [/#if]
+                                                    [/#list]
+                                                </td>
+                                                <td>
+                                                    [#list inValue.documentation as documentation]
+                                                        ${documentation}
+                                                    [/#list]
+                                                </td>
+                                            </tr>
+                                        [/#list]
+                                    [/#if]
+                                    </tbody>
+                                    </table>
+                                [/#if]
+                                
+                                <h5 class="response-header"><i class="fa fa-arrow-circle-left"></i> Response</h5>
+                                
+                                <table class="table table-condensed table-striped table-parameters table-response table-response-parameters">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 25%;">Type</th>
+                                            <th style="width: 75%;">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                [#list method.outValue.xmlElement as xmlElement]
+                                                    [#if attributeExists(xmlElement.@elementSchemaId)]
+                                                        <a href="type_${xmlElement.@elementName?cap_first}.html">${xmlElement.@elementName?cap_first}</a>
+                                                    [#else]
+                                                        ${xmlElement.@elementName}
+                                                    [/#if]
+                                                [/#list]
+                                            </td>
+                                            <td>
+                                                [#list method.outValue.documentation as documentation]
+                                                    ${documentation}
+                                                [/#list]
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+              
+                        </div>
+                    </div>
+                [/#list]
+            [/#if]
+          [/#list]
+        </div>
+      </div>
+    [/@boilerplate]
+  [/@file]
+[/#macro]
+
+[#------------- type_XXX.html ----------------]
+[#if restAvailable]
+    [#list docsxml.data.schema as schema]
+        [#list schema.types.type?sort_by("@name") as type]
+            [@processType type=type/]
+        [/#list]
+    [/#list]
+    
+    [#list docsxml.rest.groups.group as endpoint]
+        [@processRestEndpoint endpoint=endpoint/]
+    [/#list]
+[/#if]
+
+[#------------- pkg_XXX.html ----------------]
+[#list docsxml.packages.package as package]
+    [#if package.documentation?has_content]
+        [#assign package_name=package.@id?string?split(".")?last?lower_case/]
+        [@file name="pkg_" + package_name + ".html" charset="utf-8"]
+            [@boilerplate]
+                <div class="panel panel-default" class="service">
+                    <div class="panel-body">
+                        <h4 class="endpoint">${package_name?cap_first}</h4>
+                        
+                        ${package.documentation?string}
+                        
+                        <h5>Types</h5>
+                        <table class="table table-condensed table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%;">Type</th>
+                                    <th style="width: 75%;">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                [#list docsxml.data.schema as schema]
+                                    [#list schema.types.type?sort_by("@name") as type]
+                                        [#if attributeExists(type.@package)]
+                                            [#if type.@package?string == package.@id?string]
+                                            <tr>
+                                                <td>
+                                                    <a href="type_${type.@name?cap_first}.html">${type.@name?cap_first}</a>
+                                                </td>
+                                                <td>
+                                                    [#if type.documentation?has_content]
+                                                        ${type.documentation?string}
+                                                    [/#if]
+                                                </td>
+                                            </tr>
+                                            [/#if]
+                                        [/#if]
+                                    [/#list]
+                                [/#list]
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+            [/@boilerplate]
+        [/@file]
+    [/#if]
+[/#list]
+
+[#------------- el_XXX.html ----------------]
+[#macro processElement element]
+  [#assign schema=element?parent?parent/]
+  [@file name="el_" + schema.@namespaceId + "_" + element.@name + ".html" charset="utf-8"]
+    [@boilerplate]
+    [/@boilerplate]
+  [/@file]
+[/#macro]
+
+[#------------- type_XXX.html ----------------]
+[#macro processType type]
+  [#assign schema=type?parent?parent/]
+  [@file name="type_" + type.@name?cap_first + ".html" charset="utf-8"]
+    [@boilerplate]
+        <div class="panel panel-default" id="__${type.@name}">
+            <div class="panel-body">
+
+                [#-- navigate to package level where similar types are defined --]
+                <ol class="breadcrumb">
+                  <li>Packages</li>
+                  <li><a href="pkg_${type.@package?string?split(".")?last?lower_case}.html">${type.@package?string?split(".")?last?cap_first}</a></li>
+                  <li class="active"><a href="#">${type.@name?cap_first}</a></li>
+                </ol>
+
+                [#-- glorious title --]
+                <h4 class="endpoint">${type.@name?cap_first} 
+                    [#-- hint for enum vs type --]
+                    [#if type.values?has_content](Enum)[#else](Type)[/#if]
+                </h4>
+                
+                [#-- attributes of our type (type could be object or enum) --]
+                [@renderParents type=type/]
+                [@renderChildren type=type/]
+                
+                [#list type.documentation as documentation]
+                <p>
+                    ${documentation}
+                </p>
+                [/#list]
+                
+                [@renderType type=type/]
+                [@renderEnum type=type/]
+                
+                [@renderDependenciesThatUseType type=type/]
+                
+                [@renderOperationsThatUseType type=type/]
+                
+                [@renderServicesThatUseType type=type/]
+                
+                [#if type.values?has_content]
+                    [#-- enums have no example code, so no point rendering --]
+                [#else]
+                    <h5>Example</h5>
+                    [#list docsxml.data.schema as foo]
+                        [#list foo.elements.element as element]
+                            [#if element.@typeName == type.@name]
+                            <p>
+                                <pre><code class="json">${element.examplejson}</code></pre>
+                            </p>
+                            [/#if]
+                        [/#list]
+                    [/#list]
+                [/#if]
+            </div>
+        </div>
+        
+    [/@boilerplate]
+  [/@file]
+[/#macro]
+
+[#------------- keyword_XXX.html ----------------]
+[#if restAvailable]
+
+    [@file name="keywords.js" charset="utf-8"]
+        window.keywords = [
+            [@collectUniqueWords/]
+        ];
+    [/@file]
+
+[/#if]
+
+[#macro collectUniqueWords]    
+    [#list docsxml.data.schema as schema]
+        [#list schema.types.type?sort_by("@name") as type]
+            {
+                "id": "type_${type.@name}",
+                "keywords": "${type.@name}",
+                "link": "type_${type.@name?cap_first}.html",
+                "type": "${type.@name}",
+                "name": "${type.@name}",
+                "noun": "type",
+                "desc": "[#list type.documentation as documentation]${documentation?trim?replace("\n", " ")?replace("<[^>]*>", "", "r")?html?split(".")[0]}[/#list]"
+            },           
+            [#list type.elements.element as element]
+                {
+                    "id": "prop_${type.@name}_${element.@jsonName}",
+                    "keywords": "${type.@name} ${element.@jsonName}",
+                    "link": "type_${type.@name?cap_first}.html#${element.@jsonName}",
+                    "type": "${type.@name}",
+                    "name": "${element.@jsonName}",
+                    "noun": "property",
+                    "desc": "[#list element.documentation as documentation]${documentation?trim?replace("\n", " ")?replace("<[^>]*>", "", "r")?html?split(".")[0]}[/#list]"
+                },
+            [/#list]
+        [/#list]
+    [/#list]
+[/#macro]
+
+[#-- useful snippet for rendering a type by name ---]
+[#macro renderTypeThatMatchesName name]
+    [#list docsxml.data.schema as schema]
+        [#list schema.types.type?sort_by("@name") as type]
+            [#if type.@name == name]
+                [@renderType type=type/]
+            [/#if]
+            [#list type.groups.group as group]
+                [#if group == name]
+                    [@renderType type=type/]
+                [/#if]
+            [/#list]
+        [/#list]
+    [/#list]
+[/#macro]
+
+[#macro renderUniquePackagesList]
+    [#---- contains collected results so we can conditionally output div for prettier docs ---]
+    [#assign matches = { } /]
+    
+    [#list docsxml.packages.package as package]
+        [#if package.documentation?has_content]
+            [#--- we dont want to include the root package defined in enunciate and our index page --]
+            [#if package.documentation?string != docsxml.documentation?string]
+                [#assign matches = matches + { package.@id : package.@id } /]
+            [/#if]
+        [/#if] 
+    [/#list]
+    
+    [#if matches?has_content]
+        [#list matches?keys?sort as package]
+            <li><a href="pkg_${package?split(".")?last}.html">${package?split(".")?last?cap_first}</a></li>
+        [/#list]
+    [/#if]
+    
+[/#macro]
+
+[#--- macro will find operations in services that reference this as input/output ---]
+[#macro renderOperationsThatUseType type]
+
+    [#---- contains collected results so we can conditionally output div for prettier docs ---]
+    [#assign matches = { } /]
+
+    [#list docsxml.rest.resources.resource?sort_by("@name") as resource]
+        [#list resource.operation as operation]
+            [#list operation.outValue.xmlElement as outParam]
+                [#if outParam.@elementName?lower_case == type.@name?lower_case]
+                    [#list resource.groups.group as group]
+                        [#assign ref_value = { "group": group, "resource": resource, "operation": operation } /]
+                        [#assign matches = matches + { resource.@name : ref_value } /]
+                    [/#list]
+                [/#if]
+            [/#list]
+            
+            [#list operation.inValue.xmlElement as inParam]
+                [#if inParam.@elementName?lower_case == type.@name?lower_case]
+                    [#list resource.groups.group as group]
+                        [#assign ref_value = { "group": group, "resource": resource, "operation": operation } /]
+                        [#assign matches = matches + { resource.@name : ref_value } /]
+                    [/#list]
+                [/#if]
+            [/#list]            
+        [/#list]
+    [/#list]
+    
+    [#if matches?has_content]
+        <h5 class="services">Used by Methods</h5>
+        <div class="tree operations well well-sm">
+        [#list matches?keys?sort as key]
+            [#assign resource = matches[key].resource /]
+            [#assign group = matches[key].group /]
+            [#assign operation = matches[key].operation /]
+            <a href="path_${group}.html#${resource.@name?replace("/", "_")?replace("{","")?replace("}","")}_${operation.@name}">${resource.@name} (${operation.@name})</a>
+        [/#list]
+        </div>
+    [/#if]
+    
+[/#macro]
+
+[#macro renderChildren type]
+
+    [#---- contains collected results so we can conditionally output div for prettier docs ---]
+    [#assign known_children = { } /]
+    
+    [#list docsxml.data.schema.types.type as child]
+        [#if attributeExists(child.@extendsType)]
+            [#if (child.@extendsType?string?lower_case?ends_with(type.@name?lower_case?string))]
+                [#assign known_children = known_children + { child.@name: child.@name } /]
+            [/#if]
+            [#list docsxml.data.schema.types.type as grandchild]
+                [#if attributeExists(grandchild.@extendsType)]
+                    [#if (grandchild.@extendsType?string?lower_case?ends_with(grandchild.@name?lower_case?string))]
+                        [#assign known_children = known_children + { grandchild.@name: grandchild.@name } /]
+                    [/#if]
+                [/#if]
+            [/#list]
+        [/#if]
+    [/#list]
+     
+    
+    [#if known_children?has_content]
+        <div class="poly-children">
+            <i class="fa fa-sitemap"></i> <em>Known Subclasses</em>
+            [#list known_children?keys?sort as child]
+                <a href="type_${child?cap_first}.html">${child?cap_first}</a>
+            [/#list]
+        </div>
+    [/#if]
+    
+[/#macro]
+
+[#macro renderParents type]
+
+    [#---- contains collected results so we can conditionally output div for prettier docs ---]
+    [#assign known_parents = { } /]    
+    
+    [#if attributeExists(type.@extendsType)]
+        [#list docsxml.data.schema.types.type as parent]
+            [#if (type.@extendsType?string?lower_case?ends_with(parent.@name?lower_case?string))]
+                [#assign known_parents = known_parents + { parent.@name: parent.@name } /]
+                [#-- parent is also a child, so go up to parents class to get a little bit more info --]
+                [#-- Animal > [Mamal, Reptile] -> [Cat, Snake] --]
+                [#if attributeExists(parent.@extendsType)]
+                    [#list docsxml.data.schema.types.type as grandparent]
+                        [#if (parent.@extendsType?string?lower_case?ends_with(grandparent.@name?lower_case?string))]
+                            [#assign known_parents = known_parents + { grandparent.@name: grandparent.@name } /]
+                        [/#if]
+                    [/#list]
+                [/#if]
+            [/#if]
+        [/#list]
+    [/#if]
+    
+    [#if known_parents?has_content]
+        <div class="poly-parent">
+            <em>Known Parent(s)</em>
+            [#list known_parents?keys?sort as parent]
+                <a href="type_${parent?cap_first}.html">${parent?cap_first}</a>
+            [/#list]
+        </div>
+    [/#if]
+         
+[/#macro]
+
+[#--- macro will find distinct services that reference this as input/output ---]
+[#macro renderServicesThatUseType type]
+    
+    [#---- contains collected results so we can conditionally output div for prettier docs ---]
+    [#assign unique_service_names = { } /]
+    
+    [#list docsxml.rest.resources.resource?sort_by("@name") as resource]
+    
+        [#---- used to prevent us from outputing the same service multiple times ---]
+        [#assign match = false]
+        
+        [#list resource.operation as operation]
+            [#list operation.outValue.xmlElement as outParam]
+                [#if outParam.@elementName?lower_case == type.@name?lower_case]
+                    [#assign match = true]
+                    [#break/]
+                [/#if]
+            [/#list]
+            
+            [#list operation.inValue.xmlElement as inParam]
+                [#if inParam.@elementName?lower_case == type.@name?lower_case]
+                    [#assign match = true]
+                    [#break/]
+                [/#if]
+            [/#list]
+            
+            [#-- if we found a match in any of the operations output our service name --]
+            [#if match]
+                [#list resource.groups.group as group]
+                    [#assign unique_service_names = unique_service_names + { group: group } /]
+                    [#break/]
+                [/#list]
+                [#break/]
+            [/#if]
+            
+        [/#list]
+    [/#list]
+    
+    [#if unique_service_names?has_content]
+        <h5 class="services">Used by Services</h5>
+        <div class="tree operations well well-sm">
+        [#list unique_service_names?keys?sort as service_name]
+            <a href="path_${service_name}.html">${service_name}</a>
+        [/#list]
+        </div>
+    [/#if]
+    
+[/#macro]
+
+[#--- macro will find any dependencies of this type (class that have properties of this type or base type) ---]
+[#macro renderDependenciesThatUseType type]
+
+    [#---- contains collected results so we can conditionally output div for prettier docs ---]
+    [#assign matches = { } /]
+
+    [#list docsxml.data.schema.types.type?sort_by("@name") as other_type]
+        [#list other_type.elements.element as element]
+            [#list element.choice as choice]
+                [#if attributeExists(choice.@typeName)]
+                    [#if choice.@typeName?lower_case == type.@name?lower_case]
+                        [#assign item_value = {  "other_type": other_type, "element": element, "choice": choice } /]
+                        [#assign matches = matches + { other_type.@name + ":" + element.@jsonName: item_value } /]
+                    [/#if]
+                [/#if]
+            [/#list]
+        [/#list]        
+    [/#list]
+    
+    [#if matches?has_content]
+        <h5 class="services">Referenced by Objects</h5>
+        <div class="tree operations well well-sm">
+        [#list matches?keys?sort as key]
+            [#assign other_type = matches[key].other_type /]
+            [#assign element = matches[key].element /]
+            [#assign choice = matches[key].choice /]
+            <a href="type_${other_type.@name?cap_first}.html">${other_type.@name?cap_first}#${element.@jsonName}</a>
+        [/#list]
+        </div>
+    [/#if]
+    
+[/#macro]
+
+[#macro renderEnum type]
+    [#if type.values?has_content]
+    
+        <table class="table table-condensed table-striped table-parameters">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Value</th>
+                    <th style="width: 65%;">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+            [#list type.values.item as item]
+                <tr>
+                    <td>${item.@value}</td>
+                    <td>
+                        [#if item.documentation?has_content]
+                            [#list item.documentation as documentation]
+                                ${documentation}
+                            [/#list]                        
+                        [/#if]
+                    </td>
+                </tr>
+            [/#list]
+            </tbody>
+        </table>
+    
+    [/#if]
+[/#macro]
+
+[#macro renderTypeAttributesToRows type]
+    [#list type.elements.element as element]
+        [#list element.choice as choice]
+        <tr>
+            <td>${element.@jsonName}</td>
+            <td>
+                [#if attributeExists(choice.@typeName)]
+                    [#if attributeExists(choice.@typeSchemaId)]
+                        <a href="type_${choice.@typeName?cap_first}.html">
+                            ${choice.@typeName?cap_first}
+                            [#-- check if item is array type --]
+                            [#if attributeExists(element.@maxOccurs)][#assign num = element.@maxOccurs?string][#if (num = "unbounded")][][/#if][/#if]
+                        </a>
+                    [#else]
+                        ${choice.@typeName}
+                        [#-- check if item is array type --]
+                        [#if attributeExists(element.@maxOccurs)][#assign num = element.@maxOccurs?string][#if (num = "unbounded")][][/#if][/#if]
+                    [/#if]
+                [#else]
+                    (unknown)
+                [/#if]
+            </td>
+            <td>
+                [#list element.documentation as documentation]
+                    ${documentation}
+                [/#list]
+                [#if attributeExists(element.@minOccurs)]
+                    [#assign num = element.@minOccurs?number]
+                    [#if (num > 0)]
+                        <span class="label label-important">required</span>
+                    [/#if]
+                [/#if]
+            </td>
+        </tr>
+        [/#list]
+    [/#list]
+[/#macro]
+
+[#-- recusively walks the inheritence hierarchy of the type and pulls in all attributes --]
+[#macro renderTypeInheritedAttributes type]
+
+    [#if attributeExists(type.@extendsType)]
+        [#list docsxml.data.schema.types.type as parent_type]
+            [#if (type.@extendsType?string?lower_case?ends_with(parent_type.@name?lower_case?string))]
+                [#list parent_type.elements.element as parent_element]
+                    [#if parent_element_index = 0]
+                        <thead>
+                            <tr colspan="3" class="parent">
+                                <th colspan="3"><a class="child" href="type_${parent_type.@name?cap_first}.html">${parent_type.@name}</a> (inherited)</th>
+                            </tr>
+                        </thead>
+                        [@renderTypeAttributesToRows parent_type/]
+                    [/#if]
+                [/#list]
+            [/#if]
+        [/#list]
+    [/#if]
+
+[/#macro]
+
+[#-- main rendering for a specific type that will pull in all details of the type including attributes inherited --]
+[#macro renderType type]
+
+    [#if type.elements?has_content]
+        
+        <h5>Schema</h5>
+        
+        <table class="table table-condensed table-striped table-parameters">
+            <thead>
+                <tr>
+                    <th style="width: 18%;">Field</th>
+                    <th style="width: 19%;">Type</th>
+                    <th style="width: 65%;">Description</th>
+                </tr>
+            </thead>
+            
+            [#-- render and attributes inherited by this type --]
+            <tbody>
+            [@renderTypeInheritedAttributes type/]
+            </tbody>
+            
+            [#-- render this specific types attributes --]
+            <thead>
+                <tr colspan="3" class="parent">
+                    <th colspan="3">${type.@name?cap_first} (self)</th>
+                </tr>
+            </thead>
+            <tbody>
+                [@renderTypeAttributesToRows type/]
+            </tbody>
+        </table>
+   [/#if]
+        
+[/#macro]

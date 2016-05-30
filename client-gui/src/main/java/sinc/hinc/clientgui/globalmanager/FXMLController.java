@@ -1,5 +1,6 @@
 package sinc.hinc.clientgui.globalmanager;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import sinc.hinc.clientgui.mainpanel.HincMetaModel;
 import sinc.hinc.clientgui.UserSettings;
 
@@ -32,23 +33,18 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import sinc.hinc.common.API.HINCGlobalAPI;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.metadata.InfoSourceSettings;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 
 @Deprecated
 public class FXMLController implements Initializable {
 
-    HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), HINCGlobalAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+    ResourcesManagementAPI rest = (ResourcesManagementAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), ResourcesManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
     HINCManagementAPI mngAPI = (HINCManagementAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), HINCManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
 
-    {
-        JacksonJsonProvider p = new JacksonJsonProvider();
-        
-    }
+    
     @FXML
     private Label label;
 
@@ -106,7 +102,7 @@ public class FXMLController implements Initializable {
     }
 
     private List<HincLocalMeta> getHincMetaFromCache() {        
-        System.out.println("service date: " + rest.health());
+        System.out.println("service meta: " + mngAPI.getHINCGlobalMeta());
 
         if (rest == null) {
             System.out.println("REST proxy is NULL, QUIT !");

@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -19,8 +18,6 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import sinc.hinc.common.API.HINCGlobalAPI;
-import sinc.hinc.common.metadata.HINCGlobalMeta;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.metadata.HincMessage;
 import sinc.hinc.common.metadata.HincMessageTopic;
@@ -38,25 +35,22 @@ import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**
  *
  * @author hungld
  */
 @Service
-public class HINCGlobalAPIImpl implements HINCGlobalAPI {
+//@Path("/")
+public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
 
     CommunicationManager comMng = getCommunicationManager();
     static Logger logger = LoggerFactory.getLogger("HINC");
     List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
 
 
-    public HINCGlobalAPIImpl() {
-    }
-
-    @Override
-    public String health() {
-        return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS").format(new Date());
+    public ResourcesManagementAPIImpl() {
     }
 
     public CommunicationManager getCommunicationManager() {

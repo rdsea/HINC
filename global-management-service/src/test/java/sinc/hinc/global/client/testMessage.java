@@ -8,12 +8,12 @@ package sinc.hinc.global.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import sinc.hinc.common.API.HINCGlobalAPI;
+//import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
-import sinc.hinc.global.API.HINCGlobalAPIImpl;
+import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.global.API.HINCManagementImpl;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**
  *
@@ -25,7 +25,7 @@ public class testMessage {
         /**
          * This part connect the client to the message queue, get the list of DElise
          */
-    	HINCGlobalAPI api = new HINCGlobalAPIImpl();
+    	ResourcesManagementAPI api = new ResourcesManagementAPIImpl();
         HINCManagementAPI mngAPI = new HINCManagementImpl();
         mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
         mngAPI.queryHINCLocal(2000);
@@ -37,8 +37,8 @@ public class testMessage {
         // test similar will RESTcall
         String hincGlobalEndpoint = "http://localhost:8888/global-management-service-1.0/rest";
         
-        HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(hincGlobalEndpoint, HINCGlobalAPI.class, Collections.singletonList(new JacksonJsonProvider()));
-        System.out.println("service date: "+rest.health());
+//        ResourcesManagementAPI rest = (ResourcesManagementAPI) JAXRSClientFactory.create(hincGlobalEndpoint, ResourcesManagementAPI.class, Collections.singletonList(new JacksonJsonProvider()));
+//        System.out.println("service date: "+rest.health());
 
     }
 }

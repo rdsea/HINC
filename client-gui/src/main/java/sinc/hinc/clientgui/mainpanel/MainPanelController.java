@@ -1,5 +1,6 @@
 package sinc.hinc.clientgui.mainpanel;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import sinc.hinc.clientgui.UserSettings;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,17 +38,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
-import sinc.hinc.common.API.HINCGlobalAPI;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.metadata.InfoSourceSettings;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 
 public class MainPanelController implements Initializable {
 
-    HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), HINCGlobalAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+    ResourcesManagementAPI rest = (ResourcesManagementAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), ResourcesManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
     HINCManagementAPI mngAPI = (HINCManagementAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), HINCManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
     int updateHINCTimeout = 2000;
     int queryDatapointTimeout = 3000;

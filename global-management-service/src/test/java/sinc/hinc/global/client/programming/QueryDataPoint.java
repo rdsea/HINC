@@ -11,12 +11,12 @@ import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.extensions.SensorProps;
 import java.util.List;
-import sinc.hinc.common.API.HINCGlobalAPI;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
-import sinc.hinc.global.API.HINCGlobalAPIImpl;
+import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.global.API.HINCManagementImpl;
 import sinc.hinc.global.management.QueryManager;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**
  *
@@ -30,7 +30,7 @@ public class QueryDataPoint {
         sensorProps.setRate(5);
 
         template.getExtra().add(new PhysicalResource(sensorProps));
-        HINCGlobalAPI api = new HINCGlobalAPIImpl();
+        ResourcesManagementAPI api = new ResourcesManagementAPIImpl();
         HINCManagementAPI mngAPI = new HINCManagementImpl();
         mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
         api.queryDataPoint(3000, null);

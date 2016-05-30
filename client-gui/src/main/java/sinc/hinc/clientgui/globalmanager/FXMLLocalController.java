@@ -5,6 +5,7 @@
  */
 package sinc.hinc.clientgui.globalmanager;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import sinc.hinc.clientgui.UserSettings;
 import sinc.hinc.clientgui.mainpanel.HincMetaModel;
 import sinc.hinc.clientgui.globalmanager.GenericMetaData;
@@ -31,14 +32,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
-import sinc.hinc.common.API.HINCGlobalAPI;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**
  *
@@ -47,7 +47,7 @@ import sinc.hinc.model.VirtualNetworkResource.VNF;
 @Deprecated
 public class FXMLLocalController implements Initializable {
 
-    HINCGlobalAPI rest = (HINCGlobalAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), HINCGlobalAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+    ResourcesManagementAPI rest = (ResourcesManagementAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), ResourcesManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
     HINCManagementAPI mngAPI = (HINCManagementAPI) JAXRSClientFactory.create(UserSettings.getHINCGlobalRESTEndpoint(), HINCManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
 
     HincMetaModel hincLocalInfo;

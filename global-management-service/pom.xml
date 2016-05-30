@@ -20,8 +20,6 @@
     </properties>
     
     <dependencies>
-
-        
         <dependency>
             <groupId>at.ac.tuwien.dsg.hinc</groupId>                        
             <artifactId>model</artifactId>
@@ -58,23 +56,23 @@
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>      
-            <version>2.0.1</version>      
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>3.1.6</version>                
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http</artifactId>
-            <version>3.1.6</version>
         </dependency>
         <dependency> 
             <groupId>org.apache.cxf</groupId> 
             <artifactId>cxf-rt-rs-client</artifactId> 
-            <version>3.1.6</version>
         </dependency> 
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-service-description</artifactId>
+        </dependency>
         
         <!--Spring Framework dependencies--> 
         <dependency>
@@ -95,30 +93,84 @@
             <version>4.0.4.RELEASE</version>
         </dependency>
         
-        <dependency>
+<!--        <dependency>
             <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-jaxrs</artifactId>     
-            <version>1.9.13</version>   
+            <artifactId>jackson-jaxrs</artifactId>    
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.13</version> 
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+<!--        <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-xc</artifactId>
             <version>1.9.13</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        
+         <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency> 
+
+        <!-- com.wordnik is swagger1 and io.swagger is swagger2. At the time writing this, swagger2 is not stable to use.  -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-core</artifactId>            
+            <version>1.5.9</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jaxrs</artifactId>
+            <version>1.5.9</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.9</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>2.1.4</version>
+        </dependency>
+        
+        
+        <dependency>
+            <groupId>com.webcohesion.enunciate</groupId>
+            <artifactId>enunciate-core-annotations</artifactId>
+            <version>2.3.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.webcohesion.enunciate</groupId>
+            <artifactId>enunciate-rt-util</artifactId>
+            <version>2.3.0</version>
+        </dependency>
         
         
+
         
+       
     </dependencies>
 
     <build>
@@ -135,24 +187,94 @@
                     </compilerArguments>
                 </configuration>
             </plugin>
+<!--            
+             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.webjars</groupId>
+                                    <artifactId>swagger-ui</artifactId>
+                                    <version>2.1.4</version>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/swagger-ui</outputDirectory>
+                                    <excludes>**/*.gz</excludes>                                    
+                                </artifactItem>                                
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+<!--               <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/2.1.0</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
             
-            <plugin>
+         
+            <!-- The enunciate 2 does not compliant with the template, may use it in next version  -->
+<!--            <plugin>                
                 <groupId>com.webcohesion.enunciate</groupId>
                 <artifactId>enunciate-maven-plugin</artifactId>
                 <version>2.3.0</version>
+                
                 <configuration>
-                    <exports>
-                        <java.xml.client.library.binaries>client.jar</java.xml.client.library.binaries>
-                    </exports>
+                    <configFile>enunciate.xml</configFile>
+                    <enunciateArtifactId>HINC Global API Docs</enunciateArtifactId>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>assemble</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
+            
+            <!-- below Enunciate1 does not work with Java 1.8   -->
+            <!--            <plugin>
+                <groupId>org.codehaus.enunciate</groupId>
+                <artifactId>maven-enunciate-plugin</artifactId>
+                <version>1.31</version>
+                <configuration>
+                    <configFile>enunciate.xml</configFile>                    
+                    <exports />
+                    <docsDir>${project.build.directory}/api</docsDir>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>docs</goal>
+                        </goals>
+                    </execution>
+                </executions>               
+            </plugin>-->
             
             
             <plugin>

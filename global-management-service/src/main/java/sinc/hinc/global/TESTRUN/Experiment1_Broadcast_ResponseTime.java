@@ -10,9 +10,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import sinc.hinc.common.API.HINCGlobalAPI;
 
-import sinc.hinc.global.API.HINCGlobalAPIImpl;
+import sinc.hinc.global.API.ResourcesManagementAPIImpl;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**
  *
@@ -36,7 +36,7 @@ public class Experiment1_Broadcast_ResponseTime {
     public static void main(String[] args) {
         //Linh: document this
         CommunicationManager client = new CommunicationManager(args[0], args[1], args[2]);
-        HINCGlobalAPI api = new HINCGlobalAPIImpl();
+        ResourcesManagementAPI api = new ResourcesManagementAPIImpl();
         //client.synDelise(3000);
 
         // deploy new VM

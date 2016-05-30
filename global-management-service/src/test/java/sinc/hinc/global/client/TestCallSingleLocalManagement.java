@@ -7,11 +7,11 @@ package sinc.hinc.global.client;
 
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import java.util.List;
-import sinc.hinc.common.API.HINCGlobalAPI;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
-import sinc.hinc.global.API.HINCGlobalAPIImpl;
+import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.global.API.HINCManagementImpl;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**
  *
@@ -21,7 +21,7 @@ public class TestCallSingleLocalManagement {
 
     public static void main(String[] args) throws Exception {
 
-        HINCGlobalAPI api = new HINCGlobalAPIImpl();
+        ResourcesManagementAPI api = new ResourcesManagementAPIImpl();
         HINCManagementAPI mngAPI = new HINCManagementImpl();
         mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
 

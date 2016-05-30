@@ -14,12 +14,12 @@ import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 import java.util.ArrayList;
 import java.util.List;
 
-import sinc.hinc.common.API.HINCGlobalAPI;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
 import sinc.hinc.common.metadata.HincLocalMeta;
-import sinc.hinc.global.API.HINCGlobalAPIImpl;
+import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.global.API.HINCManagementImpl;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**
  *
@@ -30,7 +30,7 @@ public class TestBroadCast {
     public static void main(String[] args) throws Exception {
         AbstractDAO<HincLocalMeta> metaDao = new AbstractDAO<>(HincLocalMeta.class);
 
-        HINCGlobalAPI api = new HINCGlobalAPIImpl();
+        ResourcesManagementAPI api = new ResourcesManagementAPIImpl();
         HINCManagementAPI mngAPI = new HINCManagementImpl();
         mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
         mngAPI.queryHINCLocal(3000);
