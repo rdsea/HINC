@@ -5,16 +5,16 @@
  */
 package sinc.hinc.global.client;
 
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
-import java.util.List;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
-import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.global.API.HINCManagementImpl;
+import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.model.API.ResourcesManagementAPI;
+import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
+
+import java.util.List;
 
 /**
- *
  * @author hungld
  */
 public class TestCallSingleLocalManagement {

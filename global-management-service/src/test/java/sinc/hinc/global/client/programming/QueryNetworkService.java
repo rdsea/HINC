@@ -9,7 +9,6 @@ import sinc.hinc.model.CloudServices.CloudService;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 
 /**
- *
  * @author hungld
  */
 public class QueryNetworkService {

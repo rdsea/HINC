@@ -17,5 +17,6 @@
         <module>TransformOpenHAB</module>
         <module>TransformFiwareContextBroker</module>
         <module>DummyProvider</module>
+        <module>OpenDaylightPlugin</module>
     </modules>
 </project>

@@ -69,7 +69,7 @@ public interface ResourcesManagementAPI {
             notes = "All the capabilities will be wrapped in a SoftwareDefinedGateway object. The information contains also the metadata of the site.",
             response = SoftwareDefinedGateway.class,
             responseContainer = "List")
-    public List<SoftwareDefinedGateway> querySoftwareDefinedGateways(
+    List<SoftwareDefinedGateway> querySoftwareDefinedGateways(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID
     );
@@ -104,7 +104,7 @@ public interface ResourcesManagementAPI {
             notes = "The list of the cloud connectivities  available from a single or multiple sites",
             response = CloudConnectivity.class,
             responseContainer = "List")
-    public List<CloudConnectivity> queryConnectivity(
+        public List<CloudConnectivity> queryConnectivity(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID);
 

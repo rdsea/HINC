@@ -18,7 +18,7 @@ import java.net.URL;
  * @author hungld
  */
 public class RestHandler {
-    public static enum HttpVerb {
+    public enum HttpVerb {
 
         GET, POST, PUT, DELETE, OTHER;
 

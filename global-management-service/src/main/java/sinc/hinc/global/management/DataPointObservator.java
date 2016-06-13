@@ -5,7 +5,6 @@
  */
 package sinc.hinc.global.management;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 
 /**

@@ -5,35 +5,34 @@
  */
 package sinc.hinc.global.management;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.communication.messageInterface.MessageClientFactory;
 import sinc.hinc.communication.messageInterface.MessagePublishInterface;
 import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
 import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
 import sinc.hinc.communication.messagePayloads.UpdateGatewayStatus;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
+
 import java.io.File;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HincMessage;
-import sinc.hinc.common.metadata.HincMessageTopic;
 
 /**
- *
  * @author hungld
  */
 public class SubscriptionManager {
 
+    static Logger logger = LoggerFactory.getLogger("DELISE");
     MessageClientFactory FACTORY;
     /**
      * TODO: use the default topic to distinguish different client and managmeent scope E.g. each stakeholder will hold an ID, which regarding to the topic
      */
     String prefixTopic = "";
-    static Logger logger = LoggerFactory.getLogger("DELISE");
-
     String groupName;
 
     public SubscriptionManager(String groupName, String broker, String brokerType) {
@@ -57,8 +56,8 @@ public class SubscriptionManager {
         String feedBackTopic = HincMessageTopic.getTemporaryTopic();
 
         MessageSubscribeInterface sub = FACTORY.getMessageSubscriber(new SalsaMessageHandling() {
-            double currentThroughput = 0L;
             final long windowSize = 30;
+            double currentThroughput = 0L;
 
             @Override
             public void handleMessage(HincMessage message) {
@@ -70,10 +69,10 @@ public class SubscriptionManager {
                         .expireAfterWrite(windowSize, TimeUnit.SECONDS)
                         .build(
                                 new CacheLoader<String, String>() {
-                            public String load(String key) throws Exception {
-                                return key;
-                            }
-                        });
+                                    public String load(String key) throws Exception {
+                                        return key;
+                                    }
+                                });
                 String payload = message.getPayload();
                 autoExpireCache.put(payload, payload);
 
@@ -104,8 +103,6 @@ public class SubscriptionManager {
             ex.printStackTrace();
         }
     }
-    
-    
-   
-    
+
+
 }

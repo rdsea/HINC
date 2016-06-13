@@ -5,19 +5,20 @@
  */
 package sinc.hinc.global.management;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sinc.hinc.common.metadata.HincLocalMeta;
+import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.communication.messageInterface.MessageClientFactory;
 import sinc.hinc.communication.messageInterface.MessagePublishInterface;
 import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
 import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HincLocalMeta;
-import sinc.hinc.common.metadata.HincMessage;
-import sinc.hinc.common.metadata.HincMessageTopic;
 
 /**
  * The class send messages from HINC Global to multiple HINC Local.
@@ -26,18 +27,17 @@ import sinc.hinc.common.metadata.HincMessageTopic;
  */
 public class CommunicationManager {
 
+    static Logger logger = LoggerFactory.getLogger("HINC");
     MessageClientFactory FACTORY;
     String prefixTopic = "";
-    static Logger logger = LoggerFactory.getLogger("HINC");
-
     List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
     String groupName;
 
     /**
      * To create a communication channel
      *
-     * @param groupName The group to communication within
-     * @param broker The endpoint of the broker
+     * @param groupName  The group to communication within
+     * @param broker     The endpoint of the broker
      * @param brokerType The type of the broker like mqtt, ampq
      */
     public CommunicationManager(String groupName, String broker, String brokerType) {
@@ -45,23 +45,23 @@ public class CommunicationManager {
         this.FACTORY = new MessageClientFactory(broker, brokerType);
     }
 
-    public void synFunctionCallBroadcast( int timeout, String feedBackTopicToSubscribe, HincMessage.MESSAGE_TYPE messageType, String publishTopic, SalsaMessageHandling handler) {
+    public void synFunctionCallBroadcast(int timeout, String feedBackTopicToSubscribe, HincMessage.MESSAGE_TYPE messageType, String publishTopic, SalsaMessageHandling handler) {
         MessageSubscribeInterface sub = FACTORY.getMessageSubscriber(handler);
         logger.debug("Will subscribe to the topic: " + feedBackTopicToSubscribe + " to wait for the reply");
         sub.subscribe(feedBackTopicToSubscribe, timeout);
         MessagePublishInterface pub = FACTORY.getMessagePublisher();
         HincMessage requestMessage = new HincMessage(messageType, this.groupName, publishTopic, feedBackTopicToSubscribe, "");
         pub.pushMessage(requestMessage);
-        try{
+        try {
             Thread.sleep(timeout);
-        } catch (InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         logger.debug("Done, should close the subscribe now.. ");
     }
-    
+
     // with a single UUID we don't need timeout. The result can only String, where
-    public String synFunctionCallUnicast(String hincUUID, HincMessage.MESSAGE_TYPE messageType){
+    public String synFunctionCallUnicast(String hincUUID, HincMessage.MESSAGE_TYPE messageType) {
         logger.debug("Trying to query HINC Local with ID: " + hincUUID);
         String unicastHINCTopic = HincMessageTopic.getCollectorTopicByID(hincUUID);
 
@@ -71,14 +71,10 @@ public class CommunicationManager {
         logger.debug("Calling the function: " + queryMessage.toJson());
         HincMessage responseMessage = pub.callFunction(queryMessage);
         logger.debug("Function called and return the result: " + responseMessage.getPayload());
-        return responseMessage.getPayload();        
+        return responseMessage.getPayload();
     }
 
-    
-    
-    
-    
-    
+
     @Deprecated
     public VNF queryVNF_Unicast(String hincUUID) {
         String unicastDeliseTopic = HincMessageTopic.getCollectorTopicByID(hincUUID);
@@ -96,7 +92,6 @@ public class CommunicationManager {
         System.out.println("Get VNF info: \n" + vnfInfo);
         return VNF.fromJson(vnfInfo);
     }
-
 
 
     public String getName() {

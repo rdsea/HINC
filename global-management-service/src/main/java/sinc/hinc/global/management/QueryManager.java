@@ -5,16 +5,18 @@
  */
 package sinc.hinc.global.management;
 
-import java.util.List;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 
+import java.util.List;
+
 /**
  * This class access to the database and return information
+ *
  * @author hungld
  */
 public class QueryManager {
-    
+
     /**
      * This method query data points.
      *

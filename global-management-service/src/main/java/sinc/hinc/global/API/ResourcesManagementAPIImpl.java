@@ -5,16 +5,6 @@
  */
 package sinc.hinc.global.API;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,6 +14,7 @@ import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
 import sinc.hinc.global.management.CommunicationManager;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.CloudServices.CloudProvider;
 import sinc.hinc.model.CloudServices.CloudService;
 import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
@@ -35,18 +26,23 @@ import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
-import sinc.hinc.model.API.ResourcesManagementAPI;
+
+import javax.ws.rs.core.UriInfo;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- *
  * @author hungld
  */
 @Service
 //@Path("/")
 public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
 
-    CommunicationManager comMng = getCommunicationManager();
     static Logger logger = LoggerFactory.getLogger("HINC");
+    CommunicationManager comMng = getCommunicationManager();
     List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
 
 

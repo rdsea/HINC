@@ -6,9 +6,6 @@
 package sinc.hinc.global.API;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import java.util.ArrayList;
-import java.util.List;
-import javax.ws.rs.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.common.API.HINCManagementAPI;
@@ -21,26 +18,28 @@ import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
 import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author hungld
  */
 //@Path("/")
-public class HINCManagementImpl implements HINCManagementAPI{
-    
+public class HINCManagementImpl implements HINCManagementAPI {
+
     static HINCGlobalMeta meta;
-    CommunicationManager comMng = getCommunicationManager();
     static Logger logger = LoggerFactory.getLogger("HINC");
+    CommunicationManager comMng = getCommunicationManager();
     List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
-    
+
     public CommunicationManager getCommunicationManager() {
         if (comMng == null) {
             this.comMng = new CommunicationManager(HincConfiguration.getGroupName(), HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
         }
         return this.comMng;
     }
-       
-    
+
+
     @Override
     public HINCGlobalMeta getHINCGlobalMeta() {
         if (meta == null) {
@@ -85,7 +84,7 @@ public class HINCManagementImpl implements HINCManagementAPI{
         metaDAO.deleteAll();
         List<ODocument> result = metaDAO.saveAll(listOfHINCLocal);
         logger.debug("Saving to DB is also done ! Result are: ");
-        for(ODocument o: result){
+        for (ODocument o : result) {
             logger.debug(o.toJSON() + "\n");
         }
 

@@ -5,21 +5,21 @@
  */
 package sinc.hinc.global.client.programming;
 
+import sinc.hinc.common.API.HINCManagementAPI;
+import sinc.hinc.common.metadata.HINCGlobalMeta;
+import sinc.hinc.global.API.HINCManagementImpl;
+import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.global.management.DataPointObservator;
+import sinc.hinc.global.management.QueryManager;
+import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.PhysicalResource.PhysicalResource;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.extensions.SensorProps;
+
 import java.util.List;
-import sinc.hinc.common.API.HINCManagementAPI;
-import sinc.hinc.common.metadata.HINCGlobalMeta;
-import sinc.hinc.global.API.ResourcesManagementAPIImpl;
-import sinc.hinc.global.API.HINCManagementImpl;
-import sinc.hinc.global.management.QueryManager;
-import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**
- *
  * @author hungld
  */
 public class QueryDataPoint {

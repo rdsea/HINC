@@ -11,19 +11,18 @@ import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**
- *
  * @author hungld
  */
 public class Main {
     public static void main(String args[]) throws Exception {
-	        JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
-	        sf.setResourceClasses(ResourcesManagementAPI.class);
-	        sf.setResourceProvider(ResourcesManagementAPI.class, 
-	            new SingletonResourceProvider(new ResourcesManagementAPIImpl()));
-	        sf.setAddress("http://localhost:8080/");
+        JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
+        sf.setResourceClasses(ResourcesManagementAPI.class);
+        sf.setResourceProvider(ResourcesManagementAPI.class,
+                new SingletonResourceProvider(new ResourcesManagementAPIImpl()));
+        sf.setAddress("http://localhost:8080/");
 
-	        sf.create();
-            
+        sf.create();
 
-	    }
+
+    }
 }

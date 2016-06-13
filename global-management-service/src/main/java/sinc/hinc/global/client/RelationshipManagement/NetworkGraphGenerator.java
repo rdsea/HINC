@@ -10,13 +10,13 @@ import sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType;
 import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author hungld
  */
 public class NetworkGraphGenerator {

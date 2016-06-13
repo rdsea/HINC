@@ -1,39 +1,39 @@
+<enunciate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-2.0.0-M.4.xsd"
+           version="1.0">
 
-<enunciate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-2.0.0-M.4.xsd" version="1.0">
-
-  <title>HINC Global Management Service</title>
-  <description package="sinc.hinc.global">
-  <![CDATA[
+    <title>HINC Global Management Service</title>
+    <description package="sinc.hinc.global">
+        <![CDATA[
       <p>HINC Global Management Service is an endpoint for user to interact with multiple HINC Global Management Service.</p>
       <p>More information can be found on GitHub: <a href="http://sincconcept.github.io/HINC/">http://sincconcept.github.io/HINC/</a></p>
     ]]>
-  
-   
-  </description>
-  <copyright>Duc-Hung Le</copyright>
 
-  <application root="/global-management-service-1.0/rest/"/>
-  
+
+    </description>
+    <copyright>Duc-Hung Le</copyright>
+
+    <application root="/global-management-service-1.0/rest/"/>
+
     <api-classes>
-    <include pattern="sinc.hinc.common.API.*"/>
-    <include pattern="sinc.hinc.model.API.*"/>
-  </api-classes>
+        <include pattern="sinc.hinc.common.API.*"/>
+        <include pattern="sinc.hinc.model.API.*"/>
+    </api-classes>
 
-  <modules>
-  <!--  <docs css="src/main/webapp/META-INF/enunciate/bootstrap-enunciate.css"  freemarkerTemplate="src/main/webapp/META-INF/enunciate/bootstrap-enunciate.fmt">    -->
-  <docs>
-      <download file="LICENSE" name="Apache II" description="The license governing this API" showLink="true"/>
-    </docs>
-    <java-xml-client>
-      <package-conversions>
-        <convert from="sinc.hinc.global" to="sinc.hinc.global.client"/>
-      </package-conversions>
-    </java-xml-client>
-<jackson1 disabled="true"/>
-        
+    <modules>
+        <!--  <docs css="src/main/webapp/META-INF/enunciate/bootstrap-enunciate.css"  freemarkerTemplate="src/main/webapp/META-INF/enunciate/bootstrap-enunciate.fmt">    -->
+        <docs>
+            <download file="LICENSE" name="Apache II" description="The license governing this API" showLink="true"/>
+        </docs>
+        <java-xml-client>
+            <package-conversions>
+                <convert from="sinc.hinc.global" to="sinc.hinc.global.client"/>
+            </package-conversions>
+        </java-xml-client>
+        <jackson1 disabled="true"/>
 
-  </modules>
-  
+
+    </modules>
 
 
 </enunciate>
