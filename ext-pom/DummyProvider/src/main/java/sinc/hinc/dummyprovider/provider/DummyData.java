@@ -5,20 +5,46 @@
  */
 package sinc.hinc.dummyprovider.provider;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 
 /**
  *
  * @author hungld
  */
 public class DummyData {
-    static List<DataPoint> dataPoints = new ArrayList<>();
-    
-    {
-        // generate the capabilities
-        
-        // a new thread to change the capability frequently
+
+    List<DummyMetadataItem> dataItems = new ArrayList<>();
+
+    public DummyData(int numberOfItem) {
+        // genetate 1000 datapoints
+        for (int i = 0; i < numberOfItem; i++) {
+            dataItems.add(new DummyMetadataItem(i+""));
+        }
+
     }
+
+    public DummyData() {
+    }
+    
+
+    public void dynamicChange() {
+        // TODO: a new thread to change the capability frequently
+    }
+
+    public List<DummyMetadataItem> getDataItems() {
+        return dataItems;
+    }
+    
+    public String toJson(){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException ex) {
+            return null; 
+        }
+    }
+
 }

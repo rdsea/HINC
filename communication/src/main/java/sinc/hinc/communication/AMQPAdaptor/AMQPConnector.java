@@ -51,7 +51,7 @@ public class AMQPConnector {
     }
 
     protected Channel amqpChannel = null;
-    protected Connection connecion = null;
+    public static Connection connecion = null;
 
     public boolean connect() {
         try {

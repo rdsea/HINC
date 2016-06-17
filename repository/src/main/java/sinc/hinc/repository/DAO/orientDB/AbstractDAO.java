@@ -9,13 +9,18 @@ import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import sinc.hinc.repository.DTOMapper.MapperFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.exception.OCommandExecutionException;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 
 /**
  *
@@ -41,8 +46,12 @@ public class AbstractDAO<T> {
             if (!db.getMetadata().getSchema().existsClass(className)) {
                 logger.debug("Class: " + className + " does not existed, now create it...");
                 db.getMetadata().getSchema().createClass(className);
+
+                db.getMetadata().getSchema().getClass(className).createProperty("uuid", OType.STRING);
+                db.getMetadata().getSchema().getClass(className).createIndex("uuidIndex_"+className, OClass.INDEX_TYPE.NOTUNIQUE_HASH_INDEX, "uuid");
+
                 if (!db.getMetadata().getSchema().existsClass(className)) {
-                    logger.debug("Cannot create class: " + className +", an error of persistent could happen later!");
+                    logger.debug("Cannot create class: " + className + ", an error of persistent could happen later!");
                 } else {
                     logger.debug("Class " + className + " is created sucessfully !");
                 }
@@ -65,7 +74,7 @@ public class AbstractDAO<T> {
             if (db.getMetadata().getSchema().existsClass(className)) {
                 String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
                 List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
-                logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
+//                logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
                 if (!existed_items.isEmpty()) {
                     existed = existed_items.get(0);
                 }
@@ -77,12 +86,12 @@ public class AbstractDAO<T> {
             if (uuid != null && existed != null) {
                 existed.merge(odoc, true, false);
 //                logger.debug("Merging and saving odoc object: " + existed.toJSON());
-                result = db.save(existed);
+                result = db.save(existed);                
             } else {
 //                logger.debug("Saving odoc object: " + odoc.toJSON());
-                result = db.save(odoc);
+                result = db.save(odoc);                
             }
-            logger.debug("Save done: " + result.toJSON());
+//            logger.debug("Save done: " + result.toJSON());
             return result;
         } finally {
             manager.closeConnection();
@@ -95,27 +104,29 @@ public class AbstractDAO<T> {
         List<ODocument> result = new ArrayList<>();
         boolean checked = false; // only check 1 time
         try {
-            logger.debug("Prepare to save " + objects.size() + " items");
+            String taskID = UUID.randomUUID().toString();
+            Long startTime = (new Date()).getTime();
+            logger.debug("Prepare to save " + objects.size() + " items -- " + taskID);
             for (T obj : objects) {
                 ODocument odoc = mapper.toODocument(obj);
                 String uuid = odoc.field("uuid");
-                logger.debug("Ok, now saving item with uuid = " + uuid);
+//                logger.debug("Ok, now saving item with uuid = " + uuid);
                 ODocument existed = null;
 
                 // Search for exist record                
                 if (!checked && db.getMetadata().getSchema().existsClass(className)) {
                     String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
                     List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
-                    logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
+//                    logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
                     if (!existed_items.isEmpty()) {
-                        logger.debug("There is an existing item with id: " + uuid);
+//                        logger.debug("There is an existing item with id: " + uuid);
                         existed = existed_items.get(0);
                     } else {
-                        logger.debug("There is NO existing item with id: " + uuid);
+//                        logger.debug("There is NO existing item with id: " + uuid);
                     }
                     checked = true;
                 } else {
-                    logger.debug("No class exist: " + className);
+//                    logger.debug("Class: " + className + " does not existed, now create it...");                    
                 }
 
                 // save new or update it
@@ -126,11 +137,13 @@ public class AbstractDAO<T> {
 //                    logger.debug("Merging and saving done odoc object: " + existed.toJSON());
                 } else {
                     ODocument r = db.save(odoc);
+                    
                     result.add(r);
 //                    logger.debug("Saving done for odoc object: " + odoc.toJSON());
-                }                
+                }
             }
-            logger.debug("Save done: " + result.size() + " ODocument(s)");
+            Long endTime = (new Date()).getTime();
+            logger.debug("Save done: " + result.size() + " ODocument(s) in " + (endTime - startTime) + " milisecs -- " + taskID);
             return result;
         } finally {
             manager.closeConnection();

@@ -41,9 +41,10 @@ public class SoftwareDefinedGatewayDAO extends AbstractDAO<SoftwareDefinedGatewa
 
         long time2 = (new Date()).getTime();
         ODocument gatewayDB = gatewayDAO.save(gw);
-        for (DataPoint dp : gw.getDataPoints()) {
-            datapointDAO.save(dp);
-        }
+//        for (DataPoint dp : gw.getDataPoints()) {
+//            datapointDAO.save(dp);
+//        }
+        datapointDAO.saveAll(gw.getDataPoints());
         for (ControlPoint cp : gw.getControlPoints()) {
             controlpointDAO.save(cp);
         }

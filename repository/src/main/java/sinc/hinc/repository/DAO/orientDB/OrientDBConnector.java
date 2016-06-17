@@ -34,7 +34,8 @@ public class OrientDBConnector {
         }
         return INSTANCE;
     }
-
+    
+    
     public ODatabaseDocumentTx getConnection() {
         if (this.connection == null) {
             MyCustomRecordFactory factory = new MyCustomRecordFactory("plocal:" + dbPath, username, password);
@@ -43,12 +44,12 @@ public class OrientDBConnector {
                 connection = (ODatabaseDocumentTx) factory.getThreadDatabase();
             } catch (OStorageException e) {
                 try {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                     System.out.println("DB is not opened, trying to open it....");
                     connection = new ODatabaseDocumentTx("plocal:" + dbPath).open(username, password);
                 } catch (Exception e1) {
-                    e1.printStackTrace();
-                    System.out.println("DB is not create, creating a new one");
+//                    e1.printStackTrace();
+                    System.out.println("DB is not create, creating a new one ....");
                     connection = new ODatabaseDocumentTx("plocal:" + dbPath).create();                    
                 }
             }

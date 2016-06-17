@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 
 /**
  * @author hungld
@@ -44,6 +45,11 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     static Logger logger = LoggerFactory.getLogger("HINC");
     CommunicationManager comMng = getCommunicationManager();
     List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
+    
+    {
+        // check database, if not exist then create
+        DatabaseUtils.initDB();
+    }
 
 
     public ResourcesManagementAPIImpl() {

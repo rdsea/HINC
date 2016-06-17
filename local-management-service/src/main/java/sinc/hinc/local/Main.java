@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.slf4j.Logger;
 import sinc.hinc.common.metadata.InfoSourceSettings;
 import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 
 /**
  *
@@ -55,8 +56,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting collector...");
         Long time1 = (new Date()).getTime();
-        OrientDBConnector manager = new OrientDBConnector();
-        ODatabaseDocumentTx db = manager.getConnection();
+        DatabaseUtils.initDB();
+        
         Long time2 = (new Date()).getTime();
         System.out.println("Time to bring up DB is: " + (time2 - time1) / 1000);
 

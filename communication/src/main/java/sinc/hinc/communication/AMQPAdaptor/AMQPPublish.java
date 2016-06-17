@@ -59,7 +59,7 @@ public class AMQPPublish extends AMQPConnector implements MessagePublishInterfac
             me.printStackTrace();
         }
         System.out.println("Message published");
-        disconnect();
+//        disconnect();
 
     }
 
@@ -116,7 +116,7 @@ public class AMQPPublish extends AMQPConnector implements MessagePublishInterfac
 
     public void pushMessageAndDisconnect(HincMessage content) {
         pushMessage(content);
-        disconnect();
+//        disconnect();
     }
 
     public void pushCustomData(String content, String topic) {

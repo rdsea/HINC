@@ -9,31 +9,60 @@ import java.util.List;
 import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 
 /**
  *
  * @author hungld
  */
 @Path("/")
+@Produces("application/json")
 public class DummyREST {
 
+    DummyData data;
+
+    public DummyREST() {
+        data = new DummyData(1000);
+    }
+    
+    public DummyREST(int numberOfSensor) {
+        data = new DummyData(numberOfSensor);
+    }
+    
+
     @GET
-    @Path("/datapoints")
-    @Produces("application/json")
-    public List<DataPoint> getItems() {
-        return DummyData.dataPoints;
+    @Path("/health")
+    public String health() {
+        System.out.println("check health");
+        return "ok";
     }
 
     @GET
-    @Path("/datapoints/{uuid}")
+    @Path("/datapoints")
+    public String getDataPoints() {
+        System.out.println("Querying datapoints...");
+        System.out.println(data.getDataItems().get(0).toString());
+        return data.toJson();
+    }
+
+    @GET
+    @Path("/datapoints/quantity/{quantity}")
     @Produces("application/json")
-    public DataPoint getItem(String uuid) {
-        for (DataPoint dp : DummyData.dataPoints) {
-            if (dp.getUuid().endsWith(uuid)) {
-                return dp;
+    public String generateDataPoint(@PathParam("quantity") int quantity) {
+        DummyData dataPart = new DummyData(0);
+        dataPart.getDataItems().addAll(data.getDataItems().subList(0, quantity));
+        return dataPart.toJson();
+    }
+
+    @GET
+    @Path("/datapoints/{id}")
+    @Produces("application/json")
+    public DummyMetadataItem getItem(@PathParam("id") String id) {
+        for (DummyMetadataItem item : data.getDataItems()) {
+            if (item.getId().equals(id)) {
+                return item;
             }
         }
         return null;
@@ -43,11 +72,11 @@ public class DummyREST {
     @GET
     @Path("/datapoints/subscribe/stream")
     @Produces("application/json")
-    public Map<String,String> subscribeDataPointAMQP() {
+    public Map<String, String> subscribeDataPointAMQP() {
         // TODO: to implement this
         return null;
     }
-    
+
     // return a ampq endpoint
     @GET
     @Path("/datapoints/subscribe/amqp")
