@@ -27,8 +27,8 @@
             "name": "myPlugin",
             "type": "IoT",
             "interval": 0,
-            "adaptorClass": "sinc.hinc.transformer.openhab.MyAdaptor",
-            "transformerClass": "sinc.hinc.transformer.openhab.MyTransformer",
+            "adaptorClass": "sinc.hinc.MyAdaptor",
+            "transformerClass": "sinc.hinc.MyTransformer",
             "settings": {
                 "endpoint": "http://localhost:8080/rest"
             }
@@ -37,12 +37,12 @@
 }
 ```
 
-- name: can take any value to management purpose.
-- type: can take value of: IoT, Network or Cloud.
-- interval: the interval that HINC will query provider. Set to 0 for one time query or subscription plugin
-- adaptorClass: the full name of the class for Adaptor
-- transformerClass: the full name of the class for Transformer
-- settings: any properties which require in implementing the plugin. This settings are input for the implementation of above interfaces.
+- *name*: can take any value to management purpose.
+- *type*: can take value of: IoT, Network or Cloud.
+- *interval*: the interval that HINC will query provider. Set to 0 for one time query or subscription plugin
+- *adaptorClass*: the full name of the class for Adaptor
+- *transformerClass*: the full name of the class for Transformer
+- *settings*: any properties which require in implementing the plugin. This settings are input for the implementation of above interfaces.
 
 **Step 6:** Build the module by Maven command:
 ```shellscript
