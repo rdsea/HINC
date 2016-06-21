@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.model.VirtualComputingResource.Capability.Concrete;
+package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
-import sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType;
+import sinc.hinc.model.VirtualComputingResource.Capability;
 
 /**
  * It define the network which this component is following
@@ -39,16 +38,15 @@ public class CloudConnectivity extends Capability {
      * **************
      * GETER/SETTER * **************
      */
-    public CloudConnectivity() {
-        capabilityType = CapabilityType.CloudConnectivity;
+    public CloudConnectivity() {       
     }
 
     public CloudConnectivity( String resourceID, String name, String description) {
-        super( resourceID, name, CapabilityType.CloudConnectivity, description);
+        super( resourceID, name, description);
     }
 
     public CloudConnectivity( String resourceID, String name, String description, String IP, String MAC) {
-        super( resourceID, name, CapabilityType.CloudConnectivity, description);
+        super( resourceID, name, description);
         this.IP = IP;
         this.MAC = MAC;
     }

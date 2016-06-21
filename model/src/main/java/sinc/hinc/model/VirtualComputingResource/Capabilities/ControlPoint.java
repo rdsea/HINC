@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.model.VirtualComputingResource.Capability.Concrete;
+package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
-import sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType;
+import sinc.hinc.model.VirtualComputingResource.Capability;
 
 /**
  * The class manage control point, which is an action on the resource.
@@ -43,15 +42,15 @@ public class ControlPoint extends Capability {
      ***************
      */
     public ControlPoint() {
-        capabilityType = CapabilityType.ControlPoint;
+        
     }
     
     public ControlPoint( String resourceID, String name, String description) {        
-        super( resourceID, name, CapabilityType.ControlPoint, description);
+        super( resourceID, name,  description);
     }
 
     public ControlPoint( String resourceID, String name, String description, InvokeProtocol invokeProtocol, String reference, String postData) {
-        super( resourceID, name, CapabilityType.ControlPoint, description);
+        super( resourceID, name, description);
         this.invokeProtocol = invokeProtocol;
         this.reference = reference;
         this.postData = postData;

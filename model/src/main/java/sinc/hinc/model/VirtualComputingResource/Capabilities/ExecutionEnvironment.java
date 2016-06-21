@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.model.VirtualComputingResource.Capability.Concrete;
+package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
-import sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType;
+import sinc.hinc.model.VirtualComputingResource.Capability;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,27 +24,20 @@ public class ExecutionEnvironment extends Capability {
     // e.g. version, status (on/off), settings
     Map<String, String> attributes;
 
-//    public abstract void deploy(String artifactRef);
-//
-//    public abstract void start(String appRef);
-//
-//    public abstract void stop(String appRef);
-//
-//    public abstract void reconfigure(String appRef);
     /**
      * **************
      * GETER/SETTER * **************
      */
     public ExecutionEnvironment() {
-        capabilityType = CapabilityType.ExecutionEnvironment;
+
     }
 
-    public ExecutionEnvironment( String resourceID, String name, String description) {
-        super( resourceID,name, CapabilityType.ExecutionEnvironment, description);
+    public ExecutionEnvironment(String resourceID, String name, String description) {
+        super(resourceID, name, description);
     }
 
-    public ExecutionEnvironment( String resourceID, String name, String description, EnvironmentType envType) {
-        super( resourceID, name, CapabilityType.ExecutionEnvironment, description);
+    public ExecutionEnvironment(String resourceID, String name, String description, EnvironmentType envType) {
+        super(resourceID, name, description);
         this.env = envType;
     }
 

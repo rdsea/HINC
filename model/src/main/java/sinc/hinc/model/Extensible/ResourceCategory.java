@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.model.VirtualComputingResource.extensions;
+package sinc.hinc.model.Extensible;
 
 /**
  *
  * @author hungld
  */
-public class VNFPricing {
-    String pricing;
+public enum ResourceCategory {
+    Sensor, Actuator, Gateway
 }

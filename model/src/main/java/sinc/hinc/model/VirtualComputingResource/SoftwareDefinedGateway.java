@@ -2,7 +2,6 @@ package sinc.hinc.model.VirtualComputingResource;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,11 +12,11 @@ import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
-
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
+import sinc.hinc.model.Extensible.ExtensibleModel;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -47,6 +46,8 @@ public class SoftwareDefinedGateway {
     private List<ControlPoint> controlPoints;
     private List<CloudConnectivity> connectivity;
     private List<ExecutionEnvironment> executionEnvironment;
+
+    private List<ExtensibleModel> extra;
 
     /**
      * For custom data, e.g. created date, position, comments
@@ -184,6 +185,26 @@ public class SoftwareDefinedGateway {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    public List<ExtensibleModel> getExtra() {
+        if (this.extra == null) {
+            this.extra = new ArrayList<>();
+        }
+        return extra;
+    }
+
+    public void setExtra(List<ExtensibleModel> extra) {
+        this.extra = extra;
+    }
+
+    public ExtensibleModel getExtraByType(Class clazz) {
+        for (ExtensibleModel ext : this.getExtra()) {
+            if (ext.getClazz().equals(clazz)) {
+                return ext;
+            }
+        }
+        return null;
     }
 
 }

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.model.PhysicalResource;
+package sinc.hinc.model.Extensible.misc;
 
 /**
  *
  * @author hungld
  */
-public enum ResourceCategory {
-    Sensor, Actuator, Gateway
+public class VNFPricing {
+    String pricing;
 }

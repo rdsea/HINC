@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.model.VirtualComputingResource.extensions;
+package sinc.hinc.model.Extensible.misc;
 
-import sinc.hinc.model.PhysicalResource.ExtensibleModel;
+import sinc.hinc.model.Extensible.ExtensibleModel;
 
 /**
  *

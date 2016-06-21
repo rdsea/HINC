@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.model.VirtualComputingResource.Capability.Concrete;
+package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
-import sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType;
+import sinc.hinc.model.VirtualComputingResource.Capability;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +24,17 @@ public class DataPoint extends Capability {
     // reading rate
 //    int rate;
     /**
-     * The class which implementation functions to interact with this DataPoint Some function can be: - onStateChanged() - onBufferChanged(String bufferName,
-     * Object oldData, Object newData); - Stream<Object> getDataStream(String buffer); - setData(String bufferName, Object newData); - changeDataRate(DataPoint
-     * datapoint, Long rate);
+     * The class which implementation functions to interact with this DataPoint
+     * Some function can be: - onStateChanged() - onBufferChanged(String
+     * bufferName, Object oldData, Object newData); - Stream<Object>
+     * getDataStream(String buffer); - setData(String bufferName, Object
+     * newData); - changeDataRate(DataPoint datapoint, Long rate);
      */
     String managementClass;
 
     /**
-     * Any kind of URI link related to the datapoint. This can be domain model, MQTT/AMPQ persistent, streamming to read/write data.
+     * Any kind of URI link related to the datapoint. This can be domain model,
+     * MQTT/AMPQ persistent, streamming to read/write data.
      */
     String link;
 
@@ -42,27 +44,27 @@ public class DataPoint extends Capability {
     List<ControlPoint> controlpoints;
 
     public DataPoint() {
-        capabilityType = CapabilityType.DataPoint;
+
     }
 
     /**
-     * In the case we have 1 parameter, it is data type. Use this for building data point template.
+     * In the case we have 1 parameter, it is data type. Use this for building
+     * data point template.
      *
      * @param dataType
      */
     public DataPoint(String dataType) {
         this.datatype = dataType;
-        this.capabilityType = CapabilityType.DataPoint;
     }
 
     public DataPoint(String resourceID, String name, String description) {
-        super(resourceID, name, CapabilityType.DataPoint, description);
+        super(resourceID, name, description);
     }
 
     public DataPoint(String resourceID, String name, String description, String datatype, String measurementUnit) {
-        super(resourceID, name, CapabilityType.DataPoint, description);
+        super(resourceID, name, description);
         this.datatype = datatype;
-        this.measurementUnit = measurementUnit;        
+        this.measurementUnit = measurementUnit;
     }
 
     public String getDatatype() {

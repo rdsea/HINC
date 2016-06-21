@@ -1,11 +1,10 @@
-package sinc.hinc.model.VirtualComputingResource.Capability;
+package sinc.hinc.model.VirtualComputingResource;
 
-import sinc.hinc.model.PhysicalResource.ExtensibleModel;
-import sinc.hinc.model.PhysicalResource.PhysicalResource;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
+import sinc.hinc.model.Extensible.ExtensibleModel;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.ArrayList;
@@ -44,11 +43,6 @@ public class Capability {
     protected String uuid;
 
     /**
-     * The type of the capability
-     */
-    protected CapabilityType capabilityType;
-
-    /**
      * Description
      */
     protected String description;
@@ -56,7 +50,7 @@ public class Capability {
     /**
      * The physical resource give info. of what Things this SDG manages
      */
-    private List<PhysicalResource> extra;
+    private List<ExtensibleModel> extra;
 
     /**
      * Constructor, get/set
@@ -64,10 +58,9 @@ public class Capability {
     public Capability() {
     }
 
-    public Capability(String resourceID, String name, CapabilityType type, String description) {
+    public Capability(String resourceID, String name, String description) {
         this.resourceID = resourceID;
         this.name = name;
-        this.capabilityType = type;
         this.description = description;
         this.gatewayID = "unknown";
         this.uuid = gatewayID + "/" + name;
@@ -79,14 +72,6 @@ public class Capability {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public CapabilityType getCapabilityType() {
-        return capabilityType;
-    }
-
-    public void setCapabilityType(CapabilityType capabilityType) {
-        this.capabilityType = capabilityType;
     }
 
     public String getDescription() {
@@ -122,20 +107,24 @@ public class Capability {
         this.uuid = uuid;
     }
 
-    public List<PhysicalResource> getExtra() {
+    public List<ExtensibleModel> getExtra() {
         if (this.extra == null){
             this.extra = new ArrayList<>();
         }
         return extra;
     }
 
-    public void setExtra(List<PhysicalResource> extra) {
+    public void setExtra(List<ExtensibleModel> extra) {
         this.extra = extra;
     }
     
     public ExtensibleModel getExtraByType(Class clazz){
-        // TODO: implement this
-        return new ExtensibleModel(clazz);
+        for(ExtensibleModel ext: this.getExtra()){
+            if (ext.getClazz().equals(clazz)){
+                return ext;
+            }
+        }
+        return null;
     }
 
 }

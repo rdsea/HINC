@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.model.PhysicalResource;
+package sinc.hinc.model.Extensible;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +16,7 @@ import java.io.IOException;
  */
 public class ExtensibleModel {
 
+    // how can CRUD the data
     Class clazz;
 
     public ExtensibleModel(Class clazz) {
@@ -31,8 +32,8 @@ public class ExtensibleModel {
             return null;
         }
     }
-    
-    public static ExtensibleModel fromJson(String json){
+
+    public static ExtensibleModel fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(json, ExtensibleModel.class);
@@ -50,6 +51,10 @@ public class ExtensibleModel {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    public Class getClazz() {
+        return clazz;
     }
 
 }

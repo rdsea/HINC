@@ -1,4 +1,4 @@
-package sinc.hinc.model.PhysicalResource;
+package sinc.hinc.model.Extensible;
 
 import java.util.ArrayList;
 import java.util.Arrays;

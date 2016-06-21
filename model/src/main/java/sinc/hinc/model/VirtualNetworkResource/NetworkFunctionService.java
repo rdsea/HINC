@@ -1,6 +1,6 @@
 package sinc.hinc.model.VirtualNetworkResource;
 
-import sinc.hinc.model.VirtualComputingResource.extensions.NetworkQuality;
+import sinc.hinc.model.Extensible.misc.NetworkQuality;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
