@@ -1,0 +1,138 @@
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:500);
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+body {
+    font-weight: 400;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+    font-family: 'Roboto','Calibri','Arial',sans-serif;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAeCAYAAABNChwpAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNXG14zYAAAAUdEVYdENyZWF0aW9uIFRpbWUAMy82LzEygrTcTAAAAFRJREFUSIljfPDggZRf5RIGGNjUHsNATz6jXmSL1Kb2GLiAX+USBnrymRgGGDCORgFmoNAXjEbBaBSMRsFoFIxGwWgUjEbBaBSMRsFoFIxGwWgUAABYNujumib3wAAAAABJRU5ErkJggg==') fixed;
+        background: #DEDEDE;
+}
+
+img{
+ display: block;
+  margin: 0 auto;
+}
+
+#content {
+  width: 800px;
+  
+  
+      box-shadow: 0 8px 17px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19);
+    border-radius: 5px;
+    border: 0;
+  
+  background: white;
+  text-align: justify;
+    text-justify: inter-word;
+}
+
+
+
+pre, code, pre code {
+    border-radius: 0;
+    background-color: #f8f8f8;
+    font-size: 90%;
+    font-family: 'Source Code Pro', 'Courier New', monospace;
+}
+
+.highlight {
+    background-color: #f9f9f9;
+}
+
+pre {
+    font-size: 1em;
+        border: 1px solid;
+            white-space: pre;
+               max-width: 100%;
+               border-radius: 5px;
+box-sizing: border-box;
+box-shadow: inset 0 1px 10px rgba(0,0,0,0.2),0 1px 0 rgba(200,200,200,0.1),0 -1px 0 rgba(0,0,0,0.3);
+}
+
+code {
+    color: inherit;
+}
+
+#header {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+#header a:hover {
+    text-decoration: none;
+}
+
+#footer {
+    margin: 20px 0;
+    font-size: 0.85em;
+    color: #999;
+    text-align: center;
+}
+
+#content > .page-header:first-child {
+    margin-top: 0;
+}
+
+#content > .page-header:first-child h2 {
+    /*margin-top: 0; */
+}
+
+
+#navigation {
+    font-size: 1.1em;
+    text-align: left;
+
+
+}
+
+#navigation li a {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 0px;
+}
+
+#navigation .nav-header {
+    font-weight: 700;
+    display: inline-block;
+    border-bottom: 1px solid #c00;
+        padding-top: 10px;
+}
+
+body.rtl {
+	direction: rtl;
+}
+
+body.rtl #header .brand {
+	float: right;
+    margin-left: 5px;
+}
+body.rtl .row-fluid [class*="span"] {
+	float: right !important;
+	margin-left: 0;
+	margin-right: 2.564102564102564%;
+}
+body.rtl .row-fluid [class*="span"]:first-child {
+	margin-right: 0;
+}
+
+body.rtl ul, body.rtl ol {
+    margin: 0 25px 10px 0;
+}
+
+table {
+  margin-bottom: 1rem;
+  border: 1px solid #e5e5e5;
+  border-collapse: collapse;
+}
+
+td, th {
+  padding: .25rem .5rem;
+  border: 1px solid #e5e5e5;
+}
+
+blockquote {
+  font-size: 14px;
+  font-style: italic;
+}
