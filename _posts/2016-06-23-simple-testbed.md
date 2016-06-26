@@ -3,10 +3,10 @@ layout: page
 title: "Simple testbed"
 category: tut
 date: 2016-06-23 13:19:11
-order: 1
+order: 5
 ---
 
-In order to test HINC, we need a couple of providers and and message oriented middleware. Followings show a short tutorial to settings up OpenHAB as provider and using HINC to capture information. We choose OpenHAB because of its easy installation and lightweight.
+In order to test HINC, we need a couple of providers and and message oriented middleware. This tutorial will show how to setup OpenHAB as provider and using HINC to capture information. We choose OpenHAB because of its easy installation and lightweight.
 
 The configuration in this example aim to run everything on a single machine, e.g. user's laptop. For distributed deployment, please edit the settings accordingly.
 
@@ -104,5 +104,5 @@ java -jar client-gui-1.0.jar
 
 5.2. The GUI will show the list of providers on the left and the list of data points on the right. See figure below.
 
-![GUI](../images/gui.png" GUI){:width="600px"}
+![GUI](../images/gui.png "GUI"){:width="600px"}
 

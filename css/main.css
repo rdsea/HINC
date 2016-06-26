@@ -34,6 +34,8 @@ pre, code, pre code {
     background-color: #f8f8f8;
     font-size: 90%;
     font-family: 'Source Code Pro', 'Courier New', monospace;
+    overflow-wrap: normal;
+    white-space: pre;
 }
 
 .highlight {
@@ -43,7 +45,7 @@ pre, code, pre code {
 pre {
     font-size: 1em;
         border: 1px solid;
-            white-space: pre;
+            overflow-x:auto;
                max-width: 100%;
                border-radius: 5px;
 box-sizing: border-box;

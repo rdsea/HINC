@@ -1,0 +1,1 @@
+../_posts/2016-06-25-cloud-resources.md

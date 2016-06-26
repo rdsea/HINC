@@ -14,9 +14,9 @@ HINC can be build with Java 1.7+ and Maven as followings:
 2. Run `$ mvn clean install`
 3. Take 2 artifacts corresponding to the components: `local-management-service-1.0.jar` and `global-management-service-1.0.jar`.
 
-### Built artifact
+### Use ready-to-run artifacts
 
-The artifacts can be download from the [artifact branch on Github](https://github.com/SINCConcept/HINC/tree/artifacts).
+The artifacts can be downloaded from the [artifact branch on Github](https://github.com/SINCConcept/HINC/tree/artifacts).
 
 We try to keep this branch up-to-date with the most stable version.
 
@@ -32,3 +32,5 @@ The local management service can be run with the below command. Note that we nee
 ```sh
 $ java -cp "local-management-service-1.0.jar:TranformIoTivity-1.0.jar:TransformOpenHAB-1.0.jar" sinc.hinc.local.Main
 ```
+
+Please refer to the Tutorial sections to see the details how to setup the whole testbed.
