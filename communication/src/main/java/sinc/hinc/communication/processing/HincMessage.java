@@ -15,7 +15,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package sinc.hinc.common.metadata;
+package sinc.hinc.communication.processing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -30,11 +30,11 @@ import java.util.Map;
  */
 public class HincMessage {
 
-    MESSAGE_TYPE msgType;
-
-    String fromSalsa;
-
+    String msgType;
+    
     String topic;
+
+    String senderID;
 
     String feedbackTopic;
 
@@ -47,39 +47,15 @@ public class HincMessage {
     public HincMessage() {
     }
 
-    public HincMessage(MESSAGE_TYPE msgType, String fromSalsa, String topic, String feedbackTopic, String payload) {
-        this.fromSalsa = fromSalsa;
+    public HincMessage(String msgType, String senderid, String topic, String feedbackTopic, String payload) {
         this.msgType = msgType;
+        this.senderID = senderid;        
         this.topic = topic;
         this.feedbackTopic = feedbackTopic;
         this.payload = payload;
         this.timeStamp = System.currentTimeMillis();
     }
 
-    public enum MESSAGE_TYPE {
-
-        // broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-        SYN_REQUEST,
-        SYN_REPLY,
-        // unicast:local->global, local manager register it self 
-        local_register,
-        // unicast: Client->local, query information from local regarding to SD Gateway or NVF
-        RPC_QUERY_SDGATEWAY_LOCAL,
-        RPC_QUERY_NFV_LOCAL,
-        // unicast: Client->global, query information from global (which include relationship)
-        RPC_QUERY_INFORMATION_GLOBAL,
-        // unicast: Client->local, send a control command to local
-        RPC_CONTROL_LOCAL,
-        // unicast: Client->global, send a control command to global
-        RPC_CONTROL_GLOBAL,
-        // unicast/broadcast: Client--> local: subscribe the changes in the gateway
-        SUBSCRIBE_SDGATEWAY_LOCAL,
-        SUBSCRIBE_SDGATEWAY_LOCAL_SET_PARAM,
-        // unicast: local/global --> client: send back the response
-        UPDATE_INFORMATION
-
-    }
 
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();
@@ -105,13 +81,14 @@ public class HincMessage {
         }
     }
 
-    public MESSAGE_TYPE getMsgType() {
+    public String getMsgType() {
         return msgType;
     }
 
-    public String getFromSalsa() {
-        return fromSalsa;
-    }
+    public String getSenderID() {
+        return senderID;
+    }    
+    
 
     public String getTopic() {
         return topic;
@@ -150,7 +127,7 @@ public class HincMessage {
 
     @Override
     public String toString() {
-        return "SalsaMessage{" + "MsgType=" + msgType + ", payload=" + payload + '}';
+        return "HINCMessage{" + "MsgType=" + msgType + ", payload=" + payload + '}';
     }
 
 }

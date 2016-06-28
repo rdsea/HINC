@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.communication.messageInterface;
+package sinc.hinc.communication.processing;
 
-import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.communication.processing.HincMessage;
 
 
 /**
@@ -15,7 +15,7 @@ import sinc.hinc.common.metadata.HincMessage;
 /*
  * Linh @Hung: change the name "Salsa"
  */
-public interface SalsaMessageHandling {
+public interface HINCMessageHander {
     
     // handling incoming message, and reply another
     public void handleMessage(HincMessage message);

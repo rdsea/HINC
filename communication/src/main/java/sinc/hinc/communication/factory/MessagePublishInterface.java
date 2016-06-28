@@ -15,16 +15,19 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package sinc.hinc.communication.messageInterface;
+package sinc.hinc.communication.factory;
+
+import sinc.hinc.communication.processing.HincMessage;
+
 
 /**
  *
  * @author Duc-Hung Le
  */
-public interface MessageSubscribeInterface {
+public interface MessagePublishInterface {
 
-    public void subscribe(String topic);
-    public void subscribe(String topic, long timeout);
+    public void pushMessage(HincMessage content);
+    public HincMessage callFunction(HincMessage content);
     public void disconnect();
 
 }

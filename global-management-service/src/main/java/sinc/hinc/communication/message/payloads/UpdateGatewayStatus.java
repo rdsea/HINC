@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.communication.messagePayloads;
+package sinc.hinc.communication.message.payloads;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;

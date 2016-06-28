@@ -9,11 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import sinc.hinc.common.metadata.HincLocalMeta;
-import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
-import sinc.hinc.global.management.CommunicationManager;
+import sinc.hinc.communication.processing.HINCMessageSender;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.CloudServices.CloudProvider;
 import sinc.hinc.model.CloudServices.CloudService;
@@ -28,11 +27,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.Capability;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
+import sinc.hinc.communication.processing.HINCMessageHander;
 
 /**
  * @author hungld
@@ -42,7 +43,7 @@ import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
 
     static Logger logger = LoggerFactory.getLogger("HINC");
-    CommunicationManager comMng = getCommunicationManager();
+    HINCMessageSender comMng = getCommunicationManager();
     List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
 
     {
@@ -53,9 +54,9 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     public ResourcesManagementAPIImpl() {
     }
 
-    public CommunicationManager getCommunicationManager() {
+    public HINCMessageSender getCommunicationManager() {
         if (comMng == null) {
-            this.comMng = new CommunicationManager(HincConfiguration.getGroupName(), HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+            this.comMng = new HINCMessageSender(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
         }
         return this.comMng;
     }
@@ -75,13 +76,14 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         final long timeStamp1 = (new Date()).getTime();
         String eventFileName = "log/queries/" + timeStamp1 + ".event";
 
-        getCommunicationManager();
-        if (hincUUID != null && !hincUUID.isEmpty()) {
+        if (hincUUID != null && !hincUUID.isEmpty() && !hincUUID.trim().equals("null")) {
             logger.debug("Trying to query HINC Local with ID: " + hincUUID);
-            String gatewayInJson = comMng.synFunctionCallUnicast(hincUUID, HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL);
+            String gatewayInJson = comMng.synCall(new HincMessage(HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getHINCPrivateTopic(hincUUID), feedBackTopic, ""));
+            
             result.add(SoftwareDefinedGateway.fromJson(gatewayInJson));
         } else {
-            comMng.synFunctionCallBroadcast(timeout, feedBackTopic, HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL, HincMessageTopic.getCollectorTopicBroadcast(HincConfiguration.getGroupName()), new SalsaMessageHandling() {
+            HincMessage queryMessage = new HincMessage(HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, "");
+            comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
                 long latestTime = 0;
                 long quantity = 0;
                 long currentSum = 0;
@@ -89,7 +91,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
                 @Override
                 public void handleMessage(HincMessage message) {
                     Long timeStamp5 = (new Date()).getTime();
-                    logger.debug("Get a response message from " + message.getFromSalsa());
+                    logger.debug("Get a response message from " + message.getSenderID());
                     SoftwareDefinedGateway gw = SoftwareDefinedGateway.fromJson(message.getPayload());
                     if (gw == null) {
                         logger.debug("Payload is null, or cannot be converted");
@@ -122,7 +124,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
 
         // wait for a few second
         try {
-            logger.debug("Wait for " + timeout + " miliseconds ...........");
+            logger.debug("Wait for " + timeout + " miliseconds for subscription threads finish ...........");
             Thread.sleep(timeout);
         } catch (InterruptedException ex) {
             ex.printStackTrace();

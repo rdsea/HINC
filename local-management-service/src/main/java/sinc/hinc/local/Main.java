@@ -5,12 +5,18 @@
  */
 package sinc.hinc.local;
 
-import sinc.hinc.communication.messageInterface.MessageClientFactory;
+import sinc.hinc.communication.factory.MessageClientFactory;
 import java.util.Date;
 import java.util.Map;
 import org.slf4j.Logger;
+import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.metadata.InfoSourceSettings;
 import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.communication.processing.HINCMessageListener;
+import sinc.hinc.local.messageHandlers.HandleQueryGateway;
+import sinc.hinc.local.messageHandlers.HandleQueryVNF;
+import sinc.hinc.local.messageHandlers.HandleSyn;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 
 /**
@@ -55,8 +61,18 @@ public class Main {
          * ************************
          * HINC listens to some queue channels to answer the query. ************************
          */
-        QueueListener.listenSynMessage();
-        QueueListener.listenQueryMessage();
+        HINCMessageListener listener = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+        
+        String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
+        String privateTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
+        
+        listener.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
+        listener.addListener(groupTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
+        listener.addListener(privateTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
+        listener.addListener(groupTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
+        listener.addListener(privateTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
+        
+        listener.listen();
 
         /**
          * ************************

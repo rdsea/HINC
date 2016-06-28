@@ -1,0 +1,41 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package sinc.hinc.local.messageHandlers;
+
+import java.util.List;
+import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.communication.factory.MessageClientFactory;
+import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
+import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+import sinc.hinc.communication.processing.HINCMessageHander;
+
+/**
+ *
+ * @author hungld
+ */
+public class HandleQueryVNF implements HINCMessageHander {
+
+    @Override
+    public void handleMessage(HincMessage msg) {
+        System.out.println("Server get request for SDG information");
+        try {
+            AbstractDAO<NetworkFunctionService> vnfDAO = new AbstractDAO<>(NetworkFunctionService.class);
+            List<NetworkFunctionService> listOfNFS = vnfDAO.readAll();
+            for (NetworkFunctionService nfs : listOfNFS) {
+                String replyPayload = nfs.toJson();
+                HincMessage replyMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION.toString(), HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
+                MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+                FACTORY.getMessagePublisher().pushMessage(replyMsg);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return;
+    }
+
+}

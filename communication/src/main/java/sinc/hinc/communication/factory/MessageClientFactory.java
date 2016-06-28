@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.communication.messageInterface;
+package sinc.hinc.communication.factory;
 
 
+import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.AMQPAdaptor.AMQPPublish;
 import sinc.hinc.communication.AMQPAdaptor.AMQPSubscribe;
 import sinc.hinc.communication.MQTTAdaptor.MQTTPublish;
@@ -48,7 +49,7 @@ public class MessageClientFactory {
         }
     }
 
-    public MessageSubscribeInterface getMessageSubscriber(SalsaMessageHandling handler) {
+    public MessageSubscribeInterface getMessageSubscriber(HINCMessageHander handler) {
         switch (getBrokerType().trim()) {
             case MessageClientFactory.MQTT:
                 return new MQTTSubscribe(getBroker(), handler);

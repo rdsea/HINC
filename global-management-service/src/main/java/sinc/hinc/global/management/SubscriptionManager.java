@@ -10,17 +10,18 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.common.metadata.HincMessageTopic;
-import sinc.hinc.communication.messageInterface.MessageClientFactory;
-import sinc.hinc.communication.messageInterface.MessagePublishInterface;
-import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
-import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
-import sinc.hinc.communication.messagePayloads.UpdateGatewayStatus;
+import sinc.hinc.communication.factory.MessageClientFactory;
+import sinc.hinc.communication.factory.MessagePublishInterface;
+import sinc.hinc.communication.factory.MessageSubscribeInterface;
+import sinc.hinc.communication.message.payloads.UpdateGatewayStatus;
 
 import java.io.File;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.communication.processing.HINCMessageHander;
 
 /**
  * @author hungld
@@ -55,7 +56,7 @@ public class SubscriptionManager {
         // note that when using callFunction, no need to declare the feedbackTopic. This will be filled by the call
         String feedBackTopic = HincMessageTopic.getTemporaryTopic();
 
-        MessageSubscribeInterface sub = FACTORY.getMessageSubscriber(new SalsaMessageHandling() {
+        MessageSubscribeInterface sub = FACTORY.getMessageSubscriber(new HINCMessageHander() {
             final long windowSize = 30;
             double currentThroughput = 0L;
 
@@ -76,7 +77,7 @@ public class SubscriptionManager {
                 String payload = message.getPayload();
                 autoExpireCache.put(payload, payload);
 
-                System.out.println("Get a response message from " + message.getFromSalsa());
+                System.out.println("Get a response message from " + message.getSenderID());
                 UpdateGatewayStatus updateStatus = UpdateGatewayStatus.fromJson(message.getPayload());
                 System.out.println("update status: appear " + updateStatus.getAppear().size() + ", disappear: " + updateStatus.getDisappear().size());
 
@@ -92,7 +93,7 @@ public class SubscriptionManager {
         });
         sub.subscribe(feedBackTopic, timeout);
 
-        HincMessage queryMessage = new HincMessage(HincMessage.MESSAGE_TYPE.RPC_QUERY_SDGATEWAY_LOCAL, groupName, HincMessageTopic.getCollectorTopicBroadcast(groupName), feedBackTopic, "");
+        HincMessage queryMessage = new HincMessage(HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), groupName, HincMessageTopic.getBroadCastTopic(groupName), feedBackTopic, "");
         pub.pushMessage(queryMessage);
 
         // wait for a few second

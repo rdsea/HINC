@@ -17,14 +17,14 @@
  */
 package sinc.hinc.communication.MQTTAdaptor;
 
-import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
-import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
+import sinc.hinc.communication.factory.MessageSubscribeInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.communication.processing.HINCMessageHander;
 
 /**
  *
@@ -32,9 +32,9 @@ import sinc.hinc.common.metadata.HincMessage;
  */
 public class MQTTSubscribe extends MQTTConnector implements MessageSubscribeInterface {
 
-    SalsaMessageHandling handler;
+    HINCMessageHander handler;
 
-    public MQTTSubscribe(String broker, SalsaMessageHandling handling) {
+    public MQTTSubscribe(String broker, HINCMessageHander handling) {
         super(broker);
         this.handler = handling;
     }
@@ -54,7 +54,7 @@ public class MQTTSubscribe extends MQTTConnector implements MessageSubscribeInte
                 ObjectMapper mapper = new ObjectMapper();
                 HincMessage em = (HincMessage) mapper.readValue(mm.getPayload(), HincMessage.class);
 
-                logger.debug("A message arrived. From: " + em.getFromSalsa() + ". MsgType: " + em.getMsgType() + ". Payload: " + em.getPayload());
+                logger.debug("A message arrived. From: " + em.getSenderID() + ". MsgType: " + em.getMsgType() + ". Payload: " + em.getPayload());
 
                 handler.handleMessage(em);
                 //new Thread(new AsynHandleMessages(em)).start();

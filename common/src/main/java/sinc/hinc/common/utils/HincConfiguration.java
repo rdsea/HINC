@@ -47,9 +47,12 @@ public class HincConfiguration {
     // only HINC Local use this
     public static HincLocalMeta getLocalMeta() {
         if (localMeta == null) {
-            localMeta = new HincLocalMeta(myUUID, HincUtils.getEth0Address(), HincMessageTopic.getCollectorTopicByID(myUUID));
+            localMeta = new HincLocalMeta(myUUID, HincUtils.getEth0Address(), HincMessageTopic.getHINCPrivateTopic(myUUID));
             InfoSourceSettings settings = InfoSourceSettings.loadDefaultFile();
             localMeta.setSettings(settings.toJson());
+            localMeta.setGroupName(getGroupName());
+            localMeta.setBroker(getBroker());
+            localMeta.setBrokerType(getBrokerType());
 
             IPLocationData locationMeta = getIpLocationMeta();
             localMeta.setCity(locationMeta.getCity());

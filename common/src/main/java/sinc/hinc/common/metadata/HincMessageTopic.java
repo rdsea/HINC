@@ -33,11 +33,11 @@ public class HincMessageTopic {
 
     public static final String CLIENT_WAIT_FOR_INFORMATION = PREFIX + "client";
 
-    public static String getCollectorTopicByID(String pioneerID) {
-        return CLIENT_REQUEST_HINC + "." + pioneerID.trim();
+    public static String getHINCPrivateTopic(String hincID) {
+        return CLIENT_REQUEST_HINC + "." + hincID.trim();
     }
 
-    public static String getCollectorTopicBroadcast(String groupName) {
+    public static String getBroadCastTopic(String groupName) {
         return CLIENT_REQUEST_HINC + ".HINC_BROADCAST." + groupName.trim();
     }
 

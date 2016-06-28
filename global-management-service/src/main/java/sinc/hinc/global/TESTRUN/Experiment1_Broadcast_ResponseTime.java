@@ -6,7 +6,7 @@
 package sinc.hinc.global.TESTRUN;
 
 import sinc.hinc.global.API.ResourcesManagementAPIImpl;
-import sinc.hinc.global.management.CommunicationManager;
+import sinc.hinc.communication.processing.HINCMessageSender;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 
 import java.io.BufferedReader;
@@ -34,7 +34,7 @@ public class Experiment1_Broadcast_ResponseTime {
 //    }
     public static void main(String[] args) {
         //Linh: document this
-        CommunicationManager client = new CommunicationManager(args[0], args[1], args[2]);
+        HINCMessageSender client = new HINCMessageSender(args[0], args[1]);
         ResourcesManagementAPI api = new ResourcesManagementAPIImpl();
         //client.synDelise(3000);
 

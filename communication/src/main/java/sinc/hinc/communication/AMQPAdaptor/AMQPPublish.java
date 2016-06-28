@@ -17,14 +17,17 @@
  */
 package sinc.hinc.communication.AMQPAdaptor;
 
-import sinc.hinc.communication.messageInterface.MessagePublishInterface;
+import sinc.hinc.communication.factory.MessagePublishInterface;
 
 import com.rabbitmq.client.ConsumerCancelledException;
 import com.rabbitmq.client.QueueingConsumer;
 import com.rabbitmq.client.ShutdownSignalException;
 import java.io.IOException;
-import sinc.hinc.common.metadata.HincMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.common.metadata.HincMessageTopic;
+import sinc.hinc.communication.processing.HINCMessageSender;
 
 /**
  *
@@ -43,22 +46,23 @@ public class AMQPPublish extends AMQPConnector implements MessagePublishInterfac
     public void pushMessage(HincMessage content) {
         connect();
 
-        System.out.println("Publishing message: " + content.getMsgType() + ", " + content.getTopic());
+        logger.debug("Start publishing message {} on topic {} ", content.getMsgType(), content.getTopic());
         if (content.getPayload() != null && content.getPayload().length() < 2048) {
             logger.debug("Content: " + content);
         }
         try {
             String EXCHANGE_NAME = content.getTopic();
-            logger.debug("EXCHANGE_NAME: " + EXCHANGE_NAME);
+            logger.debug("  --> EXCHANGE_NAME: " + EXCHANGE_NAME);
             amqpChannel.exchangeDeclare(EXCHANGE_NAME, "fanout");
             amqpChannel.basicPublish(EXCHANGE_NAME, "", null, content.toJson().getBytes());
         } catch (IOException me) {
-            System.out.println("msg " + me.getMessage());
-            System.out.println("loc " + me.getLocalizedMessage());
-            System.out.println("excep " + me);
+            logger.debug("  --> Message {} is FAILED to publish on topic {} ", content.getMsgType(), content.getTopic());
+            logger.debug("  --> msg " + me.getMessage());
+            logger.debug("  -->loc " + me.getLocalizedMessage());
+            logger.debug("  --> excep " + me);
             me.printStackTrace();
         }
-        System.out.println("Message published");
+        logger.debug("  --> Message {} is published on topic {} ", content.getMsgType(), content.getTopic());
 //        disconnect();
 
     }
@@ -124,14 +128,14 @@ public class AMQPPublish extends AMQPConnector implements MessagePublishInterfac
             if (amqpChannel == null) {
                 connect();
             }
-            System.out.println("Publishing custom data: " + content);
+            logger.debug("Publishing custom data: " + content);
             amqpChannel.exchangeDeclare(topic, "fanout");
             amqpChannel.basicPublish(topic, "", null, content.getBytes());
-            System.out.println("Message published");
+            logger.debug("Message published");
         } catch (IOException me) {
-            System.out.println("msg " + me.getMessage());
-            System.out.println("loc " + me.getLocalizedMessage());
-            System.out.println("excep " + me);
+            logger.debug(" --> msg " + me.getMessage());
+            logger.debug(" --> loc " + me.getLocalizedMessage());
+            logger.debug(" --> excep " + me);
             me.printStackTrace();
         }
     }

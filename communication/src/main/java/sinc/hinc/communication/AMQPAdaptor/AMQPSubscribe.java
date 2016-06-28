@@ -17,15 +17,15 @@
  */
 package sinc.hinc.communication.AMQPAdaptor;
 
-import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
-import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
+import sinc.hinc.communication.factory.MessageSubscribeInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.ConsumerCancelledException;
 import com.rabbitmq.client.QueueingConsumer;
 import com.rabbitmq.client.ShutdownSignalException;
 import java.io.IOException;
 import java.util.Date;
-import sinc.hinc.common.metadata.HincMessage;
+import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.communication.processing.HINCMessageHander;
 
 /**
  *
@@ -33,9 +33,9 @@ import sinc.hinc.common.metadata.HincMessage;
  */
 public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInterface {
 
-    SalsaMessageHandling handler;
+    HINCMessageHander handler;
 
-    public AMQPSubscribe(String broker, SalsaMessageHandling handling) {
+    public AMQPSubscribe(String broker, HINCMessageHander handling) {
         super(broker);
         this.handler = handling;
     }
@@ -70,13 +70,13 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
 
     private class ThreadQueueSubscribe implements Runnable {
 
-        SalsaMessageHandling handler;
+        HINCMessageHander handler;
         QueueingConsumer consumer;
         String topic;
         long timeout;
         long startTime;
 
-        ThreadQueueSubscribe(QueueingConsumer consumer, SalsaMessageHandling handler, long timeout) {
+        ThreadQueueSubscribe(QueueingConsumer consumer, HINCMessageHander handler, long timeout) {
             this.handler = handler;
             this.consumer = consumer;;
             this.timeout = timeout; // in miliseconds
@@ -108,7 +108,7 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
                     HincMessage em = (HincMessage) mapper.readValue(mm, HincMessage.class);
                     this.topic = em.getTopic();
                     //logger.debug("A message arrived. From: " + em.getFromSalsa() + ". MsgType: " + em.getMsgType() + ". Payload: " + em.getPayload());
-                    logger.debug("A message arrived. From: " + em.getFromSalsa() + ". MsgType: " + em.getMsgType());
+                    logger.debug("A message arrived. From: " + em.getSenderID() + ". MsgType: " + em.getMsgType());
                     new Thread(new HandlingThread(handler, em)).start();
                     logger.debug("If handle message done, it must exit and show this");
                     // quit if timeout
@@ -135,10 +135,10 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
 
     private class HandlingThread implements Runnable {
 
-        SalsaMessageHandling handler;
+        HINCMessageHander handler;
         HincMessage em;
 
-        HandlingThread(SalsaMessageHandling handler, HincMessage em) {
+        HandlingThread(HINCMessageHander handler, HincMessage em) {
             this.handler = handler;
             this.em = em;
         }
