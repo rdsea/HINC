@@ -5,12 +5,10 @@
  */
 package sinc.hinc.transformer.fiwarecontextbroker.model;
 
-import sinc.hinc.model.PhysicalResource.ExtensibleModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *

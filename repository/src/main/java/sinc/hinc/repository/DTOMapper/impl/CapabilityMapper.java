@@ -7,9 +7,8 @@ package sinc.hinc.repository.DTOMapper.impl;
 
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
+import sinc.hinc.model.VirtualComputingResource.Capability;
+
 
 /**
  *

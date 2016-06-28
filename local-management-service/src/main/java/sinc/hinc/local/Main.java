@@ -5,19 +5,9 @@
  */
 package sinc.hinc.local;
 
-import sinc.hinc.common.utils.IPLocationData;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import sinc.hinc.communication.messageInterface.MessageClientFactory;
-import sinc.hinc.repository.DAO.orientDB.OrientDBConnector;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.Map;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import sinc.hinc.common.metadata.InfoSourceSettings;
 import sinc.hinc.common.utils.HincConfiguration;

@@ -7,16 +7,14 @@ package sinc.hinc.repository;
 
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 import sinc.hinc.repository.DAO.orientDB.OrientDBConnector;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 
 /**
  *
@@ -37,7 +35,7 @@ public class testDAOSDGateway {
         SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
         gw.setName("myGW");
         gw.setUuid("myUUID");
-
+        
         DataPoint dp = new DataPoint("mySensorID", "datapoint-name", "This is a datapoint");
         gw.hasCapability(dp);
 

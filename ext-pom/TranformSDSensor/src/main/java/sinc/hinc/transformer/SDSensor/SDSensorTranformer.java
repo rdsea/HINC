@@ -5,18 +5,14 @@
  */
 package sinc.hinc.transformer.SDSensor;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
-import java.io.IOException;
-import java.io.StringReader;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 
 /**
  * The rawData is the content of salsa.meta file, which defines the list of capability

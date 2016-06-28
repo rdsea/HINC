@@ -29,6 +29,14 @@ import java.util.Map;
  */
 public class FilesScanner {
 
+    /**
+     * Get the list of Text file in recursive folder
+     *  - path: the base folder
+     *  - filter: the extension of the file
+     *  E.g. getItems("/tmp","txt")
+     * @param settings path and filter
+     * @return 
+     */
     public static Collection<String> getItems(Map<String, String> settings) {
         final String mainFolder = settings.get("path");
         final String nameFilter = settings.get("filter");

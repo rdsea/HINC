@@ -5,9 +5,17 @@
  */
 package sinc.hinc.repository.DTOMapper.impl;
 
-import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 
 /**
  *
@@ -26,8 +34,18 @@ public class DataPointMapper implements DTOMapperInterface<DataPoint> {
         dp.setMeasurementUnit(String.valueOf(doc.field("measurementunit")));
         dp.setResourceID(String.valueOf(doc.field("resourceid")));
         dp.setGatewayID(String.valueOf(doc.field("gatewayid")));
-        dp.setLink(String.valueOf(doc.field("link")));
+        dp.setBufferType(String.valueOf(doc.field("buffertype")));
         
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<HashMap<String,String>> typeRef = new TypeReference<HashMap<String,String>>() {};
+        try {
+            Map<String, String> settings = mapper.readValue(String.valueOf(doc.field("buffersettings")), typeRef);
+            dp.setBufferSettings(settings);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
+
         return dp;
     }
 
@@ -43,7 +61,18 @@ public class DataPointMapper implements DTOMapperInterface<DataPoint> {
         doc.field("measurementunit", object.getMeasurementUnit());
         doc.field("resourceid", object.getResourceID());
         doc.field("gatewayid", object.getGatewayID());
-        doc.field("link", object.getLink());
+        doc.field("buffertype", object.getBufferType());
+        
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<HashMap<String,String>> typeRef = new TypeReference<HashMap<String,String>>() {};
+        String settings;
+        try {
+            settings = mapper.writeValueAsString(object.getBufferSettings());
+            doc.field("buffersettings", settings);
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+        
 
         return doc;
     }

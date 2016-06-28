@@ -42,8 +42,8 @@ import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.metadata.InfoSourceSettings;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.API.ResourcesManagementAPI;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 
 public class MainPanelController implements Initializable {
 
@@ -372,7 +372,6 @@ public class MainPanelController implements Initializable {
                 properties.put("Unit", dp.getMeasurementUnit());
                 properties.put("PhysicalID", dp.getResourceID());
                 properties.put("Management", dp.getManagementClass());
-                properties.put("Link", dp.getLink());
                 properties.put("Description", dp.getDescription());
 
                 StringBuilder text = new StringBuilder();

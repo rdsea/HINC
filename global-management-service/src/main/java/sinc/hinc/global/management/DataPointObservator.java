@@ -5,7 +5,9 @@
  */
 package sinc.hinc.global.management;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+
+
 
 /**
  * This

@@ -8,7 +8,6 @@ package sinc.hinc.repository.DAO.orientDB;
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import sinc.hinc.repository.DTOMapper.MapperFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-import com.orientechnologies.orient.core.exception.OCommandExecutionException;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 
 /**
  *
@@ -145,6 +143,9 @@ public class AbstractDAO<T> {
             Long endTime = (new Date()).getTime();
             logger.debug("Save done: " + result.size() + " ODocument(s) in " + (endTime - startTime) + " milisecs -- " + taskID);
             return result;
+        } catch(Exception e){
+            logger.error("Error when saving object to DB", e);
+            return null;
         } finally {
             manager.closeConnection();
         }

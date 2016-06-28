@@ -18,5 +18,6 @@
         <module>TransformFiwareContextBroker</module>
         <module>DummyProvider</module>
         <module>OpenDaylightPlugin</module>
+        <module>TEITPlugin</module>
     </modules>
 </project>

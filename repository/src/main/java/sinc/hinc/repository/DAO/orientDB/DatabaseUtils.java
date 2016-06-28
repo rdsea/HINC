@@ -8,10 +8,10 @@ package sinc.hinc.repository.DAO.orientDB;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import static sinc.hinc.repository.DAO.orientDB.AbstractDAO.logger;
 

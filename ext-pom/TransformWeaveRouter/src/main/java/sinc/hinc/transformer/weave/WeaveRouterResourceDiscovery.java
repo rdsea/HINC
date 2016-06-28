@@ -5,7 +5,7 @@
  */
 package sinc.hinc.transformer.weave;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
+
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import sinc.hinc.abstraction.transformer.NetworkResourceTranformationInterface;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 
 /**
  *

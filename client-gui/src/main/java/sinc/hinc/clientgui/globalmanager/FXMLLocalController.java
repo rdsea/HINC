@@ -8,7 +8,6 @@ package sinc.hinc.clientgui.globalmanager;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import sinc.hinc.clientgui.UserSettings;
 import sinc.hinc.clientgui.mainpanel.HincMetaModel;
-import sinc.hinc.clientgui.globalmanager.GenericMetaData;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -34,11 +33,11 @@ import javafx.util.Callback;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HincLocalMeta;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.model.API.ResourcesManagementAPI;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 
 /**
  *
@@ -188,8 +187,8 @@ public class FXMLLocalController implements Initializable {
             if (gw != null) {
                 System.out.println("Get the gateway data to view: " + gw.toJson());
                 for (DataPoint dp : gw.getDataPoints()) {
-                    System.out.println("BUiling table field: " + dp.getName() +","+ dp.getResourceID()+","+ dp.getDescription()+","+ dp.getMeasurementUnit()+","+ dp.getLink());
-                    dataPointTable.add(new DataPointTableModel(dp.getName(), dp.getResourceID(), dp.getDescription(), dp.getMeasurementUnit(), dp.getLink()));
+                    System.out.println("BUiling table field: " + dp.getName() +","+ dp.getResourceID()+","+ dp.getDescription()+","+ dp.getMeasurementUnit());
+                    dataPointTable.add(new DataPointTableModel(dp.getName(), dp.getResourceID(), dp.getDescription(), dp.getMeasurementUnit()));
                 }
             }
             table.setItems(dataPointTable);

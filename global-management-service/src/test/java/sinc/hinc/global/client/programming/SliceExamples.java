@@ -6,15 +6,17 @@
 package sinc.hinc.global.client.programming;
 
 import sinc.hinc.model.CloudServices.CloudService;
-import sinc.hinc.model.PhysicalResource.PhysicalResource;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
-import sinc.hinc.model.VirtualComputingResource.extensions.Location;
+
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 
 import java.util.Arrays;
+import sinc.hinc.model.Extensible.ExtensibleModel;
+import sinc.hinc.model.Extensible.PhysicalResource;
+import sinc.hinc.model.Extensible.misc.Location;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 
 /**
  * @author hungld
@@ -32,7 +34,7 @@ public class SliceExamples {
         gw.getControlPoints().add(cp);
 
         Location location = new Location("48.172955", "16.325684", "25");
-        dp.getExtra().add(new PhysicalResource(location));
+        dp.getExtra().add(location);
 
         System.out.println(gw.toJson());
 

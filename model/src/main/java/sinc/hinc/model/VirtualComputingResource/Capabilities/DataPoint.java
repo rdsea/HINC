@@ -8,6 +8,7 @@ package sinc.hinc.model.VirtualComputingResource.Capabilities;
 import sinc.hinc.model.VirtualComputingResource.Capability;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -33,10 +34,12 @@ public class DataPoint extends Capability {
     String managementClass;
 
     /**
-     * Any kind of URI link related to the datapoint. This can be domain model,
-     * MQTT/AMPQ persistent, streamming to read/write data.
+     * Any model to represent how the data can be read. This can be domain
+     * model, MQTT/AMPQ persistent, streamming to read/write data. See more in
+     * the package sinc.hinc.model.Extensible.Reading
      */
-    String link;
+    String bufferType;
+    Map<String, String> bufferSettings;
 
     /**
      * List of control point for this data point
@@ -83,19 +86,20 @@ public class DataPoint extends Capability {
         this.measurementUnit = measurementUnit;
     }
 
-//    public int getRate() {
-//        return rate;
-//    }
-//
-//    public void setRate(int rate) {
-//        this.rate = rate;
-//    }
-    public String getLink() {
-        return link;
+    public String getBufferType() {
+        return bufferType;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setBufferType(String bufferType) {
+        this.bufferType = bufferType;
+    }
+
+    public Map<String, String> getBufferSettings() {
+        return bufferSettings;
+    }
+
+    public void setBufferSettings(Map<String, String> bufferSettings) {
+        this.bufferSettings = bufferSettings;
     }
 
     public String getManagementClass() {

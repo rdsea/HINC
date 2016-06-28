@@ -14,11 +14,11 @@ import sinc.hinc.communication.messageInterface.MessageClientFactory;
 import sinc.hinc.communication.messageInterface.MessagePublishInterface;
 import sinc.hinc.communication.messageInterface.MessageSubscribeInterface;
 import sinc.hinc.communication.messageInterface.SalsaMessageHandling;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 
 import java.util.ArrayList;
 import java.util.List;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 
 /**
  * The class send messages from HINC Global to multiple HINC Local.

@@ -21,9 +21,9 @@ import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.common.utils.HincUtils;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
 

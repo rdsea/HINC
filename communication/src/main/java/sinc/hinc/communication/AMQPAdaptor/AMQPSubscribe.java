@@ -55,8 +55,10 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
             System.out.println("AMQP Subscribed. Exchange name: " + topic + ", queue name: " + queueName);
             new Thread(new ThreadQueueSubscribe(consumer, handler, timeout)).start();
         } catch (IOException ex) {
+            ex.printStackTrace();
             logger.error("Cannot subscribe to topic: {}", topic, ex);
         } catch (ShutdownSignalException | ConsumerCancelledException ex) {
+            ex.printStackTrace();
             logger.error("Interrupt during the subscribing to topic: {}", topic, ex);
         }
     }

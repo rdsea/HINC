@@ -17,11 +17,6 @@ import sinc.hinc.global.management.CommunicationManager;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.CloudServices.CloudProvider;
 import sinc.hinc.model.CloudServices.CloudService;
-import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
-import sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
@@ -33,6 +28,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capability;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 
 /**
@@ -45,12 +44,11 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     static Logger logger = LoggerFactory.getLogger("HINC");
     CommunicationManager comMng = getCommunicationManager();
     List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
-    
+
     {
         // check database, if not exist then create
         DatabaseUtils.initDB();
     }
-
 
     public ResourcesManagementAPIImpl() {
     }
@@ -147,9 +145,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         List<DataPoint> datapoints = new ArrayList<>();
         for (SoftwareDefinedGateway gw : gateways) {
             for (Capability capa : gw.getDataPoints()) {
-                if (capa.getCapabilityType() == CapabilityType.DataPoint) {
-                    datapoints.add((DataPoint) capa);
-                }
+                datapoints.add((DataPoint) capa);
             }
         }
         return datapoints;
@@ -161,9 +157,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         List<ControlPoint> controlPoints = new ArrayList<>();
         for (SoftwareDefinedGateway gw : gateways) {
             for (Capability capa : gw.getControlPoints()) {
-                if (capa.getCapabilityType() == CapabilityType.ControlPoint) {
-                    controlPoints.add((ControlPoint) capa);
-                }
+                controlPoints.add((ControlPoint) capa);
             }
         }
         return controlPoints;
@@ -175,9 +169,8 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         List<CloudConnectivity> connectivity = new ArrayList<>();
         for (SoftwareDefinedGateway gw : gateways) {
             for (Capability capa : gw.getConnectivity()) {
-                if (capa.getCapabilityType() == CapabilityType.CloudConnectivity) {
-                    connectivity.add((CloudConnectivity) capa);
-                }
+                connectivity.add((CloudConnectivity) capa);
+
             }
         }
         return connectivity;

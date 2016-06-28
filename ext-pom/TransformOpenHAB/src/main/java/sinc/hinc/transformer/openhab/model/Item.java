@@ -5,7 +5,8 @@
  */
 package sinc.hinc.transformer.openhab.model;
 
-import sinc.hinc.model.PhysicalResource.ExtensibleModel;
+import sinc.hinc.model.Extensible.ExtensibleModel;
+
 
 /**
  *

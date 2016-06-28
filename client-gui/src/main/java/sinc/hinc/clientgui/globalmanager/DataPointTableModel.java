@@ -13,41 +13,36 @@ import javafx.beans.property.StringProperty;
  * @author hungld
  */
 @Deprecated
-public class DataPointTableModel {            
-        private final StringProperty name;
-        private final StringProperty resourceID ;
-        private final StringProperty description;
-        // for data point
-        private final StringProperty measurementUnit;
-        private final StringProperty link;
-        
-        public DataPointTableModel(String name, String resourceID, String description, String measurementUnit, String link) {
-            this.name = new SimpleStringProperty(name);
-            this.resourceID = new SimpleStringProperty(resourceID);
-            this.description = new SimpleStringProperty(description);
-            this.measurementUnit = new SimpleStringProperty(measurementUnit);
-            this.link = new SimpleStringProperty(link);            
-        }
+public class DataPointTableModel {
 
-        public StringProperty nameProperty() {
-            return name;
-        }
+    private final StringProperty name;
+    private final StringProperty resourceID;
+    private final StringProperty description;
+    // for data point
+    private final StringProperty measurementUnit;
 
-        public StringProperty resourceIDProperty() {
-            return resourceID;
-        }
+    public DataPointTableModel(String name, String resourceID, String description, String measurementUnit) {
+        this.name = new SimpleStringProperty(name);
+        this.resourceID = new SimpleStringProperty(resourceID);
+        this.description = new SimpleStringProperty(description);
+        this.measurementUnit = new SimpleStringProperty(measurementUnit);
 
-        public StringProperty descriptionProperty() {
-            return description;
-        }
+    }
 
-        public StringProperty measurementUnitProperty() {
-            return measurementUnit;
-        }
+    public StringProperty nameProperty() {
+        return name;
+    }
 
-        public StringProperty linkProperty() {
-            return link;
-        }
+    public StringProperty resourceIDProperty() {
+        return resourceID;
+    }
 
-        
+    public StringProperty descriptionProperty() {
+        return description;
+    }
+
+    public StringProperty measurementUnitProperty() {
+        return measurementUnit;
+    }
+
 }

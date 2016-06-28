@@ -5,9 +5,6 @@
  */
 package sinc.hinc.global.client.RelationshipManagement;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
-import sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 
@@ -15,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.model.VirtualComputingResource.Capability;
 
 /**
  * @author hungld
@@ -62,14 +61,13 @@ public class NetworkGraphGenerator {
 
         for (VNF vnf : vnfs) {
             for (Capability capa : vnf.getConnectivities()) {
-                if (capa.getCapabilityType().equals(CapabilityType.CloudConnectivity)) {
-                    CloudConnectivity con = (CloudConnectivity) capa;
-                    // TODO: this subnet is hack, need collect real subnet
-                    System.out.println("IP is: " + con.getIP() + ". can it have subnet?");
-                    if (!con.getIP().isEmpty()) {
-                        String subnet = con.getIP().substring(0, con.getIP().indexOf("."));
-                        components.add(new NwComponent(vnf.getName(), con.getIP(), subnet, NetworkComponentType.Router));
-                    }
+                CloudConnectivity con = (CloudConnectivity) capa;
+                // TODO: this subnet is hack, need collect real subnet
+                System.out.println("IP is: " + con.getIP() + ". can it have subnet?");
+                if (!con.getIP().isEmpty()) {
+                    String subnet = con.getIP().substring(0, con.getIP().indexOf("."));
+                    components.add(new NwComponent(vnf.getName(), con.getIP(), subnet, NetworkComponentType.Router));
+
                 }
             }
         }

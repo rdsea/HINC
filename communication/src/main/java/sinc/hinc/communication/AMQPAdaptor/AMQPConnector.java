@@ -47,7 +47,7 @@ public class AMQPConnector {
 
     public AMQPConnector(String broker) {
         this.logger = LoggerFactory.getLogger(AMQPConnector.class);
-        this.broker = broker;
+        this.broker = broker.trim();
     }
 
     protected Channel amqpChannel = null;

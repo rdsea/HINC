@@ -12,11 +12,10 @@ import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.global.API.HINCManagementImpl;
 import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.model.API.ResourcesManagementAPI;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
-
 import java.util.List;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 
 /**
  * @author hungld

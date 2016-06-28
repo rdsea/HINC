@@ -29,8 +29,8 @@ public class MessageClientFactory {
     String exportBrokerType;
 
     public MessageClientFactory(String broker, String brokerType) {
-        this.broker = broker;
-        this.brokerType = brokerType;
+        this.broker = broker.trim();
+        this.brokerType = brokerType.trim();
     }
 
     public static MessageClientFactory getFactory(String broker, String brokerType) {
@@ -38,7 +38,7 @@ public class MessageClientFactory {
     }
 
     public MessagePublishInterface getMessagePublisher() {
-        switch (getBrokerType()) {
+        switch (getBrokerType().trim()) {
             case MessageClientFactory.MQTT:
                 return new MQTTPublish(getBroker());
             case MessageClientFactory.AMQP:
@@ -49,12 +49,13 @@ public class MessageClientFactory {
     }
 
     public MessageSubscribeInterface getMessageSubscriber(SalsaMessageHandling handler) {
-        switch (getBrokerType()) {
+        switch (getBrokerType().trim()) {
             case MessageClientFactory.MQTT:
                 return new MQTTSubscribe(getBroker(), handler);
             case MessageClientFactory.AMQP:
                 return new AMQPSubscribe(getBroker(), handler);            
             default:
+                System.out.println("Unknown BROKER_TYPE: " + getBrokerType());
                 return null;
         }
     }

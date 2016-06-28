@@ -5,10 +5,11 @@
  */
 package sinc.hinc.global.management;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
+
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 
 import java.util.List;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 
 /**
  * This class access to the database and return information

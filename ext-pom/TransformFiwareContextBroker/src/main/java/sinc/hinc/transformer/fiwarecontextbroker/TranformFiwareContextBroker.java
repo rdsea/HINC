@@ -5,13 +5,13 @@
  */
 package sinc.hinc.transformer.fiwarecontextbroker;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
 import sinc.hinc.transformer.fiwarecontextbroker.model.ContextElement;
 import java.util.List;
 import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 
 /**
  *

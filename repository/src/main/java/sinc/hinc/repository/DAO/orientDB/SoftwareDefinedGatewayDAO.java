@@ -1,16 +1,15 @@
 package sinc.hinc.repository.DAO.orientDB;
 
-import sinc.hinc.model.VirtualComputingResource.Capability.Capability;
-import static sinc.hinc.model.VirtualComputingResource.Capability.CapabilityType.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ControlPoint;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.ExecutionEnvironment;
-import sinc.hinc.model.VirtualComputingResource.Capability.Concrete.CloudConnectivity;
+
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
