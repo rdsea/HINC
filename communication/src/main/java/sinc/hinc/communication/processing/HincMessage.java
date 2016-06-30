@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class define type of messages between GLOBAL and LOCAL resource manager
@@ -47,6 +48,14 @@ public class HincMessage {
     public HincMessage() {
     }
 
+    /**
+     * Construct a HINC Message with full information for the sender and listener
+     * @param msgType
+     * @param senderid
+     * @param topic
+     * @param feedbackTopic
+     * @param payload 
+     */
     public HincMessage(String msgType, String senderid, String topic, String feedbackTopic, String payload) {
         this.msgType = msgType;
         this.senderID = senderid;        
@@ -55,7 +64,21 @@ public class HincMessage {
         this.payload = payload;
         this.timeStamp = System.currentTimeMillis();
     }
-
+    
+    /**
+     * Construct a HINC Message with random feedback topic and empty payload 
+     * @param msgType
+     * @param senderid
+     * @param topic 
+     */
+    public HincMessage(String msgType, String senderid, String topic) {
+        this.msgType = msgType;
+        this.senderID = senderid;        
+        this.topic = topic;
+        this.feedbackTopic = "sinc.hinc.temp."+ UUID.randomUUID();
+        this.payload = "";
+        this.timeStamp = System.currentTimeMillis();
+    }
 
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();

@@ -60,6 +60,7 @@ public class HincConfiguration {
             localMeta.setIsp(locationMeta.getIsp());
             localMeta.setLat(locationMeta.getLat());
             localMeta.setLon(locationMeta.getLon());
+            
         }
         return localMeta;
     }

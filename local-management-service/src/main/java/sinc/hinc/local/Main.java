@@ -27,7 +27,9 @@ public class Main {
 
     static Logger logger = HincConfiguration.getLogger();
     static final MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-
+    static HINCMessageListener LISTENER = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+    
+    
     /**
      * Below is some metadata of the Local Management Service
      */
@@ -50,7 +52,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Starting collector...");
+        System.out.println("Starting HINC Local Management Service...");
         Long time1 = (new Date()).getTime();
         DatabaseUtils.initDB();
         
@@ -61,18 +63,18 @@ public class Main {
          * ************************
          * HINC listens to some queue channels to answer the query. ************************
          */
-        HINCMessageListener listener = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+        
         
         String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
         String privateTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
         
-        listener.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
-        listener.addListener(groupTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
-        listener.addListener(privateTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
-        listener.addListener(groupTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
-        listener.addListener(privateTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
+        LISTENER.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
+        LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
+        LISTENER.addListener(privateTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
+        LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
+        LISTENER.addListener(privateTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
         
-        listener.listen();
+        LISTENER.listen();
 
         /**
          * ************************
@@ -108,6 +110,8 @@ public class Main {
         }
     }
 
-   
+    public static HINCMessageListener getListener(){
+        return LISTENER;
+    }
 
 }

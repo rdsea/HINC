@@ -30,8 +30,11 @@ public class HincLocalMeta {
     String isp;
     Double lat;
     Double lon;
+    // list of listeners
+    Map<String, Map<String, String>> handlers;
 
     public HincLocalMeta() {
+
     }
 
     public HincLocalMeta(String uuid, String ip, String unicastTopic) {
@@ -40,7 +43,19 @@ public class HincLocalMeta {
         this.unicastTopic = unicastTopic;
     }
 
-   
+    public void hasHandler(String topic, String messageType, String clazz) {
+        if (handlers == null) {
+            handlers = new HashMap<>();
+        }
+        Map<String, String> map = handlers.get(topic);
+        if (map == null) {
+            map = new HashMap<>();
+            map.put(messageType, clazz);
+            handlers.put(topic, map);
+        } else {
+            map.put(messageType, clazz);
+        }
+    }
 
     public String getUnicastTopic() {
         return unicastTopic;
@@ -148,10 +163,6 @@ public class HincLocalMeta {
         this.lon = lon;
     }
 
-    
-    
-    
-
     public static HincLocalMeta fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -162,6 +173,10 @@ public class HincLocalMeta {
             return null;
         }
 
+    }
+
+    public Map<String, Map<String, String>> getHandlers() {
+        return handlers;
     }
 
 }

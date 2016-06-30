@@ -27,7 +27,7 @@ public class HINCMessageListener {
         FACTORY = new MessageClientFactory(broker, brokerType);
     }
 
-    private class Handler {
+    public class Handler {
 
         String topic;
         String messageType;
@@ -37,6 +37,18 @@ public class HINCMessageListener {
             this.topic = topic;
             this.messageType = messageType;
             this.handlerMethod = handlerMethod;
+        }
+
+        public String getTopic() {
+            return topic;
+        }
+
+        public String getMessageType() {
+            return messageType;
+        }
+
+        public HINCMessageHander getHandlerMethod() {
+            return handlerMethod;
         }
     }
 
@@ -56,12 +68,15 @@ public class HINCMessageListener {
         return null;
     }
 
+    Set<String> alreadyListening = new HashSet<>();
+
     public void listen() {
         Set<String> topicSet = new HashSet<>();
         // search for all topics which are not duplicated
         for (Handler handler : this.handlers) {
             topicSet.add(handler.topic);
         }
+        topicSet.removeAll(alreadyListening);
 
         for (String topic : topicSet) {
             MessageSubscribeInterface subscribeClientBroadCast = FACTORY.getMessageSubscriber(new HINCMessageHander() {
@@ -80,9 +95,14 @@ public class HINCMessageListener {
             }); // end new HINC Message Handling
 
             subscribeClientBroadCast.subscribe(topic);
+            alreadyListening.add(topic);
             logger.debug("Listener is listening on the topic: {}", topic);
         }
 
+    }
+
+    public List<Handler> getHandlers() {
+        return handlers;
     }
 
 }

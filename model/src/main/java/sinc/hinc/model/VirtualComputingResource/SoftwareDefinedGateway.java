@@ -54,7 +54,7 @@ public class SoftwareDefinedGateway {
      */
     private Map<String, String> meta;
 
-    private List<AccessPoint> accessPoints;
+//    private List<AccessPoint> accessPoints;
 
     /**
      * Construction and get/set
@@ -159,13 +159,6 @@ public class SoftwareDefinedGateway {
         this.meta = meta;
     }
 
-    public List<AccessPoint> getAccessPoints() {
-        return accessPoints;
-    }
-
-    public void setAccessPoints(List<AccessPoint> accessPoints) {
-        this.accessPoints = accessPoints;
-    }
 
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();

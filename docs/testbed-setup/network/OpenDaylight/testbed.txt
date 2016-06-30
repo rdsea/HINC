@@ -26,5 +26,5 @@ curl -u admin:admin -H 'Content-Type: application/yang.data+xml' -X PUT -d @flow
 
 
 We have many other controller rather than OpenDaylight: http://archive.openflow.org/wk/index.php/OpenFlow_Tutorial
-To install on Ubuntu, need to downgrade the kernel to 3.13
+To install on Ubuntu, need to downgrade the kernel to 3.13: http://askubuntu.com/questions/668274/downgrade-kernel-3-19-0-26-generic-to-3-13-0-62-generic
 
