@@ -23,4 +23,6 @@ public interface ControlPointTransformer<DomainModel> {
      */
     public List<ControlPoint> updateControlPoint(DomainModel data);
 
+    public String getName();
+
 }

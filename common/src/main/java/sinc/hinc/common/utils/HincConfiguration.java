@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.metadata.HincMessageTopic;
-import sinc.hinc.common.metadata.InfoSourceSettings;
 
 /**
  *
@@ -48,8 +47,6 @@ public class HincConfiguration {
     public static HincLocalMeta getLocalMeta() {
         if (localMeta == null) {
             localMeta = new HincLocalMeta(myUUID, HincUtils.getEth0Address(), HincMessageTopic.getHINCPrivateTopic(myUUID));
-            InfoSourceSettings settings = InfoSourceSettings.loadDefaultFile();
-            localMeta.setSettings(settings.toJson());
             localMeta.setGroupName(getGroupName());
             localMeta.setBroker(getBroker());
             localMeta.setBrokerType(getBrokerType());

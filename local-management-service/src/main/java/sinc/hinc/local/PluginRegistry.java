@@ -24,91 +24,80 @@ public class PluginRegistry {
 
     static Logger logger = HincConfiguration.getLogger();
 
-    Set<Class<? extends ProviderAdaptor>> adaptorClasses = new HashSet<>();
-    Set<Class<? extends DataPointTransformer>> datapoints = new HashSet<>();
-    Set<Class<? extends ControlPointTransformer>> controlpoints = new HashSet<>();
-    Set<Class<? extends ExecutionEnvironmentTransformer>> environments = new HashSet<>();
-    Set<Class<? extends ConnectivityTransformater>> connectivities = new HashSet<>();
-    Set<ProviderAdaptor> adaptors;
+    Set<ProviderAdaptor> adaptors = new HashSet<>();
+    Set<DataPointTransformer> datapointTrans = new HashSet<>();
+    Set<ControlPointTransformer> controlPointTrans = new HashSet<>();
+    Set<ExecutionEnvironmentTransformer> executionEnvTrans = new HashSet<>();
+    Set<ConnectivityTransformater> connectivityTrans = new HashSet<>();
+
+    Reflections reflections = new Reflections("sinc.hinc");
 
     public PluginRegistry() {
-        Reflections reflections = new Reflections("sinc.hinc");
-        adaptorClasses.addAll((reflections.getSubTypesOf(ProviderAdaptor.class)));
-        datapoints.addAll((reflections.getSubTypesOf(DataPointTransformer.class)));
-        controlpoints.addAll((reflections.getSubTypesOf(ControlPointTransformer.class)));
-        environments.addAll((reflections.getSubTypesOf(ExecutionEnvironmentTransformer.class)));
-        connectivities.addAll((reflections.getSubTypesOf(ConnectivityTransformater.class)));
+        // initiate and create plugin instances
+        try {
+            Set<Class<? extends ProviderAdaptor>> adaptorClasses = reflections.getSubTypesOf(ProviderAdaptor.class);
+            Set<Class<? extends DataPointTransformer>> datapointsClazz = reflections.getSubTypesOf(DataPointTransformer.class);
+            Set<Class<? extends ControlPointTransformer>> controlpointsClazz = reflections.getSubTypesOf(ControlPointTransformer.class);
+            Set<Class<? extends ExecutionEnvironmentTransformer>> executionEnvClazz = reflections.getSubTypesOf(ExecutionEnvironmentTransformer.class);
+            Set<Class<? extends ConnectivityTransformater>> connectivityClazz = reflections.getSubTypesOf(ConnectivityTransformater.class);
 
-        adaptors = initiateAdaptors();
-    }
-
-    private Set<ProviderAdaptor> initiateAdaptors() {
-        Set<ProviderAdaptor> a = new HashSet();
-        for (Class<? extends ProviderAdaptor> clazz : adaptorClasses) {
-            try {
-                ProviderAdaptor p = clazz.newInstance();
-                if (p != null) {
-                    a.add(p);
-                    logger.debug("Register adaptor: {}, class: {}", p.getName(), clazz);                    
-                }
-            } catch (InstantiationException | IllegalAccessException ex) {
-                ex.printStackTrace();
+            for (Class<? extends ProviderAdaptor> clazz : adaptorClasses) {
+                adaptors.add(clazz.newInstance());
             }
+
+            for (Class<? extends DataPointTransformer> clazz : datapointsClazz) {
+                datapointTrans.add(clazz.newInstance());
+            }
+
+            for (Class<? extends ControlPointTransformer> clazz : controlpointsClazz) {
+                controlPointTrans.add(clazz.newInstance());
+            }
+
+            for (Class<? extends ExecutionEnvironmentTransformer> clazz : executionEnvClazz) {
+                executionEnvTrans.add(clazz.newInstance());
+            }
+
+            for (Class<? extends ConnectivityTransformater> clazz : connectivityClazz) {
+                connectivityTrans.add(clazz.newInstance());
+            }
+        } catch (InstantiationException | IllegalAccessException ex) {
+            logger.error("Cannot instantiate the instance of a plugin");
+            ex.printStackTrace();
         }
-        return a;
+
     }
 
     public DataPointTransformer getDatapointTransformerByName(String name) {
-        for (Class<? extends DataPointTransformer> a : datapoints) {
-            if (a.getName().toLowerCase().trim().equals(name.trim().toLowerCase())) {
-                try {
-                    return a.newInstance();
-                } catch (InstantiationException | IllegalAccessException ex) {
-                    logger.error("Cannot instantiate DataPointTransformer: " + name);
-                    return null;
-                }
+        for (DataPointTransformer a : datapointTrans) {
+            if (a.getName().equals(name)) {
+                return a;
             }
         }
         return null;
     }
 
     public ControlPointTransformer getControlpointTransformerByName(String name) {
-        for (Class<? extends ControlPointTransformer> a : controlpoints) {
-            if (a.getName().toLowerCase().trim().equals(name.trim().toLowerCase())) {
-                try {
-                    return a.newInstance();
-                } catch (InstantiationException | IllegalAccessException ex) {
-                    logger.error("Cannot instantiate ControlPointTransformer: " + name);
-                    return null;
-                }
+        for (ControlPointTransformer a : controlPointTrans) {
+            if (a.getName().equals(name)) {
+                return a;
             }
         }
         return null;
     }
 
     public ExecutionEnvironmentTransformer getExecutionEnvTransformerByName(String name) {
-        for (Class<? extends ExecutionEnvironmentTransformer> a : environments) {
-            if (a.getName().toLowerCase().trim().equals(name.trim().toLowerCase())) {
-                try {
-                    return a.newInstance();
-                } catch (InstantiationException | IllegalAccessException ex) {
-                    logger.error("Cannot instantiate ExecutionEnvironmentTransformer: " + name);
-                    return null;
-                }
+        for (ExecutionEnvironmentTransformer a : executionEnvTrans) {
+            if (a.getName().equals(name)) {
+                return a;
             }
         }
         return null;
     }
 
     public ConnectivityTransformater getConnectivityTransformerByName(String name) {
-        for (Class<? extends ConnectivityTransformater> a : connectivities) {
-            if (a.getName().toLowerCase().trim().equals(name.trim().toLowerCase())) {
-                try {
-                    return a.newInstance();
-                } catch (InstantiationException | IllegalAccessException ex) {
-                    logger.error("Cannot instantiate ConnectivityTransformater: " + name);
-                    return null;
-                }
+        for (ConnectivityTransformater a : connectivityTrans) {
+            if (a.getName().equals(name)) {
+                return a;
             }
         }
         return null;

@@ -17,13 +17,13 @@ import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.abstraction.transformer.ExecutionEnvironmentTransformer;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincMessageTopic;
-import sinc.hinc.common.metadata.InfoSourceSettings;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.common.utils.HincUtils;
 import sinc.hinc.communication.processing.HINCMessageListener;
 import sinc.hinc.local.messageHandlers.HandleQueryGateway;
 import sinc.hinc.local.messageHandlers.HandleQueryVNF;
 import sinc.hinc.local.messageHandlers.HandleSyn;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 import sinc.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
@@ -51,17 +51,7 @@ public class Main {
         globalInterval = Integer.parseInt(PropertiesManager.getParameter("interval", DEFAULT_SOURCE_SETTINGS));
     }
 
-//    private static boolean hasSettings() {
-//        System.out.println("Loadding settings file...");
-//        settings = InfoSourceSettings.loadDefaultFile();
-//        System.out.println("Load resource file done !");
-//        if (settings == null || settings.getSource().isEmpty()) {
-//            logger.error("ERROR: No source information found. Please check configuration file.");
-//            System.out.println("ERROR: No source information found. Please check configuration file.");
-//            return false;
-//        }
-//        return true;
-//    }
+
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting HINC Local Management Service...");
@@ -103,7 +93,10 @@ public class Main {
         SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
         gw.setUuid(HincConfiguration.getMyUUID());
         gw.setName(HincUtils.getHostName());
+        
+        
         while (true) {
+            logger.debug("We have {} adaptor... now will check each one", pluginReg.getAdaptors().size());
             for (ProviderAdaptor adaptor : pluginReg.getAdaptors()) {
                 String aName = adaptor.getName();
                 logger.info("Querying provider: " + aName);
@@ -113,12 +106,21 @@ public class Main {
                 ConnectivityTransformater cct = pluginReg.getConnectivityTransformerByName(aName);
 
                 Collection<Object> domains = adaptor.getItems(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
+                logger.debug("We will check {} items.." + domains.size());
                 for (Object domain : domains) {
+                    logger.debug("Checking item: " + domain.toString());
                     if (dpt != null) {
+                        logger.debug("Datapoint translation is available, transforming datapoints...");
+                        DataPoint dp = dpt.updateDataPoint(domain);
+                        logger.debug("Got a datapoint: " + dp.getUuid() + ".." + dp.getName());
                         gw.hasCapability(dpt.updateDataPoint(domain));
+                    } else {
+                        logger.debug("Datapoint translation is NOT available !");
                     }
                     if (cpt != null) {
                         gw.hasCapabilities(cpt.updateControlPoint(domain));
+                    } else {
+                        logger.debug("Controlpoint translation is NOT available !");
                     }
                     if (eet != null) {
                         gw.hasCapability(eet.updateExecutionEnvironment(domain));

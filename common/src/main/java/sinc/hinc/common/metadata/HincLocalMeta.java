@@ -32,6 +32,9 @@ public class HincLocalMeta {
     Double lon;
     // list of listeners
     Map<String, Map<String, String>> handlers;
+    // list of adaptors for provider
+    Map<String, String> adaptor;
+    
 
     public HincLocalMeta() {
 

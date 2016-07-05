@@ -23,4 +23,6 @@ public interface ConnectivityTransformater<DomainModel> {
      */
     public CloudConnectivity updateCloudConnectivity(DomainModel data);
 
+    public String getName();
+
 }

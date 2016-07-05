@@ -20,4 +20,6 @@ public interface ExecutionEnvironmentTransformer<DomainModel> {
      * @return The description of environment.
      */
     public ExecutionEnvironment updateExecutionEnvironment(DomainModel data);
+
+    public String getName();
 }

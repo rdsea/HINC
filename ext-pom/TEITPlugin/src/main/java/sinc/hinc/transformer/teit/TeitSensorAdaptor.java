@@ -22,9 +22,9 @@ public class TeitSensorAdaptor implements ProviderAdaptor<DummyMetadataItem> {
 
     @Override
     public Collection<DummyMetadataItem> getItems(Map<String, String> settings) {
-        String workingDir = settings.get("workingDir");
+        String workingDir = settings.get("workingdir");
         System.out.println("Settings of TEIT sensor adaptor: " + settings);
-        System.out.println("Working dir: " + workingDir);
+        System.out.println("Working dir is: " + workingDir);
         Map<String, String> fileScannerSettings = new HashMap<>();
         fileScannerSettings.put("path", workingDir);
         fileScannerSettings.put("filter", ".meta");
