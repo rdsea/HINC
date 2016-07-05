@@ -5,20 +5,14 @@
  */
 package sinc.hinc.transformer.teit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 
 /**
  *
  * @author hungld
  */
-public class TeitSensorTransformer implements IoTResourceTransformation<DummyMetadataItem> {
+public class TeitSensorTransformer implements DataPointTransformer<DummyMetadataItem> {
 
     @Override
     public DataPoint updateDataPoint(DummyMetadataItem data) {
@@ -34,18 +28,8 @@ public class TeitSensorTransformer implements IoTResourceTransformation<DummyMet
     }
 
     @Override
-    public List<ControlPoint> updateControlPoint(DummyMetadataItem data) {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public ExecutionEnvironment updateExecutionEnvironment(DummyMetadataItem data) {
-        return null;
-    }
-
-    @Override
-    public CloudConnectivity updateCloudConnectivity(DummyMetadataItem data) {
-        return null;
+    public String getName() {
+        return "teit";
     }
 
 }

@@ -47,4 +47,11 @@ public class TeitSensorAdaptor implements ProviderAdaptor<DummyMetadataItem> {
     public void sendControl(String controlAction, Map<String, String> parameters) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public String getName() {
+        return "teit";
+    }
+    
+    
 }

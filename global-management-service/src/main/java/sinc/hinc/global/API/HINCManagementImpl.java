@@ -68,7 +68,7 @@ public class HINCManagementImpl implements HINCManagementAPI {
         HincMessage discoveringMessage = new HincMessage(HINCMessageType.SYN_REQUEST.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), "");
         comMng.asynCall(timeout, discoveringMessage, new HINCMessageHander() {
             @Override
-            public void handleMessage(HincMessage msg) {
+            public HincMessage handleMessage(HincMessage msg) {
                 logger.debug("A message arrive, from: {}, type: {}, topic: {} ", msg.getSenderID(), msg.getMsgType(), msg.getTopic());
                 if (msg.getMsgType().equals(HINCMessageType.SYN_REPLY.toString())) { // this will be always true !!
                     logger.debug(" --> Yes, it is a SYN_REPLY message, adding the metadata");
@@ -78,7 +78,8 @@ public class HINCManagementImpl implements HINCManagementAPI {
                     logger.debug(" --> Add meta finished");
                 } else {
                     logger.debug(" --> No, it is not a SYN_REPLY message");
-                }                
+                }
+                return null;// no need to reply
             }
         });
 

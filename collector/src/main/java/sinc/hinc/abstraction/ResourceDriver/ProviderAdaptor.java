@@ -43,4 +43,11 @@ public interface ProviderAdaptor<DomainClass> {
      * @param parameters
      */
     public void sendControl(String controlAction, Map<String, String> parameters);
+    
+    
+    /**
+     * A readable name to enable external configuration
+     * Name should not contain spaces.
+     */
+    public String getName();
 }

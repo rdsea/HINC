@@ -81,15 +81,16 @@ public class HINCMessageListener {
         for (String topic : topicSet) {
             MessageSubscribeInterface subscribeClientBroadCast = FACTORY.getMessageSubscriber(new HINCMessageHander() {
                 @Override
-                public void handleMessage(HincMessage msg) {
+                public HincMessage handleMessage(HincMessage msg) {
                     String msgTopic = msg.getTopic();
                     String msgType = msg.getMsgType();
                     HINCMessageHander handlerMethod = getHandlerMethod(msgTopic, msgType);
                     if (handlerMethod != null) {
                         logger.debug("Get message: {}, topic: {}. Found a handler: {}", msgType, msgTopic, handlerMethod.getClass().getSimpleName());
-                        handlerMethod.handleMessage(msg);
+                        return handlerMethod.handleMessage(msg);
                     } else {
                         logger.error("Get message: {}, topic: {}, but NO handler is found !", msgType, msgTopic);
+                        return null;
                     }
                 }
             }); // end new HINC Message Handling

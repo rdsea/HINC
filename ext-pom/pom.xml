@@ -19,5 +19,6 @@
         <module>DummyProvider</module>
         <module>OpenDaylightPlugin</module>
         <module>TEITPlugin</module>
+        <module>EnvironmentProfile</module>
     </modules>
 </project>

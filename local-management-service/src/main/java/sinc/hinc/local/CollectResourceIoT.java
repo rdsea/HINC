@@ -18,7 +18,6 @@ import java.util.List;
 import sinc.hinc.common.metadata.InfoSourceSettings;
 import sinc.hinc.abstraction.ResourceDriver.PluginFactory;
 import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
-import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.common.utils.HincUtils;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
@@ -43,51 +42,55 @@ public class CollectResourceIoT implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Collecting information from source: " + source.getName());
-
-        // check each source that configured for HINC
-        if (!source.getType().equals(InfoSourceSettings.ProviderType.IoT)) {
-            System.out.println("The source " + source.getType() + " is not IoT provider, you are calling wrong HINC's method.");
-            return;
-        }
-        ProviderAdaptor adaptor = PluginFactory.getProviderAdaptor(source.getAdaptorClass());
-        IoTResourceTransformation transformer = PluginFactory.getIoTResourceTransformer(source.getTransformerClass());
-
-        System.out.println("Loading plugin done: " + adaptor.getClass().getSimpleName() + ", and: " + transformer.getClass().getSimpleName());
-        // query provider to get information
-        Collection<Object> rawInfo = adaptor.getItems(source.getSettings());
-        System.out.println("Got raw info from provider: " + rawInfo.size() + " items");
-
-        // TODO: add execution and connectivity query and check the exception. E.g. a transformation can be not available.
-        while (true) {
-            // create a software defined gateway to carry capabilities
-            SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
-            gw.setUuid(HincConfiguration.getMyUUID());
-            gw.setName(HincUtils.getHostName());
-            for (Object domain : rawInfo) {
-                DataPoint dp = transformer.updateDataPoint(domain);
-                List<ControlPoint> cps = transformer.updateControlPoint(domain);
-                gw.hasCapability(dp);
-                gw.hasCapabilities(cps);
-            }
-            System.out.println("Transform GW done, number of datapoint: " + gw.getDataPoints().size() +", controlpoint:" + gw.getControlPoints().size());
-            SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
-            gwDAO.save(gw);
-
-            // query 1 time or continuously
-            if (source.getInterval() == 0) {
-                System.out.println("Interval equals 0, query done!");
-                break;
-            } else if (source.getInterval() > 0) {
-                try {
-                    System.out.println("Sleeping " + source.getInterval() + " before next query.");
-                    Thread.sleep(source.getInterval() * 1000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+//        System.out.println("Collecting information from source: " + source.getName());
+//
+//        // check each source that configured for HINC
+//        if (!source.getType().equals(InfoSourceSettings.ProviderType.IoT)) {
+//            System.out.println("The source " + source.getType() + " is not IoT provider, you are calling wrong HINC's method.");
+//            return;
+//        }
+//        ProviderAdaptor adaptor = PluginFactory.getProviderAdaptor(source.getAdaptorClass());
+//        IoTResourceTransformation transformer = PluginFactory.getIoTResourceTransformer(source.getTransformerClass());
+//
+//        System.out.println("Loading plugin done: " + adaptor.getClass().getSimpleName() + ", and: " + transformer.getClass().getSimpleName());
+//        // query provider to get information
+//        Collection<Object> rawInfo = adaptor.getItems(source.getSettings());
+//        System.out.println("Got raw info from provider: " + rawInfo.size() + " items");
+//
+//        // TODO: add execution and connectivity query and check the exception. E.g. a transformation can be not available.
+//        while (true) {
+//            // create a software defined gateway to carry capabilities
+//            SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
+//            gw.setUuid(HincConfiguration.getMyUUID());
+//            gw.setName(HincUtils.getHostName());
+//            for (Object domain : rawInfo) {
+//                DataPoint dp = transformer.updateDataPoint(domain);
+//                List<ControlPoint> cps = transformer.updateControlPoint(domain);
+//                gw.hasCapability(dp);
+//                gw.hasCapabilities(cps);
+//            }
+//            System.out.println("Transform GW done, number of datapoint: " + gw.getDataPoints().size() +", controlpoint:" + gw.getControlPoints().size());
+//            SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
+//            gwDAO.save(gw);
+//
+//            // query 1 time or continuously
+//            if (source.getInterval() == 0) {
+//                System.out.println("Interval equals 0, query done!");
+//                break;
+//            } else if (source.getInterval() > 0) {
+//                try {
+//                    System.out.println("Sleeping " + source.getInterval() + " before next query.");
+//                    Thread.sleep(source.getInterval() * 1000);
+//                } catch (InterruptedException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
     }
+    
+    
+    
+    
 
     /**
      * This get the network information of current machine/container This is the connectivity on the machine of the collector, but we assume that the collector

@@ -45,8 +45,8 @@ http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
     </bean>
 
-
-    <!--    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
+<!--
+    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
         <property name="resourcePackage" value="sinc.hinc.*"/>
         <property name="version" value="1.0"/>
         <property name="basePath" value="http://global-management-service-1.0/rest"/>

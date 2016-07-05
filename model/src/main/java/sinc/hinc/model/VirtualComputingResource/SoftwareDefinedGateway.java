@@ -38,6 +38,8 @@ public class SoftwareDefinedGateway {
      */
     private String name;
 
+    private String type = "SoftwareDefinedGateway";
+
     /**
      * The List of datapoint, controlpoint, connectivity and execution
      */
@@ -55,7 +57,6 @@ public class SoftwareDefinedGateway {
     private Map<String, String> meta;
 
 //    private List<AccessPoint> accessPoints;
-
     /**
      * Construction and get/set
      */
@@ -72,6 +73,10 @@ public class SoftwareDefinedGateway {
 
     public String getName() {
         return name;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public void setName(String name) {
@@ -158,7 +163,6 @@ public class SoftwareDefinedGateway {
     public void setMeta(Map<String, String> meta) {
         this.meta = meta;
     }
-
 
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();

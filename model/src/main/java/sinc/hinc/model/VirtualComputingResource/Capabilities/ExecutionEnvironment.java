@@ -15,11 +15,7 @@ import java.util.Map;
  */
 public class ExecutionEnvironment extends Capability {
 
-    public static enum EnvironmentType {
-        JRE, Python, apache2
-    }
-
-    EnvironmentType env;
+    String version;
 
     // e.g. version, status (on/off), settings
     Map<String, String> attributes;
@@ -36,19 +32,6 @@ public class ExecutionEnvironment extends Capability {
         super(resourceID, name, description);
     }
 
-    public ExecutionEnvironment(String resourceID, String name, String description, EnvironmentType envType) {
-        super(resourceID, name, description);
-        this.env = envType;
-    }
-
-    public EnvironmentType getEnv() {
-        return env;
-    }
-
-    public void setEnv(EnvironmentType env) {
-        this.env = env;
-    }
-
     public Map<String, String> getAttributes() {
         if (attributes == null) {
             attributes = new HashMap<>();
@@ -58,6 +41,16 @@ public class ExecutionEnvironment extends Capability {
 
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
+    }
+
+    public ExecutionEnvironment hasAttribute(String name, String value) {
+        if (this.attributes == null) {
+            this.attributes = new HashMap<>();
+        }
+        if (name != null && value != null && !name.trim().isEmpty() && !value.trim().isEmpty()) {
+            this.attributes.put(name, value);
+        }
+        return this;
     }
 
 }

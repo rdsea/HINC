@@ -5,8 +5,6 @@
  */
 package sinc.hinc.communication.processing;
 
-import sinc.hinc.communication.processing.HincMessage;
-
 
 /**
  *
@@ -18,5 +16,5 @@ import sinc.hinc.communication.processing.HincMessage;
 public interface HINCMessageHander {
     
     // handling incoming message, and reply another
-    public void handleMessage(HincMessage message);
+    public HincMessage handleMessage(HincMessage message);
 }

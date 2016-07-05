@@ -26,4 +26,8 @@ public class AndroidAPIAdaptor implements ProviderAdaptor<AndroidSensor>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    @Override
+    public String getName() {
+        return "android";
+    }
 }

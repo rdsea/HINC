@@ -16,7 +16,8 @@ import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 /**
  * Adaptor for OpenHAB Require settings.
  * <p>
- * endpoint: to the REST API. The default should be: http://localhost:8080/rest (without /)
+ * endpoint: to the REST API. The default should be: http://localhost:8080/rest
+ * (without /)
  *
  * @author hungld
  */
@@ -41,6 +42,11 @@ public class OpenHABAdaptor implements ProviderAdaptor<Item> {
     @Override
     public void sendControl(String controlAction, Map<String, String> parameters) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getName() {
+        return "openhab";
     }
 
 }

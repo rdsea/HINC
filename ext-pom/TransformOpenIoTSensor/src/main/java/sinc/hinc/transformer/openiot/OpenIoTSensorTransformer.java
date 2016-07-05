@@ -8,18 +8,14 @@ package sinc.hinc.transformer.openiot;
 import sinc.hinc.transformer.openiot.model.OpenIoTSensor;
 import sinc.hinc.transformer.openiot.model.OpenIoTSensorWrapper;
 
-import java.util.List;
-import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 
 /**
  *
  * @author hungld
  */
-public class OpenIoTSensorTransformer implements IoTResourceTransformation<OpenIoTSensorWrapper> {
+public class OpenIoTSensorTransformer implements DataPointTransformer<OpenIoTSensorWrapper> {
 
     @Override
     public DataPoint updateDataPoint(OpenIoTSensorWrapper wrapper) {
@@ -40,18 +36,8 @@ public class OpenIoTSensorTransformer implements IoTResourceTransformation<OpenI
     }
 
     @Override
-    public List<ControlPoint> updateControlPoint(OpenIoTSensorWrapper data) {
-        return null;
-    }
-
-    @Override
-    public ExecutionEnvironment updateExecutionEnvironment(OpenIoTSensorWrapper data) {
-        return null;
-    }
-
-    @Override
-    public CloudConnectivity updateCloudConnectivity(OpenIoTSensorWrapper data) {
-        return null;
+    public String getName() {
+        return "openiot";
     }
 
 }

@@ -8,18 +8,17 @@ package sinc.hinc.transformer.SDSensor;
 
 import java.util.ArrayList;
 import java.util.List;
-import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
+import sinc.hinc.abstraction.transformer.ControlPointTransformer;
+import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 
 /**
  * The rawData is the content of salsa.meta file, which defines the list of capability
  *
  * @author hungld
  */
-public class SDSensorTranformer implements IoTResourceTransformation<SDSensorMeta> {
+public class SDSensorTranformer implements DataPointTransformer<SDSensorMeta>, ControlPointTransformer<SDSensorMeta> {
 
     @Override
     public DataPoint updateDataPoint(SDSensorMeta data) {
@@ -38,13 +37,8 @@ public class SDSensorTranformer implements IoTResourceTransformation<SDSensorMet
     }
 
     @Override
-    public ExecutionEnvironment updateExecutionEnvironment(SDSensorMeta data) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public CloudConnectivity updateCloudConnectivity(SDSensorMeta data) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String getName() {
+        return "sdsensor";
     }
 
 }

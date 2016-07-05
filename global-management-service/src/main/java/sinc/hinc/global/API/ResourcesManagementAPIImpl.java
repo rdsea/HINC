@@ -5,6 +5,8 @@
  */
 package sinc.hinc.global.API;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
@@ -79,7 +82,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         if (hincUUID != null && !hincUUID.isEmpty() && !hincUUID.trim().equals("null")) {
             logger.debug("Trying to query HINC Local with ID: " + hincUUID);
             String gatewayInJson = comMng.synCall(new HincMessage(HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getHINCPrivateTopic(hincUUID), feedBackTopic, ""));
-            
+
             result.add(SoftwareDefinedGateway.fromJson(gatewayInJson));
         } else {
             HincMessage queryMessage = new HincMessage(HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, "");
@@ -89,35 +92,48 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
                 long currentSum = 0;
 
                 @Override
-                public void handleMessage(HincMessage message) {
+                public HincMessage handleMessage(HincMessage message) {
                     Long timeStamp5 = (new Date()).getTime();
                     logger.debug("Get a response message from " + message.getSenderID());
-                    SoftwareDefinedGateway gw = SoftwareDefinedGateway.fromJson(message.getPayload());
-                    if (gw == null) {
-                        logger.debug("Payload is null, or cannot be converted");
-                        return;
+
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    try {
+                        List<SoftwareDefinedGateway> gws;
+                        gws = mapper.readValue(message.getPayload(), new TypeReference<List<SoftwareDefinedGateway>>() {});
+
+                        for (SoftwareDefinedGateway gw : gws) {
+                            if (gw == null) {
+                                logger.debug("Payload is null, or cannot be converted");
+                                return null;
+                            }
+                            SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
+                            gwDAO.save(gw);
+                            result.add(gw);
+
+                            // ==== Record time for various experiments ===
+                            Long timeStamp6 = (new Date()).getTime();
+                            Long timeStamp2 = Long.parseLong(message.getExtra().get("timeStamp2"));
+                            Long timeStamp3 = Long.parseLong(message.getExtra().get("timeStamp3"));
+                            Long timeStamp4 = Long.parseLong(message.getExtra().get("timeStamp4"));
+
+                            Long local_global_latency = timeStamp2 - timeStamp1;
+                            Long provider_process = timeStamp3 - timeStamp2;
+                            Long local_process = timeStamp4 - timeStamp3;
+                            Long reply_latency = timeStamp5 - timeStamp4;
+                            Long global_latency = timeStamp6 - timeStamp5;
+                            Long end2end = timeStamp6 - timeStamp1;
+
+                            String eventStr = gw.getUuid() + "," + timeStamp1 + "," + timeStamp2 + "," + timeStamp3 + "," + timeStamp4 + "," + timeStamp5 + "," + timeStamp6 + ","
+                                    + local_global_latency + "," + provider_process + "," + local_process + "," + reply_latency + "," + global_latency + "," + end2end;
+                            System.out.println("Event is log: " + eventStr);
+                            events.add(eventStr);
+                        }
+                    } catch (IOException ex) {
+                        logger.error("Error when unmarshall the reply..." + ex);
+                        ex.printStackTrace();
                     }
-                    SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
-                    gwDAO.save(gw);
-                    result.add(gw);
-
-                    // ==== Record time for various experiments ===
-                    Long timeStamp6 = (new Date()).getTime();
-                    Long timeStamp2 = Long.parseLong(message.getExtra().get("timeStamp2"));
-                    Long timeStamp3 = Long.parseLong(message.getExtra().get("timeStamp3"));
-                    Long timeStamp4 = Long.parseLong(message.getExtra().get("timeStamp4"));
-
-                    Long local_global_latency = timeStamp2 - timeStamp1;
-                    Long provider_process = timeStamp3 - timeStamp2;
-                    Long local_process = timeStamp4 - timeStamp3;
-                    Long reply_latency = timeStamp5 - timeStamp4;
-                    Long global_latency = timeStamp6 - timeStamp5;
-                    Long end2end = timeStamp6 - timeStamp1;
-
-                    String eventStr = gw.getUuid() + "," + timeStamp1 + "," + timeStamp2 + "," + timeStamp3 + "," + timeStamp4 + "," + timeStamp5 + "," + timeStamp6 + ","
-                            + local_global_latency + "," + provider_process + "," + local_process + "," + reply_latency + "," + global_latency + "," + end2end;
-                    System.out.println("Event is log: " + eventStr);
-                    events.add(eventStr);
+                    return null;
                 }
             });
         }

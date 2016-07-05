@@ -1,5 +1,7 @@
 package sinc.hinc.model.Extensible;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +27,8 @@ public class PhysicalResource {
     protected Map<String, ExtensibleModel> domain;
 
     public PhysicalResource() {
+        ObjectMapper mapper = new ObjectMapper();
+        
     }
 
     public PhysicalResource(ExtensibleModel... exts) {

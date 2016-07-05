@@ -7,19 +7,16 @@ package sinc.hinc.transformer.android;
 
 import android.hardware.AndroidSensor;
 
-import java.util.List;
-import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 
 /**
- * The transformer (should be renamed to DataPoint constructor later) that get data from the domain model and build the DataPoint
+ * The transformer (should be renamed to DataPoint constructor later) that get
+ * data from the domain model and build the DataPoint
  *
  * @author hungld
  */
-public class AndroidSensorTransformer implements IoTResourceTransformation<AndroidSensor> {
+public class AndroidSensorTransformer implements DataPointTransformer<AndroidSensor> {
 
     @Override
     public DataPoint updateDataPoint(AndroidSensor data) {
@@ -30,20 +27,9 @@ public class AndroidSensorTransformer implements IoTResourceTransformation<Andro
         return datapoint;
     }
 
-    // return null that means the resource have no such capability
     @Override
-    public List<ControlPoint> updateControlPoint(AndroidSensor data) {
-        return null;
-    }
-
-    @Override
-    public ExecutionEnvironment updateExecutionEnvironment(AndroidSensor data) {
-        return null;
-    }
-
-    @Override
-    public CloudConnectivity updateCloudConnectivity(AndroidSensor data) {
-        return null;
+    public String getName() {
+        return "android";
     }
 
 }

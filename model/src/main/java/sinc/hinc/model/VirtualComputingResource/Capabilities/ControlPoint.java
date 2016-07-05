@@ -5,6 +5,7 @@
  */
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import sinc.hinc.model.VirtualComputingResource.Capability;
 
 /**
@@ -14,6 +15,7 @@ import sinc.hinc.model.VirtualComputingResource.Capability;
  * 
  * @author hungld
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 public class ControlPoint extends Capability {
 
     public static enum InvokeProtocol {

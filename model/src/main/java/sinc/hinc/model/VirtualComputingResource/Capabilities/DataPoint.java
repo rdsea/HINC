@@ -5,6 +5,7 @@
  */
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import sinc.hinc.model.VirtualComputingResource.Capability;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Map;
  *
  * @author hungld
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 public class DataPoint extends Capability {
 
     // temperature, humidity, GPS, image, video_streaming, state

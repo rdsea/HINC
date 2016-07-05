@@ -5,21 +5,15 @@
  */
 package sinc.hinc.dummyprovider.plugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import sinc.hinc.abstraction.transformer.IoTResourceTransformation;
+import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.dummyprovider.provider.DummyMetadataItem;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
-
 
 /**
  *
  * @author hungld
  */
-public class DummyProviderTransformer implements IoTResourceTransformation<DummyMetadataItem> {
+public class DummyProviderTransformer implements DataPointTransformer<DummyMetadataItem> {
 
     @Override
     public DataPoint updateDataPoint(DummyMetadataItem data) {
@@ -33,20 +27,8 @@ public class DummyProviderTransformer implements IoTResourceTransformation<Dummy
     }
 
     @Override
-    public List<ControlPoint> updateControlPoint(DummyMetadataItem data) {
-        return new ArrayList<>();
+    public String getName() {
+        return "dummy";
     }
 
-    @Override
-    public ExecutionEnvironment updateExecutionEnvironment(DummyMetadataItem data) {
-        // do nothing yet
-        return null;
-    }
-
-    @Override
-    public CloudConnectivity updateCloudConnectivity(DummyMetadataItem data) {
-        // do nothing yet
-        return null;
-    }
-    
 }

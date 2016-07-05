@@ -61,7 +61,7 @@ public class SubscriptionManager {
             double currentThroughput = 0L;
 
             @Override
-            public void handleMessage(HincMessage message) {
+            public HincMessage handleMessage(HincMessage message) {
                 // this technique to measure the throughput
                 Cache<String, String> autoExpireCache = CacheBuilder.newBuilder()
                         .concurrencyLevel(4)
@@ -89,6 +89,7 @@ public class SubscriptionManager {
                 currentThroughput = (currentThroughput + ((double) currentSize / 30) * 0.3) / 1.3;
 
                 // here just record time and throughtput, no actual update yet
+                return null;
             }
         });
         sub.subscribe(feedBackTopic, timeout);

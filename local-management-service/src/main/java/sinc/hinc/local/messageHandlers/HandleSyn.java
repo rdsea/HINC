@@ -22,7 +22,7 @@ import sinc.hinc.local.Main;
 public class HandleSyn implements HINCMessageHander {
 
     @Override
-    public void handleMessage(HincMessage message) {
+    public HincMessage handleMessage(HincMessage message) {
         HincLocalMeta meta = HincConfiguration.getLocalMeta();
         System.out.println("GETTING HANDLLER. NUMBER of HANDERS: " + Main.getListener().getHandlers().size());
         for (HINCMessageListener.Handler handler: Main.getListener().getHandlers()){
@@ -32,6 +32,7 @@ public class HandleSyn implements HINCMessageHander {
         HincMessage replyMsg = new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), message.getFeedbackTopic(), "", meta.toJson());
         MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
         FACTORY.getMessagePublisher().pushMessage(replyMsg);
+        return replyMsg;
     }
 
 }

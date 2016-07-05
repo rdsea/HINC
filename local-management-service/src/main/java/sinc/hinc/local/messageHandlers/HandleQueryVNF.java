@@ -5,6 +5,7 @@
  */
 package sinc.hinc.local.messageHandlers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
@@ -21,21 +22,21 @@ import sinc.hinc.communication.processing.HINCMessageHander;
 public class HandleQueryVNF implements HINCMessageHander {
 
     @Override
-    public void handleMessage(HincMessage msg) {
+    public HincMessage handleMessage(HincMessage msg) {
         System.out.println("Server get request for SDG information");
         try {
             AbstractDAO<NetworkFunctionService> vnfDAO = new AbstractDAO<>(NetworkFunctionService.class);
             List<NetworkFunctionService> listOfNFS = vnfDAO.readAll();
-            for (NetworkFunctionService nfs : listOfNFS) {
-                String replyPayload = nfs.toJson();
-                HincMessage replyMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION.toString(), HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
-                MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-                FACTORY.getMessagePublisher().pushMessage(replyMsg);
-            }
+            ObjectMapper mapper = new ObjectMapper();
+            String replyPayload = mapper.writeValueAsString(listOfNFS);
+            HincMessage replyMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION.toString(), HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
+            MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+            FACTORY.getMessagePublisher().pushMessage(replyMsg);
+            return replyMsg;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return;
+        return null;
     }
 
 }

@@ -52,4 +52,9 @@ public class OpenDaylightadaptor implements ProviderAdaptor<InventoryData> {
         // TODO: implement this 
     }
 
+    @Override
+    public String getName() {
+        return "opendaylight";
+    }
+
 }

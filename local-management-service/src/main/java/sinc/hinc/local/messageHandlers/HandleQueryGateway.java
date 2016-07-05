@@ -5,8 +5,12 @@
  */
 package sinc.hinc.local.messageHandlers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.factory.MessageClientFactory;
@@ -22,14 +26,17 @@ import sinc.hinc.communication.processing.HINCMessageHander;
 public class HandleQueryGateway implements HINCMessageHander {
 
     @Override
-    public void handleMessage(HincMessage msg) {
+    public HincMessage handleMessage(HincMessage msg) {
         System.out.println("Server get request for SDG information: " + msg.toJson());
         Long timeStamp2 = (new Date()).getTime();
         Long timeStamp3 = (new Date()).getTime();
         SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
         List<SoftwareDefinedGateway> gws = gwDAO.readAll();
-        for (SoftwareDefinedGateway gw : gws) {
-            String replyPayload = gw.toJson();
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            String replyPayload = mapper.writeValueAsString(gws);
+
             System.out.println("Size of the reply message: " + (replyPayload.length() / 1024) + "KB");
             HincMessage replyMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION.toString(), HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
 
@@ -43,8 +50,12 @@ public class HandleQueryGateway implements HINCMessageHander {
 
             MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
             FACTORY.getMessagePublisher().pushMessage(replyMsg);
+            return replyMsg;
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(HandleQueryGateway.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return;
+
     }
 
 }

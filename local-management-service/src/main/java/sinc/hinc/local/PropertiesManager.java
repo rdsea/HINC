@@ -11,7 +11,13 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import org.slf4j.Logger;
+import sinc.hinc.common.utils.HincConfiguration;
 
 /**
  *
@@ -19,12 +25,14 @@ import java.util.Properties;
  */
 public class PropertiesManager {
 
+    static Logger logger = HincConfiguration.getLogger();
+
     public static Properties getParameters(String configFile) {
         Properties configuration = new Properties();
         try {
             File f = new File(configFile);
             if (!f.exists()) {
-                System.out.println("Configuration file not found: " + configFile + ". Return a black properties.");
+                logger.error("Configuration file not found: " + configFile + ". Return a black properties.");
                 return new Properties();
             }
             configuration.load(new FileReader(f));
@@ -59,6 +67,38 @@ public class PropertiesManager {
             System.out.println("Cannot write to configFile: " + configFile + ", to store properties ! Error: " + ex);
         }
     }
-    
+
+    /**
+     * The configuration line in this format:<name>:<key>=<value>
+     * This function get the key/value and put into the map
+     *
+     * @param configFile
+     * @param name
+     * @return
+     */
+    public static Map<String, String> getSettings(String name, String configFile) {
+        logger.debug("Loading settings for: {} in file {}", name, configFile);
+        Map<String, String> map = new HashMap<>();
+        Properties props = getParameters(configFile);
+        if (props != null) {
+            for (Entry<Object, Object> entry : props.entrySet()) {
+                if (entry.getKey().toString().contains(".")) {
+                    String entryName = entry.getKey().toString().split("\\.")[0].trim();
+                    if (entryName.equals(name.trim())) {
+                        String entryKey = entry.getKey().toString().split("\\.")[1].trim();
+                        String entryValue = entry.getValue().toString().trim();
+                        map.put(entryKey, entryValue);
+                    }
+                } else {
+                    logger.warn("A line in configuration file is wrong in format: {}. Should be name.key=value", entry.toString());
+                }
+            }
+        } else {
+            logger.error("Cannot load the config file: {}", configFile);
+        }
+        logger.debug("Settings loaded: {}", map.toString());
+        return map;
+    }
+
 
 }

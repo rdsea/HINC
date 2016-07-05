@@ -41,4 +41,9 @@ public class DummyProviderAdaptor implements ProviderAdaptor<DummyMetadataItem> 
         // do nothing yet
     }
 
+    @Override
+    public String getName() {
+        return "dummy";
+    }
+
 }
