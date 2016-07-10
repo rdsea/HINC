@@ -18,7 +18,7 @@ HINC concepts and techniques are described in the paper: Duc-Hung Le, Nanjangud 
 
 HINC framework provides an abstraction layer on top of IoT cloud infrastructure for the IoT cloud application. To this end, HINC focuses on distributed architecture and communication protocol to enable the interoperation of IoT services on both **edge-to-edge** and **edge-to-cloud** networks. HINC brings network functions into the picture that aims to enable the reconfiguration of the network and communication capability among IoT services and cloud services.
 
-![scope](/images/scope.png "The deployment scope of HINC framework"){:width="750px"}
+![scope](images/scope.png "The deployment scope of HINC framework"){:width="750px"}
 
 
 
