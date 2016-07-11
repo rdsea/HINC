@@ -50,17 +50,17 @@ public class WeaveRouterResourceDiscovery implements NetworkResourceTranformatio
 
         List<ControlPoint> cps = new ArrayList<>();
 
-        cps.add(new ControlPoint(id, name, "stop", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave stop", ""));
+        cps.add(new ControlPoint(id, name, "stop", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave stop"));
         System.out.println("cps size: " + cps.size());
-        cps.add(new ControlPoint(id, name, "launch", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave launch", ""));
+        cps.add(new ControlPoint(id, name, "launch", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave launch"));
         System.out.println("cps size: " + cps.size());
-        cps.add(new ControlPoint(id, name, "connect", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave connect", "peerIP"));
+        cps.add(new ControlPoint(id, name, "connect", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave connect")); //, "peerIP"
         System.out.println("cps size: " + cps.size());
-        cps.add(new ControlPoint(id, name, "forget", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave forget", "peerIP"));
+        cps.add(new ControlPoint(id, name, "forget", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave forget")); //, "peerIP"
         System.out.println("cps size: " + cps.size());
-        cps.add(new ControlPoint(id, name, "attach", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave attach", "deviceIP"));
+        cps.add(new ControlPoint(id, name, "attach", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave attach")); // , "deviceIP"
         System.out.println("cps size: " + cps.size());
-        cps.add(new ControlPoint(id, name, "detach", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave attach", "deviceIP"));
+        cps.add(new ControlPoint(id, name, "detach", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, "/usr/local/bin/weave attach")); //, "deviceIP"
         System.out.println("cps size: " + cps.size());
 
         vnf.setControlPoints(cps);

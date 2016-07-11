@@ -21,7 +21,7 @@ public class ControlPointMapper implements DTOMapperInterface<ControlPoint>{
         CapabilityMapper capa = new CapabilityMapper(ControlPoint.class);
         ControlPoint con = (ControlPoint) capa.fromODocument(doc);
         con.setInvokeProtocol(ControlPoint.InvokeProtocol.valueOf(doc.field("invokeprotocol").toString()));
-        con.setPostData(String.valueOf(doc.field("postdata")));
+        con.setParameters(String.valueOf(doc.field("parameters")));
         con.setReference(String.valueOf(doc.field("reference")));
         return con;
     }
@@ -32,7 +32,7 @@ public class ControlPointMapper implements DTOMapperInterface<ControlPoint>{
         ODocument doc = capa.toODocument(object);
         doc.setClassName(ControlPoint.class.getSimpleName());
         doc.field("invokeprotocol", object.getInvokeProtocol().toString());
-        doc.field("postdata", object.getPostData());
+        doc.field("parameters", object.getParameters());
         doc.field("reference", object.getReference());
         return doc;
     }

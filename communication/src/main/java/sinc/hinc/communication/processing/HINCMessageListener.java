@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.factory.MessageClientFactory;
 import sinc.hinc.communication.factory.MessageSubscribeInterface;
 
@@ -87,7 +88,14 @@ public class HINCMessageListener {
                     HINCMessageHander handlerMethod = getHandlerMethod(msgTopic, msgType);
                     if (handlerMethod != null) {
                         logger.debug("Get message: {}, topic: {}. Found a handler: {}", msgType, msgTopic, handlerMethod.getClass().getSimpleName());
-                        return handlerMethod.handleMessage(msg);
+
+                        HincMessage replyMsg = handlerMethod.handleMessage(msg);
+                        if (replyMsg != null) {
+                            MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+                            FACTORY.getMessagePublisher().pushMessage(replyMsg);
+                            logger.debug("Handle message {} done and a reply is pushed bash at topic {}", msg.getMsgType(), replyMsg.getTopic());
+                        }
+                        return replyMsg;
                     } else {
                         logger.error("Get message: {}, topic: {}, but NO handler is found !", msgType, msgTopic);
                         return null;

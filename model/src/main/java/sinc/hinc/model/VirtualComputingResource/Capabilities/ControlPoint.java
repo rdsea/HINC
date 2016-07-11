@@ -9,10 +9,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import sinc.hinc.model.VirtualComputingResource.Capability;
 
 /**
- * The class manage control point, which is an action on the resource.
- * Because the control need actual to execute something, it show
- * clear way to invoke the capability
- * 
+ * The class manage control point, which is an action on the resource. Because
+ * the control need actual to execute something, it show clear way to invoke the
+ * capability
+ *
  * @author hungld
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -28,37 +28,38 @@ public class ControlPoint extends Capability {
     InvokeProtocol invokeProtocol;
 
     /**
-     * The absolute path to the service, e.g. http://example.com/rest/start/{id} Note: The parameters are put in brackets
+     * The absolute path to the service, e.g. http://example.com/rest/start/{id}
+     * Note: The parameters are put in brackets
      */
     String reference;
 
     /**
-     * The data using in POST and PUT
+     * parameter can be the parameter of local execution or parameter of REST
+     * Note that, the parameters can be marshalled in different model via JSON in the case of REST
+     * 
      */
-    String postData;
+    String parameters;
 
 //    Map<String, Object> controlStates;
     /**
      * **************
-     * GETER/SETTER *
-     ***************
+     * GETER/SETTER * **************
      */
     public ControlPoint() {
-        
-    }
-    
-    public ControlPoint( String resourceID, String name, String description) {        
-        super( resourceID, name,  description);
+
     }
 
-    public ControlPoint( String resourceID, String name, String description, InvokeProtocol invokeProtocol, String reference, String postData) {
-        super( resourceID, name, description);
+    public ControlPoint(String resourceID, String name, String description) {
+        super(resourceID, name, description);
+//        this.uuid = gatewayID + "/" + resourceID + "/" + name;
+    }
+
+    public ControlPoint(String resourceID, String name, String description, InvokeProtocol invokeProtocol, String reference) {
+        super(resourceID, name, description);
         this.invokeProtocol = invokeProtocol;
         this.reference = reference;
-        this.postData = postData;
+//        this.uuid = gatewayID + "/" + resourceID + "/" + name;
     }
-    
-    
 
     public InvokeProtocol getInvokeProtocol() {
         return invokeProtocol;
@@ -76,12 +77,12 @@ public class ControlPoint extends Capability {
         this.reference = reference;
     }
 
-    public String getPostData() {
-        return postData;
+    public String getParameters() {
+        return parameters;
     }
 
-    public void setPostData(String postData) {
-        this.postData = postData;
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
     }
 
 }

@@ -62,8 +62,7 @@ public class Capability {
         this.resourceID = resourceID;
         this.name = name;
         this.description = description;
-        this.gatewayID = "unknown";
-        this.uuid = gatewayID + "/" + name;
+        this.gatewayID = "unknown";        
     }
 
     public String getName() {

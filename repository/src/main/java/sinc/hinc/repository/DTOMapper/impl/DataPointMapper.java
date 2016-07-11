@@ -34,13 +34,13 @@ public class DataPointMapper implements DTOMapperInterface<DataPoint> {
         dp.setMeasurementUnit(String.valueOf(doc.field("measurementunit")));
         dp.setResourceID(String.valueOf(doc.field("resourceid")));
         dp.setGatewayID(String.valueOf(doc.field("gatewayid")));
-        dp.setBufferType(String.valueOf(doc.field("buffertype")));
+        dp.setDataApi(String.valueOf(doc.field("dataapi")));
         
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String,String>> typeRef = new TypeReference<HashMap<String,String>>() {};
         try {
-            Map<String, String> settings = mapper.readValue(String.valueOf(doc.field("buffersettings")), typeRef);
-            dp.setBufferSettings(settings);
+            Map<String, String> settings = mapper.readValue(String.valueOf(doc.field("dataapisettings")), typeRef);
+            dp.setDataApiSettings(settings);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -61,14 +61,14 @@ public class DataPointMapper implements DTOMapperInterface<DataPoint> {
         doc.field("measurementunit", object.getMeasurementUnit());
         doc.field("resourceid", object.getResourceID());
         doc.field("gatewayid", object.getGatewayID());
-        doc.field("buffertype", object.getBufferType());
+        doc.field("dataapi", object.getDataApi());
         
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String,String>> typeRef = new TypeReference<HashMap<String,String>>() {};
         String settings;
         try {
-            settings = mapper.writeValueAsString(object.getBufferSettings());
-            doc.field("buffersettings", settings);
+            settings = mapper.writeValueAsString(object.getDataApiSettings());
+            doc.field("dataapisettings", settings);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
         }

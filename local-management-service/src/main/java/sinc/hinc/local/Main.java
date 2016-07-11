@@ -20,6 +20,7 @@ import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.common.utils.HincUtils;
 import sinc.hinc.communication.processing.HINCMessageListener;
+import sinc.hinc.local.messageHandlers.HandleControl;
 import sinc.hinc.local.messageHandlers.HandleQueryGateway;
 import sinc.hinc.local.messageHandlers.HandleQueryVNF;
 import sinc.hinc.local.messageHandlers.HandleSyn;
@@ -74,6 +75,10 @@ public class Main {
         LISTENER.addListener(privateTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
         LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
         LISTENER.addListener(privateTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
+        
+        LISTENER.addListener(groupTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
+        LISTENER.addListener(privateTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
+        
 
         LISTENER.listen();
 
@@ -110,14 +115,15 @@ public class Main {
                 for (Object domain : domains) {
                     logger.debug("Checking item: " + domain.toString());
                     if (dpt != null) {
-                        logger.debug("Datapoint translation is available, transforming datapoints...");
+                        logger.debug("Datapoint translation is available: " + dpt.getName());
                         DataPoint dp = dpt.updateDataPoint(domain);
-                        logger.debug("Got a datapoint: " + dp.getUuid() + ".." + dp.getName());
+                        logger.debug("Got a datapoint: " + dp.getName() + ", data api: " + dp.getDataApi());
                         gw.hasCapability(dpt.updateDataPoint(domain));
                     } else {
                         logger.debug("Datapoint translation is NOT available !");
                     }
                     if (cpt != null) {
+                        logger.debug("Controlpoint translation is available: " + cpt.getName());
                         gw.hasCapabilities(cpt.updateControlPoint(domain));
                     } else {
                         logger.debug("Controlpoint translation is NOT available !");

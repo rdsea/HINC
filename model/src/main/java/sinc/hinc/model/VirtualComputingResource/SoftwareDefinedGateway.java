@@ -129,10 +129,11 @@ public class SoftwareDefinedGateway {
 
     public SoftwareDefinedGateway hasCapability(Capability capa) {
         capa.setGatewayID(this.getUuid());
-        capa.setUuid(this.getUuid() + "/" + capa.getName());
         if (capa.getClass().equals(DataPoint.class)) {
+            capa.setUuid(this.getUuid() + "/" + capa.getName());
             this.getDataPoints().add((DataPoint) capa);
         } else if (capa.getClass().equals(ControlPoint.class)) {
+            capa.setUuid(this.getUuid() + "/" + capa.getResourceID() + "/" + capa.getName());
             this.getControlPoints().add((ControlPoint) capa);
         } else if (capa.getClass().equals(CloudConnectivity.class)) {
             this.getConnectivity().add((CloudConnectivity) capa);

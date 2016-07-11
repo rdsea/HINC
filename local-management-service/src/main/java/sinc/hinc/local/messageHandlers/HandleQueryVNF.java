@@ -29,10 +29,10 @@ public class HandleQueryVNF implements HINCMessageHander {
             List<NetworkFunctionService> listOfNFS = vnfDAO.readAll();
             ObjectMapper mapper = new ObjectMapper();
             String replyPayload = mapper.writeValueAsString(listOfNFS);
-            HincMessage replyMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION.toString(), HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
-            MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-            FACTORY.getMessagePublisher().pushMessage(replyMsg);
-            return replyMsg;
+            return new HincMessage(HINCMessageType.UPDATE_INFORMATION.toString(), HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
+//            MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+//            FACTORY.getMessagePublisher().pushMessage(replyMsg);
+//            return replyMsg;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -27,9 +27,9 @@ public class MockData {
     public static void main(String[] arg) throws Exception {
         SoftwareDefinedGateway gateway = new SoftwareDefinedGateway();
         
-        Capability control1 = new ControlPoint("sensor1","changeSensorRate", "change data rate", InvokeProtocol.POST, "http://128.130.172.216:8080/salsa-engine/rest/services/IoTSensors/nodes/SensorUnit/instances/1/action_queue/changeRate/parameters/{1}", null);
-        Capability control2 = new ControlPoint("sensor1","setProtocolMQTT", "change to MQTT mode", InvokeProtocol.POST, "http://128.130.172.216:8080/salsa-engine/rest/services/IoTSensors/nodes/SensorUnit/instances/1/action_queue/setProtocolMQTT", null);
-        Capability control3 = new ControlPoint("sensor1","setProtocolDRY", "change DRY mode", InvokeProtocol.POST, "http://128.130.172.216:8080/salsa-engine/rest/services/IoTSensors/nodes/SensorUnit/instances/1/action_queue/setProtocolDRY", null);
+        Capability control1 = new ControlPoint("sensor1","changeSensorRate", "change data rate", InvokeProtocol.POST, "http://localhost:8080/salsa-engine/rest/services/IoTSensors/nodes/SensorUnit/instances/1/action_queue/changeRate/parameters/{1}");
+        Capability control2 = new ControlPoint("sensor1","setProtocolMQTT", "change to MQTT mode", InvokeProtocol.POST, "http://localhost:8080/salsa-engine/rest/services/IoTSensors/nodes/SensorUnit/instances/1/action_queue/setProtocolMQTT");
+        Capability control3 = new ControlPoint("sensor1","setProtocolDRY", "change DRY mode", InvokeProtocol.POST, "http://localhost:8080/salsa-engine/rest/services/IoTSensors/nodes/SensorUnit/instances/1/action_queue/setProtocolDRY");
         gateway.hasCapabilities(Arrays.asList(control1, control2, control3));
 
         CloudConnectivity connectivity1 = new CloudConnectivity("sensor1","3G", "3G connection", "172.17.0.150", "");

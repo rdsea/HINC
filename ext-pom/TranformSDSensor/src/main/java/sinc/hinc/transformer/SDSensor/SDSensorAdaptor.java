@@ -23,10 +23,10 @@ public class SDSensorAdaptor implements ProviderAdaptor<SDSensorMeta> {
     @Override
     public Collection<SDSensorMeta> getItems(Map<String, String> settings) {
         String sensorMetaFilePath = settings.get("path");
-        Collection<String> loadedItems = FilesScanner.getItems(settings);
+        Map<String,String> loadedItems = FilesScanner.getItems(settings);
         Collection<SDSensorMeta> result = new ArrayList<>();
 
-        for (String rawData : loadedItems) {
+        for (String rawData : loadedItems.values()) {
             Properties p = new Properties();
             StringReader reader = new StringReader(rawData);
             String baseDir = sensorMetaFilePath.substring(0, sensorMetaFilePath.lastIndexOf("/"));

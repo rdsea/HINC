@@ -5,7 +5,6 @@
  */
 package sinc.hinc.abstraction.ResourceDriver.utils;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -13,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +29,13 @@ import java.util.Map;
 public class FilesScanner {
 
     /**
-     * Get the list of Text file in recursive folder
-     *  - path: the base folder
-     *  - filter: the extension of the file
-     *  E.g. getItems("/tmp","txt")
+     * Get the list of Text file in recursive folder - path: the base folder -
+     * filter: the extension of the file E.g. getItems("/tmp","txt")
+     *
      * @param settings path and filter
-     * @return 
+     * @return Map<filePath,fileContents>
      */
-    public static Collection<String> getItems(Map<String, String> settings) {
+    public static Map<String, String> getItems(Map<String, String> settings) {
         final String mainFolder = settings.get("path");
         final String nameFilter = settings.get("filter");
 
@@ -51,7 +49,7 @@ public class FilesScanner {
             filterFileNames(fileNames, nameFilter);
         }
 
-        Collection<String> result = new ArrayList<>();
+        Map<String, String> result = new HashMap<>();
 
         System.out.println("There are " + fileNames.size() + " files in the folder to read !");
         // each file contains info of single sensor/actuator
@@ -61,7 +59,7 @@ public class FilesScanner {
             try {
                 json = new String(Files.readAllBytes(Paths.get(filePath)));
                 System.out.println("OK, Loaded the Json file content: \n " + json);
-                result.add(json);
+                result.put(filePath, json);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

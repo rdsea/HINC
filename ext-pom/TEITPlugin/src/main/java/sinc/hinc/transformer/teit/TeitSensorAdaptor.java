@@ -7,10 +7,13 @@ package sinc.hinc.transformer.teit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 import sinc.hinc.abstraction.ResourceDriver.utils.FilesScanner;
 
@@ -18,24 +21,27 @@ import sinc.hinc.abstraction.ResourceDriver.utils.FilesScanner;
  *
  * @author hungld
  */
-public class TeitSensorAdaptor implements ProviderAdaptor<DummyMetadataItem> {
+public class TeitSensorAdaptor implements ProviderAdaptor<Properties> {
 
     @Override
-    public Collection<DummyMetadataItem> getItems(Map<String, String> settings) {
+    public Collection<Properties> getItems(Map<String, String> settings) {
         String workingDir = settings.get("workingdir");
         System.out.println("Settings of TEIT sensor adaptor: " + settings);
         System.out.println("Working dir is: " + workingDir);
         Map<String, String> fileScannerSettings = new HashMap<>();
         fileScannerSettings.put("path", workingDir);
-        fileScannerSettings.put("filter", ".meta");
-        Collection<String> metas = FilesScanner.getItems(fileScannerSettings);
-        
-        Collection<DummyMetadataItem> result = new ArrayList<>();
+        fileScannerSettings.put("filter", "sensor.conf");
+        Map<String, String> metas = FilesScanner.getItems(fileScannerSettings);
+
+        Collection<Properties> result = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         try {
-            for (String metaString : metas) {
-                DummyMetadataItem item = mapper.readValue(metaString, DummyMetadataItem.class);              
-                result.add(item);
+            for (Entry<String, String> entry : metas.entrySet()) {
+                Properties prop = new Properties();
+                StringReader reader = new StringReader(entry.getValue());
+                prop.load(reader);
+                prop.put("executionscript", entry.getKey().replace("sensor.conf", "sensor.sh"));
+                result.add(prop);
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -52,6 +58,5 @@ public class TeitSensorAdaptor implements ProviderAdaptor<DummyMetadataItem> {
     public String getName() {
         return "teit";
     }
-    
-    
+
 }

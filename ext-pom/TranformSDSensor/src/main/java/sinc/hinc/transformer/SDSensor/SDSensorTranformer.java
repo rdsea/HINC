@@ -30,7 +30,7 @@ public class SDSensorTranformer implements DataPointTransformer<SDSensorMeta>, C
     public List<ControlPoint> updateControlPoint(SDSensorMeta data) {
         List<ControlPoint> cps = new ArrayList<>();
         for (String key : data.getActions().keySet()) {
-            ControlPoint cp = new ControlPoint(data.getName(), key, "Action " + key, ControlPoint.InvokeProtocol.LOCAL_EXECUTE, data.getActions().get(key), "");
+            ControlPoint cp = new ControlPoint(data.getName(), key, "Action " + key, ControlPoint.InvokeProtocol.LOCAL_EXECUTE, data.getActions().get(key));
             cps.add(cp);
         }
         return cps;

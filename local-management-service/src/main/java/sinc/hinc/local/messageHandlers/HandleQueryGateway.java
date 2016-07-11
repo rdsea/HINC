@@ -48,8 +48,8 @@ public class HandleQueryGateway implements HINCMessageHander {
             replyMsg.hasExtra("timeStamp3", timeStamp3.toString());
             replyMsg.hasExtra("timeStamp4", timeStamp4.toString());
 
-            MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-            FACTORY.getMessagePublisher().pushMessage(replyMsg);
+//            MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+//            FACTORY.getMessagePublisher().pushMessage(replyMsg);
             return replyMsg;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(HandleQueryGateway.class.getName()).log(Level.SEVERE, null, ex);

@@ -40,8 +40,8 @@ public class DataPoint extends Capability {
      * model, MQTT/AMPQ persistent, streamming to read/write data. See more in
      * the package sinc.hinc.model.Extensible.Reading
      */
-    String bufferType;
-    Map<String, String> bufferSettings;
+    String dataApi;
+    Map<String, String> dataApiSettings;
 
     /**
      * List of control point for this data point
@@ -60,16 +60,19 @@ public class DataPoint extends Capability {
      */
     public DataPoint(String dataType) {
         this.datatype = dataType;
+//        this.uuid = gatewayID + "/" + name;
     }
 
     public DataPoint(String resourceID, String name, String description) {
         super(resourceID, name, description);
+//        this.uuid = gatewayID + "/" + name;
     }
 
     public DataPoint(String resourceID, String name, String description, String datatype, String measurementUnit) {
         super(resourceID, name, description);
         this.datatype = datatype;
         this.measurementUnit = measurementUnit;
+//        this.uuid = gatewayID + "/" + name;
     }
 
     public String getDatatype() {
@@ -88,21 +91,23 @@ public class DataPoint extends Capability {
         this.measurementUnit = measurementUnit;
     }
 
-    public String getBufferType() {
-        return bufferType;
+    public String getDataApi() {
+        return dataApi;
     }
 
-    public void setBufferType(String bufferType) {
-        this.bufferType = bufferType;
+    public void setDataApi(String dataApi) {
+        this.dataApi = dataApi;
     }
 
-    public Map<String, String> getBufferSettings() {
-        return bufferSettings;
+    public Map<String, String> getDataApiSettings() {
+        return dataApiSettings;
     }
 
-    public void setBufferSettings(Map<String, String> bufferSettings) {
-        this.bufferSettings = bufferSettings;
+    public void setDataApiSettings(Map<String, String> dataApiSettings) {
+        this.dataApiSettings = dataApiSettings;
     }
+
+   
 
     public String getManagementClass() {
         return managementClass;

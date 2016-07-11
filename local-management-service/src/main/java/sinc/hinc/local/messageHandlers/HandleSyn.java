@@ -8,7 +8,6 @@ package sinc.hinc.local.messageHandlers;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.factory.MessageClientFactory;
 import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.processing.HINCMessageListener;
@@ -29,10 +28,10 @@ public class HandleSyn implements HINCMessageHander {
             System.out.println("adding handler ...: " + handler.getTopic() + " -- " + handler.getMessageType());
             meta.hasHandler(handler.getTopic(), handler.getMessageType(), handler.getHandlerMethod().getClass().getName());
         }
-        HincMessage replyMsg = new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), message.getFeedbackTopic(), "", meta.toJson());
-        MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-        FACTORY.getMessagePublisher().pushMessage(replyMsg);
-        return replyMsg;
+        return new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), message.getFeedbackTopic(), "", meta.toJson());
+//        MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+//        FACTORY.getMessagePublisher().pushMessage(replyMsg);
+//        return replyMsg;
     }
 
 }
