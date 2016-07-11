@@ -45,23 +45,12 @@ BROKER_TYPE=amqp
 GROUP=test
 ```
 
-3.3. Create a `info-source.conf` to define the provider. With OpenHAB running locally, the configuration as followngs:
+3.3. Copy the **source.conf.default** into a new file name **source.conf**. This file contains all the configuration required for the adaptors.
 
-```json
-{
-    "source": [
-        {
-            "name": "openHAB",
-            "type": "IoT",
-            "interval": 0,
-            "adaptorClass": "sinc.hinc.transformer.openhab.OpenHABAdaptor",
-            "transformerClass": "sinc.hinc.transformer.openhab.TranformOpenHABInfo",
-            "settings": {
-                "endpoint": "http://localhost:8080/rest"
-            }
-        }
-    ]
-}
+With OpenHAB running locally, uncomment and change the following line in the file:
+
+```sh
+openhab.endpoint=http://localhost:8080/rest
 ```
 
 3.4. Copy above 4 files (2 .jar and 2 .conf files) to a same folder. Then run the command:
