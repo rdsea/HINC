@@ -48,7 +48,7 @@ public class Experiment1_Broadcast_ResponseTime {
 //        }
 //        for (int i = 1; i < 4; i++) {
 //            client.querySoftwareDefinedGateway_Broadcast(70000);
-        api.querySoftwareDefinedGateways(70000, null);
+        api.querySoftwareDefinedGateways(70000, null, "false");
 //        }
     }
 

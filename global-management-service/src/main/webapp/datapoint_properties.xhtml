@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Data Point</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <p:outputPanel id="datapoint_properties_panel" style="text-align:left;" >
+            <p:panelGrid  columns="2" columnClasses="label,value" >
+                <p:outputLabel value="Resource ID"/>
+                <p:outputLabel value="#{GuiBeans.dataPointByResourceid.resourceID}"/>
+
+                <p:outputLabel value="Name"/>
+                <p:outputLabel value="#{GuiBeans.dataPointByResourceid.name}"/>
+
+                <p:outputLabel value="Gateway ID"/>
+                <p:outputLabel value="#{GuiBeans.dataPointByResourceid.gatewayID}"/>
+
+                <p:outputLabel value="Description"/>
+                <p:outputLabel value="#{GuiBeans.dataPointByResourceid.description}"/>
+
+                <p:outputLabel value="Data type"/>
+                <p:outputLabel value="#{GuiBeans.dataPointByResourceid.datatype}"/>
+
+                <p:outputLabel value="Measurement unit"/>
+                <p:outputLabel value="#{GuiBeans.dataPointByResourceid.measurementUnit}"/>
+
+                <p:outputLabel value="MQTT topic"/>
+                <p:outputLabel value="#{GuiBeans.dataPointByResourceid.dataApiSettings.get('topic')}"/>
+
+                <p:outputLabel value="MQTT endpoint"/>
+                <p:outputLabel value="#{GuiBeans.dataPointByResourceid.dataApiSettings.get('url')}"/>
+            </p:panelGrid>
+        </p:outputPanel>
+
+    </h:body>
+
+</html>

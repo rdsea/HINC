@@ -17,7 +17,7 @@ public class ExecutionEnvironment extends Capability {
 
     String version;
 
-    // e.g. version, status (on/off), settings
+    // environment specific properties  
     Map<String, String> attributes;
 
     /**

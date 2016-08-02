@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Data Point</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <h3>Data point: #{GuiBeans.resourceID}</h3>
+        <h:form>
+            <p:panelGrid  columns="3" styleClass="ui-panelgrid-blank" rendered="#{not empty GuiBeans.resourceID}">
+
+                <p:outputPanel>
+                    <p:inputText value="#{GuiBeans.resourceID}" style="display: none"/>
+                    <p:outputLabel  value="Action: " />
+                    <p:selectOneMenu  value="#{GuiBeans.selectedControlAction}" style="width:150px">
+                        <p:ajax event="change" update="@this" />                
+                        <f:selectItems value="#{GuiBeans.controlActionSelectItemList}" var="item" itemValue="#{item}"/>
+                    </p:selectOneMenu>
+                </p:outputPanel>
+                <p:outputPanel>
+                    <p:outputLabel for="parameters" value="Parameters: " />
+                    <p:inputText id="parameters" value="#{DatapointView.controlParameter}" />
+                </p:outputPanel>
+                <p:outputPanel style="width: 100%; display: inline-block">
+                    <p:commandButton update="invoke_action_result_panel"  oncomplete="PF('actionResultDialog').show();" actionListener="#{DatapointView.invokeControlButton}" icon="fa fa-play-circle-o" value="Invoke action" style="width: 100%; display: inline-block; font-size: 70%;" />
+                </p:outputPanel>
+
+            </p:panelGrid>
+        </h:form>
+        <p:dialog  header="Control action result" widgetVar="actionResultDialog" modal="true" appendTo="@(body)" height="100" showEffect="bounce" hideEffect="explode">
+            <p:outputPanel id="invoke_action_result_panel">
+                <h:outputText value="#{DatapointView.lastControlResult}" />
+            </p:outputPanel>
+        </p:dialog>
+
+
+
+        <!-- subscribe data here -->
+
+        <hr />
+
+        <h:form>       
+            <p:commandButton update="tick tickpoll" actionListener="#{DatapointView.subscribeData()}" icon="fa fa-play" value="Subscribe data" style="font-size: 70%;" />
+            <p:commandButton actionListener="#{DatapointView.unsubscribeData()}" icon="fa fa-stop" value="Unsubscribe data" style="font-size: 70%;" />
+            <p:poll interval="2"  update="tick" id="tickpoll" />
+            <p:chart id="tick" type="line" model="#{DatapointView.updatedChart}" style="height:300px;width:100%"  /> 
+        </h:form>
+        <script>
+            function ext() {
+                this.cfg.seriesDefaults.rendererOptions.dataLabelFormatString = '%.2s%%';
+                this.cfg.seriesDefaults.rendererOptions.dataLabelThreshold = 0;
+                this.cfg.seriesDefaults = {
+                    lineWidth: 2.0,
+                    shadow: false,
+                    showMarker: false,
+                    rendererOptions: {
+                        smooth: true
+                    }
+                }
+            }
+        </script>
+    </h:body>
+
+</html>

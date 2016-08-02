@@ -1,0 +1,8 @@
+@import "components.css";
+@import "theme.css";
+
+.ui-panelgrid td, .ui-panelgrid tr
+{
+    border-style: solid;
+    border-width: 1px;
+}

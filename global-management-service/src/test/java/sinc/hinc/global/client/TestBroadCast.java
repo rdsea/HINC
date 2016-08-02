@@ -15,6 +15,7 @@ import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 import java.util.List;
+import java.util.Set;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 
 /**
@@ -41,7 +42,7 @@ public class TestBroadCast {
             }
         }
 //
-        List<SoftwareDefinedGateway> gateways = api.querySoftwareDefinedGateways(20000, null);
+        Set<SoftwareDefinedGateway> gateways = api.querySoftwareDefinedGateways(20000, null, "false");
         System.out.println("Gateway number: " + gateways.size());
 
         AbstractDAO<SoftwareDefinedGateway> gwDAO = new AbstractDAO<>(SoftwareDefinedGateway.class);

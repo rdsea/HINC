@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <link rel="stylesheet" href="css/w3.css"/>
+    <h:head>
+
+    </h:head>
+    <h:body>
+        <ui:composition template="layout/layout.xhtml">
+
+            <ui:define name="content">      
+                <h3>Realtime analytics</h3>
+                <h:form>
+                    <p:panelGrid  columns="5" >
+                        <p:outputPanel>
+                            <p:outputLabel value="Select some datapoints" />
+                            <p:selectManyCheckbox id="datapoint_name_box" value="#{AnalyticController.selectedResourceID}" layout="grid" columns="1">
+                                <f:selectItems value="#{AnalyticController.resourceIDForAnalytics}" var="dp" itemLabel="#{dp}" itemValue="#{dp}" />
+                            </p:selectManyCheckbox>
+                        </p:outputPanel>
+
+                        <p:outputLabel>
+                            <p:outputLabel value="Select a network function" />
+                            <p:selectOneListbox id="network_name_box" value="#{AnalyticController.selectedNetworkService}" style="width: 100% ">
+                                <f:selectItems value="#{AnalyticController.networkServiceIDForAnalytics}" var="nw" itemLabel="#{nw}" itemValue="#{nw}" />
+                            </p:selectOneListbox>
+                        </p:outputLabel>
+
+                        <p:outputPanel>
+                            <p:outputLabel value="Select a analytics function" />
+                            <p:selectOneListbox id="analytic_box" value="#{AnalyticController.analyticSelected}">
+                                <f:selectItems value="#{AnalyticController.analyticAlgos}" var="analyticAlgo" itemLabel="#{analyticAlgo}" itemValue="#{analyticAlgo}" />
+                            </p:selectOneListbox>
+                            <p:outputPanel>
+
+
+                            </p:outputPanel>
+                        </p:outputPanel>
+
+                        <p:panelGrid  columns="1" styleClass="ui-panelgrid-blank">
+                            <p:outputPanel>
+                                <p:outputLabel for="analyticName" value="Name the slice: " />
+                                <p:inputText id="analyticName" value="${AnalyticController.analyticName}" style="padding: 0;" />
+                            </p:outputPanel>
+                            <p:commandButton update="actionResultDialog active_analytic_box" oncomplete="PF('actionResultDialog').show();" actionListener="#{AnalyticController.doAnalytic()}" icon="fa fa-play-circle-o" value="Run slice" style="display: inline-block; font-size: 70%;" />
+
+                        </p:panelGrid>
+
+                        <p:outputPanel>   
+                            <p:outputLabel value="Running slices:" />
+                            <p:selectOneListbox id="active_analytic_box" value="#{AnalyticController.selectedActiveAnalytics}">        
+                                <p:ajax event="change" update="@this" />   
+                                <f:selectItems value="#{AnalyticController.listOfActiveAnalytics}" />
+                            </p:selectOneListbox>
+                            <p:commandButton update="active_analytic_box" actionListener="#{AnalyticController.clearAllAnalytics()}" value="Clear all analytics" style="display: inline-block; font-size: 70%;" />
+                        </p:outputPanel>
+                    </p:panelGrid>
+
+                    <p:dialog id="actionResultDialog" header="Analytics creating result" widgetVar="actionResultDialog" modal="true" appendTo="@(body)" height="100" showEffect="bounce" hideEffect="explode">
+                        <h:outputText value="#{AnalyticController.lastCreatingAction}" />
+                    </p:dialog>
+
+                    <p:dialog id="selectdAnalyticsDialog" header="Analytics select" widgetVar="selectedAnalyticsDialog" modal="true" appendTo="@(body)" height="100" showEffect="bounce" hideEffect="explode">
+                        <h:outputText value="#{AnalyticController.selectedActiveAnalytics}" />
+                    </p:dialog>
+
+                    <p:outputPanel autoUpdate="true">
+                        <p:outputPanel id="analyticForm" rendered="#{not empty AnalyticController.selectedActiveAnalytics}">  
+                            <p:poll interval="2"  update="tick" id="tickpoll" />
+                            <p:chart id="tick" type="line" model="#{AnalyticController.analyticsChart}" style="height:300px;width:100%"  /> 
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                </h:form>
+
+                <script>
+                    function ext() {
+                        this.cfg.seriesDefaults.rendererOptions.dataLabelFormatString = '%.2s%%';
+                        this.cfg.seriesDefaults.rendererOptions.dataLabelThreshold = 0;
+                        this.cfg.seriesDefaults = {
+                            lineWidth: 2.0,
+                            shadow: false,
+                            showMarker: false,
+                            rendererOptions: {
+                                smooth: true
+                            }
+                        };
+                    }
+                </script>
+
+            </ui:define>
+
+
+        </ui:composition>
+
+    </h:body>
+</html>

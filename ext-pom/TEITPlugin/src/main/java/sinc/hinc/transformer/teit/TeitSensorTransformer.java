@@ -14,12 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import sinc.hinc.abstraction.transformer.ControlPointTransformer;
 import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
+import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sun.net.NetworkServer;
 
 /**
  *
@@ -30,11 +31,11 @@ public class TeitSensorTransformer implements DataPointTransformer<Properties>, 
     @Override
     public DataPoint updateDataPoint(Properties prop) {
         DataPoint dp = new DataPoint();
-        dp.setName(prop.getProperty(""));
+        dp.setName(prop.getProperty("sensorID"));
         dp.setMeasurementUnit("unknown");
         dp.setDescription("Virtual sensor");
-        dp.setDatatype(prop.getProperty("unknown"));
-        dp.setResourceID(prop.getProperty("sensorID"));
+        dp.setDatatype(prop.getProperty("sensorType"));
+        dp.setResourceID(prop.getProperty("sensorID"));        
         String apiName = mapApiName(prop.getProperty("platform"));
         dp.setDataApi(apiName);
         Map<String, String> dataApiSettings = new HashMap<>();
@@ -43,6 +44,11 @@ public class TeitSensorTransformer implements DataPointTransformer<Properties>, 
             if (key.startsWith("platform." + apiName)) {
                 String shortKey = key.substring(key.lastIndexOf(".") + 1).trim();
                 dataApiSettings.put(shortKey, entry.getValue().toString().trim());
+                
+                // now update the AccessPoint (only MQTT at the moment, but more should be done)
+                if (apiName.equals("mqtt") && shortKey.equals("url")){
+                    dp.setConnectingTo(new AccessPoint(entry.getValue().toString().trim()));
+                }
             }
         }
         dp.setDataApiSettings(dataApiSettings);
@@ -87,6 +93,12 @@ public class TeitSensorTransformer implements DataPointTransformer<Properties>, 
                 line = line.trim() + " ";
                 ControlPoint cp = new ControlPoint(data.getProperty("sensorID"), line.substring(0, line.indexOf(" ")), line.substring(0, line.indexOf(" ")) + " the virtual sensor", ControlPoint.InvokeProtocol.LOCAL_EXECUTE, sensorScript + " " + line.trim());
                 System.out.println("  --> Controlpoint added: " + cp.getReference());
+                if (cp.getName().equals("connect-mqtt")){
+                    cp.setControlType(ControlPoint.ControlType.CONNECT_TO_NETWORK);
+                    cp.setCondition(NetworkService.NetworkServiceType.BROKER_MQTT.toString());
+                } else {
+                    cp.setControlType(ControlPoint.ControlType.SELF_CONFIGURE);
+                }
                 cps.add(cp);
             }
             return cps;

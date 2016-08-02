@@ -57,14 +57,14 @@ public class HincConfiguration {
             localMeta.setIsp(locationMeta.getIsp());
             localMeta.setLat(locationMeta.getLat());
             localMeta.setLon(locationMeta.getLon());
-            
+
         }
         return localMeta;
     }
-    
+
     // only HINC Global use this
-    public static HINCGlobalMeta getGlobalMeta(){
-        if (globalMeta == null){
+    public static HINCGlobalMeta getGlobalMeta() {
+        if (globalMeta == null) {
             globalMeta = new HINCGlobalMeta(getGroupName(), getBroker(), getBrokerType());
             IPLocationData locationMeta = getIpLocationMeta();
             globalMeta.setCity(locationMeta.getCity());
@@ -74,6 +74,10 @@ public class HincConfiguration {
             globalMeta.setLon(locationMeta.getLon());
         }
         return globalMeta;
+    }
+
+    public static String getDataForward() {
+        return getGenericParameter("DATA_FORWARD", "tcp://localhost:1883");
     }
 
     public static String getBroker() {
@@ -86,6 +90,11 @@ public class HincConfiguration {
 
     public static String getGroupName() {
         return getGenericParameter("GROUP", "DEFAULT");
+    }
+
+    public static boolean detectLocation() {
+        String isDetected = getGenericParameter("AUTO_LOCATION", "false");
+        return Boolean.parseBoolean(isDetected);
     }
 
     public static String getCURRENT_DIR() {
@@ -125,6 +134,9 @@ public class HincConfiguration {
     }
 
     private static IPLocationData getIpLocationMeta() {
+        if (!detectLocation()){
+            return new IPLocationData();
+        }
         try {
             URL url = new URL("http://ip-api.com/json");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -150,6 +162,6 @@ public class HincConfiguration {
             ex.printStackTrace();
             System.out.println("Cannot enhance the metadata, this is not an error.");
         }
-        return null;
+        return new IPLocationData(); // aviod error
     }
 }

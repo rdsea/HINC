@@ -14,6 +14,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -46,7 +47,7 @@ public class AbstractDAO<T> {
                 db.getMetadata().getSchema().createClass(className);
 
                 db.getMetadata().getSchema().getClass(className).createProperty("uuid", OType.STRING);
-                db.getMetadata().getSchema().getClass(className).createIndex("uuidIndex_"+className, OClass.INDEX_TYPE.NOTUNIQUE_HASH_INDEX, "uuid");
+                db.getMetadata().getSchema().getClass(className).createIndex("uuidIndex_" + className, OClass.INDEX_TYPE.NOTUNIQUE_HASH_INDEX, "uuid");
 
                 if (!db.getMetadata().getSchema().existsClass(className)) {
                     logger.debug("Cannot create class: " + className + ", an error of persistent could happen later!");
@@ -84,10 +85,10 @@ public class AbstractDAO<T> {
             if (uuid != null && existed != null) {
                 existed.merge(odoc, true, false);
 //                logger.debug("Merging and saving odoc object: " + existed.toJSON());
-                result = db.save(existed);                
+                result = db.save(existed);
             } else {
 //                logger.debug("Saving odoc object: " + odoc.toJSON());
-                result = db.save(odoc);                
+                result = db.save(odoc);
             }
 //            logger.debug("Save done: " + result.toJSON());
             return result;
@@ -96,35 +97,35 @@ public class AbstractDAO<T> {
         }
     }
 
-    public List<ODocument> saveAll(List<T> objects) {
+    public List<ODocument> saveAll(Collection<T> objects) {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
         List<ODocument> result = new ArrayList<>();
-        boolean checked = false; // only check 1 time
+
         try {
             String taskID = UUID.randomUUID().toString();
             Long startTime = (new Date()).getTime();
             logger.debug("Prepare to save " + objects.size() + " items -- " + taskID);
             for (T obj : objects) {
                 ODocument odoc = mapper.toODocument(obj);
+                logger.debug("Adaptor done, obj is: " + odoc.toJSON());
                 String uuid = odoc.field("uuid");
 //                logger.debug("Ok, now saving item with uuid = " + uuid);
                 ODocument existed = null;
 
                 // Search for exist record                
-                if (!checked && db.getMetadata().getSchema().existsClass(className)) {
-                    String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
-                    List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
+                String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
+                List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
 //                    logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
-                    if (!existed_items.isEmpty()) {
-//                        logger.debug("There is an existing item with id: " + uuid);
-                        existed = existed_items.get(0);
-                    } else {
-//                        logger.debug("There is NO existing item with id: " + uuid);
+                if (!existed_items.isEmpty()) {
+                    logger.debug("There is " + existed_items.size() + " existing item with id: " + uuid);
+                    for (ODocument eee : existed_items) {
+                        logger.debug("  --> Existed item: " + eee.toJSON());
+                        existed = eee;
                     }
-                    checked = true;
+//                        existed = existed_items.get(0);
                 } else {
-//                    logger.debug("Class: " + className + " does not existed, now create it...");                    
+                    logger.debug("There is NO existing item with id: " + uuid);
                 }
 
                 // save new or update it
@@ -132,18 +133,25 @@ public class AbstractDAO<T> {
                     existed.merge(odoc, true, false);
                     ODocument r = db.save(existed);
                     result.add(r);
-//                    logger.debug("Merging and saving done odoc object: " + existed.toJSON());
+                    logger.debug("Merging and saving done odoc object: " + r.toJSON());
                 } else {
                     ODocument r = db.save(odoc);
-                    
                     result.add(r);
-//                    logger.debug("Saving done for odoc object: " + odoc.toJSON());
+                    logger.debug("Saving done for odoc object: " + r.toJSON());
                 }
+                String query2 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
+                List<ODocument> existed_itemsRequery = db.query(new OSQLSynchQuery<ODocument>(query2));
+                logger.debug("  --> Save done, " + existed_itemsRequery.size() + " existed items");
+                for (ODocument oo : existed_itemsRequery) {
+                    System.out.println("  ----> Item is: " + oo.toJSON());
+                }
+                System.out.println("==================================");
+
             }
             Long endTime = (new Date()).getTime();
             logger.debug("Save done: " + result.size() + " ODocument(s) in " + (endTime - startTime) + " milisecs -- " + taskID);
             return result;
-        } catch(Exception e){
+        } catch (Exception e) {
             logger.error("Error when saving object to DB", e);
             return null;
         } finally {
@@ -203,10 +211,13 @@ public class AbstractDAO<T> {
         try {
             String query = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
             List<ODocument> result = db.query(new OSQLSynchQuery<ODocument>(query));
-            logger.debug("Query: " + query + ". Result: " + result.size());
+
+//            logger.debug("Query: " + query + ". Result: " + result.size());
             if (!result.isEmpty()) {
-                ODocument doc = result.get(0);
-//                logger.debug("Read odoc JSON:" + doc.toJSON());
+                ODocument doc = result.get(result.size() - 1);
+
+                logger.debug("Read odoc JSON, " + result.size() + " items:" + doc.toJSON());
+                logger.debug("END READING ========================");
                 return mapper.fromODocument(doc);
             }
         } finally {
@@ -229,7 +240,8 @@ public class AbstractDAO<T> {
             List<T> convertedResult = new ArrayList<>();
             if (!result.isEmpty()) {
                 for (ODocument doc : result) {
-//                    logger.debug("Read odoc JSON:" + doc.toJSON());
+                    logger.debug("Read with conditions:" + doc.toJSON());
+                    logger.debug("END READ CONDITION====================");
                     convertedResult.add(mapper.fromODocument(doc));
                 }
             }
@@ -262,7 +274,7 @@ public class AbstractDAO<T> {
         try {
             String query = "SELECT * FROM " + className;
             List<ODocument> oResult = db.query(new OSQLSynchQuery<ODocument>(query));
-            logger.debug("Query: " + query + ". Result: " + oResult.size());
+//            logger.debug("Query: " + query + ". Result: " + oResult.size());
             List<T> tResult = new ArrayList<>();
             for (ODocument o : oResult) {
                 tResult.add(mapper.fromODocument(o));

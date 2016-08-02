@@ -8,7 +8,7 @@ package sinc.hinc.global.client.programming;
 import sinc.hinc.model.CloudServices.CloudService;
 
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
-import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 
 import java.util.Arrays;
 import sinc.hinc.model.Extensible.ExtensibleModel;
@@ -40,18 +40,18 @@ public class SliceExamples {
 
         System.out.println("================000===============");
 
-
-        NetworkFunctionService nfsTemplate = new NetworkFunctionService();
-        nfsTemplate.getQuality().setBandwidth("16 GB/s");
-        AccessPoint ap = new AccessPoint("10.99.0.5");
-        nfsTemplate.setAccessPoints(Arrays.asList(ap));
-
-
-        CloudService cloudTemplate = new CloudService("storage");
-        cloudTemplate.hasAttribute("capacity", "1 TB");
-
-        System.out.println(nfsTemplate.toJson());
-
-        System.out.println(cloudTemplate.toJson());
+//
+//        NetworkService nfsTemplate = new NetworkService();
+//        nfsTemplate.getQuality().setBandwidth("16 GB/s");
+//        AccessPoint ap = new AccessPoint("10.99.0.5");
+//        nfsTemplate.setAccessPoints(Arrays.asList(ap));
+//
+//
+//        CloudService cloudTemplate = new CloudService("storage");
+//        cloudTemplate.hasAttribute("capacity", "1 TB");
+//
+//        System.out.println(nfsTemplate.toJson());
+//
+//        System.out.println(cloudTemplate.toJson());
     }
 }

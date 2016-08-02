@@ -18,6 +18,7 @@ import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
 import sinc.hinc.communication.processing.HINCMessageHander;
+import sinc.hinc.local.Main;
 
 /**
  *
@@ -29,8 +30,17 @@ public class HandleQueryGateway implements HINCMessageHander {
     public HincMessage handleMessage(HincMessage msg) {
         System.out.println("Server get request for SDG information: " + msg.toJson());
         Long timeStamp2 = (new Date()).getTime();
+        
+        if (msg.getPayload().contains("rescan")){
+            try {
+                Main.scanOnce();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
         Long timeStamp3 = (new Date()).getTime();
-        SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
+        SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();        
         List<SoftwareDefinedGateway> gws = gwDAO.readAll();
         ObjectMapper mapper = new ObjectMapper();
 

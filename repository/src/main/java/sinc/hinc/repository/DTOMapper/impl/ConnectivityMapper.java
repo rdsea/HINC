@@ -20,10 +20,10 @@ public class ConnectivityMapper implements DTOMapperInterface<CloudConnectivity>
     public CloudConnectivity fromODocument(ODocument doc) {
         CapabilityMapper capa = new CapabilityMapper(CloudConnectivity.class);
         CloudConnectivity con = (CloudConnectivity) capa.fromODocument(doc);
-        con.setDefaultGateway(String.valueOf(doc.field("defaultgateway")));
-        con.setIP(String.valueOf(doc.field("ip")));
-        con.setMAC(String.valueOf(doc.field("mac")));
-        con.setMode(String.valueOf(doc.field("mode")));
+//        con.setDefaultGateway(String.valueOf(doc.field("defaultgateway")));
+//        con.setIP(String.valueOf(doc.field("ip")));
+//        con.setMAC(String.valueOf(doc.field("mac")));
+//        con.setMode(String.valueOf(doc.field("mode")));
         return con;
     }
 
@@ -32,10 +32,10 @@ public class ConnectivityMapper implements DTOMapperInterface<CloudConnectivity>
         CapabilityMapper capa = new CapabilityMapper(CloudConnectivity.class);
         ODocument doc = capa.toODocument(object);
         doc.setClassName(CloudConnectivity.class.getSimpleName());
-        doc.field("defaultgatewayip", object.getDefaultGateway());
-        doc.field("ip", object.getIP());
-        doc.field("mac", object.getMAC());
-        doc.field("mode", object.getMode());
+//        doc.field("defaultgatewayip", object.getDefaultGateway());
+//        doc.field("ip", object.getIP());
+//        doc.field("mac", object.getMAC());
+//        doc.field("mode", object.getMode());
 
         return doc;
     }

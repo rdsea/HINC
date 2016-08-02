@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.global.API;
+package sinc.hinc.global.TESTRUN;
 
 
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
+import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 
 /**

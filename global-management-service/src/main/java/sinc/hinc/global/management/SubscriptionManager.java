@@ -31,7 +31,7 @@ public class SubscriptionManager {
     static Logger logger = LoggerFactory.getLogger("DELISE");
     MessageClientFactory FACTORY;
     /**
-     * TODO: use the default topic to distinguish different client and managmeent scope E.g. each stakeholder will hold an ID, which regarding to the topic
+     * TODO: use the default topic to distinguish different client and management scope E.g. each stakeholder will hold an ID, which regarding to the topic
      */
     String prefixTopic = "";
     String groupName;

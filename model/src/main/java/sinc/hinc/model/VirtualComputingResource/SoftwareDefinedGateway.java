@@ -2,7 +2,6 @@ package sinc.hinc.model.VirtualComputingResource;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -12,6 +11,9 @@ import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import sinc.hinc.model.Extensible.ExtensibleModel;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
@@ -44,7 +46,7 @@ public class SoftwareDefinedGateway {
      * The List of datapoint, controlpoint, connectivity and execution
      */
 //    private List<Capability> capabilities;
-    private List<DataPoint> dataPoints;
+    private Set<DataPoint> dataPoints;
     private List<ControlPoint> controlPoints;
     private List<CloudConnectivity> connectivity;
     private List<ExecutionEnvironment> executionEnvironment;
@@ -83,9 +85,9 @@ public class SoftwareDefinedGateway {
         this.name = name;
     }
 
-    public List<DataPoint> getDataPoints() {
+    public Set<DataPoint> getDataPoints() {
         if (dataPoints == null) {
-            dataPoints = new ArrayList<>();
+            dataPoints = new HashSet<>();
         }
         return dataPoints;
     }
@@ -111,7 +113,7 @@ public class SoftwareDefinedGateway {
         return executionEnvironment;
     }
 
-    public void setDataPoints(List<DataPoint> dataPoints) {
+    public void setDataPoints(Set<DataPoint> dataPoints) {
         this.dataPoints = dataPoints;
     }
 
@@ -203,6 +205,31 @@ public class SoftwareDefinedGateway {
             }
         }
         return null;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 71 * hash + Objects.hashCode(this.uuid);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SoftwareDefinedGateway other = (SoftwareDefinedGateway) obj;
+        if (!Objects.equals(this.uuid, other.uuid)) {
+            return false;
+        }
+        return true;
     }
 
 }

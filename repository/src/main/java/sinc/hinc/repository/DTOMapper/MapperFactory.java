@@ -11,12 +11,14 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
+import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DTOMapper.impl.ConnectivityMapper;
 import sinc.hinc.repository.DTOMapper.impl.ControlPointMapper;
 import sinc.hinc.repository.DTOMapper.impl.DataPointMapper;
 import sinc.hinc.repository.DTOMapper.impl.ExecutionEnvironmentMapper;
 import sinc.hinc.repository.DTOMapper.impl.HINCMetaMapper;
+import sinc.hinc.repository.DTOMapper.impl.NetworkServiceMapper;
 import sinc.hinc.repository.DTOMapper.impl.SoftwareDefinedGatewayMapper;
 import sinc.hinc.repository.DTOMapper.impl.VNFMapper;
 
@@ -56,6 +58,10 @@ public class MapperFactory {
 
         if (clazz.equals(HincLocalMeta.class)) {
             return new HINCMetaMapper();
+        }
+        
+        if (clazz.equals(NetworkService.class)){
+            return new NetworkServiceMapper();
         }
 
         System.out.println("Do not found the mapper to persist DB for: " + name);

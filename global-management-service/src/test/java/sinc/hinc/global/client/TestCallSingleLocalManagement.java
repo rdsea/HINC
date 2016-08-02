@@ -12,7 +12,7 @@ import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author hungld
@@ -25,7 +25,7 @@ public class TestCallSingleLocalManagement {
         HINCManagementAPI mngAPI = new HINCManagementImpl();
         mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
 
-        List<SoftwareDefinedGateway> list = api.querySoftwareDefinedGateways(5000, "");
+        Set<SoftwareDefinedGateway> list = api.querySoftwareDefinedGateways(5000, "", "false");
         System.out.println("list of gateway has: " + list.size() + " items");
         for (SoftwareDefinedGateway gw : list) {
             System.out.println(gw.toJson());

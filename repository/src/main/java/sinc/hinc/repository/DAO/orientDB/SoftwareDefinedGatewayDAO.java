@@ -4,6 +4,7 @@ package sinc.hinc.repository.DAO.orientDB;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
@@ -62,7 +63,7 @@ public class SoftwareDefinedGatewayDAO extends AbstractDAO<SoftwareDefinedGatewa
     }
 
     @Override
-    public List<ODocument> saveAll(List<SoftwareDefinedGateway> objects) {
+    public List<ODocument> saveAll(Collection<SoftwareDefinedGateway> objects) {
         if (objects == null) {
             return null;
         }

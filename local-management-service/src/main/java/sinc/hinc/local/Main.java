@@ -47,12 +47,57 @@ public class Main {
     static int globalInterval;
     //Any other meta data of the environment where collector is deployed e.g. machine name, uname -a, cpu, max ram.     
     Map<String, String> meta;
-    
+
     {
         globalInterval = Integer.parseInt(PropertiesManager.getParameter("interval", DEFAULT_SOURCE_SETTINGS));
     }
 
+    public static void scanOnce() throws InterruptedException {
+        PluginRegistry pluginReg = new PluginRegistry();
+        SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
+        gw.setUuid(HincConfiguration.getMyUUID());
+        gw.setName(HincUtils.getHostName());
+        logger.debug("We have {} adaptor... now will check each one", pluginReg.getAdaptors().size());
+        for (ProviderAdaptor adaptor : pluginReg.getAdaptors()) {
+            String aName = adaptor.getName();
+            logger.info("Querying provider: " + aName);
+            DataPointTransformer dpt = pluginReg.getDatapointTransformerByName(aName);
+            ControlPointTransformer cpt = pluginReg.getControlpointTransformerByName(aName);
+            ExecutionEnvironmentTransformer eet = pluginReg.getExecutionEnvTransformerByName(aName);
+            ConnectivityTransformater cct = pluginReg.getConnectivityTransformerByName(aName);
 
+            Collection<Object> domains = adaptor.getItems(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
+            logger.debug("We will check {} items.." + domains.size());
+            for (Object domain : domains) {
+                logger.debug("Checking item: " + domain.toString());
+                if (dpt != null) {
+                    logger.debug("Datapoint translation is available: " + dpt.getName());
+                    DataPoint dp = dpt.updateDataPoint(domain);
+                    logger.debug("Got a datapoint: " + dp.getName() + ", data api: " + dp.getDataApi());
+                    gw.hasCapability(dpt.updateDataPoint(domain));
+                } else {
+                    logger.debug("Datapoint translation is NOT available !");
+                }
+                if (cpt != null) {
+                    logger.debug("Controlpoint translation is available: " + cpt.getName());
+                    gw.hasCapabilities(cpt.updateControlPoint(domain));
+                } else {
+                    logger.debug("Controlpoint translation is NOT available !");
+                }
+                if (eet != null) {
+                    gw.hasCapability(eet.updateExecutionEnvironment(domain));
+                }
+                if (cct != null) {
+                    gw.hasCapability(cct.updateCloudConnectivity(domain));
+                }
+            }
+            Thread.sleep(1000); // a short break between sources
+        }
+
+        System.out.println("Transform GW done, number of datapoint: " + gw.getDataPoints().size() + ", controlpoint:" + gw.getControlPoints().size());
+        SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
+        gwDAO.save(gw);
+    }
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting HINC Local Management Service...");
@@ -68,17 +113,16 @@ public class Main {
          * ************************
          */
         String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
-        String privateTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
+        String privaTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
 
         LISTENER.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
         LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
-        LISTENER.addListener(privateTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
+        LISTENER.addListener(privaTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
         LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
-        LISTENER.addListener(privateTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
-        
+        LISTENER.addListener(privaTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
+
         LISTENER.addListener(groupTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
-        LISTENER.addListener(privateTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
-        
+        LISTENER.addListener(privaTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
 
         LISTENER.listen();
 
@@ -93,54 +137,8 @@ public class Main {
         logger.info("Local management service startup in " + ((double) time3 - (double) time2) / 1000 + " seconds, uuid: " + HincConfiguration.getMyUUID());
         logger.info("Starting to interact with providers ...");
 
-        PluginRegistry pluginReg = new PluginRegistry();
-
-        SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
-        gw.setUuid(HincConfiguration.getMyUUID());
-        gw.setName(HincUtils.getHostName());
-        
-        
         while (true) {
-            logger.debug("We have {} adaptor... now will check each one", pluginReg.getAdaptors().size());
-            for (ProviderAdaptor adaptor : pluginReg.getAdaptors()) {
-                String aName = adaptor.getName();
-                logger.info("Querying provider: " + aName);
-                DataPointTransformer dpt = pluginReg.getDatapointTransformerByName(aName);
-                ControlPointTransformer cpt = pluginReg.getControlpointTransformerByName(aName);
-                ExecutionEnvironmentTransformer eet = pluginReg.getExecutionEnvTransformerByName(aName);
-                ConnectivityTransformater cct = pluginReg.getConnectivityTransformerByName(aName);
-
-                Collection<Object> domains = adaptor.getItems(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
-                logger.debug("We will check {} items.." + domains.size());
-                for (Object domain : domains) {
-                    logger.debug("Checking item: " + domain.toString());
-                    if (dpt != null) {
-                        logger.debug("Datapoint translation is available: " + dpt.getName());
-                        DataPoint dp = dpt.updateDataPoint(domain);
-                        logger.debug("Got a datapoint: " + dp.getName() + ", data api: " + dp.getDataApi());
-                        gw.hasCapability(dpt.updateDataPoint(domain));
-                    } else {
-                        logger.debug("Datapoint translation is NOT available !");
-                    }
-                    if (cpt != null) {
-                        logger.debug("Controlpoint translation is available: " + cpt.getName());
-                        gw.hasCapabilities(cpt.updateControlPoint(domain));
-                    } else {
-                        logger.debug("Controlpoint translation is NOT available !");
-                    }
-                    if (eet != null) {
-                        gw.hasCapability(eet.updateExecutionEnvironment(domain));
-                    }
-                    if (cct != null) {
-                        gw.hasCapability(cct.updateCloudConnectivity(domain));
-                    }
-                }
-                Thread.sleep(1000); // a short break between sources
-            }
-
-            System.out.println("Transform GW done, number of datapoint: " + gw.getDataPoints().size() + ", controlpoint:" + gw.getControlPoints().size());
-            SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
-            gwDAO.save(gw);
+            scanOnce();
 
             // Process interval 
             int interval = globalInterval;

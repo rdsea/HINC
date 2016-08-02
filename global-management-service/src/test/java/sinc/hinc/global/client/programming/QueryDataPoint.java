@@ -9,13 +9,11 @@ import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
 import sinc.hinc.global.API.HINCManagementImpl;
 import sinc.hinc.global.API.ResourcesManagementAPIImpl;
-import sinc.hinc.global.management.DataPointObservator;
-import sinc.hinc.global.management.QueryManager;
+//import sinc.hinc.global.management.QueryManager;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 import java.util.List;
 import sinc.hinc.model.Extensible.ExtensibleModel;
 import sinc.hinc.model.Extensible.misc.SensorProps;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 
 /**
@@ -33,22 +31,22 @@ public class QueryDataPoint {
         HINCManagementAPI mngAPI = new HINCManagementImpl();
         mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
         api.queryDataPoint(3000, null);
-        List<DataPoint> datapoints = QueryManager.QueryDataPoints(template);
+//        List<DataPoint> datapoints = QueryManager.QueryDataPoints(template);
 
         // some obmitted code
-        for (DataPoint dp : datapoints) {
-            DataPointObservator obs = new DataPointObservator(dp) {
-                @Override
-                public void onChange(DataPoint newVal) {
-                    SensorProps props = (SensorProps) newVal.getExtraByType(SensorProps.class);
-                    if (props.getRate() > 5) {
-                        props.setRate(5);
-                    }
-                    ControlPoint control = newVal.getControlByName("changeRate");
-//                    api.sendControl(control);
-                }
-            };
-        }
+//        for (DataPoint dp : datapoints) {
+//            DataPointObservator obs = new DataPointObservator(dp) {
+//                @Override
+//                public void onChange(DataPoint newVal) {
+//                    SensorProps props = (SensorProps) newVal.getExtraByType(SensorProps.class);
+//                    if (props.getRate() > 5) {
+//                        props.setRate(5);
+//                    }
+////                    ControlPoint control = newVal.getControlByName("changeRate");
+////                    api.sendControl(control);
+//                }
+//            };
+//        }
 
     }
 }

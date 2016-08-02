@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      >
+
+    <h:head>
+        <h:outputStylesheet name="hinc.css" library="css" />
+        <title>HINC Global Management Service</title>
+    </h:head>
+
+    <h:body>
+        <p:layout fullPage="true">
+            <p:layoutUnit position="north" style="text-align:center; border: none">
+                <h2><a class='nostyle' href="index.xhtml">HINC Global Management Service</a></h2>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="west" >
+                <h:form>  
+                    <p:menu style="background: none; border: none;">
+                        <p:menuitem style="background: none; border: 1px solid #1b93df;" value="Gateways" url="gateways.xhtml" />
+                        <p:menuitem style="background: none; border: 1px solid #1b93df;" value="Network functions" url="networks.xhtml"   />
+                        <p:menuitem style="background: none; border: 1px solid #1b93df;" value="Slice" url="analytics.xhtml"   />
+                        <p:menuitem style="background: none; border: 1px solid #1b93df;" value="API Explorer" url="api.html"   />
+                    </p:menu>
+                </h:form>
+                <hr />
+                <h:form style="text-align: center;  width: 100%"> 
+                    <p:commandButton widgetVar="rescanButton" onclick="start()"  value="Discover resources"   actionListener="#{GuiBeans.queryEveryThing()}" styleClass="ui-priority-primary" style="display: inline-block; width:inherit;font-size: 70%;" /> 
+                </h:form>
+                <p:progressBar widgetVar="pbClient" labelTemplate="{value}%"  style="width: 100%; font-size: 70%;" />
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center">
+                <ui:insert name="content">Put default content here, if any.</ui:insert>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="south" style="text-align:center;">
+                <h:outputText value="Lisense Apache 2.0. @Copyright 2016." />
+            </p:layoutUnit>
+
+            <p:growl id="growl" showDetail="true" />  
+
+        </p:layout>
+
+    </h:body>
+    <script>
+
+        function start() {
+            PF('rescanButton').disable();
+            PF('pbClient').setValue(0);
+            //           
+            window['progress'] = setInterval(function () {
+                var pbClient = PF('pbClient'),
+                        newValue = pbClient.getValue() + 5;
+                pbClient.setValue(newValue);
+                if (newValue === 100) {
+                    clearInterval(window['progress']);
+                    PF('rescanButton').enable();
+                    PF('pbClient').setValue(0);
+
+                    //                    PF('pbClientPanel').visible = 'false';
+                }
+            }, 700);
+
+        }
+    </script>
+</html>

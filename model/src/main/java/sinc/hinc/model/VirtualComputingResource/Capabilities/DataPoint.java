@@ -5,11 +5,11 @@
  */
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import sinc.hinc.model.VirtualComputingResource.Capability;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 
 /**
  *
@@ -33,8 +33,7 @@ public class DataPoint extends Capability {
      * getDataStream(String buffer); - setData(String bufferName, Object
      * newData); - changeDataRate(DataPoint datapoint, Long rate);
      */
-    String managementClass;
-
+//    String managementClass;
     /**
      * Any model to represent how the data can be read. This can be domain
      * model, MQTT/AMPQ persistent, streamming to read/write data. See more in
@@ -44,9 +43,9 @@ public class DataPoint extends Capability {
     Map<String, String> dataApiSettings;
 
     /**
-     * List of control point for this data point
+     * The data point is forward to somewhere.
      */
-    List<ControlPoint> controlpoints;
+    AccessPoint connectingTo;
 
     public DataPoint() {
 
@@ -103,40 +102,43 @@ public class DataPoint extends Capability {
         return dataApiSettings;
     }
 
+    @JsonIgnore
+    public String getDataAPISettingsPlain() {
+        return dataApiSettings.toString();
+    }
+
     public void setDataApiSettings(Map<String, String> dataApiSettings) {
         this.dataApiSettings = dataApiSettings;
     }
 
-   
-
-    public String getManagementClass() {
-        return managementClass;
+//    public List<ControlPoint> getControlpoints() {
+//        if (controlpoints == null) {
+//            controlpoints = new ArrayList<>();
+//        }
+//        return controlpoints;
+//    }
+//
+//    public void setControlpoints(List<ControlPoint> controlpoints) {
+//        this.controlpoints = controlpoints;
+//    }
+//
+//    public ControlPoint getControlByName(String name) {
+//        if (this.controlpoints != null) {
+//            for (ControlPoint cp : this.controlpoints) {
+//                if (cp.getName().equals(name)) {
+//                    return cp;
+//                }
+//            }
+//        }
+//        return null;
+//    }
+    public AccessPoint getConnectingTo() {
+        return connectingTo;
     }
 
-    public void setManagementClass(String managementClass) {
-        this.managementClass = managementClass;
+    public void setConnectingTo(AccessPoint connectingTo) {
+        this.connectingTo = connectingTo;
     }
-
-    public List<ControlPoint> getControlpoints() {
-        if (controlpoints == null) {
-            controlpoints = new ArrayList<>();
-        }
-        return controlpoints;
-    }
-
-    public void setControlpoints(List<ControlPoint> controlpoints) {
-        this.controlpoints = controlpoints;
-    }
-
-    public ControlPoint getControlByName(String name) {
-        if (this.controlpoints != null) {
-            for (ControlPoint cp : this.controlpoints) {
-                if (cp.getName().equals(name)) {
-                    return cp;
-                }
-            }
-        }
-        return null;
-    }
-
+    
+    
 }

@@ -5,28 +5,39 @@
  */
 package sinc.hinc.repository.DTOMapper.impl;
 
-import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
+import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 
 /**
  *
  * @author hungld
  */
-public class VNFMapper implements DTOMapperInterface<VNF>{
+public class NetworkServiceMapper implements DTOMapperInterface<NetworkService> {
 
     @Override
-    public VNF fromODocument(ODocument doc) {
-        VNF dp = new VNF();
-        dp.setName(String.valueOf(doc.field("name")));        
-        return dp;
+    public NetworkService fromODocument(ODocument doc) {
+        NetworkService ns = new NetworkService();    
+        ns.setName(String.valueOf(doc.field("name")));
+        ns.setType(NetworkService.NetworkServiceType.valueOf(String.valueOf(doc.field("type"))));
+        ns.setAccessPoint(new AccessPoint(String.valueOf(doc.field("accesspointendpoint"))));
+        ns.setUuid(String.valueOf(doc.field("uuid")));
+        System.out.println("Return a network object: " + ns.toJson());
+        System.out.println("  --> Read the doc.field(\"accesspointendpoint\"): " + doc.field("accesspointendpoint"));
+        return ns;
     }
 
     @Override
-    public ODocument toODocument(VNF object) {
-        ODocument doc = new ODocument(VNF.class.getSimpleName());
-        doc.field("name", object.getName());        
+    public ODocument toODocument(NetworkService object) {
+        System.out.println("Persisting a network service: " + object.toJson());
+        System.out.println("   --> accesspointendpoint = " + object.getAccessPoint().getEndpoint());
+        ODocument doc = new ODocument(NetworkService.class.getSimpleName());
+        doc.field("name", object.getName());
+        doc.field("type", object.getType().toString());
+        doc.field("accesspointendpoint", object.getAccessPoint().getEndpoint());
+        doc.field("uuid", object.getUuid());
         return doc;
     }
-    
+
 }

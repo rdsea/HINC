@@ -23,7 +23,7 @@ public class test {
         VNF vnf = discovery.toVNF(weaveRouter);
 
         System.out.println(vnf.getName());
-        System.out.println(vnf.getNetworkInterface().get(0).getNetworkAddress());
+//        System.out.println(vnf.getNetworkInterface().get(0).getNetworkAddress());
         System.out.println(vnf.getRoutingProtocol());
     }
 }

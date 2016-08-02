@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The class represents for control point management
@@ -28,7 +29,8 @@ public class Capability {
     protected String name;
 
     /**
-     * The ID of the resource, e.g. ID of sensor/actuator which was converted to the capability
+     * The ID of the resource, e.g. ID of sensor/actuator which was converted to
+     * the capability
      */
     protected String resourceID;
 
@@ -62,7 +64,7 @@ public class Capability {
         this.resourceID = resourceID;
         this.name = name;
         this.description = description;
-        this.gatewayID = "unknown";        
+        this.gatewayID = "unknown";
     }
 
     public String getName() {
@@ -107,7 +109,7 @@ public class Capability {
     }
 
     public List<ExtensibleModel> getExtra() {
-        if (this.extra == null){
+        if (this.extra == null) {
             this.extra = new ArrayList<>();
         }
         return extra;
@@ -116,14 +118,39 @@ public class Capability {
     public void setExtra(List<ExtensibleModel> extra) {
         this.extra = extra;
     }
-    
-    public ExtensibleModel getExtraByType(Class clazz){
-        for(ExtensibleModel ext: this.getExtra()){
-            if (ext.getClazz().equals(clazz)){
+
+    public ExtensibleModel getExtraByType(Class clazz) {
+        for (ExtensibleModel ext : this.getExtra()) {
+            if (ext.getClazz().equals(clazz)) {
                 return ext;
             }
         }
         return null;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + Objects.hashCode(this.uuid);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Capability other = (Capability) obj;
+        if (!Objects.equals(this.uuid, other.uuid)) {
+            return false;
+        }
+        return true;
     }
 
 }

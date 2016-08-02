@@ -11,7 +11,7 @@ import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.factory.MessageClientFactory;
 import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 import sinc.hinc.communication.processing.HINCMessageHander;
 
@@ -25,8 +25,8 @@ public class HandleQueryVNF implements HINCMessageHander {
     public HincMessage handleMessage(HincMessage msg) {
         System.out.println("Server get request for SDG information");
         try {
-            AbstractDAO<NetworkFunctionService> vnfDAO = new AbstractDAO<>(NetworkFunctionService.class);
-            List<NetworkFunctionService> listOfNFS = vnfDAO.readAll();
+            AbstractDAO<NetworkService> vnfDAO = new AbstractDAO<>(NetworkService.class);
+            List<NetworkService> listOfNFS = vnfDAO.readAll();
             ObjectMapper mapper = new ObjectMapper();
             String replyPayload = mapper.writeValueAsString(listOfNFS);
             return new HincMessage(HINCMessageType.UPDATE_INFORMATION.toString(), HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -34,7 +35,6 @@ public class HincLocalMeta {
     Map<String, Map<String, String>> handlers;
     // list of adaptors for provider
     Map<String, String> adaptor;
-    
 
     public HincLocalMeta() {
 
@@ -180,6 +180,43 @@ public class HincLocalMeta {
 
     public Map<String, Map<String, String>> getHandlers() {
         return handlers;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.uuid);
+        hash = 89 * hash + Objects.hashCode(this.ip);
+        hash = 89 * hash + Objects.hashCode(this.groupName);
+        hash = 89 * hash + Objects.hashCode(this.broker);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final HincLocalMeta other = (HincLocalMeta) obj;
+        if (!Objects.equals(this.uuid, other.uuid)) {
+            return false;
+        }
+        if (!Objects.equals(this.ip, other.ip)) {
+            return false;
+        }
+        if (!Objects.equals(this.groupName, other.groupName)) {
+            return false;
+        }
+        if (!Objects.equals(this.broker, other.broker)) {
+            return false;
+        }
+        return true;
     }
 
 }

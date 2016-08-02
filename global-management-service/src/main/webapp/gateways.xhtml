@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <link rel="stylesheet" href="css/w3.css"/>
+    <h:head>
+
+    </h:head>
+    <h:body>
+        <ui:composition template="layout/layout.xhtml">
+
+            <ui:define name="content">
+                <h:form id="form">
+
+                    <p:panelGrid columns="2"  layout="grid" styleClass="ui-panelgrid">
+                        <p:outputPanel>                            
+                            <p:tree id="buildingLayoutTree" value="#{GuiBeans.deviceLayoutTree}" var="node" selectionMode="single" selection="#{GuiBeans.selectedNode}">
+                                <p:ajax event="select" update=":form:detailspanel" listener="#{GuiBeans.onNodeSelect}" />
+
+                                <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+                                    <h:outputText value="#{node}"/>
+                                </p:treeNode>
+
+                                <p:treeNode type="service2" icon="fa fa-cogs">
+                                    <h:outputText value="#{node}" />
+                                </p:treeNode>
+                                <p:treeNode type="device2" icon="fa fa-hdd-o">
+                                    <h:outputText value="Gateway-#{node}" />
+                                </p:treeNode>
+                                <p:treeNode type="datapoint2" icon="fa fa-bar-chart">
+                                    <h:outputText value="#{node}" />
+                                </p:treeNode>
+                            </p:tree>
+                        </p:outputPanel>
+
+                        <!-- RIGHT PANEL - DETAILS OF THE DATA POINT -->
+                        <p:outputPanel id="detailspanel" autoUpdate="true" rendered="true">
+                            <p:panelGrid  columns="1" styleClass="ui-panelgrid-blank" rendered="#{not empty GuiBeans.detailsPage}" >
+                                <!-- PROPERTIES TABLE -->
+                                <h4>Properties</h4>
+                                <ui:include src="#{GuiBeans.detailsPage}" >
+                                    <ui:param name="resourceid" value="#{GuiBeans.selectedNode}"/>
+                                </ui:include>
+
+                                <!-- LIST OF CONTROLS -->
+                                <h4>Control</h4>
+                                <p:panelGrid  columns="3" styleClass="ui-panelgrid-blank" >
+                                    <p:outputPanel>
+                                        <p:inputText value="#{GuiBeans.resourceID}" style="display: none"/>
+                                        <p:outputLabel  value="Action: " />
+                                        <p:selectOneMenu  value="#{GuiBeans.selectedControlAction}" style="width:150px">
+                                            <p:ajax event="change" update="@this" />                
+                                            <f:selectItems value="#{GuiBeans.controlActionSelectItemList}" var="item" itemValue="#{item}"/>
+                                        </p:selectOneMenu>
+                                    </p:outputPanel>
+                                    <p:outputPanel>
+                                        <p:outputLabel for="parameters" value="Parameters: " />
+                                        <p:inputText id="parameters" value="#{GuiBeans.controlParameter}" />
+                                    </p:outputPanel>
+                                    <p:outputPanel style="width: 100%; display: inline-block">
+                                        <p:commandButton update="invoke_action_result_panel"  oncomplete="PF('actionResultDialog').show();" actionListener="#{GuiBeans.invokeControlButton}" icon="fa fa-play-circle-o" value="Invoke action" style="width: 100%; display: inline-block; font-size: 70%;" />
+                                    </p:outputPanel>
+                                </p:panelGrid>
+
+                                <!-- DATA VIEW -->
+                                <h4>DataView</h4>
+
+                            </p:panelGrid>
+
+                            <!-- A SMALL INFO WHEN NO RESOURCE IS SELECTED -->
+                            <p:outputPanel rendered="#{empty GuiBeans.selectedNode}">
+                                <p:outputLabel value="No resource selected" />
+                            </p:outputPanel>
+
+                        </p:outputPanel>
+
+
+                    </p:panelGrid>
+
+                    <p:dialog  header="Control action result" widgetVar="actionResultDialog" modal="true" appendTo="@(body)" height="100" showEffect="bounce" hideEffect="explode">
+                        <p:outputPanel id="invoke_action_result_panel">
+                            <h:outputText value="#{GuiBeans.lastControlResult}" />
+                        </p:outputPanel>
+                    </p:dialog>
+                </h:form>
+
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

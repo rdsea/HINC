@@ -5,15 +5,18 @@
  */
 package sinc.hinc.transformer.openhab;
 
+import java.util.List;
+import sinc.hinc.abstraction.transformer.ControlPointTransformer;
 import sinc.hinc.transformer.openhab.model.Item;
 import sinc.hinc.abstraction.transformer.DataPointTransformer;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 
 /**
  *
  * @author hungld
  */
-public class TranformOpenHABInfo implements DataPointTransformer<Item> {
+public class TranformOpenHABInfo implements DataPointTransformer<Item>, ControlPointTransformer<Item> {
 
     @Override
     public DataPoint updateDataPoint(Item data) {
@@ -26,6 +29,11 @@ public class TranformOpenHABInfo implements DataPointTransformer<Item> {
     @Override
     public String getName() {
         return "openhab";
+    }
+
+    @Override
+    public List<ControlPoint> updateControlPoint(Item data) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
