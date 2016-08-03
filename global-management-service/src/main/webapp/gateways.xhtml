@@ -39,36 +39,42 @@
                         </p:outputPanel>
 
                         <!-- RIGHT PANEL - DETAILS OF THE DATA POINT -->
-                        <p:outputPanel id="detailspanel" autoUpdate="true" rendered="true">
+                        <p:outputPanel id="detailspanel"  rendered="true">
                             <p:panelGrid  columns="1" styleClass="ui-panelgrid-blank" rendered="#{not empty GuiBeans.detailsPage}" >
                                 <!-- PROPERTIES TABLE -->
-                                <h4>Properties</h4>
+                                <p:outputLabel value="Properties" style="font-weight:bold" />
                                 <ui:include src="#{GuiBeans.detailsPage}" >
                                     <ui:param name="resourceid" value="#{GuiBeans.selectedNode}"/>
                                 </ui:include>
 
-                                <!-- LIST OF CONTROLS -->
-                                <h4>Control</h4>
-                                <p:panelGrid  columns="3" styleClass="ui-panelgrid-blank" >
-                                    <p:outputPanel>
-                                        <p:inputText value="#{GuiBeans.resourceID}" style="display: none"/>
-                                        <p:outputLabel  value="Action: " />
-                                        <p:selectOneMenu  value="#{GuiBeans.selectedControlAction}" style="width:150px">
-                                            <p:ajax event="change" update="@this" />                
-                                            <f:selectItems value="#{GuiBeans.controlActionSelectItemList}" var="item" itemValue="#{item}"/>
-                                        </p:selectOneMenu>
-                                    </p:outputPanel>
-                                    <p:outputPanel>
-                                        <p:outputLabel for="parameters" value="Parameters: " />
-                                        <p:inputText id="parameters" value="#{GuiBeans.controlParameter}" />
-                                    </p:outputPanel>
-                                    <p:outputPanel style="width: 100%; display: inline-block">
-                                        <p:commandButton update="invoke_action_result_panel"  oncomplete="PF('actionResultDialog').show();" actionListener="#{GuiBeans.invokeControlButton}" icon="fa fa-play-circle-o" value="Invoke action" style="width: 100%; display: inline-block; font-size: 70%;" />
-                                    </p:outputPanel>
-                                </p:panelGrid>
+                                <p:outputPanel rendered="#{GuiBeans.selectedNode.type eq 'datapoint2'}" >
+                                    <!-- LIST OF CONTROLS -->                               
+                                    <p:outputLabel value="Control" style="font-weight:bold" />
+                                    <p:panelGrid  columns="3" styleClass="ui-panelgrid-blank" >
+                                        <p:outputPanel>
+                                            <p:inputText value="#{GuiBeans.resourceID}" style="display: none"/>
+                                            <p:outputLabel  value="Action: " />
+                                            <p:selectOneMenu  value="#{GuiBeans.selectedControlAction}" style="width:150px">
+                                                <!--<p:ajax event="change" update="@this" />-->
+                                                <f:selectItems value="#{GuiBeans.controlActionSelectItemList}" var="item" itemValue="#{item}"/>
+                                            </p:selectOneMenu>
+                                        </p:outputPanel>
+                                        <p:outputPanel>
+                                            <p:outputLabel for="parameters" value="Parameters: " />
+                                            <p:inputText id="parameters" value="#{GuiBeans.controlParameter}" />
+                                        </p:outputPanel>
+                                        <p:outputPanel style="width: 100%; display: inline-block">
+                                            <p:commandButton update="invoke_action_result_panel"  oncomplete="PF('actionResultDialog').show();" actionListener="#{GuiBeans.invokeControlButton}" icon="fa fa-play-circle-o" value="Invoke action" style="width: 100%; display: inline-block; font-size: 70%;" />
+                                        </p:outputPanel>
+                                    </p:panelGrid>
 
-                                <!-- DATA VIEW -->
-                                <h4>DataView</h4>
+                                    <!-- DATA VIEW -->
+                                    <p:outputLabel value="Data view" style="font-weight:bold" />
+                                    <h:form>
+                                        <p:poll interval="2"  update="tick" id="tickpoll" />
+                                        <p:chart id="tick" type="line" model="#{GuiBeans.updatedChart}" style="height:300px;width:100%"  /> 
+                                    </h:form>   
+                                </p:outputPanel>
 
                             </p:panelGrid>
 
@@ -89,6 +95,20 @@
                     </p:dialog>
                 </h:form>
 
+                <script>
+                    function ext() {
+                        this.cfg.seriesDefaults.rendererOptions.dataLabelFormatString = '%.2s%%';
+                        this.cfg.seriesDefaults.rendererOptions.dataLabelThreshold = 0;
+                        this.cfg.seriesDefaults = {
+                            lineWidth: 2.0,
+                            shadow: false,
+                            showMarker: false,
+                            rendererOptions: {
+                                smooth: true
+                            }
+                        }
+                    }
+                </script>
 
 
 

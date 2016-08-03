@@ -48,6 +48,7 @@ public class AnalyticsController implements Serializable {
      */
     static List<String> analyticAlgos = Arrays.asList("average", "sum");
     public static Map<String, Thread> analyticActiveList = new HashMap<>();
+    public static Map<String, AnalyticRunnable> analyticRunnable = new HashMap<>();
     String[] selectedResourceID;
     String selectedNetworkService;
     String selectedActiveAnalytics;
@@ -78,17 +79,19 @@ public class AnalyticsController implements Serializable {
         this.analyticSelected = analyticSelected;
     }
 
-    public static class AnalyticThread implements Runnable {
+    public static class AnalyticRunnable implements Runnable {
 
         String[] resourceIdList;
         String name;
         String analyticFunction;
+        String networkService;
 
-        public AnalyticThread(String[] resourceIdList, String name, String analyticFunction) {
-            System.out.println("An analytic is spawned. Name: " + name + ", function: " + analyticFunction + ", number of resource: " + resourceIdList.length);
+        public AnalyticRunnable(String[] resourceIdList, String name, String analyticFunction, String networkService) {
+            logger.debug("An analytic is spawned. Name: " + name + ", function: " + analyticFunction + ", number of resource: " + resourceIdList.length);
             this.resourceIdList = resourceIdList;
             this.name = name;
             this.analyticFunction = analyticFunction;
+            this.networkService = networkService;
         }
 
         @Override
@@ -102,12 +105,20 @@ public class AnalyticsController implements Serializable {
                     Queue queue = dataseries.getValues();
                     if (!queue.isEmpty()) {
                         dataValues.add((Float) queue.toArray()[queue.size() - 1]);  // we need to take the tail (not the head) of the queue
-                        System.out.println("Last value from resourceid: " + sensorID + ". Queue side: " + queue.size() + "/" + dataseries.QUEUE_SIZE + " item is: " + (Float) queue.toArray()[queue.size() - 1]);
+                        logger.debug("Last value from resourceid: " + sensorID + ". Queue side: " + queue.size() + "/" + dataseries.QUEUE_SIZE + " item is: " + (Float) queue.toArray()[queue.size() - 1]);
+                    } else {
+                        logger.debug("The queue" + sensorID + " is empty");
                     }
 
                 }
                 Float currentValue = 0f;
                 if (dataValues.size() != resourceIdList.length) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ex) {
+                        logger.debug("Get an interrupted signal, now break and stop the thread");
+                        break;
+                    }
                     continue; // not enough data yet, e.g. at the beginning it miss some points
                 }
                 if (analyticFunction.equals("average")) {
@@ -115,21 +126,18 @@ public class AnalyticsController implements Serializable {
                 } else if (analyticFunction.equals("sum")) {
                     currentValue = calculateSum(dataValues);
                 } else {
-                    System.out.println("Unknown analytic function: " + analyticFunction);
+                    logger.debug("Unknown analytic function: " + analyticFunction);
                 }
 
                 DataPointListener.DataSeries dataSeries = DataPointListener.getUpdateDataSeries(name);
                 dataSeries.offer(currentValue, (new Date()).toString());
+
+                logger.debug("Running analytic done, function: " + analyticFunction + ", value: " + currentValue);
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-                System.out.println("Running analytic done, function: " + analyticFunction + ", value: " + currentValue);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    java.util.logging.Logger.getLogger(AnalyticsController.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.debug("Get an interrupted signal, now break and stop the thread");
+                    break;
                 }
             }
         }
@@ -157,18 +165,18 @@ public class AnalyticsController implements Serializable {
     }
 
     public void doAnalytic() {
-        System.out.println("DO ANALYTIC BUTTON PRESSED !!!");
+        logger.debug("DO ANALYTIC BUTTON PRESSED !!!");
         GuiBeans guibeans = new GuiBeans();
-        System.out.println("Creating analytics for " + selectedResourceID.length + " resources");
+        logger.debug("Creating analytics for " + selectedResourceID.length + " resources");
         if (selectedResourceID == null || selectedResourceID.length == 0) {
             lastCreatingAction = "No datapoint is selected for the analytic.";
         } else if (analyticName == null || analyticName.isEmpty()) {
             lastCreatingAction = "An analytic need a name.";
         } else if (DataPointListener.isListeningOrAnalyzed(analyticName)) {
-            lastCreatingAction = "Analytic name '" + analyticName + "' is existed.";
-        } else {
+            // to reconfigure all the sensor to the new network
+
             for (String sensorid : selectedResourceID) {
-                System.out.println("Forwarding datapoint: " + sensorid);
+                logger.debug("Forwarding datapoint: " + sensorid);
                 // get control point
                 int controlFound = 0;
                 for (ControlPoint c : guibeans.getControlpoints()) {
@@ -176,13 +184,13 @@ public class AnalyticsController implements Serializable {
                     if (c.getResourceID().equals(sensorid) && c.getName().equals("connect-mqtt")) {
                         logger.debug("Found a control: {}", c.getName());
                         String parameter = getNetworkServiceSelectedByEndpoint().getAccessPoint().getEndpoint() + " mysensor1234";
-                        System.out.println("Call control connect-mqtt of " + sensorid + " to endpoint: " + parameter);
+                        logger.debug("Call control connect-mqtt of " + sensorid + " to endpoint: " + parameter);
                         c.setParameters(parameter);
                         rest.sendControl(c.getGatewayID(), c.getResourceID(), c.getName(), parameter);
-                        controlFound = controlFound + 1;                        
+                        controlFound = controlFound + 1;
                     }
                 }
-                System.out.println("  --> We found " + controlFound + " control points for sensor: " + sensorid);
+                logger.debug("  --> We found " + controlFound + " control points for sensor: " + sensorid);
 
                 try {
                     Thread.sleep(1000);
@@ -190,11 +198,60 @@ public class AnalyticsController implements Serializable {
                     ex.printStackTrace();
                 }
             }
-            System.out.println("Add new active list, current have: " + analyticActiveList.size());            
-            Thread thread = new Thread(new AnalyticThread(selectedResourceID, analyticName, analyticSelected));
+            String endpointToListen = getNetworkServiceSelectedByEndpoint().getAccessPoint().getEndpoint();
+            DataPointListener.makeSureListening(endpointToListen);
+
+            analyticActiveList.get(analyticName).interrupt();
+            analyticRunnable.get(analyticName).networkService = selectedNetworkService;
+            analyticActiveList.remove(analyticName);
+            Thread newThread = new Thread(analyticRunnable.get(analyticName));
+            newThread.start();
+            analyticActiveList.put(analyticName, newThread);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    rest.querySoftwareDefinedGateways(10000, null, "true");
+                }
+            }).start();
+
+            lastCreatingAction = "Analytics '" + analyticName + "' is reconfigured.";
+
+        } else {
+            for (String sensorid : selectedResourceID) {
+                logger.debug("Forwarding datapoint: " + sensorid);
+                // get control point
+                int controlFound = 0;
+                for (ControlPoint c : guibeans.getControlpoints()) {
+                    // forward all the data point to the network selected
+                    if (c.getResourceID().equals(sensorid) && c.getName().equals("connect-mqtt")) {
+                        logger.debug("Found a control: {}", c.getName());
+                        String parameter = getNetworkServiceSelectedByEndpoint().getAccessPoint().getEndpoint() + " mysensor1234";
+                        logger.debug("Call control connect-mqtt of " + sensorid + " to endpoint: " + parameter);
+                        c.setParameters(parameter);
+                        rest.sendControl(c.getGatewayID(), c.getResourceID(), c.getName(), parameter);
+                        controlFound = controlFound + 1;
+                    }
+                }
+                logger.debug("  --> We found " + controlFound + " control points for sensor: " + sensorid);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            String endpointToListen = getNetworkServiceSelectedByEndpoint().getAccessPoint().getEndpoint();
+            DataPointListener.makeSureListening(endpointToListen);
+
+            logger.debug("Add new active list, current have: " + analyticActiveList.size());
+            AnalyticRunnable runnable = new AnalyticRunnable(selectedResourceID, analyticName, analyticSelected, selectedNetworkService);
+            Thread thread = new Thread(runnable);
             analyticActiveList.put(analyticName, thread);
+            analyticRunnable.put(analyticName, runnable);
+
             thread.start();
-            lastCreatingAction = "Analytic created, " + selectedResourceID.length + " datapoint(s) is subscribed.";
+            lastCreatingAction = "Analytic " + analyticName + " is created, " + selectedResourceID.length + " datapoint(s) is subscribed. Number of slide: " + analyticActiveList.size();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -202,20 +259,21 @@ public class AnalyticsController implements Serializable {
                 }
             }).start();
         }
-        System.out.println("Create analytics done. Result: " + lastCreatingAction);
+        logger.debug("Create analytics done. Result: " + lastCreatingAction);
     }
 
     public LineChartModel getAnalyticsChart() {
-        System.out.println("Current have " + analyticActiveList.size() + " active analytics");
+        logger.debug("Current have " + analyticActiveList.size() + " active analytics");
         if (selectedActiveAnalytics == null || selectedActiveAnalytics.isEmpty()) {
             selectedActiveAnalytics = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("analytics");
         }
         if (selectedActiveAnalytics == null || selectedActiveAnalytics.isEmpty()) {
             return new LineChartModel();
         }
-        System.out.println("Generating analytics graph: " + selectedActiveAnalytics);
+        logger.debug(" -- Generating analytics graph: " + selectedActiveAnalytics);
 
         DataPointListener.DataSeries dataSeries = DataPointListener.getUpdateDataSeries(selectedActiveAnalytics);
+        logger.debug(" -- Data series. Max: " + dataSeries.getMax() + ", Min: " + dataSeries.getMin() + ", queue: " + dataSeries.getValues().size());
 
         ChartSeries chartSeries = new ChartSeries();
         chartSeries.setLabel(selectedActiveAnalytics);
@@ -226,6 +284,7 @@ public class AnalyticsController implements Serializable {
             chartSeries.set(count, (float) i.next());
             count += 1;
         }
+        logger.debug(" -- Start creating a line model...");
         LineChartModel lineModel = new LineChartModel();
 
         lineModel.setTitle(selectedActiveAnalytics);
@@ -240,6 +299,7 @@ public class AnalyticsController implements Serializable {
         yAxis.setMax(dataSeries.getMax());
 
         lineModel.addSeries(chartSeries);
+        logger.debug(" -- Exported a line model. Title: " + lineModel.getTitle());
         return lineModel;
     }
 
@@ -250,7 +310,7 @@ public class AnalyticsController implements Serializable {
             sum += f;
             builder.append(f).append(" + ");
         }
-        System.out.println("Calculate sum: " + builder.toString() + " equal: " + sum);
+        logger.debug("Calculate sum: " + builder.toString() + " equal: " + sum);
         return sum;
     }
 
@@ -319,24 +379,34 @@ public class AnalyticsController implements Serializable {
     }
 
     public void testButton() {
-        System.out.println("THE BUTTON IS PRESSSSSSSSSSSSSSSSSED ! LIST: " + analyticActiveList.size() + ", selected active analytics: " + selectedActiveAnalytics);
+        logger.debug("THE BUTTON IS PRESSSSSSSSSSSSSSSSSED ! LIST: " + analyticActiveList.size() + ", selected active analytics: " + selectedActiveAnalytics);
         for (String s : analyticActiveList.keySet()) {
-            System.out.println("Active analytics: " + s);
+            logger.debug("Active analytics: " + s);
         }
 //        RequestContext.getCurrentInstance().execute("window.open('analytics_chart.xhtml?analytics=" + analyticSelected + "', '_newtab')");
     }
 
     public void clearAllAnalytics() {
-        System.out.println("Cleaning analytics ...");
+        logger.debug("Cleaning analytics ...");
         for (Entry<String, Thread> entry : analyticActiveList.entrySet()) {
-            System.out.println("Removing analytics: " + entry.getKey());
+            logger.debug("Removing analytics: " + entry.getKey());
             entry.getValue().interrupt();
             if (entry.getValue().isInterrupted()) {
-                System.out.println("Stop thread done: " + entry.getKey());
+                logger.debug("Stop thread done: " + entry.getKey());
             } else {
-                System.out.println("Stop thread failed: " + entry.getKey());
+                logger.debug("Stop thread failed: " + entry.getKey());
             }
         }
         analyticActiveList.clear();
+        analyticRunnable.clear();
+    }
+
+    public void updateSelectedPanels() {
+        AnalyticRunnable runnable = analyticRunnable.get(selectedActiveAnalytics);
+        logger.debug("update panels. Name: " + runnable.name + ", function: " + runnable.analyticFunction + ", function: " + runnable.networkService);
+        selectedResourceID = runnable.resourceIdList;
+        selectedNetworkService = runnable.networkService;
+        analyticName = runnable.name;
+        analyticSelected = runnable.analyticFunction;
     }
 }

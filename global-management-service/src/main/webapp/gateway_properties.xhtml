@@ -15,8 +15,8 @@
 
     <h:body>
 
-        <p:outputPanel id="datapoint_properties_panel" style="text-align:center;" >
-            <p:panelGrid  columns="2" rendered="#{not empty GuiController.selectedNode}" columnClasses="label,value" >
+        <p:outputPanel id="datapoint_properties_panel" style="text-align: left;" >
+            <p:panelGrid  columns="2" columnClasses="label,value" >
                 <p:outputLabel value="UUID"/>
                 <p:outputLabel value="#{GuiBeans.localMetaByID.uuid}"/>
 
@@ -28,6 +28,12 @@
 
                 <p:outputLabel value="Location"/>
                 <p:outputLabel value="#{GuiBeans.localMetaByID.city}/#{GuiBeans.localMetaByID.country}"/>
+
+                <p:outputLabel value="Latitude"/>
+                <p:outputLabel value="#{GuiBeans.localMetaByID.lat}"/>
+
+                <p:outputLabel value="Longitude"/>
+                <p:outputLabel value="#{GuiBeans.localMetaByID.lon}"/>
 
             </p:panelGrid>
         </p:outputPanel>

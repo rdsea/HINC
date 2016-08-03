@@ -95,21 +95,28 @@ public class DataPointListener implements Runnable {
         }
 
     }
-    public static DataPointListener INSTANCE = new DataPointListener();
-
-    static Thread listenerThread;
+   
+    // map between MQTT endpoint and listening thread
+    static Map<String, Thread> listenerThreads = new HashMap<>();
     // map of sensor ID and lastest QUEUE_SIZE data point
     static Map<String, DataSeries> subscribingData = new HashMap<>();
 
-    static String broker = HincConfiguration.getDataForward();
+//    String broker = HincConfiguration.getDataForward();
     static String topic = "mysensor1234"; // hard code here
     static TypeReference typeRerefence = new TypeReference<Map<String, String>>() {
     };
 
-    public static void makeSureListening() {
-        if (listenerThread == null) {
-            listenerThread = new Thread(new DataPointListener());
+    String broker;
+    
+    public DataPointListener(String broker){
+        this.broker = broker;
+    }
+    
+    public static void makeSureListening(String endpoint) {
+        if (listenerThreads.get(endpoint) == null) {
+            Thread listenerThread = new Thread(new DataPointListener(endpoint));
             listenerThread.start();
+            listenerThreads.put(endpoint, listenerThread);
         }
     }
 

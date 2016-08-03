@@ -12,8 +12,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -27,6 +29,10 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.common.API.HINCManagementAPI;
@@ -123,17 +129,17 @@ public class GuiBeans {
     }
 
     public HincLocalMeta getLocalMetaByID() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String uuid = request.getParameter("uuid");
-        System.out.println("Querying local by ID with UUID: " + uuid);
+        System.out.println("Querying local by ID with UUID: " + resourceID);
         AbstractDAO<HincLocalMeta> metaDAO = new AbstractDAO<>(HincLocalMeta.class);
-        HincLocalMeta meta = metaDAO.read(uuid);
-        if (meta != null) {
-            System.out.println(" --> Found a meta: " + meta.getUuid());
-        } else {
-            System.out.println(" --> Could not find a meta");
+        List<HincLocalMeta> metas = metaDAO.readAll();
+        for(HincLocalMeta meta: metas){
+            if (meta.getIp().trim().equals(resourceID)){
+                System.out.println(" --> Found a meta: " + meta.getUuid());
+                return meta;
+            }
         }
-        return meta;
+        System.out.println(" --> Could not find a meta");
+        return null;        
     }
 
     public DataPoint getDataPointByResourceid() {
@@ -316,11 +322,11 @@ public class GuiBeans {
         System.out.println("Good, selected node is: " + selectedNode);
         System.out.println("Good, selected node type: " + selectedNode.getType());
         if (selectedNode.getType().equals("device2")) {
-//            setDetailsPage("hincGlobal.xhtml?uuid=" + selectedNode);
+            setDetailsPage("gateway_properties.xhtml");           
         } else if (selectedNode.getType().equals("datapoint2")) {
-            setDetailsPage("datapoint_properties.xhtml");  // ?uuid=" + selectedNode)
-            resourceID = String.valueOf(selectedNode.getData());
+            setDetailsPage("datapoint_properties.xhtml");
         }
+        resourceID = String.valueOf(selectedNode.getData());
         System.out.println("Get detail page done: " + this.detailsPage);
         return detailsPage;
     }
@@ -338,8 +344,16 @@ public class GuiBeans {
         String page = getDetailsPage();
         System.out.println("The function is invoked ! Selected node: " + selectedNode + ", detailed page: " + page);
         ajaxCount += 1;
-        System.out.println("Ajax count: " + ajaxCount);
-//        RequestContext.getCurrentInstance().update(":form:detailsPanel");
+        System.out.println("Ajax count: " + ajaxCount); // make sure the data is listening if possible
+
+        if (selectedNode.getType().equals("datapoint2")) {
+            DataPoint dp = getDataPointByResourceid();
+            String endpoint = dp.getDataApiSettings().get("url");
+            if (!endpoint.contains("localhost")) {
+                DataPointListener.makeSureListening(endpoint);
+            }
+        }
+
     }
 
     static int ajaxCount = 0;
@@ -424,4 +438,40 @@ public class GuiBeans {
     public void setControlParameter(String controlParameter) {
         this.controlParameter = controlParameter;
     }
+
+    public LineChartModel getUpdatedChart() {
+        System.out.println("Get update char for resource:: " + resourceID);
+        DataPoint dp = getDataPointByResourceid();
+        DataPointListener.DataSeries dataseries = DataPointListener.getUpdateDataSeries(resourceID);
+        Queue queue = dataseries.getValues();
+        Iterator<Float> i = queue.iterator();
+        ChartSeries series = new ChartSeries();
+        series.setLabel(resourceID);
+
+        for (int counter = 0; counter <= DataPointListener.DataSeries.QUEUE_SIZE; counter++) {
+            if (DataPointListener.DataSeries.QUEUE_SIZE < (counter + queue.size())) { // padding null data
+                Float value = i.next();
+                series.set(counter, (float) value);
+            } else {
+                series.set(counter, null); // padding null to the beginning of the series
+            }
+        }
+
+        LineChartModel model = new LineChartModel();
+
+        model.setTitle(dp.getResourceID());
+        model.setLegendPosition("e");
+        model.setShowPointLabels(true);
+        model.setExtender("ext");
+
+//        model.getAxes().put(AxisType.X, new CategoryAxis("Time"));
+        Axis yAxis = model.getAxis(AxisType.Y);
+
+        yAxis.setLabel(dp.getDatatype());
+        yAxis.setMin(dataseries.getMin());
+        yAxis.setMax(dataseries.getMax());
+        model.addSeries(series);
+        return model;
+    }
+
 }
