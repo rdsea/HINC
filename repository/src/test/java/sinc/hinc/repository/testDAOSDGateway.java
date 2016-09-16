@@ -15,6 +15,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  *
@@ -31,17 +32,17 @@ public class testDAOSDGateway {
     }
 
     @Test
-    public void test2_SaveSDG() {
-        SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
-        gw.setName("myGW");
-        gw.setUuid("myUUID");
-        
-        DataPoint dp = new DataPoint("mySensorID", "datapoint-name", "This is a datapoint");
-        gw.hasCapability(dp);
+    public void test2_SaveIoTUnit() {
+        IoTUnit unit = new IoTUnit();
+        unit.setHincID("hincEntity123");
+        unit.setResourceID("myResourceID-123");
+
+        DataPoint dp = new DataPoint("temp123", "temperature");
+        unit.hasDatapoint(dp);
 
         // write
-        AbstractDAO<SoftwareDefinedGateway> gwDAO = new AbstractDAO<>(SoftwareDefinedGateway.class);
-        ODocument docgw1 = gwDAO.save(gw);
+        AbstractDAO<IoTUnit> gwDAO = new AbstractDAO<>(IoTUnit.class);
+        ODocument docgw1 = gwDAO.save(unit);
         System.out.println("Test saving done: " + docgw1.toJSON());
         // read        
         Assert.assertNotNull(docgw1);
@@ -49,9 +50,9 @@ public class testDAOSDGateway {
 
     @Test
     public void test3_ReadSDG() {
-        AbstractDAO<SoftwareDefinedGateway> gwDAO = new AbstractDAO<>(SoftwareDefinedGateway.class);
-        SoftwareDefinedGateway gw1 = gwDAO.read("myUUID");
-        System.out.println("READ a gateway done: " + gw1.getName());
-        Assert.assertEquals("myGW", gw1.getName());
+        AbstractDAO<IoTUnit> gwDAO = new AbstractDAO<>(IoTUnit.class);
+        IoTUnit gw1 = gwDAO.read("myUUID");
+        System.out.println("READ a IoT unit done: " + gw1.getResourceID());
+        Assert.assertEquals("myResourceID-123", gw1.getResourceID());
     }
 }

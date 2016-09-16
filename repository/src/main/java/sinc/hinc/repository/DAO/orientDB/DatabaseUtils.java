@@ -12,6 +12,7 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 import static sinc.hinc.repository.DAO.orientDB.AbstractDAO.logger;
@@ -22,7 +23,7 @@ import static sinc.hinc.repository.DAO.orientDB.AbstractDAO.logger;
  */
 public class DatabaseUtils {
 
-    static Class[] clazzes = {SoftwareDefinedGateway.class, DataPoint.class, ControlPoint.class, CloudConnectivity.class, ExecutionEnvironment.class, NetworkService.class};
+    static Class[] clazzes = {IoTUnit.class, SoftwareDefinedGateway.class, DataPoint.class, ControlPoint.class, CloudConnectivity.class, ExecutionEnvironment.class, NetworkService.class};
 
     public static void initDB() {
         logger.debug("Initilizing the database... any data will be cleaned!");
@@ -30,7 +31,7 @@ public class DatabaseUtils {
         ODatabaseDocumentTx db = manager.getConnection();
 
         try {
-            
+
             for (Class clazz : clazzes) {
                 String className = clazz.getSimpleName();
                 if (!db.getMetadata().getSchema().existsClass(className)) {
@@ -47,7 +48,7 @@ public class DatabaseUtils {
                     }
                 }
             }
-           
+
         } finally {
             manager.closeConnection();
         }

@@ -9,15 +9,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 import sinc.hinc.dummyprovider.provider.DummyData;
 import sinc.hinc.dummyprovider.provider.DummyMetadataItem;
+import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 
 /**
  *
  * @author hungld
  */
-public class DummyProviderAdaptor implements ProviderAdaptor<DummyMetadataItem> {
+public class DummyProviderAdaptor implements ProviderQueryAdaptor<DummyMetadataItem> {
 
     @Override
     public Collection<DummyMetadataItem> getItems(Map<String, String> settings) {

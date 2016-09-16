@@ -13,6 +13,7 @@ import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 
 import java.util.Set;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  * @author hungld
@@ -25,10 +26,10 @@ public class TestCallSingleLocalManagement {
         HINCManagementAPI mngAPI = new HINCManagementImpl();
         mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
 
-        Set<SoftwareDefinedGateway> list = api.querySoftwareDefinedGateways(5000, "", "false");
+        Set<IoTUnit> list = api.queryIoTUnits(5000, "", "false");
         System.out.println("list of gateway has: " + list.size() + " items");
-        for (SoftwareDefinedGateway gw : list) {
-            System.out.println(gw.toJson());
+        for (IoTUnit unit : list) {
+            System.out.println(unit.toJson());
             System.out.println("==============");
         }
     }

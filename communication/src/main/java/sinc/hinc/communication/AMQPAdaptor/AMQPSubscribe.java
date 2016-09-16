@@ -108,7 +108,7 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
                     HincMessage em = (HincMessage) mapper.readValue(mm, HincMessage.class);
                     this.topic = em.getTopic();
                     //logger.debug("A message arrived. From: " + em.getFromSalsa() + ". MsgType: " + em.getMsgType() + ". Payload: " + em.getPayload());
-                    logger.debug("A message arrived. From: " + em.getSenderID() + ". MsgType: " + em.getMsgType());
+                    logger.debug("A message arrived. From: " + em.getSenderID() + ". MsgType: " + em.getMsgType() +". Stamp/UUID: " + em.getTimeStamp() +"/" + em.getUuid());
                     new Thread(new HandlingThread(handler, em)).start();
                     logger.debug("If handle message done, it must exit and show this");
                     // quit if timeout

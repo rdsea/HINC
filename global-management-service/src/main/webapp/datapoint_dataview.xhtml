@@ -51,7 +51,7 @@
         <h:form>       
             <p:commandButton update="tick tickpoll" actionListener="#{DatapointView.subscribeData()}" icon="fa fa-play" value="Subscribe data" style="font-size: 70%;" />
             <p:commandButton actionListener="#{DatapointView.unsubscribeData()}" icon="fa fa-stop" value="Unsubscribe data" style="font-size: 70%;" />
-            <p:poll interval="2"  update="tick" id="tickpoll" />
+            <p:poll interval="5"  update="tick" id="tickpoll" />
             <p:chart id="tick" type="line" model="#{DatapointView.updatedChart}" style="height:300px;width:100%"  /> 
         </h:form>
         <script>
@@ -65,7 +65,7 @@
                     rendererOptions: {
                         smooth: true
                     }
-                }
+                };
             }
         </script>
     </h:body>

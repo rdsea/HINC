@@ -5,7 +5,6 @@
  */
 package sinc.hinc.global.client;
 
-
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
 import sinc.hinc.common.metadata.HincLocalMeta;
@@ -17,6 +16,7 @@ import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 import java.util.List;
 import java.util.Set;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  * @author hungld
@@ -42,17 +42,17 @@ public class TestBroadCast {
             }
         }
 //
-        Set<SoftwareDefinedGateway> gateways = api.querySoftwareDefinedGateways(20000, null, "false");
+        Set<IoTUnit> gateways = api.queryIoTUnits(20000, null, "false");
         System.out.println("Gateway number: " + gateways.size());
 
-        AbstractDAO<SoftwareDefinedGateway> gwDAO = new AbstractDAO<>(SoftwareDefinedGateway.class);
-        for (SoftwareDefinedGateway gw : gwDAO.readAll()) {
+        AbstractDAO<IoTUnit> gwDAO = new AbstractDAO<>(IoTUnit.class);
+        for (IoTUnit gw : gwDAO.readAll()) {
             System.out.println("Gateway UUID: " + gw.getUuid());
         }
 
         AbstractDAO<DataPoint> dpDAO = new AbstractDAO<>(DataPoint.class);
         for (DataPoint dp : dpDAO.readAll()) {
-            System.out.println("DataPoint UUID: " + dp.getUuid());
+            System.out.println("DataPoint UUID: " + dp.getDatatype());
         }
 
 //        List<VNF> routers = client.queryVNF_Multicast();
@@ -61,6 +61,5 @@ public class TestBroadCast {
 //        String graph = generator.generateGraph(gateways, routers);
 //        System.out.println(graph);
     }
-
 
 }

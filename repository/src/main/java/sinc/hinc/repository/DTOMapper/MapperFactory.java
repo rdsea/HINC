@@ -10,7 +10,7 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DTOMapper.impl.ConnectivityMapper;
@@ -18,8 +18,8 @@ import sinc.hinc.repository.DTOMapper.impl.ControlPointMapper;
 import sinc.hinc.repository.DTOMapper.impl.DataPointMapper;
 import sinc.hinc.repository.DTOMapper.impl.ExecutionEnvironmentMapper;
 import sinc.hinc.repository.DTOMapper.impl.HINCMetaMapper;
+import sinc.hinc.repository.DTOMapper.impl.IoTUnitMapper;
 import sinc.hinc.repository.DTOMapper.impl.NetworkServiceMapper;
-import sinc.hinc.repository.DTOMapper.impl.SoftwareDefinedGatewayMapper;
 import sinc.hinc.repository.DTOMapper.impl.VNFMapper;
 
 /**
@@ -32,10 +32,15 @@ public class MapperFactory {
         String name = clazz.getSimpleName();
         System.out.println(name);
 
-        if (clazz.equals(SoftwareDefinedGateway.class)) {
-            return new SoftwareDefinedGatewayMapper();
-        }
+//        if (clazz.equals(SoftwareDefinedGateway.class)) {
+//            return new SoftwareDefinedGatewayMapper();
+//        }
 
+
+        if (clazz.equals(IoTUnit.class)) {
+            return new IoTUnitMapper();
+        }
+        
         if (clazz.equals(DataPoint.class)) {
             return new DataPointMapper();
         }

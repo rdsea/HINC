@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.transformer.teit;
+package sinc.hinc.transformer.teit.sensor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
 import sinc.hinc.abstraction.ResourceDriver.utils.FilesScanner;
+import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 
 /**
  *
  * @author hungld
  */
-public class TeitSensorAdaptor implements ProviderAdaptor<Properties> {
+public class TeitSensorAdaptorPull implements ProviderQueryAdaptor<Properties> {
 
     @Override
     public Collection<Properties> getItems(Map<String, String> settings) {
@@ -45,6 +45,7 @@ public class TeitSensorAdaptor implements ProviderAdaptor<Properties> {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
+            System.out.println("Cannot read file, the adaptor just pass");
         }
         return result;
     }

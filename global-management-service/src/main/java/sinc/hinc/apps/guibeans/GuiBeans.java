@@ -8,6 +8,7 @@ package sinc.hinc.apps.guibeans;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +24,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
@@ -42,7 +42,7 @@ import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
@@ -64,7 +64,7 @@ public class GuiBeans {
 
     static Logger logger = LoggerFactory.getLogger(GuiBeans.class);
 
-    static Set<DataPoint> datapoints = new HashSet<>();
+    static Set<IoTUnit> iotUnits = new HashSet<>();
     static Set<HincLocalMeta> hinclocals = new HashSet<>();
     static Set<NetworkService> networkservices = new HashSet<>();
     static Set<ControlPoint> controlpoints = new HashSet<>();
@@ -93,7 +93,7 @@ public class GuiBeans {
     }
 
     public void setGlobalMeta() {
-        System.out.println("Invoke set global metadata: " + group + ", " + broker + ", " + brokerType);
+        logger.debug("Invoke set global metadata: " + group + ", " + broker + ", " + brokerType);
         HINCGlobalMeta meta = hincApi.getHINCGlobalMeta();
         meta.setBroker(broker);
         meta.setBrokerType(brokerType);
@@ -102,8 +102,11 @@ public class GuiBeans {
         getGlobalMeta();
     }
 
+    boolean queryUpdateFlags[] = new boolean[]{true, true};
+
     public void queryEveryThing() {
-        queryDataPoint();
+        Arrays.fill(queryUpdateFlags, true);
+        queryIoTUnits();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
@@ -114,47 +117,47 @@ public class GuiBeans {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Query resources done", "The query has finished in " + (timeout / 1000) + " seconds"));
     }
 
-    public void queryDataPoint() {
-        Set<SoftwareDefinedGateway> gateways = rest.querySoftwareDefinedGateways(timeout, null, "false");
-        for (SoftwareDefinedGateway gw : gateways) {
-            datapoints.addAll(gw.getDataPoints());
-            controlpoints.addAll(gw.getControlPoints());
-        }
+    public void queryIoTUnits() {
+        Set<IoTUnit> units = rest.queryIoTUnits(timeout, null, "false");
+        iotUnits.addAll(units);
     }
 
     public void queryLocalMeta() {
-        System.out.println("Querying the datapoint");
+        logger.debug("Querying the datapoint");
         hinclocals.addAll(hincApi.queryHINCLocal(timeout));
-        System.out.println("Query " + hinclocals.size() + " items");
+        logger.debug("Query " + hinclocals.size() + " items");
     }
 
     public HincLocalMeta getLocalMetaByID() {
-        System.out.println("Querying local by ID with UUID: " + resourceID);
+        logger.debug("Querying local by ID with UUID: " + resourceID);
         AbstractDAO<HincLocalMeta> metaDAO = new AbstractDAO<>(HincLocalMeta.class);
         List<HincLocalMeta> metas = metaDAO.readAll();
-        for(HincLocalMeta meta: metas){
-            if (meta.getIp().trim().equals(resourceID)){
-                System.out.println(" --> Found a meta: " + meta.getUuid());
+        for (HincLocalMeta meta : metas) {
+            if (meta.getIp().trim().equals(resourceID)) {
+                logger.debug(" --> Found a meta: " + meta.getUuid());
                 return meta;
             }
         }
-        System.out.println(" --> Could not find a meta");
-        return null;        
+        logger.debug(" --> Could not find a meta");
+        return null;
     }
 
-    public DataPoint getDataPointByResourceid() {
-        System.out.println("Getting datapoint by Resource ID .......");
-        Collection<DataPoint> dps = getDatapoints();
-        System.out.println("Get datapoint by resource ID from Param: " + resourceID);
+    public IoTUnit getIoTUnitByResourceid() {
+        return getIoTUnitByResourceid(resourceID);
+    }
 
-        for (DataPoint dp : dps) {
-            if (dp.getResourceID().equals(resourceID)) {
-                System.out.println("Found the datapoint: " + dp.getResourceID());
-                return dp;
+    public IoTUnit getIoTUnitByResourceid(String theResourceID) {
+        logger.trace("Getting datapoint by Resource ID .......");
+        Collection<IoTUnit> units = getIotUnits();
+        logger.trace("Get datapoint by resource ID from Param: " + theResourceID);
+
+        for (IoTUnit unit : units) {
+            if (unit.getResourceID().equals(theResourceID)) {
+                logger.trace("Found the datapoint: " + unit.getResourceID());
+                return unit;
             }
         }
         return null;
-
     }
 
     public TreeNode getDeviceLayoutTree() {
@@ -175,17 +178,17 @@ public class GuiBeans {
 //
 //        return root;
         getHinclocals();
-        getDatapoints();
-//        System.out.println("Creating tree ....");
+        getIotUnits();
+//        logger.debug("Creating tree ....");
         TreeNode rootNode = new DefaultTreeNode("TreeData", null);
 
         for (HincLocalMeta local : hinclocals) {
             TreeNode gwNode = new DefaultTreeNode("device2", local.getIp(), rootNode);
 //            rootNode.getChildren().add(gwNode);
-//            System.out.println("   ----> Number of data point: " + datapoints.size());
-            for (DataPoint dp : datapoints) {
-                if (dp.getGatewayID().equals(local.getUuid())) {
-                    TreeNode datapointNode = new DefaultTreeNode("datapoint2", dp.getResourceID(), gwNode);
+//            logger.debug("   ----> Number of data point: " + datapoints.size());
+            for (IoTUnit unit : iotUnits) {
+                if (unit.getHincID().equals(local.getUuid())) {
+                    TreeNode datapointNode = new DefaultTreeNode("datapoint2", unit.getResourceID(), gwNode);
 //                    gwNode.getChildren().add(datapointNode);
                 }
             }
@@ -195,7 +198,7 @@ public class GuiBeans {
 
     public void onDatapointProperties() {
         if (selectedNode != null) {
-            System.out.println("Client want to see Properties of data point with resourceID: " + selectedNode.toString());
+            logger.debug("Client want to see Properties of data point with resourceID: " + selectedNode.toString());
             Map<String, Object> options = new HashMap<>();
             options.put("resizable", false);
             options.put("draggable", false);
@@ -221,7 +224,7 @@ public class GuiBeans {
     }
 
     public void updateLocalTable() {
-        System.out.println("Updating the Hinc Local table ...");
+        logger.debug("Updating the Hinc Local table ...");
         RequestContext.getCurrentInstance().update("hincLocalTable");
     }
 
@@ -269,15 +272,21 @@ public class GuiBeans {
     }
 
     public Collection<HincLocalMeta> getHinclocals() {
-        hinclocals.clear();
-        hinclocals.addAll(hincApi.queryHINCLocal(0));
+        if (queryUpdateFlags[0] == true) {
+            hinclocals.clear();
+            hinclocals.addAll(hincApi.queryHINCLocal(0));
+            queryUpdateFlags[0] = false;
+        }
         return hinclocals;
     }
 
-    public Set<DataPoint> getDatapoints() {
-        datapoints.clear();
-        datapoints.addAll(rest.queryDataPoint(0, null));
-        return datapoints;
+    public Collection<IoTUnit> getIotUnits() {
+        if (queryUpdateFlags[1] == true) {
+            iotUnits.clear();
+            iotUnits.addAll(rest.queryIoTUnits(0, null, "false"));
+            queryUpdateFlags[1] = false;
+        }
+        return iotUnits;
     }
 
     public Set<NetworkService> getNetworkservices() {
@@ -316,18 +325,18 @@ public class GuiBeans {
 
     public String getDetailsPage() {
         if (selectedNode == null) {
-            System.out.println("Trying to get detail page but selected node is null");
+            logger.debug("Trying to get detail page but selected node is null");
             return null;
         }
-        System.out.println("Good, selected node is: " + selectedNode);
-        System.out.println("Good, selected node type: " + selectedNode.getType());
+        logger.trace("Good, selected node is: " + selectedNode);
+        logger.trace("Good, selected node type: " + selectedNode.getType());
         if (selectedNode.getType().equals("device2")) {
-            setDetailsPage("gateway_properties.xhtml");           
+            setDetailsPage("gateway_properties.xhtml");
         } else if (selectedNode.getType().equals("datapoint2")) {
             setDetailsPage("datapoint_properties.xhtml");
         }
         resourceID = String.valueOf(selectedNode.getData());
-        System.out.println("Get detail page done: " + this.detailsPage);
+        logger.trace("Get detail page done: " + this.detailsPage);
         return detailsPage;
     }
 
@@ -342,13 +351,18 @@ public class GuiBeans {
 
     public void onNodeSelect(NodeSelectEvent event) {
         String page = getDetailsPage();
-        System.out.println("The function is invoked ! Selected node: " + selectedNode + ", detailed page: " + page);
+        logger.debug("The function is invoked ! Selected node: " + selectedNode + ", detailed page: " + page);
         ajaxCount += 1;
-        System.out.println("Ajax count: " + ajaxCount); // make sure the data is listening if possible
+        logger.debug("Ajax count: " + ajaxCount); // make sure the data is listening if possible
 
         if (selectedNode.getType().equals("datapoint2")) {
-            DataPoint dp = getDataPointByResourceid();
-            String endpoint = dp.getDataApiSettings().get("url");
+            IoTUnit unit = getIoTUnitByResourceid();
+            String endpoint = "unknown";
+            // TODO: THIS PLACE IS HACKED, we assume that a iot unit has only 1 datapoint
+            DataPoint datapoint = unit.getDatapoints().iterator().next();
+            if (datapoint.getDataApiSettings() != null) {
+                endpoint = datapoint.getDataApiSettings().get("url");
+            }
             if (!endpoint.contains("localhost")) {
                 DataPointListener.makeSureListening(endpoint);
             }
@@ -375,25 +389,37 @@ public class GuiBeans {
             logger.debug("Trying to run control with null selected node");
             return null;
         }
-        for (ControlPoint c : getControlpoints()) {
-            if (c.getResourceID().equals(getResourceID()) && c.getName().equals(selectedControlAction)) {
-                logger.debug("Found a control: {}", c.getName());
-                return c;
-            }
+        IoTUnit unit = getIoTUnitByResourceid();
+        ControlPoint control = unit.findControlpointByName(selectedControlAction);
+        if (control == null) {
+            logger.debug("NOT FOUND a control with id: {} for resource: {}", selectedControlAction, getResourceID());
+            return null;
         }
-        logger.debug("NOT FOUND a control with id: {} for resource: {}", selectedControlAction, getResourceID());
-        return null;
+        return control;
     }
 
     public void invokeControlButton(ActionEvent event) {
         logger.debug("Invoke control for resource id {}, action: {}, parameter: {} " + getResourceID(), getSelectedControlAction(), getControlParameter());
 
         ControlPoint cp = getControlPointOfSelected();
+        IoTUnit unit = getIoTUnitByResourceid();
         cp.setParameters(controlParameter);
 
-        logger.debug("Invoking a control with \n -> GatewayID: {}\n -> ResourceID: {}\n -> Name: {}\n -> Parameters: {}", cp.getGatewayID(), cp.getResourceID(), cp.getName(), cp.getParameters());
-        lastControlResult = rest.sendControl(cp.getGatewayID(), cp.getResourceID(), cp.getName(), cp.getParameters());
+        logger.debug("Invoking a control with \n -> GatewayID: {}\n -> ResourceID: {}\n -> Name: {}\n -> Parameters: {}", unit.getHincID(), unit.getResourceID(), cp.getName(), cp.getParameters());
+        String lastControlResultTmp = rest.sendControl(unit.getHincID(), unit.getResourceID(), cp.getName(), cp.getParameters());
+        if (!lastControlResultTmp.startsWith("Cannot find")) {
+            lastControlResult = lastControlResultTmp;
+        } else {
+            lastControlResult = "Action done !";
+        }
+
         logger.debug("   -----> Result: " + lastControlResult);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                rest.queryIoTUnits(5000, null, "true");
+            }
+        }).start();
     }
 
     public List<SelectItem> getControlActionSelectItemList() {
@@ -401,9 +427,11 @@ public class GuiBeans {
             return null;
         }
         List<SelectItem> listItems = new ArrayList<>();
-        for (ControlPoint c : getControlpoints()) {
-            if (c.getResourceID().equals(getResourceID())) {
-                listItems.add(new SelectItem(c.getName(), c.getName()));
+        for (IoTUnit unit : getIotUnits()) {
+            if (unit.getResourceID().equals(getResourceID())) {
+                for (ControlPoint c : unit.getControlpoints()) {
+                    listItems.add(new SelectItem(c.getName(), c.getName()));
+                }
             }
         }
         return listItems;
@@ -440,8 +468,8 @@ public class GuiBeans {
     }
 
     public LineChartModel getUpdatedChart() {
-        System.out.println("Get update char for resource:: " + resourceID);
-        DataPoint dp = getDataPointByResourceid();
+        logger.debug("Get update char for resource:: " + resourceID);
+        IoTUnit unit = getIoTUnitByResourceid();
         DataPointListener.DataSeries dataseries = DataPointListener.getUpdateDataSeries(resourceID);
         Queue queue = dataseries.getValues();
         Iterator<Float> i = queue.iterator();
@@ -459,15 +487,16 @@ public class GuiBeans {
 
         LineChartModel model = new LineChartModel();
 
-        model.setTitle(dp.getResourceID());
+        model.setTitle(unit.getResourceID());
         model.setLegendPosition("e");
         model.setShowPointLabels(true);
         model.setExtender("ext");
 
 //        model.getAxes().put(AxisType.X, new CategoryAxis("Time"));
         Axis yAxis = model.getAxis(AxisType.Y);
-
-        yAxis.setLabel(dp.getDatatype());
+        // TODO: HACK, to assume that the IoT Unit have a single datapoint
+        DataPoint datapoint = unit.getDatapoints().iterator().next();
+        yAxis.setLabel(datapoint.getDatatype());
         yAxis.setMin(dataseries.getMin());
         yAxis.setMax(dataseries.getMax());
         model.addSeries(series);

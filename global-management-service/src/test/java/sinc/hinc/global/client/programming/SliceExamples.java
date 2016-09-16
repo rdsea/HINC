@@ -23,22 +23,22 @@ import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
  */
 public class SliceExamples {
     public static void main(String[] args) {
-        SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
-        gw.setName("gateway1");
-        DataPoint dp = new DataPoint("BodyTemperature");
-        dp.setResourceID("00:3b:B6:BodyTemperature");
-        dp.setMeasurementUnit("celcius");
-        ControlPoint cp = new ControlPoint(dp.getResourceID(), "changeRate", "change sensor rate");
-
-        gw.getDataPoints().add(dp);
-        gw.getControlPoints().add(cp);
-
-        Location location = new Location("48.172955", "16.325684", "25");
-        dp.getExtra().add(location);
-
-        System.out.println(gw.toJson());
-
-        System.out.println("================000===============");
+//        SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
+//        gw.setName("gateway1");
+//        DataPoint dp = new DataPoint("BodyTemperature");
+//        dp.setResourceID("00:3b:B6:BodyTemperature");
+//        dp.setMeasurementUnit("celcius");
+//        ControlPoint cp = new ControlPoint(dp.getResourceID(), "changeRate", "change sensor rate");
+//
+//        gw.getDataPoints().add(dp);
+//        gw.getControlPoints().add(cp);
+//
+//        Location location = new Location("48.172955", "16.325684", "25");
+//        dp.getExtra().add(location);
+//
+//        System.out.println(gw.toJson());
+//
+//        System.out.println("================000===============");
 
 //
 //        NetworkService nfsTemplate = new NetworkService();

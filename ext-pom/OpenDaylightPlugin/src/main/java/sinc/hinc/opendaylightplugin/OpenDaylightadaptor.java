@@ -9,13 +9,13 @@ import java.io.IOException;
 import org.apache.commons.codec.binary.Base64;
 import java.util.Collection;
 import java.util.Map;
-import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
+import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 
 /**
  *
  * @author hungld
  */
-public class OpenDaylightadaptor implements ProviderAdaptor<InventoryData> {
+public class OpenDaylightadaptor implements ProviderQueryAdaptor<InventoryData> {
 
     String baseURL = "http://100.96.9.107:8181";
 

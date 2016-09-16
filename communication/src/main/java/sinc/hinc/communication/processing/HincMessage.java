@@ -32,7 +32,7 @@ import java.util.UUID;
 public class HincMessage {
 
     String msgType;
-    
+
     String topic;
 
     String senderID;
@@ -43,41 +43,48 @@ public class HincMessage {
 
     long timeStamp;
 
+    String uuid;
+
     Map<String, String> extra;
 
     public HincMessage() {
     }
 
     /**
-     * Construct a HINC Message with full information for the sender and listener
+     * Construct a HINC Message with full information for the sender and
+     * listener
+     *
      * @param msgType
      * @param senderid
      * @param topic
      * @param feedbackTopic
-     * @param payload 
+     * @param payload
      */
     public HincMessage(String msgType, String senderid, String topic, String feedbackTopic, String payload) {
         this.msgType = msgType;
-        this.senderID = senderid;        
+        this.senderID = senderid;
         this.topic = topic;
         this.feedbackTopic = feedbackTopic;
         this.payload = payload;
         this.timeStamp = System.currentTimeMillis();
+        this.uuid = UUID.randomUUID().toString().substring(0, 6);
     }
-    
+
     /**
-     * Construct a HINC Message with random feedback topic and empty payload 
+     * Construct a HINC Message with random feedback topic and empty payload
+     *
      * @param msgType
      * @param senderid
-     * @param topic 
+     * @param topic
      */
     public HincMessage(String msgType, String senderid, String topic) {
         this.msgType = msgType;
-        this.senderID = senderid;        
+        this.senderID = senderid;
         this.topic = topic;
-        this.feedbackTopic = "sinc.hinc.temp."+ UUID.randomUUID();
+        this.feedbackTopic = "sinc.hinc.temp." + UUID.randomUUID();
         this.payload = "";
         this.timeStamp = System.currentTimeMillis();
+        this.uuid = UUID.randomUUID().toString().substring(0, 6);
     }
 
     public String toJson() {
@@ -110,8 +117,7 @@ public class HincMessage {
 
     public String getSenderID() {
         return senderID;
-    }    
-    
+    }
 
     public String getTopic() {
         return topic;
@@ -146,6 +152,10 @@ public class HincMessage {
             extra = new HashMap<>();
         }
         extra.put(key, value);
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
     @Override

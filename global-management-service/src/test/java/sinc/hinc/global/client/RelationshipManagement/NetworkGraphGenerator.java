@@ -5,16 +5,6 @@
  */
 package sinc.hinc.global.client.RelationshipManagement;
 
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
-import sinc.hinc.model.VirtualNetworkResource.VNF;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
-import sinc.hinc.model.VirtualComputingResource.Capability;
-
 /**
  * @author hungld
  */

@@ -7,19 +7,18 @@ package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
 import java.util.HashMap;
 import java.util.Map;
-import sinc.hinc.model.VirtualComputingResource.Capability;
 
 /**
  *
  * @author hungld
  */
-public class DataChannel extends Capability {
+public class DataStream {
 
     String created;
     String updated;
-    Map<Integer,DataPoint> datapoints = new HashMap<>();
+    Map<Integer, DataPoint> datapoints = new HashMap<>();
 
-    public DataChannel() {
+    public DataStream() {
     }
 
     public String getCreated() {
@@ -37,8 +36,5 @@ public class DataChannel extends Capability {
     public void setUpdated(String updated) {
         this.updated = updated;
     }
-
-    
-    
 
 }

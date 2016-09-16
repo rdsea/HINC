@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 
 /**
@@ -60,8 +61,11 @@ public class AnalyticsController implements Serializable {
     public List<String> getResourceIDForAnalytics() {
         List<String> resourceNames = new ArrayList<>();
         GuiBeans guibean = new GuiBeans();
-        for (DataPoint dp : guibean.getDatapoints()) {
-            resourceNames.add(dp.getResourceID());
+        for (IoTUnit unit : guibean.getIotUnits()) {
+            DataPoint dp = unit.getDatapoints().iterator().next();
+            if (dp.getDataApiSettings() != null && !dp.getDataApiSettings().isEmpty()) {
+                resourceNames.add(unit.getResourceID());
+            }
         }
         return resourceNames;
     }
@@ -179,14 +183,15 @@ public class AnalyticsController implements Serializable {
                 logger.debug("Forwarding datapoint: " + sensorid);
                 // get control point
                 int controlFound = 0;
+                IoTUnit unit = guibeans.getIoTUnitByResourceid(sensorid);
                 for (ControlPoint c : guibeans.getControlpoints()) {
                     // forward all the data point to the network selected
-                    if (c.getResourceID().equals(sensorid) && c.getName().equals("connect-mqtt")) {
+                    if (unit.getResourceID().equals(sensorid) && c.getName().equals("connect-mqtt")) {
                         logger.debug("Found a control: {}", c.getName());
                         String parameter = getNetworkServiceSelectedByEndpoint().getAccessPoint().getEndpoint() + " mysensor1234";
                         logger.debug("Call control connect-mqtt of " + sensorid + " to endpoint: " + parameter);
                         c.setParameters(parameter);
-                        rest.sendControl(c.getGatewayID(), c.getResourceID(), c.getName(), parameter);
+                        rest.sendControl(unit.getHincID(), unit.getResourceID(), c.getName(), parameter);
                         controlFound = controlFound + 1;
                     }
                 }
@@ -211,7 +216,7 @@ public class AnalyticsController implements Serializable {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    rest.querySoftwareDefinedGateways(10000, null, "true");
+                    rest.queryIoTUnits(10000, null, "true");
                 }
             }).start();
 
@@ -222,14 +227,15 @@ public class AnalyticsController implements Serializable {
                 logger.debug("Forwarding datapoint: " + sensorid);
                 // get control point
                 int controlFound = 0;
+                IoTUnit unit = guibeans.getIoTUnitByResourceid(sensorid);
                 for (ControlPoint c : guibeans.getControlpoints()) {
                     // forward all the data point to the network selected
-                    if (c.getResourceID().equals(sensorid) && c.getName().equals("connect-mqtt")) {
+                    if (unit.getResourceID().equals(sensorid) && c.getName().equals("connect-mqtt")) {
                         logger.debug("Found a control: {}", c.getName());
                         String parameter = getNetworkServiceSelectedByEndpoint().getAccessPoint().getEndpoint() + " mysensor1234";
                         logger.debug("Call control connect-mqtt of " + sensorid + " to endpoint: " + parameter);
                         c.setParameters(parameter);
-                        rest.sendControl(c.getGatewayID(), c.getResourceID(), c.getName(), parameter);
+                        rest.sendControl(unit.getHincID(), unit.getResourceID(), c.getName(), parameter);
                         controlFound = controlFound + 1;
                     }
                 }
@@ -255,7 +261,7 @@ public class AnalyticsController implements Serializable {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    rest.querySoftwareDefinedGateways(10000, null, "true");
+                    rest.queryIoTUnits(10000, null, "true");
                 }
             }).start();
         }

@@ -6,18 +6,22 @@
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import sinc.hinc.model.VirtualComputingResource.Capability;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
+import java.util.Objects;
+import javax.management.PersistentMBean;
+import sinc.hinc.model.API.HINCPersistable;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 
 /**
  *
  * @author hungld
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-public class DataPoint extends Capability {
+public class DataPoint implements HINCPersistable {
 
+    // uuid is for internal identifying, name is for human identifying
+    String iotUnitID;
+    String name;
     // temperature, humidity, GPS, image, video_streaming, state
     String datatype;
 
@@ -26,14 +30,6 @@ public class DataPoint extends Capability {
 
     // reading rate
 //    int rate;
-    /**
-     * The class which implementation functions to interact with this DataPoint
-     * Some function can be: - onStateChanged() - onBufferChanged(String
-     * bufferName, Object oldData, Object newData); - Stream<Object>
-     * getDataStream(String buffer); - setData(String bufferName, Object
-     * newData); - changeDataRate(DataPoint datapoint, Long rate);
-     */
-//    String managementClass;
     /**
      * Any model to represent how the data can be read. This can be domain
      * model, MQTT/AMPQ persistent, streamming to read/write data. See more in
@@ -55,23 +51,21 @@ public class DataPoint extends Capability {
      * In the case we have 1 parameter, it is data type. Use this for building
      * data point template.
      *
+     * @param name
      * @param dataType
      */
-    public DataPoint(String dataType) {
+    public DataPoint(String name, String dataType) {
+        this.name = name;
         this.datatype = dataType;
-//        this.uuid = gatewayID + "/" + name;
     }
 
-    public DataPoint(String resourceID, String name, String description) {
-        super(resourceID, name, description);
-//        this.uuid = gatewayID + "/" + name;
-    }
+    // to have this field only for Jackson to work properly
+    String uuid;
 
-    public DataPoint(String resourceID, String name, String description, String datatype, String measurementUnit) {
-        super(resourceID, name, description);
-        this.datatype = datatype;
-        this.measurementUnit = measurementUnit;
-//        this.uuid = gatewayID + "/" + name;
+    @Override
+    public String getUuid() {
+        this.uuid = this.iotUnitID + "/" + name;
+        return this.uuid;
     }
 
     public String getDatatype() {
@@ -139,6 +133,50 @@ public class DataPoint extends Capability {
     public void setConnectingTo(AccessPoint connectingTo) {
         this.connectingTo = connectingTo;
     }
-    
-    
+
+    public String getIotUnitID() {
+        return iotUnitID;
+    }
+
+    public void setIotUnitID(String iotUnitID) {
+        this.iotUnitID = iotUnitID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.iotUnitID);
+        hash = 89 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DataPoint other = (DataPoint) obj;
+        if (!Objects.equals(this.iotUnitID, other.iotUnitID)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
+
 }

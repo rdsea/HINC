@@ -22,15 +22,15 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 public class QueryDataPoint {
 
     public static void main(String[] args) throws Exception {
-        DataPoint template = new DataPoint("BodyTemperature");
-        SensorProps sensorProps = new SensorProps();
-        sensorProps.setRate(5);
+//        DataPoint template = new DataPoint("BodyTemperature");
+//        SensorProps sensorProps = new SensorProps();
+//        sensorProps.setRate(5);
 
-        template.getExtra().add(new ExtensibleModel(SensorProps.class));
-        ResourcesManagementAPI api = new ResourcesManagementAPIImpl();
-        HINCManagementAPI mngAPI = new HINCManagementImpl();
-        mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
-        api.queryDataPoint(3000, null);
+//        template.getExtra().add(new ExtensibleModel(SensorProps.class));
+//        ResourcesManagementAPI api = new ResourcesManagementAPIImpl();
+//        HINCManagementAPI mngAPI = new HINCManagementImpl();
+//        mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
+//        api.queryDataPoint(3000, null);
 //        List<DataPoint> datapoints = QueryManager.QueryDataPoints(template);
 
         // some obmitted code

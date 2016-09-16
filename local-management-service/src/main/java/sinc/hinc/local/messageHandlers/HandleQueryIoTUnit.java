@@ -9,45 +9,49 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Level;
+import org.slf4j.Logger;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.factory.MessageClientFactory;
 import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
-import sinc.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
+import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.local.Main;
+import sinc.hinc.model.API.WrapperIoTUnit;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  *
  * @author hungld
  */
-public class HandleQueryGateway implements HINCMessageHander {
+public class HandleQueryIoTUnit implements HINCMessageHander {
+
+    static Logger logger = HincConfiguration.getLogger();
 
     @Override
     public HincMessage handleMessage(HincMessage msg) {
-        System.out.println("Server get request for SDG information: " + msg.toJson());
+        logger.debug("Server get request for IoTUnit information: " + msg.toJson());
         Long timeStamp2 = (new Date()).getTime();
-        
-        if (msg.getPayload().contains("rescan")){
+
+        if (msg.getPayload().contains("rescan")) {
             try {
                 Main.scanOnce();
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
         }
-        
+
         Long timeStamp3 = (new Date()).getTime();
-        SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();        
-        List<SoftwareDefinedGateway> gws = gwDAO.readAll();
+        IoTUnitDAO unitDao = new IoTUnitDAO();
+        List<IoTUnit> units = unitDao.readAll();
+        logger.debug("Local service read all : " + units.size() + " items, which will be send back.");
+        WrapperIoTUnit wrapper = new WrapperIoTUnit(units);
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            String replyPayload = mapper.writeValueAsString(gws);
+            String replyPayload = mapper.writeValueAsString(wrapper);
 
-            System.out.println("Size of the reply message: " + (replyPayload.length() / 1024) + "KB");
+            logger.debug("Size of the reply message: " + (replyPayload.length() / 1024) + "KB");
             HincMessage replyMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION.toString(), HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
 
             System.out.println("Now send the message back global via topic: " + msg.getFeedbackTopic());
@@ -60,9 +64,10 @@ public class HandleQueryGateway implements HINCMessageHander {
 
 //            MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
 //            FACTORY.getMessagePublisher().pushMessage(replyMsg);
+            System.out.println("Return the IoT unit data to the callee: \n" + replyMsg);
             return replyMsg;
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(HandleQueryGateway.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
             return null;
         }
 

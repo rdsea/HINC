@@ -15,9 +15,9 @@ import sinc.hinc.abstraction.transformer.NetworkResourceTranformationInterface;
  */
 public class PluginFactory {
 
-    public static ProviderAdaptor<Object> getProviderAdaptor(String adaptorClass) {
+    public static ProviderQueryAdaptor<Object> getProviderAdaptor(String adaptorClass) {
         try {
-            ProviderAdaptor<Object> adaptor = (ProviderAdaptor<Object>) Class.forName(adaptorClass).newInstance();
+            ProviderQueryAdaptor<Object> adaptor = (ProviderQueryAdaptor<Object>) Class.forName(adaptorClass).newInstance();
             return adaptor;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             ex.printStackTrace();

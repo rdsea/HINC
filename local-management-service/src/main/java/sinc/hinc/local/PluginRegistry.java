@@ -9,12 +9,15 @@ import java.util.HashSet;
 import java.util.Set;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
-import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
+import sinc.hinc.abstraction.ResourceDriver.ProviderListenerAdaptor;
 import sinc.hinc.abstraction.transformer.ConnectivityTransformater;
 import sinc.hinc.abstraction.transformer.ControlPointTransformer;
 import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.abstraction.transformer.ExecutionEnvironmentTransformer;
+import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
+import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 
 /**
  *
@@ -24,7 +27,10 @@ public class PluginRegistry {
 
     static Logger logger = HincConfiguration.getLogger();
 
-    Set<ProviderAdaptor> adaptors = new HashSet<>();
+    Set<ProviderQueryAdaptor> adaptors = new HashSet<>();
+    Set<ProviderListenerAdaptor> listeners = new HashSet<>();
+
+    Set<IoTUnitTransformer> iotUnitTrans = new HashSet<>();
     Set<DataPointTransformer> datapointTrans = new HashSet<>();
     Set<ControlPointTransformer> controlPointTrans = new HashSet<>();
     Set<ExecutionEnvironmentTransformer> executionEnvTrans = new HashSet<>();
@@ -35,14 +41,26 @@ public class PluginRegistry {
     public PluginRegistry() {
         // initiate and create plugin instances
         try {
-            Set<Class<? extends ProviderAdaptor>> adaptorClasses = reflections.getSubTypesOf(ProviderAdaptor.class);
+
+            Set<Class<? extends ProviderQueryAdaptor>> adaptorClasses = reflections.getSubTypesOf(ProviderQueryAdaptor.class);
+            Set<Class<? extends ProviderListenerAdaptor>> listenerClasses = reflections.getSubTypesOf(ProviderListenerAdaptor.class);
+
+            Set<Class<? extends IoTUnitTransformer>> iotUnitClazz = reflections.getSubTypesOf(IoTUnitTransformer.class);
             Set<Class<? extends DataPointTransformer>> datapointsClazz = reflections.getSubTypesOf(DataPointTransformer.class);
             Set<Class<? extends ControlPointTransformer>> controlpointsClazz = reflections.getSubTypesOf(ControlPointTransformer.class);
             Set<Class<? extends ExecutionEnvironmentTransformer>> executionEnvClazz = reflections.getSubTypesOf(ExecutionEnvironmentTransformer.class);
             Set<Class<? extends ConnectivityTransformater>> connectivityClazz = reflections.getSubTypesOf(ConnectivityTransformater.class);
 
-            for (Class<? extends ProviderAdaptor> clazz : adaptorClasses) {
+            for (Class<? extends ProviderListenerAdaptor> clazz : listenerClasses) {            
+                listeners.add(clazz.newInstance());
+            }
+
+            for (Class<? extends ProviderQueryAdaptor> clazz : adaptorClasses) {
                 adaptors.add(clazz.newInstance());
+            }
+
+            for (Class<? extends IoTUnitTransformer> clazz : iotUnitClazz) {
+                iotUnitTrans.add(clazz.newInstance());
             }
 
             for (Class<? extends DataPointTransformer> clazz : datapointsClazz) {
@@ -65,6 +83,15 @@ public class PluginRegistry {
             ex.printStackTrace();
         }
 
+    }
+
+    public IoTUnitTransformer getIoTUnitTranformerByName(String name) {
+        for (IoTUnitTransformer a : iotUnitTrans) {
+            if (a.getName().equals(name)) {
+                return a;
+            }
+        }
+        return null;
     }
 
     public DataPointTransformer getDatapointTransformerByName(String name) {
@@ -103,8 +130,12 @@ public class PluginRegistry {
         return null;
     }
 
-    public Set<ProviderAdaptor> getAdaptors() {
+    public Set<ProviderQueryAdaptor> getAdaptors() {
         return adaptors;
+    }
+
+    public Set<ProviderListenerAdaptor> getListeners() {
+        return listeners;
     }
 
 }

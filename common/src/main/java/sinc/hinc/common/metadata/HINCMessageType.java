@@ -10,38 +10,7 @@ package sinc.hinc.common.metadata;
  * @author hungld
  */
 public enum HINCMessageType {
-    // broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
-// broadcast: client/global->local, collect list of local manager
-// broadcast: client/global->local, collect list of local manager, then the reply message
+    
         SYN_REQUEST,
         SYN_REPLY,
         // unicast:local->global, local manager register it self 

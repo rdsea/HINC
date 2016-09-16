@@ -5,6 +5,7 @@
  */
 package sinc.hinc.repository.DAO.orientDB;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import sinc.hinc.repository.DTOMapper.MapperFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -58,7 +59,6 @@ public class AbstractDAO<T> {
         } finally {
             manager.closeConnection();
         }
-
     }
 
     public ODocument save(T object) {
@@ -73,7 +73,7 @@ public class AbstractDAO<T> {
             if (db.getMetadata().getSchema().existsClass(className)) {
                 String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
                 List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
-//                logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
+                logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
                 if (!existed_items.isEmpty()) {
                     existed = existed_items.get(0);
                 }
@@ -84,13 +84,14 @@ public class AbstractDAO<T> {
             // merge or create new
             if (uuid != null && existed != null) {
                 existed.merge(odoc, true, false);
-//                logger.debug("Merging and saving odoc object: " + existed.toJSON());
+                logger.trace("Merging and saving odoc object: " + existed.toJSON());
                 result = db.save(existed);
             } else {
-//                logger.debug("Saving odoc object: " + odoc.toJSON());
+                logger.trace("Saving odoc object: " + odoc.toJSON());
                 result = db.save(odoc);
             }
-//            logger.debug("Save done: " + result.toJSON());
+            logger.debug("Save object done: " + uuid);
+            logger.trace("Save done: " + result.toJSON());
             return result;
         } finally {
             manager.closeConnection();
@@ -108,24 +109,24 @@ public class AbstractDAO<T> {
             logger.debug("Prepare to save " + objects.size() + " items -- " + taskID);
             for (T obj : objects) {
                 ODocument odoc = mapper.toODocument(obj);
-                logger.debug("Adaptor done, obj is: " + odoc.toJSON());
+                logger.trace("Adaptor done, obj is: " + odoc.toJSON());
                 String uuid = odoc.field("uuid");
-//                logger.debug("Ok, now saving item with uuid = " + uuid);
+                logger.trace("Ok, now saving item with uuid = " + uuid);
                 ODocument existed = null;
 
                 // Search for exist record                
                 String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
                 List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
-//                    logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
+                logger.trace("Query: " + query1 + ". Result: " + existed_items.size());
                 if (!existed_items.isEmpty()) {
-                    logger.debug("There is " + existed_items.size() + " existing item with id: " + uuid);
+                    logger.trace("There is " + existed_items.size() + " existing item with id: " + uuid);
                     for (ODocument eee : existed_items) {
-                        logger.debug("  --> Existed item: " + eee.toJSON());
+                        logger.trace("  --> Existed item: " + eee.toJSON());
                         existed = eee;
                     }
 //                        existed = existed_items.get(0);
                 } else {
-                    logger.debug("There is NO existing item with id: " + uuid);
+                    logger.trace("There is NO existing item with id: " + uuid);
                 }
 
                 // save new or update it
@@ -133,15 +134,15 @@ public class AbstractDAO<T> {
                     existed.merge(odoc, true, false);
                     ODocument r = db.save(existed);
                     result.add(r);
-                    logger.debug("Merging and saving done odoc object: " + r.toJSON());
+                    logger.trace("Merging and saving done odoc object: " + r.toJSON());
                 } else {
                     ODocument r = db.save(odoc);
                     result.add(r);
-                    logger.debug("Saving done for odoc object: " + r.toJSON());
+                    logger.trace("Saving done for odoc object: " + r.toJSON());
                 }
                 String query2 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
                 List<ODocument> existed_itemsRequery = db.query(new OSQLSynchQuery<ODocument>(query2));
-                logger.debug("  --> Save done, " + existed_itemsRequery.size() + " existed items");
+                logger.trace("  --> Save done, " + existed_itemsRequery.size() + " existed items");
                 for (ODocument oo : existed_itemsRequery) {
                     System.out.println("  ----> Item is: " + oo.toJSON());
                 }
@@ -202,6 +203,7 @@ public class AbstractDAO<T> {
     public T read(String uuid) {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
+        logger.trace("Reading DB: " + uuid);
 
         if (!db.getMetadata().getSchema().existsClass(className)) {
             logger.debug("No class exist: " + className);
@@ -216,8 +218,8 @@ public class AbstractDAO<T> {
             if (!result.isEmpty()) {
                 ODocument doc = result.get(result.size() - 1);
 
-                logger.debug("Read odoc JSON, " + result.size() + " items:" + doc.toJSON());
-                logger.debug("END READING ========================");
+//                logger.debug("Read odoc JSON, " + result.size() + " items:" + doc.toJSON());
+                logger.trace("End reading: " + uuid);
                 return mapper.fromODocument(doc);
             }
         } finally {
@@ -229,6 +231,7 @@ public class AbstractDAO<T> {
     public List<T> readWithCondition(String whereClause) {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
+        logger.trace("Read DB with condition: " + whereClause);
         if (!db.getMetadata().getSchema().existsClass(className)) {
             logger.debug("No class exist: " + className);
             return null;
@@ -236,15 +239,16 @@ public class AbstractDAO<T> {
         try {
             String query = "SELECT * FROM " + className + " WHERE " + whereClause;
             List<ODocument> result = db.query(new OSQLSynchQuery<ODocument>(query));
-            logger.debug("Query: " + query + ". Result: " + result.size());
+            logger.trace("Query: " + query + ". Result: " + result.size());
             List<T> convertedResult = new ArrayList<>();
             if (!result.isEmpty()) {
                 for (ODocument doc : result) {
-                    logger.debug("Read with conditions:" + doc.toJSON());
-                    logger.debug("END READ CONDITION====================");
+//                    logger.debug("Read with conditions:" + doc.toJSON());
+//                    logger.debug("END READ CONDITION====================");
                     convertedResult.add(mapper.fromODocument(doc));
                 }
             }
+            logger.trace("Read condition done, objects: " + result.size());
             return convertedResult;
         } finally {
             manager.closeConnection();
@@ -267,6 +271,7 @@ public class AbstractDAO<T> {
     public List<T> readAll() {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
+        logger.trace("Read all: " + className);
         if (!db.getMetadata().getSchema().existsClass(className)) {
             logger.debug("No class exist: " + className);
             return null;
@@ -279,6 +284,7 @@ public class AbstractDAO<T> {
             for (ODocument o : oResult) {
                 tResult.add(mapper.fromODocument(o));
             }
+            logger.trace("Read all done: " + className + ". Objs: " + tResult.size());
             return tResult;
         } finally {
             manager.closeConnection();

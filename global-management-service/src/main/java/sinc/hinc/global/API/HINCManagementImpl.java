@@ -61,6 +61,7 @@ public class HINCManagementImpl implements HINCManagementAPI {
         logger.debug("Start syn HINCLocal...");
         AbstractDAO<HincLocalMeta> metaDAO = new AbstractDAO<>(HincLocalMeta.class);
         if (timeout == 0) {
+            logger.debug("Timeout = 0, read HINC entity in local DB, not request is sent");
             List<HincLocalMeta> metas = metaDAO.readAll();
             return metas;
         }

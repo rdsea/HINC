@@ -5,7 +5,6 @@
  */
 package sinc.hinc.repository.DTOMapper.impl;
 
-
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
@@ -18,8 +17,8 @@ public class ConnectivityMapper implements DTOMapperInterface<CloudConnectivity>
 
     @Override
     public CloudConnectivity fromODocument(ODocument doc) {
-        CapabilityMapper capa = new CapabilityMapper(CloudConnectivity.class);
-        CloudConnectivity con = (CloudConnectivity) capa.fromODocument(doc);
+
+        CloudConnectivity con = new CloudConnectivity();
 //        con.setDefaultGateway(String.valueOf(doc.field("defaultgateway")));
 //        con.setIP(String.valueOf(doc.field("ip")));
 //        con.setMAC(String.valueOf(doc.field("mac")));
@@ -29,8 +28,9 @@ public class ConnectivityMapper implements DTOMapperInterface<CloudConnectivity>
 
     @Override
     public ODocument toODocument(CloudConnectivity object) {
-        CapabilityMapper capa = new CapabilityMapper(CloudConnectivity.class);
-        ODocument doc = capa.toODocument(object);
+
+        ODocument doc = new ODocument();
+
         doc.setClassName(CloudConnectivity.class.getSimpleName());
 //        doc.field("defaultgatewayip", object.getDefaultGateway());
 //        doc.field("ip", object.getIP());

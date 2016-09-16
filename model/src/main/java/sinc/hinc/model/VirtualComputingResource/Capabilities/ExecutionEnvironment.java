@@ -5,7 +5,6 @@
  */
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
-import sinc.hinc.model.VirtualComputingResource.Capability;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +12,7 @@ import java.util.Map;
  *
  * @author hungld
  */
-public class ExecutionEnvironment extends Capability {
+public class ExecutionEnvironment {
 
     String version;
 
@@ -26,10 +25,6 @@ public class ExecutionEnvironment extends Capability {
      */
     public ExecutionEnvironment() {
 
-    }
-
-    public ExecutionEnvironment(String resourceID, String name, String description) {
-        super(resourceID, name, description);
     }
 
     public Map<String, String> getAttributes() {

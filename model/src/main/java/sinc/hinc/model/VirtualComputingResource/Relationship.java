@@ -1,33 +1,33 @@
 package sinc.hinc.model.VirtualComputingResource;
 
-
 public class Relationship {
-    private SoftwareDefinedGateway source;
-    private SoftwareDefinedGateway target;
+
+    private IoTUnit source;
+    private IoTUnit target;
     private RelationshipType type;
 
     public Relationship() {
     }
 
-    public Relationship(SoftwareDefinedGateway source, SoftwareDefinedGateway target, RelationshipType type) {
+    public Relationship(IoTUnit source, IoTUnit target, RelationshipType type) {
         this.source = source;
         this.target = target;
         this.type = type;
     }
 
-    public SoftwareDefinedGateway getSource() {
+    public IoTUnit getSource() {
         return source;
     }
 
-    public void setSource(SoftwareDefinedGateway source) {
+    public void setSource(IoTUnit source) {
         this.source = source;
     }
 
-    public SoftwareDefinedGateway getTarget() {
+    public IoTUnit getTarget() {
         return target;
     }
 
-    public void setTarget(SoftwareDefinedGateway target) {
+    public void setTarget(IoTUnit target) {
         this.target = target;
     }
 
@@ -38,6 +38,5 @@ public class Relationship {
     public void setType(RelationshipType type) {
         this.type = type;
     }
-    
-    
+
 }

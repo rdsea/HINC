@@ -5,25 +5,30 @@
  */
 package sinc.hinc.transformer.openhab;
 
-import java.util.List;
-import sinc.hinc.abstraction.transformer.ControlPointTransformer;
 import sinc.hinc.transformer.openhab.model.Item;
-import sinc.hinc.abstraction.transformer.DataPointTransformer;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
+import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
+import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 
 /**
  *
  * @author hungld
  */
-public class TranformOpenHABInfo implements DataPointTransformer<Item>, ControlPointTransformer<Item> {
+public class TranformOpenHABInfo implements IoTUnitTransformer<Item> {
 
     @Override
-    public DataPoint updateDataPoint(Item data) {
+    public IoTUnit translateIoTUnit(Item data) {
+        IoTUnit unit = new IoTUnit();
+        unit.setResourceID(data.getName());
+        
         DataPoint dp = new DataPoint();
-        dp.setName(data.getName());
         dp.setDatatype(data.getType());
-        return dp;
+        dp.setConnectingTo(new AccessPoint("unknown"));
+        dp.setMeasurementUnit("unknown");
+        
+        unit.hasDatapoint(dp);
+        return unit;
     }
 
     @Override
@@ -31,9 +36,6 @@ public class TranformOpenHABInfo implements DataPointTransformer<Item>, ControlP
         return "openhab";
     }
 
-    @Override
-    public List<ControlPoint> updateControlPoint(Item data) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
 }

@@ -5,8 +5,11 @@
  */
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import sinc.hinc.model.VirtualComputingResource.Capability;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import sinc.hinc.model.API.HINCPersistable;
 
 /**
  * The class manage control point, which is an action on the resource. Because
@@ -15,19 +18,22 @@ import sinc.hinc.model.VirtualComputingResource.Capability;
  *
  * @author hungld
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-public class ControlPoint extends Capability {
+public class ControlPoint implements HINCPersistable {
 
     public static enum InvokeProtocol {
         GET, POST, DELETE, PUT,
-        LOCAL_EXECUTE
+        LOCAL_EXECUTE,
+        MOCK
     }
 
     public static enum ControlType {
         CONNECT_TO_NETWORK,
         SELF_CONFIGURE
     }
+    // uuid to point directly to the control. We use it for identifying in DB also
+    String iotUnitID;
 
+    String name;
     /**
      * Metadata of the control points - controlType: the control is for what
      * purpose. - condition: the condition to enable the control (e.g. this
@@ -35,8 +41,13 @@ public class ControlPoint extends Capability {
      * this time
      */
     ControlType controlType;
-    String condition;
-    String effect;
+    // condition now support state style only, not range or greater/lesser
+    Map<String, String> conditions;
+    // effect is to change state of the unit. This will be add into the "state"
+    // this will be automatic change the "state" of the unit after the 
+    //   control point is executed successfully
+    // the changing is from HINC
+    Map<String, String> effects;
 
     /**
      * How to call the capability - invokeProtocol: the way to invoke: REST or
@@ -51,25 +62,30 @@ public class ControlPoint extends Capability {
     String reference;
     String parameters = "";
 
-//    Map<String, Object> controlStates;
-    /**
-     * **************
-     * GETER/SETTER * **************
-     */
     public ControlPoint() {
-
     }
 
-    public ControlPoint(String resourceID, String name, String description) {
-        super(resourceID, name, description);
-//        this.uuid = gatewayID + "/" + resourceID + "/" + name;
-    }
-
-    public ControlPoint(String resourceID, String name, String description, InvokeProtocol invokeProtocol, String reference) {
-        super(resourceID, name, description);
+    public ControlPoint(String name, InvokeProtocol invokeProtocol, String reference) {
+        this.name = name;
         this.invokeProtocol = invokeProtocol;
         this.reference = reference;
-//        this.uuid = gatewayID + "/" + resourceID + "/" + name;
+        this.controlType = ControlType.SELF_CONFIGURE;
+    }
+
+    public ControlPoint(String name, InvokeProtocol invokeProtocol, String reference, ControlType controlType) {
+        this.name = name;
+        this.invokeProtocol = invokeProtocol;
+        this.reference = reference;
+        this.controlType = controlType;
+    }
+
+    // to have this field only for Jackson to work properly
+    String uuid;
+
+    @Override
+    public String getUuid() {
+        this.uuid = this.iotUnitID + "/" + name;
+        return this.uuid;
     }
 
     public InvokeProtocol getInvokeProtocol() {
@@ -100,24 +116,89 @@ public class ControlPoint extends Capability {
         this.controlType = controlType;
     }
 
-    public String getCondition() {
-        return condition;
+    public Map<String, String> getConditions() {
+        return conditions;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public Map<String, String> getEffects() {
+        return effects;
     }
 
-    public String getEffect() {
-        return effect;
+    public void setConditions(Map<String, String> conditions) {
+        this.conditions = conditions;
     }
 
-    public void setEffect(String effect) {
-        this.effect = effect;
+    public void setEffects(Map<String, String> effects) {
+        this.effects = effects;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String iotUnitResourceID() {
+        return iotUnitID.substring(iotUnitID.indexOf("/") + 1);
+    }
+
+    public ControlPoint hasCondition(String key, String value) {
+        if (this.conditions == null) {
+            this.conditions = new HashMap<>();
+        }
+        this.conditions.put(key, value);
+        return this;
+    }
+
+    public ControlPoint hasEffect(String key, String value) {
+        if (this.effects == null) {
+            this.effects = new HashMap<>();
+        }
+        this.effects.put(key, value);
+        return this;
     }
 
     public ControlType getControlType() {
         return controlType;
+    }
+
+    public String getIotUnitID() {
+        return iotUnitID;
+    }
+
+    public void setIotUnitID(String iotUnitID) {
+        this.iotUnitID = iotUnitID;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.iotUnitID);
+        hash = 37 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ControlPoint other = (ControlPoint) obj;
+        if (!Objects.equals(this.iotUnitID, other.iotUnitID)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
     }
 
 }

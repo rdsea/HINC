@@ -11,7 +11,7 @@ import java.util.Collection;
 import sinc.hinc.transformer.openhab.model.Item;
 import sinc.hinc.transformer.openhab.model.Items;
 import java.util.Map;
-import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
+import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 
 /**
  * Adaptor for OpenHAB Require settings.
@@ -21,7 +21,7 @@ import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
  *
  * @author hungld
  */
-public class OpenHABAdaptor implements ProviderAdaptor<Item> {
+public class OpenHABAdaptor implements ProviderQueryAdaptor<Item> {
 
     @Override
     public Collection<Item> getItems(Map<String, String> settings) {

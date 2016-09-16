@@ -5,7 +5,6 @@
  */
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
-import sinc.hinc.model.VirtualComputingResource.Capability;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 
@@ -14,7 +13,7 @@ import sinc.hinc.model.VirtualNetworkResource.NetworkService;
  *
  * @author hungld
  */
-public class CloudConnectivity extends Capability {
+public class CloudConnectivity {
 
     NetworkService.NetworkServiceType networkType;
 
@@ -41,9 +40,6 @@ public class CloudConnectivity extends Capability {
     public CloudConnectivity() {
     }
 
-    public CloudConnectivity(String resourceID, String name, String description) {
-        super(resourceID, name, description);
-    }
 
 //    public CloudConnectivity(String resourceID, String name, String description, String IP, String MAC) {
 //        super(resourceID, name, description);

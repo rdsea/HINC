@@ -5,29 +5,31 @@
  */
 package sinc.hinc.local;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import sinc.hinc.communication.factory.MessageClientFactory;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
-import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
-import sinc.hinc.abstraction.transformer.ConnectivityTransformater;
-import sinc.hinc.abstraction.transformer.ControlPointTransformer;
-import sinc.hinc.abstraction.transformer.DataPointTransformer;
-import sinc.hinc.abstraction.transformer.ExecutionEnvironmentTransformer;
+import sinc.hinc.abstraction.ResourceDriver.ProviderListenerAdaptor;
+import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.common.utils.HincUtils;
 import sinc.hinc.communication.processing.HINCMessageListener;
 import sinc.hinc.local.messageHandlers.HandleControl;
-import sinc.hinc.local.messageHandlers.HandleQueryGateway;
+import sinc.hinc.local.messageHandlers.HandleQueryIoTUnit;
 import sinc.hinc.local.messageHandlers.HandleQueryVNF;
 import sinc.hinc.local.messageHandlers.HandleSyn;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
-import sinc.hinc.repository.DAO.orientDB.SoftwareDefinedGatewayDAO;
+import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
+import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
+import sinc.hinc.communication.processing.HincMessage;
 
 /**
  *
@@ -39,6 +41,8 @@ public class Main {
     static final MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
     static HINCMessageListener LISTENER = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
     static final String DEFAULT_SOURCE_SETTINGS = "./sources.conf";
+    static PluginRegistry pluginReg = new PluginRegistry();
+
     /**
      * Below is some metadata of the Local Management Service
      */
@@ -47,60 +51,65 @@ public class Main {
     static int globalInterval;
     //Any other meta data of the environment where collector is deployed e.g. machine name, uname -a, cpu, max ram.     
     Map<String, String> meta;
+    static List<String> enabledAdaptors = new ArrayList<>();
 
-    {
-        globalInterval = Integer.parseInt(PropertiesManager.getParameter("interval", DEFAULT_SOURCE_SETTINGS));
+    private static void init() {
+        globalInterval = Integer.parseInt(PropertiesManager.getParameter("global.interval", DEFAULT_SOURCE_SETTINGS));
+        String enables = PropertiesManager.getParameter("global.enable", DEFAULT_SOURCE_SETTINGS);
+
+        logger.debug("Enabled adaptors are: " + enables + ". Slit it: " + Arrays.toString(enables.split(",")));
+
+        for (String s : enables.split(",")) {
+            enabledAdaptors.add(s.trim());
+            logger.debug("Enabled adaptor: " + s);
+        }
+    }
+
+    public static void listen() {
+        logger.info("Start to listen to the device changes ...");
+        for (ProviderListenerAdaptor observer : pluginReg.getListeners()) {
+
+            if (enabledAdaptors.contains(observer.getName().trim())) {
+                String aName = observer.getName();
+                logger.info("Now run the listener: " + aName);
+                IoTUnitTransformer unitTrans = pluginReg.getIoTUnitTranformerByName(aName);
+                observer.listen(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS), unitTrans, new IoTUnitUpdateProcessor(HincConfiguration.getMyUUID()));
+            }
+        }
     }
 
     public static void scanOnce() throws InterruptedException {
-        PluginRegistry pluginReg = new PluginRegistry();
-        SoftwareDefinedGateway gw = new SoftwareDefinedGateway();
-        gw.setUuid(HincConfiguration.getMyUUID());
-        gw.setName(HincUtils.getHostName());
-        logger.debug("We have {} adaptor... now will check each one", pluginReg.getAdaptors().size());
-        for (ProviderAdaptor adaptor : pluginReg.getAdaptors()) {
-            String aName = adaptor.getName();
-            logger.info("Querying provider: " + aName);
-            DataPointTransformer dpt = pluginReg.getDatapointTransformerByName(aName);
-            ControlPointTransformer cpt = pluginReg.getControlpointTransformerByName(aName);
-            ExecutionEnvironmentTransformer eet = pluginReg.getExecutionEnvTransformerByName(aName);
-            ConnectivityTransformater cct = pluginReg.getConnectivityTransformerByName(aName);
 
-            Collection<Object> domains = adaptor.getItems(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
-            logger.debug("We will check {} items.." + domains.size());
-            for (Object domain : domains) {
-                logger.debug("Checking item: " + domain.toString());
-                if (dpt != null) {
-                    logger.debug("Datapoint translation is available: " + dpt.getName());
-                    DataPoint dp = dpt.updateDataPoint(domain);
-                    logger.debug("Got a datapoint: " + dp.getName() + ", data api: " + dp.getDataApi());
-                    gw.hasCapability(dpt.updateDataPoint(domain));
-                } else {
-                    logger.debug("Datapoint translation is NOT available !");
+        logger.debug("We have {} adaptor... now will check each one", pluginReg.getAdaptors().size());
+        Set<IoTUnit> units = new HashSet<>();
+        for (ProviderQueryAdaptor adaptor : pluginReg.getAdaptors()) {
+            if (enabledAdaptors.contains(adaptor.getName())) {
+                String aName = adaptor.getName();
+                logger.info("Querying provider: " + aName);
+
+                IoTUnitTransformer unitTrans = pluginReg.getIoTUnitTranformerByName(aName);
+
+                Collection<Object> domains = adaptor.getItems(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
+                logger.debug("We will check {} items.." + domains.size());
+                for (Object domain : domains) {
+                    logger.debug("Checking item: " + domain.toString());
+                    IoTUnit unit = unitTrans.translateIoTUnit(domain);
+                    unit.setHincID(HincConfiguration.getMyUUID());
+                    logger.debug("HINC UUID: " + unit.getHincID() + ", unit  uuid: " + unit.getUuid());
+                    units.add(unit);
                 }
-                if (cpt != null) {
-                    logger.debug("Controlpoint translation is available: " + cpt.getName());
-                    gw.hasCapabilities(cpt.updateControlPoint(domain));
-                } else {
-                    logger.debug("Controlpoint translation is NOT available !");
-                }
-                if (eet != null) {
-                    gw.hasCapability(eet.updateExecutionEnvironment(domain));
-                }
-                if (cct != null) {
-                    gw.hasCapability(cct.updateCloudConnectivity(domain));
-                }
+                Thread.sleep(1000); // a short break between sources
             }
-            Thread.sleep(1000); // a short break between sources
         }
 
-        System.out.println("Transform GW done, number of datapoint: " + gw.getDataPoints().size() + ", controlpoint:" + gw.getControlPoints().size());
-        SoftwareDefinedGatewayDAO gwDAO = new SoftwareDefinedGatewayDAO();
-        gwDAO.save(gw);
+        System.out.println("Transforming IoTUnit is done, number of IoT Units: " + units.size());
+        IoTUnitDAO unitDAO = new IoTUnitDAO();
+        unitDAO.saveAll(units);
     }
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting HINC Local Management Service...");
+        init();
         Long time1 = (new Date()).getTime();
         DatabaseUtils.initDB();
 
@@ -116,8 +125,8 @@ public class Main {
         String privaTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
 
         LISTENER.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
-        LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
-        LISTENER.addListener(privaTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryGateway());
+        LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
+        LISTENER.addListener(privaTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
         LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
         LISTENER.addListener(privaTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
 
@@ -137,6 +146,8 @@ public class Main {
         logger.info("Local management service startup in " + ((double) time3 - (double) time2) / 1000 + " seconds, uuid: " + HincConfiguration.getMyUUID());
         logger.info("Starting to interact with providers ...");
 
+        listen();
+
         while (true) {
             scanOnce();
 
@@ -155,6 +166,10 @@ public class Main {
                 }
             }
         }
+
+        // try to register itself
+        HincMessage synMsg = new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), "", HincConfiguration.getLocalMeta().toJson());
+        FACTORY.getMessagePublisher().pushMessage(synMsg);
 
         // query 1 time or continuously
 //        if (source.getInterval() == 0) {

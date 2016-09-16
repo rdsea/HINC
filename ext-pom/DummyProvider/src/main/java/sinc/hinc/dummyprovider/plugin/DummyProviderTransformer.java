@@ -6,24 +6,25 @@
 package sinc.hinc.dummyprovider.plugin;
 
 import sinc.hinc.abstraction.transformer.DataPointTransformer;
+import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.dummyprovider.provider.DummyMetadataItem;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  *
  * @author hungld
  */
-public class DummyProviderTransformer implements DataPointTransformer<DummyMetadataItem> {
+public class DummyProviderTransformer implements IoTUnitTransformer<DummyMetadataItem> {
 
     @Override
-    public DataPoint updateDataPoint(DummyMetadataItem data) {
-        DataPoint dp = new DataPoint();
-        dp.setName(data.getName());
+    public IoTUnit translateIoTUnit(DummyMetadataItem data) {
+        IoTUnit unit = new IoTUnit();
+        unit.setResourceID(data.getId());
+        DataPoint dp = new DataPoint(data.getName(), data.getType());
         dp.setMeasurementUnit(data.getUnit());
-        dp.setDescription(data.getDescription());
-        dp.setDatatype(data.getType());
-        dp.setResourceID(data.getId());
-        return dp;
+        unit.hasDatapoint(dp);
+        return unit;
     }
 
     @Override

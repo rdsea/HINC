@@ -46,7 +46,7 @@ public class AMQPPublish extends AMQPConnector implements MessagePublishInterfac
     public void pushMessage(HincMessage content) {
         connect();
 
-        logger.debug("Start publishing message {} on topic {} ", content.getMsgType(), content.getTopic());
+        logger.debug("Start publishing message {} on topic {}, stamp/uuid: {}/{}", content.getMsgType(), content.getTopic(), content.getTimeStamp(), content.getUuid());
         if (content.getPayload() != null && content.getPayload().length() < 2048) {
             logger.debug("Content: " + content);
         }
