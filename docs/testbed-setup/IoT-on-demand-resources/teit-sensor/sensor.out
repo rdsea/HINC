@@ -1,0 +1,37 @@
+15:45:19 DEBUG                 Main:58 - Starting sensor...
+15:45:19 DEBUG                 Main:108 - (Re)loadding settings...
+15:45:19 DEBUG                 Main:115 - The rate is update to: 3000
+15:45:19 DEBUG                 Main:125 - Checking.. Old input: null. New input class:teit.sensor.CSVFile.CSVDataAdaptor
+15:45:19 DEBUG                 Main:127 - InputAdaptor is changed. Initiate new input adaptor : teit.sensor.CSVFile.CSVDataAdaptor
+15:45:19 DEBUG       CSVDataAdaptor:37 - CSV File:sensor.data
+15:45:19 DEBUG       CSVDataAdaptor:42 - Keyset:[timestamp, humidity]
+15:45:19 DEBUG                 Main:135 - Checking.. Old output: null. New output class:teit.sensor.MQTT.MQTTOutput
+15:45:19 DEBUG                 Main:137 - OutputAdaptor is changed. Initiate new output adaptor : teit.sensor.CSVFile.CSVDataAdaptor
+15:45:20 DEBUG           MQTTOutput:39 - MQTTAdaptor -- broker: tcp://localhost:1883 -- topic: mysensor1234
+15:45:20 DEBUG                 Main:71 - Starting to read data .... 
+
+15:45:20 DEBUG       CSVDataAdaptor:64 - CSV read one line: 2012-10-23 19:56:00,35
+15:45:20 DEBUG                 Main:74 - Data item is read:{humidity=35, timestamp=2012-10-23 19:56:00}
+15:45:20 DEBUG           MQTTOutput:66 - Published: {sensortype=humidity, humidity=35, timestamp=2012-10-23 19:56:00, sensorid=123}
+15:45:20 DEBUG                 Main:96 - Sleeping for 3000 mili-seconds ...
+
+15:45:23 DEBUG       CSVDataAdaptor:64 - CSV read one line: 2012-10-23 19:57:00,35.1636363636
+15:45:23 DEBUG                 Main:74 - Data item is read:{humidity=35.1636363636, timestamp=2012-10-23 19:57:00}
+15:45:23 DEBUG           MQTTOutput:66 - Published: {sensortype=humidity, humidity=35.1636363636, timestamp=2012-10-23 19:57:00, sensorid=123}
+15:45:23 DEBUG                 Main:96 - Sleeping for 3000 mili-seconds ...
+
+15:45:26 DEBUG       CSVDataAdaptor:64 - CSV read one line: 2012-10-23 19:58:00,35.4703703704
+15:45:26 DEBUG                 Main:74 - Data item is read:{humidity=35.4703703704, timestamp=2012-10-23 19:58:00}
+15:45:26 DEBUG           MQTTOutput:66 - Published: {sensortype=humidity, humidity=35.4703703704, timestamp=2012-10-23 19:58:00, sensorid=123}
+15:45:26 DEBUG                 Main:96 - Sleeping for 3000 mili-seconds ...
+
+15:45:29 DEBUG       CSVDataAdaptor:64 - CSV read one line: 2012-10-23 19:59:00,35.6769230769
+15:45:29 DEBUG                 Main:74 - Data item is read:{humidity=35.6769230769, timestamp=2012-10-23 19:59:00}
+15:45:29 DEBUG           MQTTOutput:66 - Published: {sensortype=humidity, humidity=35.6769230769, timestamp=2012-10-23 19:59:00, sensorid=123}
+15:45:29 DEBUG                 Main:96 - Sleeping for 3000 mili-seconds ...
+
+15:45:32 DEBUG       CSVDataAdaptor:64 - CSV read one line: 2012-10-23 20:00:00,35.6821428571
+15:45:32 DEBUG                 Main:74 - Data item is read:{humidity=35.6821428571, timestamp=2012-10-23 20:00:00}
+15:45:32 DEBUG           MQTTOutput:66 - Published: {sensortype=humidity, humidity=35.6821428571, timestamp=2012-10-23 20:00:00, sensorid=123}
+15:45:32 DEBUG                 Main:96 - Sleeping for 3000 mili-seconds ...
+

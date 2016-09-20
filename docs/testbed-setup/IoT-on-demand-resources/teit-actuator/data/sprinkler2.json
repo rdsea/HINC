@@ -1,0 +1,29 @@
+{
+  "name" : "sprinkler-2",
+  "type" : "Sprinkler",
+  "context" : { "state" : "OFF" },
+  "controls" : {
+    "0" : {
+      "name" : "SP-ON",
+      "parameters" : null,
+      "conditions" : {
+        "state" : "OFF"
+      },
+      "effects" : {
+        "state" : "ON"
+      },
+      "command" : null
+    },
+    "1" : {
+      "name" : "SP-OFF",
+      "parameters" : null,
+      "conditions" : {
+        "state" : "ON"
+      },
+      "effects" : {
+        "state" : "OFF"
+      },
+      "command" : null
+    }
+  }
+}
