@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import sinc.hinc.common.metadata.HINCMessageType;
 
 /**
  * This class define type of messages between GLOBAL and LOCAL resource manager
@@ -85,6 +86,31 @@ public class HincMessage {
         this.payload = "";
         this.timeStamp = System.currentTimeMillis();
         this.uuid = UUID.randomUUID().toString().substring(0, 6);
+    }
+
+    public HincMessage hasType(HINCMessageType type) {
+        this.msgType = type.toString();
+        return this;
+    }
+
+    public HincMessage hasSenderID(String senderID) {
+        this.senderID = senderID;
+        return this;
+    }
+
+    public HincMessage hasTopic(String topic) {
+        this.topic = topic;
+        return this;
+    }
+
+    public HincMessage hasFeedbackTopic(String feedbackTopic) {
+        this.feedbackTopic = feedbackTopic;
+        return this;
+    }
+
+    public HincMessage hasPayload(String payload) {
+        this.payload = payload;
+        return this;
     }
 
     public String toJson() {

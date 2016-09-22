@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.factory.MessageClientFactory;
 import sinc.hinc.communication.factory.MessageSubscribeInterface;
@@ -83,21 +84,27 @@ public class HINCMessageListener {
             MessageSubscribeInterface subscribeClientBroadCast = FACTORY.getMessageSubscriber(new HINCMessageHander() {
                 @Override
                 public HincMessage handleMessage(HincMessage msg) {
-                    String msgTopic = msg.getTopic();
-                    String msgType = msg.getMsgType();
-                    HINCMessageHander handlerMethod = getHandlerMethod(msgTopic, msgType);
-                    if (handlerMethod != null) {
-                        logger.debug("Get message: {}, topic: {}. Found a handler: {}", msgType, msgTopic, handlerMethod.getClass().getSimpleName());
-
-                        HincMessage replyMsg = handlerMethod.handleMessage(msg);
-                        if (replyMsg != null) {
-                            MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-                            FACTORY.getMessagePublisher().pushMessage(replyMsg);
-                            logger.debug("Handle message {} done and a reply is pushed bash at topic {}", msg.getMsgType(), replyMsg.getTopic());
+                    try {
+                        String msgTopic = msg.getTopic();
+                        String msgType = msg.getMsgType();
+                        HINCMessageHander handlerMethod = getHandlerMethod(msgTopic, msgType);
+                        if (handlerMethod != null) {
+//                        logger.debug("Get message: {}, topic: {}. Found a handler: {}", msgType, msgTopic, handlerMethod.getClass().getSimpleName());
+                            System.out.println("Get message: " + msgType + ", topic: " + msgTopic + ", found handler: " + handlerMethod.getClass().getSimpleName());
+                            HincMessage replyMsg = handlerMethod.handleMessage(msg);
+                            if (replyMsg != null) {
+                                MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+                                FACTORY.getMessagePublisher().pushMessage(replyMsg);
+                                logger.debug("Handle message {} done and a reply is pushed bash at topic {}", msg.getMsgType(), replyMsg.getTopic());
+                            }
+                            return replyMsg;
+                        } else {
+//                        logger.error("Get message: {}, topic: {}, but NO handler is found !", msgType, msgTopic);
+                            System.out.println("Get message: " + msgType + "on topic: " + msgTopic + ", but no handler found!");
+                            return new HincMessage(HINCMessageType.MISC.toString(), "", "");
                         }
-                        return replyMsg;
-                    } else {
-                        logger.error("Get message: {}, topic: {}, but NO handler is found !", msgType, msgTopic);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                         return null;
                     }
                 }
@@ -105,7 +112,8 @@ public class HINCMessageListener {
 
             subscribeClientBroadCast.subscribe(topic);
             alreadyListening.add(topic);
-            logger.debug("Listener is listening on the topic: {}", topic);
+//            logger.debug("Listener is listening on the topic: {}", topic);
+            System.out.println("Listener is listening on the topic: " + topic);
         }
 
     }

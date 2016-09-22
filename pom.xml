@@ -27,6 +27,7 @@
         <module>repository</module>
         <module>global-management-service</module>
         <module>common</module>
+        <module>docs/DemoApplication</module>
     </modules>
     <dependencyManagement>
         <dependencies>

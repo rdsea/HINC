@@ -23,7 +23,10 @@ import com.rabbitmq.client.ConsumerCancelledException;
 import com.rabbitmq.client.QueueingConsumer;
 import com.rabbitmq.client.ShutdownSignalException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.communication.processing.HINCMessageHander;
 
@@ -88,6 +91,7 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
             //logger.debug("Inside the queue subscribing thread, process is continueing...");
             try {
                 while (true) {
+
                     logger.debug("Looping and waiting for the message, timeout: " + timeout);
 
                     QueueingConsumer.Delivery delivery;
@@ -102,34 +106,38 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
                         break;
                     }
 
-                    String mm = new String(delivery.getBody());                    
-                    
+                    String mm = new String(delivery.getBody());
+
                     ObjectMapper mapper = new ObjectMapper();
                     HincMessage em = (HincMessage) mapper.readValue(mm, HincMessage.class);
                     this.topic = em.getTopic();
                     //logger.debug("A message arrived. From: " + em.getFromSalsa() + ". MsgType: " + em.getMsgType() + ". Payload: " + em.getPayload());
-                    logger.debug("A message arrived. From: " + em.getSenderID() + ". MsgType: " + em.getMsgType() +". Stamp/UUID: " + em.getTimeStamp() +"/" + em.getUuid());
+                    logger.debug("A message arrived. From: " + em.getSenderID() + ". MsgType: " + em.getMsgType() + ". Stamp/UUID: " + em.getTimeStamp() + "/" + em.getUuid());
                     new Thread(new HandlingThread(handler, em)).start();
-                    logger.debug("If handle message done, it must exit and show this");
+                    logger.debug("If handle message done, it must exit and show this, topic: " + topic);
                     // quit if timeout
                     if (timeout > 0) {
                         logger.debug("YES, timeout > 0");
                         long currentTime = (new Date()).getTime();
-                        logger.debug("Miliseconds left before unsubscribing: " + currentTime);
+                        logger.debug("Miliseconds left before unsubscribing: " + currentTime + ", topic: " + topic);
                         if (currentTime - startTime > timeout) {
                             logger.debug("RETURN BECAUSE OF TIMEOUT !");
                             break;
                         }
                     }
+
                 }
-                logger.debug("The loop that wait the message is over !");
-                consumer.getChannel().getConnection().close();
+                logger.debug("The loop that wait the message is over ! Topic: " + topic);                
+//                consumer.getChannel().getConnection().close();
+                logger.debug("ThreadQueueSubscribe should exit here ! Topic: " + topic);
             } catch (IOException ex) {
+                ex.printStackTrace();
                 logger.error("Cannot subscribe to topic: {}", topic, ex);
             } catch (InterruptedException | ShutdownSignalException | ConsumerCancelledException ex) {
+                ex.printStackTrace();
                 logger.error("Interrupt during the subscribing to topic: {}", topic, ex);
             }
-            //logger.debug("ThreadQueueSubscribe should exit here !");
+
         }
     }
 

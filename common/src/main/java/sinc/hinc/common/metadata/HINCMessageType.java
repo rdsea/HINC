@@ -29,5 +29,8 @@ public enum HINCMessageType {
         SUBSCRIBE_SDGATEWAY_LOCAL,
         SUBSCRIBE_SDGATEWAY_LOCAL_SET_PARAM,
         // unicast: local/global --> client: send back the response
-        UPDATE_INFORMATION
+        UPDATE_INFORMATION,
+        
+        // MISC
+        MISC
 }

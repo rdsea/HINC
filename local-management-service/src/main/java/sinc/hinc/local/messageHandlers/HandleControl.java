@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.factory.MessageClientFactory;
+import sinc.hinc.communication.payloads.ControlResult;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.local.Main;
@@ -28,22 +29,23 @@ public class HandleControl implements HINCMessageHander {
         String controlPointUUID = message.getPayload();
         AbstractDAO<ControlPoint> cpDAO = new AbstractDAO<>(ControlPoint.class);
         ControlPoint cp = cpDAO.read(controlPointUUID);
-        String result;
+        ControlResult result;
         if (cp != null) {
             switch (cp.getInvokeProtocol()) {
                 case LOCAL_EXECUTE:
                     cp.setParameters(message.getExtra().get("param"));
-                    result = LocalExecutor.execute(cp);
+                    LocalExecutor executor = new LocalExecutor();
+                    result = executor.execute(cp);
                     break;
                 default:
-                    result = "Method " + cp.getInvokeProtocol() + " in the control point is not supported to execute yet !";
+                    result = new ControlResult(ControlResult.CONTROL_RESULT.EXECUTOR_NOT_SUPPORT, 0, "Method " + cp.getInvokeProtocol() + " in the control point is not supported to execute yet !");
                     break;
             }
         } else {
-            result = "Cannot find control point with ID: " + controlPointUUID;
-        }        
+            result = new ControlResult(ControlResult.CONTROL_RESULT.COMMAND_NOT_FOUND, 0, "Cannot find control point with ID: " + controlPointUUID);
+        }
 
-        return new HincMessage(HINCMessageType.CONTROL_RESULT.toString(), HincConfiguration.getMyUUID(), message.getFeedbackTopic(), "", result);
+        return new HincMessage(HINCMessageType.CONTROL_RESULT.toString(), HincConfiguration.getMyUUID(), message.getFeedbackTopic(), "", result.toJson());
 //        MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
 //        FACTORY.getMessagePublisher().pushMessage(replyMsg);
 //        return replyMsg;

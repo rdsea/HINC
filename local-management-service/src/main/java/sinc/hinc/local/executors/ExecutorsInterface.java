@@ -5,6 +5,7 @@
  */
 package sinc.hinc.local.executors;
 
+import sinc.hinc.communication.payloads.ControlResult;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 
 /**
@@ -13,7 +14,7 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
  */
 public interface ExecutorsInterface {
 
-    public String execute(ControlPoint controlPoint);
+    public ControlResult execute(ControlPoint controlPoint);
 
 
 }

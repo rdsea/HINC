@@ -45,13 +45,20 @@ public class TeitActuatorAdaptorPush implements ProviderListenerAdaptor {
             TimerTask task = new FileWatcherWithTimer(new File(entry.getKey())) {
                 @Override
                 protected void onChange(File file) {
-                    System.out.println("The actuator file is changed: " + file.getAbsolutePath());
-                    String actuatorJar = entry.getKey().replace("actuator.json", "actuator.sh");
-                    EnumActuator actuator = EnumActuator.fromJsonFile(new File(entry.getKey()));
-                    System.out.println("Actuator: " + actuator.getName() + " change, adapting..");
-                    actuator.setActuatorJar(actuatorJar);
-                    IoTUnit unit = tranformer.translateIoTUnit(actuator);
-                    processor.process(unit);
+                    try {
+                        System.out.println("The actuator file is changed: " + file.getAbsolutePath());
+                        String actuatorJar = entry.getKey().replace("actuator.json", "actuator.sh");
+                        EnumActuator actuator = EnumActuator.fromJsonFile(new File(entry.getKey()));
+                        System.out.println("Actuator: " + actuator.getName() + " change, adapting..");
+                        actuator.setActuatorJar(actuatorJar);
+                        IoTUnit unit = tranformer.translateIoTUnit(actuator);
+                        processor.process(unit);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Some error has occur... TEIT plugin resets its timestamp to check again...");
+                        // reset timestamp to retry
+                        this.setTimeStamp(0);
+                    }
                 }
             };
             Timer timer = new Timer();
