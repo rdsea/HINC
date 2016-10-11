@@ -9,17 +9,18 @@
     <artifactId>ext-pom</artifactId>
     <packaging>pom</packaging>
     <modules>
-       <!-- <module>TransformAndroid</module>
-        <module>TransformOpenIoTSensor</module>
-        <module>TransformWeaveRouter</module>
-        <module>TranformSDSensor</module>
-        <module>TranformIoTivity</module>
-         <module>TransformFiwareContextBroker</module>
-          <module>OpenDaylightPlugin</module>
-          <module>EnvironmentProfile</module>
-        -->
+        <!-- <module>TransformAndroid</module>
+      <module>TransformOpenIoTSensor</module>
+      <module>TransformWeaveRouter</module>
+      <module>TranformSDSensor</module>
+      <module>TranformIoTivity</module>
+       <module>TransformFiwareContextBroker</module>
+        <module>OpenDaylightPlugin</module>-->
+        <module>EnvironmentProfile</module>
+        
         <module>TransformOpenHAB</module>       
         <module>DummyProvider</module>       
         <module>TEITPlugin</module>
+        <module>Calvin</module>
     </modules>
 </project>

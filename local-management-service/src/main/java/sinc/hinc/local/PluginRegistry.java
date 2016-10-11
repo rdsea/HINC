@@ -18,6 +18,8 @@ import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
+import sinc.hinc.abstraction.ResourceDriver.ServiceDetector;
+import sinc.hinc.model.VirtualComputingResource.MicroService;
 
 /**
  *
@@ -36,6 +38,8 @@ public class PluginRegistry {
     Set<ExecutionEnvironmentTransformer> executionEnvTrans = new HashSet<>();
     Set<ConnectivityTransformater> connectivityTrans = new HashSet<>();
 
+    Set<ServiceDetector> serviceDetectors = new HashSet<>();
+
     Reflections reflections = new Reflections("sinc.hinc");
 
     public PluginRegistry() {
@@ -51,7 +55,9 @@ public class PluginRegistry {
             Set<Class<? extends ExecutionEnvironmentTransformer>> executionEnvClazz = reflections.getSubTypesOf(ExecutionEnvironmentTransformer.class);
             Set<Class<? extends ConnectivityTransformater>> connectivityClazz = reflections.getSubTypesOf(ConnectivityTransformater.class);
 
-            for (Class<? extends ProviderListenerAdaptor> clazz : listenerClasses) {            
+            Set<Class<? extends ServiceDetector>> serviceDetectorClazz = reflections.getSubTypesOf(ServiceDetector.class);
+
+            for (Class<? extends ProviderListenerAdaptor> clazz : listenerClasses) {
                 listeners.add(clazz.newInstance());
             }
 
@@ -77,6 +83,11 @@ public class PluginRegistry {
 
             for (Class<? extends ConnectivityTransformater> clazz : connectivityClazz) {
                 connectivityTrans.add(clazz.newInstance());
+            }
+
+            logger.debug("========> PluginRegistry: register service detector: " + serviceDetectorClazz.size());
+            for (Class<? extends ServiceDetector> clazz : serviceDetectorClazz) {
+                serviceDetectors.add(clazz.newInstance());
             }
         } catch (InstantiationException | IllegalAccessException ex) {
             logger.error("Cannot instantiate the instance of a plugin");
@@ -128,6 +139,10 @@ public class PluginRegistry {
             }
         }
         return null;
+    }
+
+    public Set<ServiceDetector> getServiceDetectors() {
+        return serviceDetectors;
     }
 
     public Set<ProviderQueryAdaptor> getAdaptors() {

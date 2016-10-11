@@ -115,11 +115,11 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         }
         if (hincUUID != null && !hincUUID.isEmpty() && !hincUUID.trim().equals("null")) {
             logger.debug("Trying to query HINC Local with ID: " + hincUUID);
-            String unitsWrapperJson = comMng.synCall(new HincMessage(HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getHINCPrivateTopic(hincUUID), feedBackTopic, payload));
+            String unitsWrapperJson = comMng.synCall(new HincMessage(HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getHINCPrivateTopic(hincUUID), feedBackTopic, payload));
             WrapperIoTUnit wrapper = new WrapperIoTUnit(unitsWrapperJson);
             result.addAll(wrapper.getUnits());
         } else {
-            HincMessage queryMessage = new HincMessage(HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
+            HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
             comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
                 long latestTime = 0;
                 long quantity = 0;

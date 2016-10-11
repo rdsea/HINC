@@ -11,6 +11,7 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
+import sinc.hinc.model.VirtualComputingResource.MicroService;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DTOMapper.impl.ConnectivityMapper;
@@ -19,6 +20,7 @@ import sinc.hinc.repository.DTOMapper.impl.DataPointMapper;
 import sinc.hinc.repository.DTOMapper.impl.ExecutionEnvironmentMapper;
 import sinc.hinc.repository.DTOMapper.impl.HINCMetaMapper;
 import sinc.hinc.repository.DTOMapper.impl.IoTUnitMapper;
+import sinc.hinc.repository.DTOMapper.impl.MicroServiceMapper;
 import sinc.hinc.repository.DTOMapper.impl.NetworkServiceMapper;
 import sinc.hinc.repository.DTOMapper.impl.VNFMapper;
 
@@ -35,12 +37,14 @@ public class MapperFactory {
 //        if (clazz.equals(SoftwareDefinedGateway.class)) {
 //            return new SoftwareDefinedGatewayMapper();
 //        }
-
-
         if (clazz.equals(IoTUnit.class)) {
             return new IoTUnitMapper();
         }
-        
+
+        if (clazz.equals(MicroService.class)) {
+            return new MicroServiceMapper();
+        }
+
         if (clazz.equals(DataPoint.class)) {
             return new DataPointMapper();
         }
@@ -64,8 +68,8 @@ public class MapperFactory {
         if (clazz.equals(HincLocalMeta.class)) {
             return new HINCMetaMapper();
         }
-        
-        if (clazz.equals(NetworkService.class)){
+
+        if (clazz.equals(NetworkService.class)) {
             return new NetworkServiceMapper();
         }
 

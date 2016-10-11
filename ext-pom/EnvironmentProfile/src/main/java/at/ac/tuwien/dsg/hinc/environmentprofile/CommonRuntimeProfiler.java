@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import sinc.hinc.abstraction.ResourceDriver.ProviderAdaptor;
+import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 import sinc.hinc.abstraction.transformer.ExecutionEnvironmentTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 
@@ -21,7 +21,7 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironmen
  *
  * @author hungld
  */
-public class CommonRuntimeProfiler implements ProviderAdaptor<ExecutionEnvironment>, ExecutionEnvironmentTransformer<ExecutionEnvironment> {
+public class CommonRuntimeProfiler implements ProviderQueryAdaptor<ExecutionEnvironment>, ExecutionEnvironmentTransformer<ExecutionEnvironment> {
 
     @Override
     public Collection<ExecutionEnvironment> getItems(Map<String, String> settings) {
@@ -31,7 +31,6 @@ public class CommonRuntimeProfiler implements ProviderAdaptor<ExecutionEnvironme
         ExecutionEnvironment systemRuntime = new ExecutionEnvironment();
         systemRuntime.setName("sh");
         systemRuntime.setDescription("System runtime environment");
-        Map<String, String> env = System.getenv();
         systemRuntime.hasAttribute("os", System.getProperty("os.name"))
                 .hasAttribute("arc", System.getProperty("os.arch"))
                 .hasAttribute("version", System.getProperty("os.version"))

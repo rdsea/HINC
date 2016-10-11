@@ -16,10 +16,11 @@ public enum HINCMessageType {
         // unicast:local->global, local manager register it self 
         local_register,
         // unicast: Client->local, query information from local regarding to SD Gateway or NVF
-        RPC_QUERY_SDGATEWAY_LOCAL,
-        RPC_QUERY_NFV_LOCAL,
+        QUERY_GATEWAY_LOCAL,
+        QUERY_MICRO_SERVICE_LOCAL,
+        QUERY_NFV_LOCAL,
         // unicast: Client->global, query information from global (which include relationship)
-        RPC_QUERY_INFORMATION_GLOBAL,
+        QUERY_INFORMATION_GLOBAL,
         // unicast: Client->local, send a control command to local
 //        RPC_CONTROL_LOCAL,
         // unicast: Client->global, send a control command to global
@@ -30,6 +31,7 @@ public enum HINCMessageType {
         SUBSCRIBE_SDGATEWAY_LOCAL_SET_PARAM,
         // unicast: local/global --> client: send back the response
         UPDATE_INFORMATION,
+        UPDATE_INFORMATION_MICRO_SERVICE,
         
         // MISC
         MISC

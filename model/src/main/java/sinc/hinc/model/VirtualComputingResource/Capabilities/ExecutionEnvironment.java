@@ -13,6 +13,8 @@ import java.util.Map;
  * @author hungld
  */
 public class ExecutionEnvironment {
+    String name;
+    String description;
 
     String version;
 
@@ -47,5 +49,31 @@ public class ExecutionEnvironment {
         }
         return this;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+    
+    
 
 }

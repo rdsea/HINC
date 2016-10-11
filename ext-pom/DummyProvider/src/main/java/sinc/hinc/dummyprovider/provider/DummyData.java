@@ -19,7 +19,7 @@ public class DummyData {
     List<DummyMetadataItem> dataItems = new ArrayList<>();
 
     public DummyData(int numberOfItem) {
-        // genetate 1000 datapoints
+        // generate some datapoints
         for (int i = 0; i < numberOfItem; i++) {
             dataItems.add(new DummyMetadataItem(i+""));
         }

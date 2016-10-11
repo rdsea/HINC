@@ -35,7 +35,12 @@ public class TeitSensorTransformer implements IoTUnitTransformer<Properties> {
         IoTUnit unit = new IoTUnit(prop.getProperty("sensorID"));
         unit.hasPhysicalType("Sensor");
         DataPoint datapoint = new DataPoint(prop.getProperty("sensorID"), prop.getProperty("sensorType"));
-        datapoint.setMeasurementUnit("unknown");
+        String measurement = prop.getProperty("measurement");
+        if (measurement != null && !measurement.isEmpty()) {
+            datapoint.setMeasurementUnit(measurement);
+        } else {
+            datapoint.setMeasurementUnit("unknown");
+        }
         String apiName = mapApiName(prop.getProperty("platform"));
         datapoint.setDataApi(apiName);
 

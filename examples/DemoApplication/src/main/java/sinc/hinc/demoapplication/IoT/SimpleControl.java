@@ -28,7 +28,7 @@ public class SimpleControl {
         
         // FIRST, let us query the IoT Unit around
         HincMessage request = new HincMessage()
-                .hasType(HINCMessageType.RPC_QUERY_INFORMATION_GLOBAL)
+                .hasType(HINCMessageType.QUERY_INFORMATION_GLOBAL)
                 .hasSenderID("my-application")
                 .hasTopic(HincMessageTopic.getBroadCastTopic("my-group"));
 

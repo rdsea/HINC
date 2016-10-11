@@ -29,7 +29,12 @@ import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
+import sinc.hinc.abstraction.ResourceDriver.ServiceDetector;
 import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.local.messageHandlers.HandleQueryService;
+import sinc.hinc.model.API.WrapperMicroService;
+import sinc.hinc.model.VirtualComputingResource.MicroService;
+import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 /**
  *
@@ -68,13 +73,42 @@ public class Main {
     public static void listen() {
         logger.info("Start to listen to the device changes ...");
         for (ProviderListenerAdaptor observer : pluginReg.getListeners()) {
-
             if (enabledAdaptors.contains(observer.getName().trim())) {
                 String aName = observer.getName();
                 logger.info("Now run the listener: " + aName);
                 IoTUnitTransformer unitTrans = pluginReg.getIoTUnitTranformerByName(aName);
                 observer.listen(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS), unitTrans, new IoTUnitUpdateProcessor(HincConfiguration.getMyUUID()));
             }
+        }
+    }
+
+    public static void detectServices() {
+        logger.info("Start to detect services may running ... Total scanned adaptor: " + pluginReg.getServiceDetectors().size());
+        WrapperMicroService wrapper = new WrapperMicroService();
+
+        String enabled = "";
+        for (String s : enabledAdaptors) {
+            enabled += s + ",";
+        }
+        logger.debug("Enabled adaptors are : " + enabled);
+
+        for (ServiceDetector detector : pluginReg.getServiceDetectors()) {
+            logger.debug("Detecting: " + detector.getName() + " among enabled: " + enabledAdaptors);
+            if (enabledAdaptors.contains(detector.getName().trim())) {
+                logger.info("Detecting service : " + detector.getName());
+                MicroService mService = detector.detect(PropertiesManager.getSettings(detector.getName().trim(), DEFAULT_SOURCE_SETTINGS));
+                mService.setHostID(HincConfiguration.getMyUUID());
+                // save to DB
+                AbstractDAO<MicroService> serviceDAO = new AbstractDAO(MicroService.class);
+                serviceDAO.save(mService);
+                wrapper.getmServices().add(mService);
+            }
+        }
+        // send message to the group topic, message type: UPDATE_INFORMATION
+        if (!wrapper.getmServices().isEmpty()) {
+            String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
+            HincMessage updateMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION_MICRO_SERVICE.toString(), HincConfiguration.getMyUUID(), groupTopic, "", wrapper.toJson());
+            FACTORY.getMessagePublisher().pushMessage(updateMsg);
         }
     }
 
@@ -125,10 +159,14 @@ public class Main {
         String privaTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
 
         LISTENER.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
-        LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
-        LISTENER.addListener(privaTopic, HINCMessageType.RPC_QUERY_SDGATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
-        LISTENER.addListener(groupTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
-        LISTENER.addListener(privaTopic, HINCMessageType.RPC_QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
+        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
+        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
+
+        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_MICRO_SERVICE_LOCAL.toString(), new HandleQueryService());
+        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_MICRO_SERVICE_LOCAL.toString(), new HandleQueryService());
+
+        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
+        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
 
         LISTENER.addListener(groupTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
         LISTENER.addListener(privaTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
@@ -147,6 +185,7 @@ public class Main {
         logger.info("Starting to interact with providers ...");
 
         listen();
+        detectServices();
 
         while (true) {
             scanOnce();
