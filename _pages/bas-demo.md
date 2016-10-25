@@ -1,0 +1,1 @@
+../_posts/2016-10-25-bas-demo.md
