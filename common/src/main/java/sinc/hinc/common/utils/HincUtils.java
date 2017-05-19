@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class HincUtils {
 
     // only IPv4
-    public static String getEth0Address() {
+    public static String getEth0Address__Manual() {
         System.out.println("Geting eth0");
         Enumeration en;
         try {
@@ -43,7 +43,15 @@ public class HincUtils {
                 }
             }
         }
-        return null;
+        return "127.0.0.1";
+    }
+    
+    public static String getEth0Address() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException ex) {
+            return null;
+        }
     }
     
     public static String getHostName() {

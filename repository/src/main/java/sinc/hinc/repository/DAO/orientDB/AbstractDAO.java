@@ -255,20 +255,12 @@ public class AbstractDAO<T> {
         }
     }
 
-//    private ODocument readOdocKeepConnection(String uuid) {
-//        OrientDBConnector manager = new OrientDBConnector();
-//        ODatabaseDocumentTx db = manager.getConnection();
-//
-//        String query = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
-//        logger.debug("I will execute a query: " + query);
-//        List<ODocument> result = db.query(new OSQLSynchQuery<ODocument>(query));
-//        if (!result.isEmpty()) {
-//            return result.get(0);
-//        }
-//
-//        return null;
-//    }
-    public List<T> readAll() {
+    /**
+     * Read all the instances of the class name
+     * @param limit The amount of instances return. Keep limit less than 0 to return all.
+     * @return 
+     */
+    public List<T> readAll(int limit) {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
         logger.trace("Read all: " + className);
@@ -276,8 +268,11 @@ public class AbstractDAO<T> {
             logger.debug("No class exist: " + className);
             return null;
         }
-        try {
+        try {            
             String query = "SELECT * FROM " + className;
+            if (limit > 0){
+                query += " LIMIT " + limit;
+            }
             List<ODocument> oResult = db.query(new OSQLSynchQuery<ODocument>(query));
 //            logger.debug("Query: " + query + ". Result: " + oResult.size());
             List<T> tResult = new ArrayList<>();
@@ -289,5 +284,9 @@ public class AbstractDAO<T> {
         } finally {
             manager.closeConnection();
         }
+    }
+    
+    public List<T> readAll(){
+        return readAll(-1);
     }
 }

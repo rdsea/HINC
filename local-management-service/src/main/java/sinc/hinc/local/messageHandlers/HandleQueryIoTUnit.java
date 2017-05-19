@@ -43,7 +43,15 @@ public class HandleQueryIoTUnit implements HINCMessageHander {
 
         Long timeStamp3 = (new Date()).getTime();
         IoTUnitDAO unitDao = new IoTUnitDAO();
-        List<IoTUnit> units = unitDao.readAll();
+        int limit = -1;
+        if (msg.getExtra().containsKey("limit")) {
+            try {
+                limit = Integer.parseInt(msg.getExtra().get("limit"));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        List<IoTUnit> units = unitDao.readAll(limit);
         logger.debug("Local service read all : " + units.size() + " items, which will be send back.");
         WrapperIoTUnit wrapper = new WrapperIoTUnit(units);
         ObjectMapper mapper = new ObjectMapper();

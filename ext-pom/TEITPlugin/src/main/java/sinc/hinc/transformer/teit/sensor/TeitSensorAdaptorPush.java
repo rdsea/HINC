@@ -49,6 +49,7 @@ public class TeitSensorAdaptorPush implements ProviderListenerAdaptor {
                         StringReader reader = new StringReader(entry.getValue());
                         prop.load(reader);
                         prop.put("executionscript", entry.getKey().replace("sensor.conf", "sensor.sh"));
+                        // These two lines are mandatory to invoke HINC internal processing
                         IoTUnit unit = tranformer.translateIoTUnit(prop);
                         processor.process(unit);
                     } catch (IOException ex) {

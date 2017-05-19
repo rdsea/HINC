@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
@@ -85,19 +84,24 @@ public class IoTUnitDAO extends AbstractDAO<IoTUnit> {
     }
 
     @Override
-    public List<IoTUnit> readAll() {
-        List<IoTUnit> units = iotUnitDAO.readAll();
+    public List<IoTUnit> readAll(int limit) {
+        List<IoTUnit> units = iotUnitDAO.readAll(limit);
         for (IoTUnit unit : units) {
             String whereCondition = "iotunituuid='" + unit.getUuid() + "'";
             List<DataPoint> dps = datapointDAO.readWithCondition(whereCondition);
             List<ControlPoint> cps = controlpointDAO.readWithCondition(whereCondition);
             if (dps != null) {
-                unit.setDatapoints(new HashSet<DataPoint>(dps));
+                unit.setDatapoints(new HashSet<>(dps));
             }
             if (cps != null) {
-                unit.setControlpoints(new HashSet<ControlPoint>(cps));
+                unit.setControlpoints(new HashSet<>(cps));
             }
         }
         return units;
+    }
+
+    @Override
+    public List<IoTUnit> readAll() {
+        return readAll(-1);
     }
 }
