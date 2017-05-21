@@ -12,6 +12,7 @@ import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 /**
  * Process sync message from HINC local send to.
@@ -47,6 +48,8 @@ public class HincLocalSyncHandler implements HINCMessageHander {
                 }
             }
             listOfHINCLocal.add(meta);
+            AbstractDAO<HincLocalMeta> metaDAO = new AbstractDAO<>(HincLocalMeta.class);
+            metaDAO.save(meta);
             logger.debug(" --> Add meta finished");
         } else {
             logger.debug(" --> No, it is not a SYN_REPLY message");

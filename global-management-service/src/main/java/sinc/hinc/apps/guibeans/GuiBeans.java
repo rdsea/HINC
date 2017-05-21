@@ -118,7 +118,7 @@ public class GuiBeans {
     }
 
     public void queryIoTUnits() {
-        Set<IoTUnit> units = rest.queryIoTUnits(timeout, null, null, "false");
+        Set<IoTUnit> units = rest.queryIoTUnits(timeout, null, null, 0, "false");
         iotUnits.addAll(units);
     }
 
@@ -283,7 +283,7 @@ public class GuiBeans {
     public Collection<IoTUnit> getIotUnits() {
         if (queryUpdateFlags[1] == true) {
             iotUnits.clear();
-            iotUnits.addAll(rest.queryIoTUnits(0, null, null, "false"));
+            iotUnits.addAll(rest.queryIoTUnits(0, null, null, 0, "false"));
             queryUpdateFlags[1] = false;
         }
         return iotUnits;
@@ -417,7 +417,7 @@ public class GuiBeans {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                rest.queryIoTUnits(5000, null, null, "true");
+                rest.queryIoTUnits(5000, null, null, 0, "true");
             }
         }).start();
     }

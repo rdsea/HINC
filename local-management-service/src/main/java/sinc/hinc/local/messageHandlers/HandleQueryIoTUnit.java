@@ -37,11 +37,12 @@ public class HandleQueryIoTUnit implements HINCMessageHander {
         // check infobase
         if (msg.getExtra() != null && msg.getExtra().containsKey("infoBases")) {
             List<String> infoBasesList = Arrays.asList(msg.getExtra().get("infoBases").split(","));
-            String myUUID = HincConfiguration.getLocalMeta().getUuid();
+            List<String> myInfoBases = HincConfiguration.getLocalMeta().getInfoBase();
             boolean found = false;
             for (String s : infoBasesList) {
-                if (s.trim().equals(myUUID)) {
+                if (myInfoBases.contains(s.trim())){                
                     found = true;
+                    break;
                 }
             }
             if (found == false) {

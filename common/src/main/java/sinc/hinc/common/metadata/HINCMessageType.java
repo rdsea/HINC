@@ -16,7 +16,7 @@ public enum HINCMessageType {
         // unicast:local->global, local manager register it self 
         local_register,
         // unicast: Client->local, query information from local regarding to SD Gateway or NVF
-        QUERY_GATEWAY_LOCAL,
+        QUERY_IOT_UNIT,
         QUERY_MICRO_SERVICE_LOCAL,
         QUERY_NFV_LOCAL,
         // unicast: Client->global, query information from global (which include relationship)

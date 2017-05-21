@@ -83,23 +83,8 @@ public class HINCManagementImpl implements HINCManagementAPI {
         }
         listOfHINCLocal.clear();
         HincMessage discoveringMessage = new HincMessage(HINCMessageType.SYN_REQUEST.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), "");
-        comMng.asynCall(timeout, discoveringMessage, new HINCMessageHander() {
-            @Override
-            public HincMessage handleMessage(HincMessage msg) {
-                logger.debug("A message arrive, from: {}, type: {}, topic: {} ", msg.getSenderID(), msg.getMsgType(), msg.getTopic());
-                if (msg.getMsgType().equals(HINCMessageType.SYN_REPLY.toString())) { // this will be always true !!
-                    logger.debug(" --> Yes, it is a SYN_REPLY message, adding the metadata");
-                    HincLocalMeta meta = HincLocalMeta.fromJson(msg.getPayload());
-                    logger.debug("  --> Meta: " + meta.toJson());
-                    listOfHINCLocal.add(meta);
-                    logger.debug(" --> Add meta finished");
-                } else {
-                    logger.debug(" --> No, it is not a SYN_REPLY message");
-                }
-                return null;// no need to reply
-            }
-        });
-
+        comMng.asynCall(timeout, discoveringMessage, new HincLocalSyncHandler(logger, listOfHINCLocal));
+        
         logger.debug(" --> Waiting for HINC Local is done, should close the subscribe now.. ");
 
         // write to DB        

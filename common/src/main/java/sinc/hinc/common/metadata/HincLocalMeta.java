@@ -64,22 +64,21 @@ public class HincLocalMeta {
             map.put(messageType, clazz);
         }
     }
-    
-    public HincLocalMeta hasInfoBase(String nameSpace){
+
+    public HincLocalMeta hasInfoBase(String nameSpace) {
         this.infoBase.add(nameSpace);
         return this;
     }
-    
-    public HincLocalMeta hasInfoBase(List<String> nameSpaces){
+
+    public HincLocalMeta hasInfoBase(List<String> nameSpaces) {
         this.infoBase.addAll(nameSpaces);
         return this;
     }
-    
-    
-    public void clearInfoBase(){
+
+    public void clearInfoBase() {
         this.infoBase.clear();
     }
-    
+
     public String getUnicastTopic() {
         return unicastTopic;
     }
@@ -188,6 +187,10 @@ public class HincLocalMeta {
 
     public List<String> getInfoBase() {
         return infoBase;
+    }
+
+    public void setInfoBase(List<String> infoBase) {
+        this.infoBase = infoBase;
     }
 
     public static HincLocalMeta fromJson(String json) {

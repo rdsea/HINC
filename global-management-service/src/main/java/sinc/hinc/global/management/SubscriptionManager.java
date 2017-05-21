@@ -94,7 +94,7 @@ public class SubscriptionManager {
         });
         sub.subscribe(feedBackTopic, timeout);
 
-        HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), groupName, HincMessageTopic.getBroadCastTopic(groupName), feedBackTopic, "");
+        HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_IOT_UNIT.toString(), groupName, HincMessageTopic.getBroadCastTopic(groupName), feedBackTopic, "");
         pub.pushMessage(queryMessage);
 
         // wait for a few second

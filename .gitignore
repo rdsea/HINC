@@ -27,4 +27,4 @@ config_TOSCA/
 hinc.db/
 local-management-service/log/
 .extract
-.jar
+*.jar

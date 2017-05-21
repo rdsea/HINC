@@ -8,6 +8,7 @@ package sinc.hinc.repository.DTOMapper.impl;
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import sinc.hinc.common.metadata.HincLocalMeta;
+import sinc.hinc.repository.Utils;
 
 /**
  *
@@ -32,6 +33,7 @@ public class HINCMetaMapper implements DTOMapperInterface<HincLocalMeta> {
             System.out.println("Lat/long parsing error, maybe null.");
         }
         meta.setIsp(String.valueOf(doc.field("isp")));
+        meta.setInfoBase(Utils.jsonToList(String.valueOf((doc.field("infobases")))));
         return meta;
 
     }
@@ -43,12 +45,13 @@ public class HINCMetaMapper implements DTOMapperInterface<HincLocalMeta> {
         doc.field("settings", object.getSettings());
         doc.field("unicasttopic", object.getUnicastTopic());
         doc.field("uuid", object.getUuid());
-        
-        doc.field("city",object.getCity());
-        doc.field("country",object.getCountry());
-        doc.field("lat",object.getLat()+"");
-        doc.field("lon",object.getLon()+"");
-        doc.field("isp",object.getIsp());
+
+        doc.field("city", object.getCity());
+        doc.field("country", object.getCountry());
+        doc.field("lat", object.getLat() + "");
+        doc.field("lon", object.getLon() + "");
+        doc.field("isp", object.getIsp());
+        doc.field("infobases", Utils.ListToJson(object.getInfoBase()));
         return doc;
     }
 

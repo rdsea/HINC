@@ -48,7 +48,7 @@ public class Experiment1_Broadcast_ResponseTime {
 //        }
 //        for (int i = 1; i < 4; i++) {
 //            client.querySoftwareDefinedGateway_Broadcast(70000);
-        api.queryIoTUnits(70000, null, null, "false");
+        api.queryIoTUnits(70000, null, null, 0, "false");
 //        }
     }
 

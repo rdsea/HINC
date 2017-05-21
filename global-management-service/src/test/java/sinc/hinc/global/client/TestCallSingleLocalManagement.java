@@ -26,7 +26,7 @@ public class TestCallSingleLocalManagement {
         HINCManagementAPI mngAPI = new HINCManagementImpl();
         mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
 
-        Set<IoTUnit> list = api.queryIoTUnits(5000, "", null, "false");
+        Set<IoTUnit> list = api.queryIoTUnits(5000, "", null, 0, "false");
         System.out.println("list of gateway has: " + list.size() + " items");
         for (IoTUnit unit : list) {
             System.out.println(unit.toJson());

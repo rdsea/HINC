@@ -5,7 +5,6 @@
  */
 package sinc.hinc.global.API;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import sinc.hinc.communication.processing.HINCMessageSender;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.CloudServices.CloudProvider;
 import sinc.hinc.model.CloudServices.CloudService;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
@@ -32,16 +30,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.PostConstruct;
-import sinc.hinc.apps.guibeans.handlers.HincLocalSyncHandler;
-import sinc.hinc.apps.guibeans.handlers.SingleIoTUnitUpdateHandler;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 import sinc.hinc.communication.processing.HINCMessageHander;
-import sinc.hinc.communication.processing.HINCMessageListener;
 import sinc.hinc.model.API.WrapperIoTUnit;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
@@ -76,7 +70,6 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     }
 
 //    static HINCMessageListener listener = null;
-
 //    @PostConstruct
 //    public void init() {
 //        if (listener == null) {
@@ -86,9 +79,8 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
 //            listener.listen();
 //        }
 //    }
-
     @Override
-    public Set<IoTUnit> queryIoTUnits(int timeout, String hincUUID, String infoBases, String rescan) {
+    public Set<IoTUnit> queryIoTUnits(int timeout, String hincUUID, String infoBases, int limit, String rescan) {
         logger.debug("Start broadcasting the query for IoT Unit...");
         File dir = new File("logs/queries");
         dir.mkdirs();
@@ -113,56 +105,59 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         if (rescan.equals("true")) {
             payload = "rescan";
         }
-        if (hincUUID != null && !hincUUID.isEmpty() && !hincUUID.trim().equals("null")) {
-            logger.debug("Trying to query HINC Local with ID: " + hincUUID);
-            String unitsWrapperJson = comMng.synCall(new HincMessage(HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getHINCPrivateTopic(hincUUID), feedBackTopic, payload));
-            WrapperIoTUnit wrapper = new WrapperIoTUnit(unitsWrapperJson);
-            result.addAll(wrapper.getUnits());
-        } else {
-            HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
-            comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
-                long latestTime = 0;
-                long quantity = 0;
-                long currentSum = 0;
-                int count = 0;
 
-                @Override
-                public HincMessage handleMessage(HincMessage message) {
-                    count = +1;
-
-                    Long timeStamp5 = (new Date()).getTime();
-                    logger.debug("Get a response message from " + message.getSenderID() + ". Msg count: " + count);
-
-                    WrapperIoTUnit wrapper = new WrapperIoTUnit(message.getPayload());
-                    logger.debug("Get the wrapper: " + wrapper.toJson());
-                    result.addAll(wrapper.getUnits());
-                    logger.debug("HINC " + message.getSenderID() + " send back: " + result.size() + " units");
-                    IoTUnitDAO dao = new IoTUnitDAO();
-                    List<ODocument> odocs = dao.saveAll(wrapper.getUnits());
-                    logger.debug("Good, saving " + odocs.size() + " items");
-
-                    // ==== Record time for various experiments ===
-                    Long timeStamp6 = (new Date()).getTime();
-                    Long timeStamp2 = Long.parseLong(message.getExtra().get("timeStamp2"));
-                    Long timeStamp3 = Long.parseLong(message.getExtra().get("timeStamp3"));
-                    Long timeStamp4 = Long.parseLong(message.getExtra().get("timeStamp4"));
-
-                    Long local_global_latency = timeStamp2 - timeStamp1;
-                    Long provider_process = timeStamp3 - timeStamp2;
-                    Long local_process = timeStamp4 - timeStamp3;
-                    Long reply_latency = timeStamp5 - timeStamp4;
-                    Long global_latency = timeStamp6 - timeStamp5;
-                    Long end2end = timeStamp6 - timeStamp1;
-
-                    String eventStr = message.getSenderID() + "," + timeStamp1 + "," + timeStamp2 + "," + timeStamp3 + "," + timeStamp4 + "," + timeStamp5 + "," + timeStamp6 + ","
-                            + local_global_latency + "," + provider_process + "," + local_process + "," + reply_latency + "," + global_latency + "," + end2end;
-                    System.out.println("Event is log: " + eventStr);
-                    events.add(eventStr);
-
-                    return null;
-                }
-            });
+        HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_IOT_UNIT.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
+        if (limit > 0) {
+            queryMessage.hasExtra("limit", limit + "");
         }
+        if (hincUUID != null && !hincUUID.isEmpty() && !hincUUID.trim().equals("null")) {
+            queryMessage.setReceiverID(hincUUID);
+        }
+        if (infoBases != null && !infoBases.isEmpty() && !infoBases.trim().equals("null")) {
+            queryMessage.hasExtra("infoBases", infoBases);
+        }
+        comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
+            long latestTime = 0;
+            long quantity = 0;
+            long currentSum = 0;
+            int count = 0;
+
+            @Override
+            public HincMessage handleMessage(HincMessage message) {
+                count = +1;
+
+                Long timeStamp5 = (new Date()).getTime();
+                logger.debug("Get a response message from " + message.getSenderID() + ". Msg count: " + count);
+
+                WrapperIoTUnit wrapper = new WrapperIoTUnit(message.getPayload());
+                logger.debug("Get the wrapper: " + wrapper.toJson());
+                result.addAll(wrapper.getUnits());
+                logger.debug("HINC " + message.getSenderID() + " send back: " + result.size() + " units");
+                IoTUnitDAO dao = new IoTUnitDAO();
+                List<ODocument> odocs = dao.saveAll(wrapper.getUnits());
+                logger.debug("Good, saving " + odocs.size() + " items");
+
+                // ==== Record time for various experiments ===
+                Long timeStamp6 = (new Date()).getTime();
+                Long timeStamp2 = Long.parseLong(message.getExtra().get("timeStamp2"));
+                Long timeStamp3 = Long.parseLong(message.getExtra().get("timeStamp3"));
+                Long timeStamp4 = Long.parseLong(message.getExtra().get("timeStamp4"));
+
+                Long local_global_latency = timeStamp2 - timeStamp1;
+                Long provider_process = timeStamp3 - timeStamp2;
+                Long local_process = timeStamp4 - timeStamp3;
+                Long reply_latency = timeStamp5 - timeStamp4;
+                Long global_latency = timeStamp6 - timeStamp5;
+                Long end2end = timeStamp6 - timeStamp1;
+
+                String eventStr = message.getSenderID() + "," + timeStamp1 + "," + timeStamp2 + "," + timeStamp3 + "," + timeStamp4 + "," + timeStamp5 + "," + timeStamp6 + ","
+                        + local_global_latency + "," + provider_process + "," + local_process + "," + reply_latency + "," + global_latency + "," + end2end;
+                System.out.println("Event is log: " + eventStr);
+                events.add(eventStr);
+
+                return null;
+            }
+        });
 
         // wait for a few second
         try {
@@ -189,7 +184,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             AbstractDAO<DataPoint> dao = new AbstractDAO<>(DataPoint.class);
             return dao.readAll();
         }
-        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, infoBases, "false");
+        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, infoBases, 0, "false");
         List<DataPoint> datapoints = new ArrayList<>();
         for (IoTUnit unit : units) {
             for (DataPoint dp : unit.getDatapoints()) {
@@ -205,7 +200,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             AbstractDAO<ControlPoint> dao = new AbstractDAO<>(ControlPoint.class);
             return dao.readAll();
         }
-        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, infoBases, "false");
+        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, infoBases, 0, "false");
         List<ControlPoint> controlPoints = new ArrayList<>();
         for (IoTUnit gw : units) {
             for (ControlPoint capa : gw.getControlpoints()) {
@@ -221,7 +216,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             AbstractDAO<CloudConnectivity> dao = new AbstractDAO<>(CloudConnectivity.class);
             return dao.readAll();
         }
-        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, null, "false");
+        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, null, 0, "false");
         List<CloudConnectivity> connectivity = new ArrayList<>();
         for (IoTUnit unit : units) {
             for (CloudConnectivity capa : unit.getConnectivities()) {

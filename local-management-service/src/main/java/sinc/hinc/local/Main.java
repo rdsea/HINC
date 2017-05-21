@@ -161,7 +161,7 @@ public class Main {
 //        String privaTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
 
         LISTENER.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
-        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
+        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_IOT_UNIT.toString(), new HandleQueryIoTUnit());
 //        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
 
         LISTENER.addListener(groupTopic, HINCMessageType.QUERY_MICRO_SERVICE_LOCAL.toString(), new HandleQueryService());

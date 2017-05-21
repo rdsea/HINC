@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +20,9 @@ import java.util.Map;
 public class Utils {
 
     static TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {
+    };
+
+    static TypeReference<List<String>> stringTypeRef = new TypeReference<List<String>>() {
     };
 
     public static String mapToJson(Map<String, String> map) {
@@ -35,6 +39,26 @@ public class Utils {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(json, typeRef);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String ListToJson(List<String> list) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(list);
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    
+    public static List<String> jsonToList(String json) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(json, stringTypeRef);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

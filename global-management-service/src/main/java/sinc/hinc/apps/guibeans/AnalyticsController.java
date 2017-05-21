@@ -216,7 +216,7 @@ public class AnalyticsController implements Serializable {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    rest.queryIoTUnits(10000, null, null, "true");
+                    rest.queryIoTUnits(10000, null, null, 0, "true");
                 }
             }).start();
 
@@ -261,7 +261,7 @@ public class AnalyticsController implements Serializable {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    rest.queryIoTUnits(10000, null, null, "true");
+                    rest.queryIoTUnits(10000, null, null, 0, "true");
                 }
             }).start();
         }
