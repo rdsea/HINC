@@ -33,6 +33,9 @@ public enum HINCMessageType {
         UPDATE_INFORMATION,
         UPDATE_INFORMATION_MICRO_SERVICE,
         
+        // HINC Local update info base: global --> client
+        UPDATE_INFO_BASE,
+        
         // MISC
         MISC
 }

@@ -19,8 +19,12 @@ import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import sinc.hinc.apps.guibeans.handlers.HincLocalSyncHandler;
+import sinc.hinc.apps.guibeans.handlers.SingleIoTUnitUpdateHandler;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.communication.processing.HINCMessageHander;
+import sinc.hinc.communication.processing.HINCMessageListener;
 
 /**
  * @author hungld
@@ -33,13 +37,25 @@ public class HINCManagementImpl implements HINCManagementAPI {
     HINCMessageSender comMng = getCommunicationManager();
     List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
 
+    static HINCMessageListener listener = null;
+
+    @PostConstruct
+    public void init() {
+        if (listener == null) {
+            logger.debug("Start to listen to the UPDATE_INFORMATION message from the group topic");
+            listener = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+            listener.addListener(HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HINCMessageType.UPDATE_INFORMATION.toString(), new SingleIoTUnitUpdateHandler());
+            listener.addListener(HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HINCMessageType.SYN_REPLY.toString(), new HincLocalSyncHandler(logger, this.listOfHINCLocal));
+            listener.listen();
+        }
+    }
+
     public HINCMessageSender getCommunicationManager() {
         if (comMng == null) {
-            comMng = new HINCMessageSender(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());            
+            comMng = new HINCMessageSender(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
         }
         return this.comMng;
     }
-
 
     @Override
     public HINCGlobalMeta getHINCGlobalMeta() {
@@ -53,7 +69,7 @@ public class HINCManagementImpl implements HINCManagementAPI {
     @Override
     public void setHINCGlobalMeta(HINCGlobalMeta metaInfo) {
         meta = metaInfo;
-        comMng = new HINCMessageSender(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());      
+        comMng = new HINCMessageSender(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
     }
 
     @Override
@@ -96,4 +112,22 @@ public class HINCManagementImpl implements HINCManagementAPI {
 
         return listOfHINCLocal;
     }
+
+    @Override
+    public void setHINCLocalTopic(String infoBase, String localUUID, String append) {
+
+        HincMessage updateRequestMsg = new HincMessage(HINCMessageType.UPDATE_INFO_BASE.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), infoBase);
+        updateRequestMsg.setReceiverID(localUUID);
+        if (append.equals("true")) {
+            updateRequestMsg.hasExtra("append", "true");
+        }
+        comMng.asynCall(0, updateRequestMsg, new HINCMessageHander() {
+            @Override
+            public HincMessage handleMessage(HincMessage message) {
+                logger.debug("The SYNC message for updating name space should be received. The sync listener will process it." + message.toJson());
+                return null;
+            }
+        });      
+    }
+
 }

@@ -38,6 +38,8 @@ public class HincMessage {
 
     String senderID;
 
+    String receiverID; // = null or empty for broadcast
+
     String feedbackTopic;
 
     String payload;
@@ -143,6 +145,14 @@ public class HincMessage {
 
     public String getSenderID() {
         return senderID;
+    }
+
+    public String getReceiverID() {
+        return receiverID;
+    }
+
+    public void setReceiverID(String receiverID) {
+        this.receiverID = receiverID;
     }
 
     public String getTopic() {

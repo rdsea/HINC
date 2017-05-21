@@ -32,6 +32,7 @@ import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 import sinc.hinc.abstraction.ResourceDriver.ServiceDetector;
 import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.local.messageHandlers.HandleQueryService;
+import sinc.hinc.local.messageHandlers.HandleUpdateInfobase;
 import sinc.hinc.model.API.WrapperMicroService;
 import sinc.hinc.model.VirtualComputingResource.MicroService;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
@@ -153,23 +154,26 @@ public class Main {
         /**
          * ************************
          * HINC listens to some queue channels to answer the query.
+         * Because the limitation of connection to the queue, each HINC local subscribe only to public topic at the moment.
          * ************************
          */
         String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
-        String privaTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
+//        String privaTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
 
         LISTENER.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
         LISTENER.addListener(groupTopic, HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
-        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
+//        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
 
         LISTENER.addListener(groupTopic, HINCMessageType.QUERY_MICRO_SERVICE_LOCAL.toString(), new HandleQueryService());
-        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_MICRO_SERVICE_LOCAL.toString(), new HandleQueryService());
+//        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_MICRO_SERVICE_LOCAL.toString(), new HandleQueryService());
 
         LISTENER.addListener(groupTopic, HINCMessageType.QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
-        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
+//        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
 
         LISTENER.addListener(groupTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
-        LISTENER.addListener(privaTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
+//        LISTENER.addListener(privaTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
+        
+        LISTENER.addListener(groupTopic, HINCMessageType.UPDATE_INFO_BASE.toString(), new HandleUpdateInfobase());
 
         LISTENER.listen();
 

@@ -85,12 +85,18 @@ public class HINCMessageListener {
                 @Override
                 public HincMessage handleMessage(HincMessage msg) {
                     try {
+                        // check if the message is broadcast or for me
+                        if (msg.getReceiverID()!=null && !msg.getReceiverID().isEmpty() && !msg.getReceiverID().equals(HincConfiguration.getMyUUID())){
+                            logger.debug("The message " + msg.getMsgType() + " is not for me (" + HincConfiguration.getMyUUID() +"), it is for: " + msg.getReceiverID());
+                            return null; // no, it is not a broadcast and not for me, it is for another HINC local
+                        }
+                        // if the message is for me, process it
                         String msgTopic = msg.getTopic();
                         String msgType = msg.getMsgType();
                         HINCMessageHander handlerMethod = getHandlerMethod(msgTopic, msgType);
                         if (handlerMethod != null) {
 //                        logger.debug("Get message: {}, topic: {}. Found a handler: {}", msgType, msgTopic, handlerMethod.getClass().getSimpleName());
-                            System.out.println("Get message: " + msgType + ", topic: " + msgTopic + ", found handler: " + handlerMethod.getClass().getSimpleName());
+                            logger.debug("Get message: " + msgType + ", topic: " + msgTopic + ", found handler: " + handlerMethod.getClass().getSimpleName());
                             HincMessage replyMsg = handlerMethod.handleMessage(msg);
                             if (replyMsg != null) {
                                 MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
@@ -100,7 +106,7 @@ public class HINCMessageListener {
                             return replyMsg;
                         } else {
 //                        logger.error("Get message: {}, topic: {}, but NO handler is found !", msgType, msgTopic);
-                            System.out.println("Get message: " + msgType + "on topic: " + msgTopic + ", but no handler found!");
+                            logger.debug("Get message: " + msgType + "on topic: " + msgTopic + ", but no handler found!");
                             return new HincMessage(HINCMessageType.MISC.toString(), "", "");
                         }
                     } catch (Exception e) {

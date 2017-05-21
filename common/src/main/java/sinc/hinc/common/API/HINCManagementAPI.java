@@ -18,6 +18,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
@@ -88,4 +89,17 @@ public interface HINCManagementAPI {
             responseContainer = "List")
     public List<HincLocalMeta> queryHINCLocal(
             @ApiParam(value = "The miliseconds to wait for the response", required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout);
+    
+    @POST
+    @Path("/hinc/{localUUID}/infobase")
+    @Consumes("text/plain")
+     @ApiOperation(value = "Update the information base for a local service, which support Information Centric Network query.",
+            notes = "This function should be in the local service itself. This API is a quick way to manually set the Information Base",
+            response = HincLocalMeta.class,
+            responseContainer = "String")
+    public void setHINCLocalTopic(
+            @ApiParam(value = "List of namespace, separated by comma", required = true) String infoBase,
+            @ApiParam(value = "The UUID of the HINC local", required = true) @PathParam("localUUID") String localUUID,
+            @ApiParam(value = "True: append more infobase, False: clear and update new infobase", required = false, defaultValue = "false") @DefaultValue("false") @QueryParam("append") String append
+    );
 }

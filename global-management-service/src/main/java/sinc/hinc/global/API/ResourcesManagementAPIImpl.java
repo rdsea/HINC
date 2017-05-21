@@ -33,7 +33,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
-import sinc.hinc.apps.guibeans.SingleIoTUnitUpdateHandler;
+import sinc.hinc.apps.guibeans.handlers.HincLocalSyncHandler;
+import sinc.hinc.apps.guibeans.handlers.SingleIoTUnitUpdateHandler;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
@@ -73,21 +74,21 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         }
         return this.comMng;
     }
-    
-    static HINCMessageListener listener = null;
 
-    @PostConstruct
-    public void init() {
-        if (listener == null) {
-            logger.debug("Start to listen to the UPDATE_INFORMATION message from the group topic");
-            listener = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-            listener.addListener(HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HINCMessageType.UPDATE_INFORMATION.toString(), new SingleIoTUnitUpdateHandler());
-            listener.listen();
-        }
-    }
+//    static HINCMessageListener listener = null;
+
+//    @PostConstruct
+//    public void init() {
+//        if (listener == null) {
+//            logger.debug("Start to listen to the UPDATE_INFORMATION message from the group topic");
+//            listener = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+//            listener.addListener(HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HINCMessageType.UPDATE_INFORMATION.toString(), new SingleIoTUnitUpdateHandler());
+//            listener.listen();
+//        }
+//    }
 
     @Override
-    public Set<IoTUnit> queryIoTUnits(int timeout, String hincUUID, String rescan) {
+    public Set<IoTUnit> queryIoTUnits(int timeout, String hincUUID, String infoBases, String rescan) {
         logger.debug("Start broadcasting the query for IoT Unit...");
         File dir = new File("logs/queries");
         dir.mkdirs();
@@ -99,7 +100,6 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             List<IoTUnit> list = dao.readAll();
 
             return new HashSet<>(list);
-
         }
 
         final List<String> events = new LinkedList<>();
@@ -184,12 +184,12 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     }
 
     @Override
-    public Collection<DataPoint> queryDataPoint(int timeout, String hincUUID) {
+    public Collection<DataPoint> queryDataPoint(int timeout, String infoBases, String hincUUID) {
         if (timeout == 0) {
             AbstractDAO<DataPoint> dao = new AbstractDAO<>(DataPoint.class);
             return dao.readAll();
         }
-        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, "false");
+        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, infoBases, "false");
         List<DataPoint> datapoints = new ArrayList<>();
         for (IoTUnit unit : units) {
             for (DataPoint dp : unit.getDatapoints()) {
@@ -200,12 +200,12 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     }
 
     @Override
-    public List<ControlPoint> queryControlPoint(int timeout, String hincUUID) {
+    public List<ControlPoint> queryControlPoint(int timeout, String infoBases, String hincUUID) {
         if (timeout == 0) {
             AbstractDAO<ControlPoint> dao = new AbstractDAO<>(ControlPoint.class);
             return dao.readAll();
         }
-        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, "false");
+        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, infoBases, "false");
         List<ControlPoint> controlPoints = new ArrayList<>();
         for (IoTUnit gw : units) {
             for (ControlPoint capa : gw.getControlpoints()) {
@@ -221,7 +221,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             AbstractDAO<CloudConnectivity> dao = new AbstractDAO<>(CloudConnectivity.class);
             return dao.readAll();
         }
-        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, "false");
+        Set<IoTUnit> units = queryIoTUnits(timeout, hincUUID, null, "false");
         List<CloudConnectivity> connectivity = new ArrayList<>();
         for (IoTUnit unit : units) {
             for (CloudConnectivity capa : unit.getConnectivities()) {

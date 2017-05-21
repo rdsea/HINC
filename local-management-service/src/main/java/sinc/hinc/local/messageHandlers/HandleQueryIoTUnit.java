@@ -7,11 +7,13 @@ package sinc.hinc.local.messageHandlers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
@@ -31,6 +33,24 @@ public class HandleQueryIoTUnit implements HINCMessageHander {
     @Override
     public HincMessage handleMessage(HincMessage msg) {
         logger.debug("Server get request for IoTUnit information: " + msg.toJson());
+
+        // check infobase
+        if (msg.getExtra() != null && msg.getExtra().containsKey("infoBases")) {
+            List<String> infoBasesList = Arrays.asList(msg.getExtra().get("infoBases").split(","));
+            String myUUID = HincConfiguration.getLocalMeta().getUuid();
+            boolean found = false;
+            for (String s : infoBasesList) {
+                if (s.trim().equals(myUUID)) {
+                    found = true;
+                }
+            }
+            if (found == false) {
+                // this local service does not in the Information Bases of the query, so just pass.
+                return null;
+            }
+        }
+
+        // processing
         Long timeStamp2 = (new Date()).getTime();
 
         if (msg.getPayload().contains("rescan")) {
@@ -44,7 +64,7 @@ public class HandleQueryIoTUnit implements HINCMessageHander {
         Long timeStamp3 = (new Date()).getTime();
         IoTUnitDAO unitDao = new IoTUnitDAO();
         int limit = -1;
-        if (msg.getExtra().containsKey("limit")) {
+        if (msg.getExtra() != null && msg.getExtra().containsKey("limit")) {
             try {
                 limit = Integer.parseInt(msg.getExtra().get("limit"));
             } catch (NumberFormatException e) {

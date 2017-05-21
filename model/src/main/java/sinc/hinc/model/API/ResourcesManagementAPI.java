@@ -81,6 +81,7 @@ public interface ResourcesManagementAPI {
     Set<IoTUnit> queryIoTUnits(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID,
+            @ApiParam(value = "The namespaces that IoT Unit belong to. Separate namespaces in the list with commas", required = false, defaultValue = "null") @DefaultValue("") @QueryParam("infoBases") String infoBases,
             @ApiParam(value = "To force the HINC Local to rescan resource", required = false, defaultValue = "false") @DefaultValue("false") @QueryParam("rescan") String forceRescan
     );
 
@@ -93,6 +94,7 @@ public interface ResourcesManagementAPI {
             responseContainer = "List")
     public Collection<DataPoint> queryDataPoint(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
+            @ApiParam(value = "The namespaces that IoT Unit belong to. Separate namespaces in the list with commas", required = false, defaultValue = "null") @DefaultValue("") @QueryParam("infoBases") String infoBases,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID);
 
     @GET
@@ -104,6 +106,7 @@ public interface ResourcesManagementAPI {
             responseContainer = "List")
     public List<ControlPoint> queryControlPoint(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
+            @ApiParam(value = "The namespaces that IoT Unit belong to. Separate namespaces in the list with commas", required = false, defaultValue = "null") @DefaultValue("") @QueryParam("infoBases") String infoBases,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID);
 
     @GET

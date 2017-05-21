@@ -42,7 +42,7 @@ public class TestBroadCast {
             }
         }
 //
-        Set<IoTUnit> gateways = api.queryIoTUnits(20000, null, "false");
+        Set<IoTUnit> gateways = api.queryIoTUnits(20000, null, null, "false");
         System.out.println("Gateway number: " + gateways.size());
 
         AbstractDAO<IoTUnit> gwDAO = new AbstractDAO<>(IoTUnit.class);

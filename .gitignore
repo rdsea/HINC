@@ -26,3 +26,5 @@ config_TOSCA/
 *.pem
 hinc.db/
 local-management-service/log/
+.extract
+.jar

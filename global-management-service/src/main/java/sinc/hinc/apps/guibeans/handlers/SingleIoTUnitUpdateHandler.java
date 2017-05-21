@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.apps.guibeans;
+package sinc.hinc.apps.guibeans.handlers;
 
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.processing.HincMessage;

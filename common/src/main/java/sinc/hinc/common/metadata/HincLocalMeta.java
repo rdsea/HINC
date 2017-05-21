@@ -8,7 +8,9 @@ package sinc.hinc.common.metadata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,8 +35,11 @@ public class HincLocalMeta {
     Double lon;
     // list of listeners
     Map<String, Map<String, String>> handlers;
-    // list of adaptors for provider
+    // list of adaptors for providers handled by this local service
     Map<String, String> adaptor;
+
+    // Information base - use for Information Centric Network algorithm
+    List<String> infoBase = new ArrayList<>();
 
     public HincLocalMeta() {
 
@@ -59,7 +64,22 @@ public class HincLocalMeta {
             map.put(messageType, clazz);
         }
     }
-
+    
+    public HincLocalMeta hasInfoBase(String nameSpace){
+        this.infoBase.add(nameSpace);
+        return this;
+    }
+    
+    public HincLocalMeta hasInfoBase(List<String> nameSpaces){
+        this.infoBase.addAll(nameSpaces);
+        return this;
+    }
+    
+    
+    public void clearInfoBase(){
+        this.infoBase.clear();
+    }
+    
     public String getUnicastTopic() {
         return unicastTopic;
     }
@@ -164,6 +184,10 @@ public class HincLocalMeta {
 
     public void setLon(Double lon) {
         this.lon = lon;
+    }
+
+    public List<String> getInfoBase() {
+        return infoBase;
     }
 
     public static HincLocalMeta fromJson(String json) {
