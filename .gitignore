@@ -28,3 +28,4 @@ hinc.db/
 local-management-service/log/
 .extract
 *.jar
+nohup.out
