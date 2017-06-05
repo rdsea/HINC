@@ -59,6 +59,7 @@ public interface ProviderQueryAdaptor<DomainClass> {
     /**
      * A readable name to enable external configuration, e.g. read "source.conf"
      * Name should not contain spaces.
+     * @return 
      */
     public String getName();
 

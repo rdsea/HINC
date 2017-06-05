@@ -18,7 +18,7 @@ public class Server {
         JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
         sf.setResourceClasses(DummyREST.class);
         sf.setResourceProvider(DummyREST.class, new SingletonResourceProvider(new DummyREST(numberOfSensor)));
-        sf.setResourceClasses(DummyREST.class);
+//        sf.setResourceClasses(DummyREST.class);
         sf.setAddress("http://localhost:"+port+"/");
         sf.create();        
     }

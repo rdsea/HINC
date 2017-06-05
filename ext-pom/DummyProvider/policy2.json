@@ -1,0 +1,7 @@
+{
+	"unitMax": 50,
+	"unitMin": 20,
+	"numberOfChange": 4,
+	"changeType": "SENSOR_IN_OUT",
+	"frequency": 5
+}

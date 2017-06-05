@@ -26,8 +26,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-            <version>3.1.6</version>
+            <artifactId>cxf-rt-transports-http</artifactId>            
         </dependency>
         
         <dependency>
@@ -37,8 +36,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>3.1.6</version>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>           
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>

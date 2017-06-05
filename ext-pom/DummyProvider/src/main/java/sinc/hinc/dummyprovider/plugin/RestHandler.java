@@ -14,13 +14,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * This class is used by HINC, where the Adaptor call DummyProvider REST
  *
  * @author hungld
  */
 public class RestHandler {
 
+    static Logger logger = LoggerFactory.getLogger("Dummy");
     private URL url = null;
     private HttpURLConnection conn = null;
     private String data;
@@ -31,8 +35,8 @@ public class RestHandler {
         rest.conn = (HttpURLConnection) rest.url.openConnection();
         return rest;
     }
-    
-    public RestHandler header(String key, String value){
+
+    public RestHandler header(String key, String value) {
         conn.setRequestProperty(key, value);
         return this;
     }
@@ -50,22 +54,22 @@ public class RestHandler {
         return this;
     }
 
-    public String callGet() throws ProtocolException{
+    public String callGet() throws ProtocolException {
         conn.setRequestMethod("GET");
         return call();
     }
-    
-    public String callPost() throws ProtocolException{
+
+    public String callPost() throws ProtocolException {
         conn.setRequestMethod("POST");
         return call();
     }
-    
-    public String callPut() throws ProtocolException{
+
+    public String callPut() throws ProtocolException {
         conn.setRequestMethod("PUT");
         return call();
     }
-    
-    public String callDELETE() throws ProtocolException{
+
+    public String callDELETE() throws ProtocolException {
         conn.setRequestMethod("DELETE");
         return call();
     }
@@ -75,27 +79,27 @@ public class RestHandler {
             if (data != null) {
                 conn.setDoOutput(true);
                 try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
-                    System.out.println("Writing XML to stream\n: " + data);
+                    logger.debug("Writing XML to stream\n: " + data);
                     wr.write(data.getBytes());
                 }
             }
-            
+
             try (BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())))) {
                 String output;
                 String result = "";
 
-                while ((output = br.readLine()) != null) {                   
-                    result += output+"\n";
+                while ((output = br.readLine()) != null) {
+                    result += output + "\n";
                 }
                 conn.disconnect();
                 return result.trim();
             }
         } catch (ConnectException e) {
-            System.out.println("Fail to connect the URL:" + url);
-            System.out.println("Error message: " + e.getMessage());
+            logger.debug("Fail to connect the URL:" + url);
+            logger.debug("Error message: " + e.getMessage());
             return null;
         } catch (IOException ex) {
-            System.out.println("Failed in reading results. Error: " + ex.getMessage());
+            logger.debug("Failed in reading results. Error: " + ex.getMessage());
             return null;
         } finally {
 

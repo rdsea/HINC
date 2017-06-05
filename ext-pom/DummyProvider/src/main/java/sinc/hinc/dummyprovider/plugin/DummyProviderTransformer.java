@@ -5,7 +5,6 @@
  */
 package sinc.hinc.dummyprovider.plugin;
 
-import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.dummyprovider.provider.DummyMetadataItem;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
