@@ -12,6 +12,7 @@ import java.util.Map;
 import sinc.hinc.dummyprovider.provider.DummyData;
 import sinc.hinc.dummyprovider.provider.DummyMetadataItem;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
+import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
 /**
  *
@@ -44,6 +45,11 @@ public class DummyProviderAdaptor implements ProviderQueryAdaptor<DummyMetadataI
     @Override
     public String getName() {
         return "dummy";
+    }
+
+    @Override
+    public ResourcesProvider getProviderAPI(Map<String, String> settings) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

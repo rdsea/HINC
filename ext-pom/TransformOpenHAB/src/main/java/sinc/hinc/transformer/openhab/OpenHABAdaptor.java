@@ -12,6 +12,7 @@ import sinc.hinc.transformer.openhab.model.Item;
 import sinc.hinc.transformer.openhab.model.Items;
 import java.util.Map;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
+import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
 /**
  * Adaptor for OpenHAB Require settings.
@@ -47,6 +48,11 @@ public class OpenHABAdaptor implements ProviderQueryAdaptor<Item> {
     @Override
     public String getName() {
         return "openhab";
+    }
+
+    @Override
+    public ResourcesProvider getProviderAPI(Map<String, String> settings) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

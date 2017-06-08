@@ -7,6 +7,7 @@ package sinc.hinc.abstraction.ResourceDriver;
 
 import java.util.Collection;
 import java.util.Map;
+import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
 /**
  * The provider adaptor is used by Local Management Service. This provide is
@@ -55,6 +56,17 @@ public interface ProviderQueryAdaptor<DomainClass> {
      * @param parameters
      */
     public void sendControl(String controlAction, Map<String, String> parameters);
+    
+    /**
+     * Get a ResourcesProvider instance.
+     * 
+     * The ResourcesProvider store a set of management APIs provided by the platform.
+     * The API can be used to control the provider itself (not the resources)
+     * 
+     * @param settings
+     * @return a ResourcesProvider with set of APIs
+     */
+    public ResourcesProvider getProviderAPI(Map<String, String> settings);
 
     /**
      * A readable name to enable external configuration, e.g. read "source.conf"

@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import sinc.hinc.abstraction.ResourceDriver.utils.FilesScanner;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
+import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
 /**
  *
@@ -58,6 +59,11 @@ public class TeitSensorAdaptorPull implements ProviderQueryAdaptor<Properties> {
     @Override
     public String getName() {
         return "teit";
+    }
+
+    @Override
+    public ResourcesProvider getProviderAPI(Map<String, String> settings) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

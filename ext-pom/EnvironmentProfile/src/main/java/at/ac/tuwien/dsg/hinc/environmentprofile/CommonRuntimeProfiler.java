@@ -16,6 +16,7 @@ import java.util.Map;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 import sinc.hinc.abstraction.transformer.ExecutionEnvironmentTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
+import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
 /**
  *
@@ -125,6 +126,11 @@ public class CommonRuntimeProfiler implements ProviderQueryAdaptor<ExecutionEnvi
     @Override
     public ExecutionEnvironment updateExecutionEnvironment(ExecutionEnvironment data) {
         return null;
+    }
+
+    @Override
+    public ResourcesProvider getProviderAPI(Map<String, String> settings) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
