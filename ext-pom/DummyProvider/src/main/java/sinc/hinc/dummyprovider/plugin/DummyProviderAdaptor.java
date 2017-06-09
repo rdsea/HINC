@@ -12,6 +12,7 @@ import java.util.Map;
 import sinc.hinc.dummyprovider.provider.DummyData;
 import sinc.hinc.dummyprovider.provider.DummyMetadataItem;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
 /**
@@ -27,7 +28,7 @@ public class DummyProviderAdaptor implements ProviderQueryAdaptor<DummyMetadataI
             endpoint = endpoint.substring(0, endpoint.length() - 1);
         }
         try {
-            String dataJson = RestHandler.build(endpoint + "/datapoints").callGet();
+            String dataJson = RestHandler.build(endpoint + "/items").callGet();
             ObjectMapper mapper = new ObjectMapper();
             DummyData data = mapper.readValue(dataJson, DummyData.class);
             return data.getDataItems();
@@ -49,7 +50,12 @@ public class DummyProviderAdaptor implements ProviderQueryAdaptor<DummyMetadataI
 
     @Override
     public ResourcesProvider getProviderAPI(Map<String, String> settings) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String endpoint = settings.get("endpoint").trim();
+        String provider_ref = endpoint + "/controlapi";
+        ResourcesProvider rp = new ResourcesProvider(settings);
+        rp.hasApi(new ControlPoint("changepolicy", ControlPoint.InvokeProtocol.POST, endpoint + "/changepolicy", ControlPoint.ControlType.SELF_CONFIGURE).belongTo(provider_ref));
+        rp.hasApi(new ControlPoint("health", ControlPoint.InvokeProtocol.GET, endpoint + "/health", ControlPoint.ControlType.SELF_CONFIGURE).belongTo(provider_ref));
+        return rp;
     }
 
 }

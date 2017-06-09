@@ -78,6 +78,12 @@ public class ControlPoint implements HINCPersistable {
         this.reference = reference;
         this.controlType = controlType;
     }
+    
+    // the iotUnitUUID can be used for provider UUID. It can be set by HINC or manually set.
+    public ControlPoint belongTo(String providerOrUnitUUID){
+        this.iotUnitID = providerOrUnitUUID;
+        return this;
+    }
 
     // to have this field only for Jackson to work properly
     String uuid;
