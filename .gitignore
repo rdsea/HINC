@@ -29,3 +29,7 @@ local-management-service/log/
 .extract
 *.jar
 nohup.out
+
+logs
+copy-artifact.sh
+localrun

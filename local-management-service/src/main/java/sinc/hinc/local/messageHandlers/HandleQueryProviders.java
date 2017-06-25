@@ -8,31 +8,28 @@ package sinc.hinc.local.messageHandlers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
 import sinc.hinc.communication.processing.HINCMessageHander;
+import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.local.Main;
-import sinc.hinc.model.API.WrapperIoTUnit;
-import sinc.hinc.model.VirtualComputingResource.IoTUnit;
+import sinc.hinc.model.API.WrapperProvider;
+import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
+import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 /**
  *
  * @author hungld
  */
-public class HandleQueryIoTUnit implements HINCMessageHander {
+public class HandleQueryProviders implements HINCMessageHander {
 
     static Logger logger = HincConfiguration.getLogger();
 
     @Override
     public HincMessage handleMessage(HincMessage msg) {
-        logger.debug("Server get request for IoTUnit information: " + msg.toJson());
+        logger.debug("Querying resource provider !");
 
         // check infobase
         if (msg.getExtra() != null && msg.getExtra().containsKey("infoBases")) {
@@ -40,7 +37,7 @@ public class HandleQueryIoTUnit implements HINCMessageHander {
             List<String> myInfoBases = HincConfiguration.getLocalMeta().getInfoBase();
             boolean found = false;
             for (String s : infoBasesList) {
-                if (myInfoBases.contains(s.trim())){                
+                if (myInfoBases.contains(s.trim())) {
                     found = true;
                     break;
                 }
@@ -51,9 +48,6 @@ public class HandleQueryIoTUnit implements HINCMessageHander {
             }
         }
 
-        // processing
-        Long timeStamp2 = (new Date()).getTime();
-
         if (msg.getPayload().contains("rescan")) {
             try {
                 Main.scanOnce();
@@ -61,9 +55,7 @@ public class HandleQueryIoTUnit implements HINCMessageHander {
                 ex.printStackTrace();
             }
         }
-
-        Long timeStamp3 = (new Date()).getTime();
-        IoTUnitDAO unitDao = new IoTUnitDAO();
+        
         int limit = -1;
         if (msg.getExtra() != null && msg.getExtra().containsKey("limit")) {
             try {
@@ -72,28 +64,17 @@ public class HandleQueryIoTUnit implements HINCMessageHander {
                 e.printStackTrace();
             }
         }
-        List<IoTUnit> units = unitDao.readAll(limit);
-        logger.debug("Local service read all : " + units.size() + " items, which will be send back.");
-        WrapperIoTUnit wrapper = new WrapperIoTUnit(units);
+
+        AbstractDAO<ResourcesProvider> rpDAO = new AbstractDAO<>(ResourcesProvider.class);
+        List<ResourcesProvider> providerList = rpDAO.readAll(limit);
+        WrapperProvider wrapper = new WrapperProvider(providerList);
         ObjectMapper mapper = new ObjectMapper();
-
+        String replyPayload;
         try {
-            String replyPayload = mapper.writeValueAsString(wrapper);
-
+            replyPayload = mapper.writeValueAsString(wrapper);
             logger.debug("Size of the reply message: " + (replyPayload.length() / 1024) + "KB");
             HincMessage replyMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT.toString(), HincConfiguration.getMyUUID(), msg.getFeedbackTopic(), "", replyPayload);
-
-            System.out.println("Now send the message back global via topic: " + msg.getFeedbackTopic());
-
-            Long timeStamp4 = (new Date()).getTime(); // time3 -> time4: local service process the data
-
-            replyMsg.hasExtra("timeStamp2", timeStamp2.toString());
-            replyMsg.hasExtra("timeStamp3", timeStamp3.toString());
-            replyMsg.hasExtra("timeStamp4", timeStamp4.toString());
-
-//            MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-//            FACTORY.getMessagePublisher().pushMessage(replyMsg);
-            System.out.println("Return the IoT unit data to the callee: \n" + replyMsg);
+            logger.debug("Resource provider reply: " + replyMsg.toJson());
             return replyMsg;
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();

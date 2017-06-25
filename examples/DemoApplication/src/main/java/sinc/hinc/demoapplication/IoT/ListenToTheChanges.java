@@ -27,7 +27,7 @@ public class ListenToTheChanges {
         HINCMessageListener listener = null;
 
         listener = new HINCMessageListener("amqp://localhost", "amqp");
-        listener.addListener(HincMessageTopic.getBroadCastTopic("my-group"), HINCMessageType.UPDATE_INFORMATION.toString(), new HINCMessageHander() {
+        listener.addListener(HincMessageTopic.getBroadCastTopic("my-group"), HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT.toString(), new HINCMessageHander() {
             @Override
             public HincMessage handleMessage(HincMessage message) {
                 IoTUnit unit = IoTUnit.fromJson(message.getPayload());

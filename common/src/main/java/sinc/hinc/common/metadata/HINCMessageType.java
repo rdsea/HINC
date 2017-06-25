@@ -17,6 +17,7 @@ public enum HINCMessageType {
         local_register,
         // unicast: Client->local, query information from local regarding to SD Gateway or NVF
         QUERY_IOT_UNIT,
+        QUERY_IOT_PROVIDERS,
         QUERY_MICRO_SERVICE_LOCAL,
         QUERY_NFV_LOCAL,
         // unicast: Client->global, query information from global (which include relationship)
@@ -30,11 +31,15 @@ public enum HINCMessageType {
         SUBSCRIBE_SDGATEWAY_LOCAL,
         SUBSCRIBE_SDGATEWAY_LOCAL_SET_PARAM,
         // unicast: local/global --> client: send back the response
-        UPDATE_INFORMATION,
+        UPDATE_INFORMATION_SINGLEIOTUNIT,
         UPDATE_INFORMATION_MICRO_SERVICE,
+        UPDATE_INFORMATION_IOTPROVIDER,
         
         // HINC Local update info base: global --> client
         UPDATE_INFO_BASE,
+        
+        // Provider send an update of IoT Unit to HINC Local
+        PROVIDER_UPDATE_IOT_UNIT,
         
         // MISC
         MISC

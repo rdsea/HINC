@@ -52,7 +52,7 @@ public class DummyProviderAdaptor implements ProviderQueryAdaptor<DummyMetadataI
     public ResourcesProvider getProviderAPI(Map<String, String> settings) {
         String endpoint = settings.get("endpoint").trim();
         String provider_ref = endpoint + "/controlapi";
-        ResourcesProvider rp = new ResourcesProvider(settings);
+        ResourcesProvider rp = new ResourcesProvider("dummy", endpoint, settings);
         rp.hasApi(new ControlPoint("changepolicy", ControlPoint.InvokeProtocol.POST, endpoint + "/changepolicy", ControlPoint.ControlType.SELF_CONFIGURE).belongTo(provider_ref));
         rp.hasApi(new ControlPoint("health", ControlPoint.InvokeProtocol.GET, endpoint + "/health", ControlPoint.ControlType.SELF_CONFIGURE).belongTo(provider_ref));
         return rp;

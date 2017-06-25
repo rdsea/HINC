@@ -35,7 +35,7 @@ public class IoTUnitUpdateProcessor implements IoTUnitProcessor {
 
         // send message to the group topic, message type: UPDATE_INFORMATION
         String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
-        HincMessage updateMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION.toString(), HincConfiguration.getMyUUID(), groupTopic, "", unit.toJson());
+        HincMessage updateMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT.toString(), HincConfiguration.getMyUUID(), groupTopic, "", unit.toJson());
         MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
         FACTORY.getMessagePublisher().pushMessage(updateMsg);
     }

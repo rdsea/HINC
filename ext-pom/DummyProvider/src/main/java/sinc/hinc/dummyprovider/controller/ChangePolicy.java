@@ -27,6 +27,10 @@ public class ChangePolicy {
     CHANGE_TYPE changeType = CHANGE_TYPE.METADATA_CHANGE;
     int frequency = 10;
 
+    // ampq and group enable DummyProvider send data when having update
+    String amqp;
+    String amqpgroup;
+
     public static void main(String[] args) {
         // a test
         ChangePolicy cp = new ChangePolicy();
@@ -94,6 +98,22 @@ public class ChangePolicy {
 
     public void setFrequency(int frequency) {
         this.frequency = frequency;
+    }
+
+    public String getAmqp() {
+        return amqp;
+    }
+
+    public void setAmqp(String amqp) {
+        this.amqp = amqp;
+    }
+
+    public String getAmqpgroup() {
+        return amqpgroup;
+    }
+
+    public void setAmqpgroup(String amqpgroup) {
+        this.amqpgroup = amqpgroup;
     }
 
 }

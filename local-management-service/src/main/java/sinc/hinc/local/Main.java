@@ -31,10 +31,13 @@ import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 import sinc.hinc.abstraction.ResourceDriver.ServiceDetector;
 import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.local.messageHandlers.HandleQueryProviders;
 import sinc.hinc.local.messageHandlers.HandleQueryService;
 import sinc.hinc.local.messageHandlers.HandleUpdateInfobase;
+import sinc.hinc.local.messageHandlers.HandleUpdateIoTUnit;
 import sinc.hinc.model.API.WrapperMicroService;
 import sinc.hinc.model.VirtualComputingResource.MicroService;
+import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 /**
@@ -117,6 +120,7 @@ public class Main {
 
         logger.debug("We have {} adaptor... now will check each one", pluginReg.getAdaptors().size());
         Set<IoTUnit> units = new HashSet<>();
+        Set<ResourcesProvider> resourceProviders = new HashSet<>();
         for (ProviderQueryAdaptor adaptor : pluginReg.getAdaptors()) {
             if (enabledAdaptors.contains(adaptor.getName())) {
                 String aName = adaptor.getName();
@@ -133,6 +137,9 @@ public class Main {
                     logger.debug("HINC UUID: " + unit.getHincID() + ", unit  uuid: " + unit.getUuid());
                     units.add(unit);
                 }
+                // check provider APIs
+                ResourcesProvider rp = adaptor.getProviderAPI(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
+                resourceProviders.add(rp);
                 Thread.sleep(1000); // a short break between sources
             }
         }
@@ -140,6 +147,8 @@ public class Main {
         System.out.println("Transforming IoTUnit is done, number of IoT Units: " + units.size());
         IoTUnitDAO unitDAO = new IoTUnitDAO();
         unitDAO.saveAll(units);
+        AbstractDAO<ResourcesProvider> rpDAO = new AbstractDAO<>(ResourcesProvider.class);
+        rpDAO.saveAll(resourceProviders);
     }
 
     public static void main(String[] args) throws Exception {
@@ -153,15 +162,16 @@ public class Main {
 
         /**
          * ************************
-         * HINC listens to some queue channels to answer the query.
-         * Because the limitation of connection to the queue, each HINC local subscribe only to public topic at the moment.
-         * ************************
+         * HINC listens to some queue channels to answer the query. Because the
+         * limitation of connection to the queue, each HINC local subscribe only
+         * to public topic at the moment. ************************
          */
         String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
 //        String privaTopic = HincMessageTopic.getHINCPrivateTopic(HincConfiguration.getMyUUID());
 
         LISTENER.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
         LISTENER.addListener(groupTopic, HINCMessageType.QUERY_IOT_UNIT.toString(), new HandleQueryIoTUnit());
+        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_IOT_PROVIDERS.toString(), new HandleQueryProviders());
 //        LISTENER.addListener(privaTopic, HINCMessageType.QUERY_GATEWAY_LOCAL.toString(), new HandleQueryIoTUnit());
 
         LISTENER.addListener(groupTopic, HINCMessageType.QUERY_MICRO_SERVICE_LOCAL.toString(), new HandleQueryService());
@@ -172,8 +182,10 @@ public class Main {
 
         LISTENER.addListener(groupTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
 //        LISTENER.addListener(privaTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
-        
+
         LISTENER.addListener(groupTopic, HINCMessageType.UPDATE_INFO_BASE.toString(), new HandleUpdateInfobase());
+        
+        LISTENER.addListener(groupTopic, HINCMessageType.PROVIDER_UPDATE_IOT_UNIT.toString(), new HandleUpdateIoTUnit());
 
         LISTENER.listen();
 

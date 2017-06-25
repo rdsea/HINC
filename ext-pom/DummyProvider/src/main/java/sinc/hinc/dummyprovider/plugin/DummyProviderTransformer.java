@@ -5,6 +5,8 @@
  */
 package sinc.hinc.dummyprovider.plugin;
 
+import java.util.HashMap;
+import java.util.Map;
 import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.dummyprovider.provider.DummyMetadataItem;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
@@ -20,6 +22,13 @@ public class DummyProviderTransformer implements IoTUnitTransformer<DummyMetadat
     public IoTUnit translateIoTUnit(DummyMetadataItem data) {
         IoTUnit unit = new IoTUnit();
         unit.setResourceID(data.getId());
+        if (data.getName() == null || data.getName().isEmpty()){
+            // the IoT Unit should be removed
+            Map<String, String> meta = new HashMap<>();
+            meta.put("remove", "true");
+            unit.setState(meta);
+            return unit;
+        }
         DataPoint dp = new DataPoint(data.getName(), data.getType());
         dp.setMeasurementUnit(data.getUnit());
         unit.hasDatapoint(dp);

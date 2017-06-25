@@ -5,6 +5,8 @@
  */
 package sinc.hinc.dummyprovider.provider;
 
+import sinc.hinc.dummyprovider.provider.tasks.DummyTaskMetaDataChange;
+import sinc.hinc.dummyprovider.provider.tasks.DummyTaskSensorInOut;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,10 +29,10 @@ import sinc.hinc.dummyprovider.controller.ChangePolicy;
 @Produces("application/json")
 public class DummyREST {
 
-    static Logger logger = LoggerFactory.getLogger("Dummy");
+    static Logger logger = LoggerFactory.getLogger("Dummy");    
 
     DummyData data;
-    ChangePolicy changePolicy;
+    public static ChangePolicy changePolicy;
     boolean updatedPolicy = true;
 
     public DummyREST() {
@@ -57,7 +59,7 @@ public class DummyREST {
         }
         this.executor = Executors.newSingleThreadScheduledExecutor();
         Runnable task = null;
-        switch (this.changePolicy.getChangeType()) {
+        switch (changePolicy.getChangeType()) {
             case METADATA_CHANGE: {
                 task = new DummyTaskMetaDataChange(changePolicy, data);
                 break;
@@ -66,8 +68,8 @@ public class DummyREST {
                 task = new DummyTaskSensorInOut(changePolicy, data);
                 break;
         }
-        logger.debug("Start to schedule change: " + this.changePolicy.getFrequency());
-        executor.scheduleWithFixedDelay(task, 1, this.changePolicy.getFrequency(), TimeUnit.SECONDS);
+        logger.debug("Start to schedule change: " + changePolicy.getFrequency());
+        executor.scheduleWithFixedDelay(task, 1, changePolicy.getFrequency(), TimeUnit.SECONDS);
     }
 
     @POST
@@ -76,7 +78,7 @@ public class DummyREST {
         logger.debug("Updating change policy: " + data);
         ChangePolicy cp = ChangePolicy.fromJson(data);
         if (cp != null) {
-            this.changePolicy = cp;
+            changePolicy = cp;
             updatePolicyAndStartControl();
             logger.debug("Update policy DONE !");
             return "true";

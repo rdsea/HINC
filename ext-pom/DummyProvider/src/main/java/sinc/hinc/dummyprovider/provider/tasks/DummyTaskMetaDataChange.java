@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.dummyprovider.provider;
+package sinc.hinc.dummyprovider.provider.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import sinc.hinc.dummyprovider.controller.ChangePolicy;
+import sinc.hinc.dummyprovider.provider.DummyData;
+import sinc.hinc.dummyprovider.provider.DummyMetadataItem;
 
 /**
  *
@@ -30,12 +33,16 @@ public class DummyTaskMetaDataChange implements Runnable {
         System.out.println("DummyTaskMetaDataChange: " + changePolicy.toJson() + "\n");
         int numberOfChange = this.changePolicy.getNumberOfChange();
         int size = this.dummyData.getDataItems().size();
+        List<DummyMetadataItem> dataItemsToSend = new ArrayList<>();
         for (int i = 1; i <= numberOfChange; i++) {
             int randomNum = ThreadLocalRandom.current().nextInt(0, size);
             System.out.println("Change metadata of sensor: " + randomNum + " from:" + dummyData.getDataItems().get(randomNum).toJson());
             dummyData.getDataItems().get(randomNum).reGenerateMetadata();
             System.out.println("Change metadata of sensor: " + randomNum + " to  :" + dummyData.getDataItems().get(randomNum).toJson() + "\n");
+            dataItemsToSend.add(dummyData.getDataItems().get(randomNum));
         }
+        
+        new DummyTaskPushHINCLocal(dummyData, dataItemsToSend).push();
     }
 
 }

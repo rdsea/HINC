@@ -54,8 +54,12 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>-->
-
-
+        <dependency>
+            <groupId>at.ac.tuwien.dsg.hinc</groupId>
+            <artifactId>communication</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     
     

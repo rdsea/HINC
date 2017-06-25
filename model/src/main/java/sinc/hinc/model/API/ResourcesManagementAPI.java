@@ -29,6 +29,7 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
+import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
@@ -75,13 +76,28 @@ public interface ResourcesManagementAPI {
     @Path("/IoTUnits")
     @Produces("application/json")
     @ApiOperation(value = "Query all capabilities on the IoT site",
-            notes = "All the capabilities will be wrapped in a SoftwareDefinedGateway object. The information contains also the metadata of the site.",
+            notes = "All the capabilities will be wrapped in a IoTUnit object. The information contains also the metadata of the site.",
             response = SoftwareDefinedGateway.class,
             responseContainer = "List")
     Set<IoTUnit> queryIoTUnits(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID,
             @ApiParam(value = "The namespaces that IoT Unit belong to. Separate namespaces in the list with commas", required = false, defaultValue = "null") @DefaultValue("") @QueryParam("infoBases") String infoBases,
+            @ApiParam(value = "The maximum records to return from each HINC Local.", required = false, defaultValue = "0") @DefaultValue("0") @QueryParam("limit") int limit,
+            @ApiParam(value = "To force the HINC Local to rescan resource", required = false, defaultValue = "false") @DefaultValue("false") @QueryParam("rescan") String forceRescan
+    );
+
+    @GET
+    @Path("/IoTProviders")
+    @Produces("application/json")
+    @ApiOperation(value = "Query all IoT providers",
+            notes = "The APIs of the IoT providers on the gateway.",
+            response = SoftwareDefinedGateway.class,
+            responseContainer = "List")
+    Set<ResourcesProvider> queryResourceProviders(
+            @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
+            @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID,
+            @ApiParam(value = "The namespaces that providers belong to. Separate namespaces in the list with commas", required = false, defaultValue = "null") @DefaultValue("") @QueryParam("infoBases") String infoBases,
             @ApiParam(value = "The maximum records to return from each HINC Local.", required = false, defaultValue = "0") @DefaultValue("0") @QueryParam("limit") int limit,
             @ApiParam(value = "To force the HINC Local to rescan resource", required = false, defaultValue = "false") @DefaultValue("false") @QueryParam("rescan") String forceRescan
     );
@@ -202,6 +218,17 @@ public interface ResourcesManagementAPI {
             @ApiParam(value = "The UUID of the gateway to send the control command to", required = true) @PathParam("gatewayid") String gatewayid,
             @ApiParam(value = "The resource ID on the gateway to control", required = true) @PathParam("resourceid") String resourceid,
             @ApiParam(value = "The action name ", required = true) @PathParam("actionName") String actionName,
+            @ApiParam(value = "The parameter for the control", required = false) @QueryParam("param") String param);
+    
+    @POST
+    @Path("/control/{controlPointUUID}")
+    @Produces("text/plain")
+    @ApiOperation(value = "Send a control action to a provider. This API returns a message from low level runtime.",
+            notes = "The message is broadcast to find the correct control point",
+            response = String.class,
+            responseContainer = "String")
+    public String sendControlByUUID(
+            @ApiParam(value = "Control point UUID ", required = true) @PathParam("actionName") String controlPointUUID,
             @ApiParam(value = "The parameter for the control", required = false) @QueryParam("param") String param);
 
     @POST

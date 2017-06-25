@@ -44,7 +44,7 @@ public class HINCManagementImpl implements HINCManagementAPI {
         if (listener == null) {
             logger.debug("Start to listen to the UPDATE_INFORMATION message from the group topic");
             listener = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-            listener.addListener(HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HINCMessageType.UPDATE_INFORMATION.toString(), new SingleIoTUnitUpdateHandler());
+            listener.addListener(HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT.toString(), new SingleIoTUnitUpdateHandler());
             listener.addListener(HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HINCMessageType.SYN_REPLY.toString(), new HincLocalSyncHandler(logger, this.listOfHINCLocal));
             listener.listen();
         }

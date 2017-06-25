@@ -37,7 +37,9 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.model.API.WrapperIoTUnit;
+import sinc.hinc.model.API.WrapperProvider;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
+import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import sinc.hinc.model.slice.AppSlice;
 import sinc.hinc.model.slice.InfrastructureSlice;
@@ -179,6 +181,57 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     }
 
     @Override
+    public Set<ResourcesProvider> queryResourceProviders(int timeout, String hincUUID, String infoBases, int limit, String forceRescan) {
+        logger.debug("Start broadcasting the query for Provider...");
+        String payload = "";
+        if (forceRescan.equals("true")) {
+            payload = "rescan";
+        }
+
+        String feedBackTopic = HincMessageTopic.getTemporaryTopic();
+        HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_IOT_PROVIDERS.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
+        if (limit > 0) {
+            queryMessage.hasExtra("limit", limit + "");
+        }
+        if (hincUUID != null && !hincUUID.isEmpty() && !hincUUID.trim().equals("null")) {
+            queryMessage.setReceiverID(hincUUID);
+        }
+        if (infoBases != null && !infoBases.isEmpty() && !infoBases.trim().equals("null")) {
+            queryMessage.hasExtra("infoBases", infoBases);
+        }
+
+        if (timeout == 0) {
+            logger.debug("timeout = 0, query in DB of the global service, do not make any request.");
+            AbstractDAO<ResourcesProvider> dao = new AbstractDAO<>(ResourcesProvider.class);
+            List<ResourcesProvider> list = dao.readAll();
+
+            return new HashSet<>(list);
+        }
+
+        final Set<ResourcesProvider> result = new HashSet<>();
+        comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
+            @Override
+            public HincMessage handleMessage(HincMessage message) {
+                WrapperProvider wrapper = new WrapperProvider(message.getPayload());
+                result.addAll(wrapper.getUnits());
+                logger.debug("HINC " + message.getSenderID() + " send back: " + result.size() + " units");
+                AbstractDAO<ResourcesProvider> dao = new AbstractDAO<>(ResourcesProvider.class);
+                List<ODocument> odocs = dao.saveAll(wrapper.getUnits());
+                logger.debug("Save " + odocs.size() + "IoT providers");
+                return null;
+            }
+        });
+        // wait for a few second
+        try {
+            logger.debug("Wait for " + timeout + " miliseconds for subscription threads finish ...........");
+            Thread.sleep(timeout);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
     public Collection<DataPoint> queryDataPoint(int timeout, String infoBases, String hincUUID) {
         if (timeout == 0) {
             AbstractDAO<DataPoint> dao = new AbstractDAO<>(DataPoint.class);
@@ -273,6 +326,13 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     @Override
     public String sendControl(String gatewayid, String resourceid, String actionName, String param) {
         String controlPointUUID = gatewayid + "/" + resourceid + "/" + actionName;
+        HincMessage controlPointRequest = new HincMessage(HINCMessageType.CONTROL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), controlPointUUID);
+        controlPointRequest.hasExtra("param", param);
+        return comMng.synCall(controlPointRequest);
+    }
+
+    @Override
+    public String sendControlByUUID(String controlPointUUID, String param) {
         HincMessage controlPointRequest = new HincMessage(HINCMessageType.CONTROL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), controlPointUUID);
         controlPointRequest.hasExtra("param", param);
         return comMng.synCall(controlPointRequest);

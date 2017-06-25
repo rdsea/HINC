@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.dummyprovider.provider;
+package sinc.hinc.dummyprovider.provider.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import sinc.hinc.dummyprovider.controller.ChangePolicy;
+import sinc.hinc.dummyprovider.provider.DummyData;
+import sinc.hinc.dummyprovider.provider.DummyMetadataItem;
 
 /**
  *
@@ -33,7 +36,7 @@ public class DummyTaskSensorInOut implements Runnable {
         Random rand = new Random();
         // do not change everything
         int numberOfChangeRnd = rand.nextInt(numberOfChange);
-
+        List<DummyMetadataItem> dataItemsToSend = new ArrayList<>();
         if (this.phaseMoveOut) {
             if (this.dummyData.getBuffers().isEmpty()) {
                 numberOfChangeRnd = numberOfChangeRnd * 2;
@@ -43,7 +46,9 @@ public class DummyTaskSensorInOut implements Runnable {
                 if (this.dummyData.getBuffers().size() < this.dummyData.getDataItems().size()) {
                     this.dummyData.getBuffers().offer(this.dummyData.getDataItems().get(0));
                     System.out.println("A sensor is moving out: " + this.dummyData.getDataItems().get(0).getId());
+                    DummyMetadataItem itemToRemove = new DummyMetadataItem(this.dummyData.getDataItems().get(0).getId());
                     this.dummyData.getDataItems().remove(0);
+                    dataItemsToSend.add(itemToRemove);
                 }
             }
         } else {
@@ -53,13 +58,16 @@ public class DummyTaskSensorInOut implements Runnable {
             for (int i = 1; i <= numberOfChangeRnd; i++) {
                 if (!this.dummyData.getBuffers().isEmpty()) {
                     System.out.println("A sensor is moving in: " + this.dummyData.getBuffers().peek().getId());
-                    this.dummyData.getDataItems().add(this.dummyData.getBuffers().poll());
+                    DummyMetadataItem dataitem = this.dummyData.getBuffers().poll();
+                    this.dummyData.getDataItems().add(dataitem);
+                    dataItemsToSend.add(dataitem);
                 }
             }
         }
         phaseMoveOut = !phaseMoveOut;
 
         System.out.println("Current sensors: " + this.dummyData.getDataItems().size() + ", buffer: " + this.dummyData.getBuffers().size());
+        new DummyTaskPushHINCLocal(dummyData, dataItemsToSend).push();
 
     }
 
