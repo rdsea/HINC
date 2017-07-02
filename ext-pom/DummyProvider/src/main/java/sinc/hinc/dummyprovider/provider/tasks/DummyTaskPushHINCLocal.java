@@ -6,11 +6,11 @@
 package sinc.hinc.dummyprovider.provider.tasks;
 
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincMessageTopic;
-import sinc.hinc.communication.factory.MessagePublishInterface;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.processing.HINCMessageSender;
 import sinc.hinc.communication.processing.HincMessage;
@@ -29,10 +29,12 @@ public class DummyTaskPushHINCLocal {
     static Logger logger = LoggerFactory.getLogger("Dummy");
     DummyData allData;
     List<DummyMetadataItem> dataItems;
+    Map<String, String> meta = null;
 
-    public DummyTaskPushHINCLocal(DummyData allDummyData, List<DummyMetadataItem> dataItemsToSend) {
+    public DummyTaskPushHINCLocal(DummyData allDummyData, List<DummyMetadataItem> dataItemsToSend, Map<String, String> meta) {
         this.allData = allDummyData;
         this.dataItems = dataItemsToSend;
+        this.meta = meta;
     }
 
     public void push() {
@@ -44,6 +46,8 @@ public class DummyTaskPushHINCLocal {
         if (DummyREST.changePolicy.getAmqp() != null && DummyREST.changePolicy.getAmqp() != null) {
             HINCMessageSender comMng = new HINCMessageSender(DummyREST.changePolicy.getAmqp(), "amqp");
             HincMessage msg = new HincMessage(HINCMessageType.PROVIDER_UPDATE_IOT_UNIT.toString(), "DummyProvider", HincMessageTopic.getBroadCastTopic(DummyREST.changePolicy.getAmqpgroup()), "", wrapper.toJson());
+            msg.hasExtra("test", "experiment");
+            msg.getExtra().putAll(meta);
             comMng.asynCall(0, msg, new HINCMessageHander() {
                 @Override
                 public HincMessage handleMessage(HincMessage message) {

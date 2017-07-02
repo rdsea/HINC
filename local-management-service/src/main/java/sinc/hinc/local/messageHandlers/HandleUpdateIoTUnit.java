@@ -43,7 +43,7 @@ public class HandleUpdateIoTUnit implements HINCMessageHander {
     public HincMessage handleMessage(HincMessage message) {
         List<String> events = new LinkedList<>();
         Long st_local_get_msg = (new Date()).getTime();
-        logger.debug("Get  message from " + message.getSenderID() + ". Msg count: " + ++count);
+        logger.debug("----> Get  message from " + message.getSenderID() + ". Msg count: " + ++count);
         WrapperIoTUnit wrapper = new WrapperIoTUnit(message.getPayload());
         logger.debug("Get the wrapper: " + wrapper.toJson());
         Set<IoTUnit> result_update = new HashSet<>();
@@ -66,29 +66,33 @@ public class HandleUpdateIoTUnit implements HINCMessageHander {
 
         // ==== Record time for various experiments ===
         Long st_local_saved_data = (new Date()).getTime();
-        Long st_device_change = Long.parseLong(message.getExtra().get("st_device_change"));
 
-        Long time_provider_to_local = st_local_get_msg - st_device_change;
-        Long time_local_process = st_local_saved_data - st_local_get_msg;
-        Long end2end = time_local_process + time_provider_to_local;
+        if (message.getExtra() != null && !message.getExtra().isEmpty() && message.getExtra().containsKey("st_device_change")) {
+            Long st_device_change = Long.parseLong(message.getExtra().get("st_device_change"));
+            Long time_provider_to_local = st_local_get_msg - st_device_change;
+            Long time_local_process = st_local_saved_data - st_local_get_msg;
+            Long end2end = time_local_process + time_provider_to_local;
 
-        String eventStr = message.getSenderID() + "," + st_device_change + "," + st_local_get_msg + ","
-                + st_local_saved_data + "," + time_provider_to_local + "," + time_local_process + "," + end2end + "\n";
+            String eventStr = message.getSenderID() + "," + st_device_change + "," + st_local_get_msg + ","
+                    + st_local_saved_data + "," + time_provider_to_local + "," + time_local_process + "," + end2end + "\n";
+            logger.debug("Event is log: " + eventStr);
 
-        logger.debug("Event is log: " + eventStr);
-        String logFile = "local.events.txt";
-        try {
-            logger.debug("Saving event to file");
-            new File(logFile).createNewFile();
-            Files.write(Paths.get(logFile), eventStr.getBytes(), StandardOpenOption.APPEND);
-        } catch (IOException ex) {
-            logger.error("Cannot create event log file: " + logFile);
-            ex.printStackTrace();
-        } catch (Exception e) {
-            logger.error("Some error happen: ", e);
-            e.printStackTrace();
+            String logFile = "local.events.txt";
+            try {
+                logger.debug("Saving event to file");
+                new File(logFile).createNewFile();
+                Files.write(Paths.get(logFile), eventStr.getBytes(), StandardOpenOption.APPEND);
+            } catch (IOException ex) {
+                logger.error("Cannot create event log file: " + logFile);
+                ex.printStackTrace();
+            } catch (Exception e) {
+                logger.error("Some error happen: ", e);
+                e.printStackTrace();
+            }
+            events.add(eventStr);
+        } else {
+            logger.error("Cannot detect timestamp in the HINC message, no event is recorded.");
         }
-        events.add(eventStr);
 
         return null;
     }

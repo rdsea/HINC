@@ -27,9 +27,13 @@ public class HINCMessageSender {
     }
 
     public void asynCall(int timeout, HincMessage requestMessage, HINCMessageHander handler) {
-        MessageSubscribeInterface sub = FACTORY.getMessageSubscriber(handler);
-        logger.debug("Will subscribe to the topic: " + requestMessage.getFeedbackTopic() + " to wait for the reply");
-        sub.subscribe(requestMessage.getFeedbackTopic(), timeout);
+        if (requestMessage.getFeedbackTopic() != null && !requestMessage.getFeedbackTopic().isEmpty()) {
+            MessageSubscribeInterface sub = FACTORY.getMessageSubscriber(handler);
+            logger.debug("Will subscribe to the topic: " + requestMessage.getFeedbackTopic() + " to wait for the reply");
+            sub.subscribe(requestMessage.getFeedbackTopic(), timeout);
+        } else {
+            logger.debug("No feedback topic, Async call will not send the reply");
+        }
         MessagePublishInterface pub = FACTORY.getMessagePublisher();
         pub.pushMessage(requestMessage);
         try {
@@ -48,6 +52,5 @@ public class HINCMessageSender {
         logger.debug("Function called and return the result: " + responseMessage.getPayload());
         return responseMessage.getPayload();
     }
-
 
 }

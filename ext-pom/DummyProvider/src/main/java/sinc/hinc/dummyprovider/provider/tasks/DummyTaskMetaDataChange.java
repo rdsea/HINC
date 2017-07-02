@@ -6,7 +6,10 @@
 package sinc.hinc.dummyprovider.provider.tasks;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import sinc.hinc.dummyprovider.controller.ChangePolicy;
 import sinc.hinc.dummyprovider.provider.DummyData;
@@ -29,6 +32,7 @@ public class DummyTaskMetaDataChange implements Runnable {
 
     @Override
     public void run() {
+        Long st_device_change = new Date().getTime();
         System.out.println("===========================================");
         System.out.println("DummyTaskMetaDataChange: " + changePolicy.toJson() + "\n");
         int numberOfChange = this.changePolicy.getNumberOfChange();
@@ -41,8 +45,9 @@ public class DummyTaskMetaDataChange implements Runnable {
             System.out.println("Change metadata of sensor: " + randomNum + " to  :" + dummyData.getDataItems().get(randomNum).toJson() + "\n");
             dataItemsToSend.add(dummyData.getDataItems().get(randomNum));
         }
-        
-        new DummyTaskPushHINCLocal(dummyData, dataItemsToSend).push();
+        Map<String, String> meta = new HashMap<>();
+        meta.put("st_device_change", st_device_change + "");
+        new DummyTaskPushHINCLocal(dummyData, dataItemsToSend, meta).push();
     }
 
 }

@@ -45,6 +45,10 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
 
     @Override
     public void subscribe(String topic, long timeout) {
+        if (topic == null) {
+            logger.error("Subscribing to an empty topic... ");
+            return;
+        }
         if (amqpChannel == null) {
             connect();
         }
@@ -127,7 +131,7 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
                     }
 
                 }
-                logger.debug("The loop that wait the message is over ! Topic: " + topic);                
+                logger.debug("The loop that wait the message is over ! Topic: " + topic);
 //                consumer.getChannel().getConnection().close();
                 logger.debug("ThreadQueueSubscribe should exit here ! Topic: " + topic);
             } catch (IOException ex) {
