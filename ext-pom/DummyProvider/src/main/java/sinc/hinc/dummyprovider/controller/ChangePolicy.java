@@ -21,9 +21,8 @@ import org.slf4j.LoggerFactory;
 public class ChangePolicy {
 
     static Logger logger = LoggerFactory.getLogger("Dummy");
-    int unitMax = 20;
-    int unitMin = 10;
     int numberOfChange = 3;
+    int derivation = 1;
     CHANGE_TYPE changeType = CHANGE_TYPE.METADATA_CHANGE;
     int frequency = 10;
 
@@ -60,20 +59,12 @@ public class ChangePolicy {
         }
     }
 
-    public int getUnitMax() {
-        return unitMax;
+    public int getDerivation() {
+        return derivation;
     }
 
-    public void setUnitMax(int unitMax) {
-        this.unitMax = unitMax;
-    }
-
-    public int getUnitMin() {
-        return unitMin;
-    }
-
-    public void setUnitMin(int unitMin) {
-        this.unitMin = unitMin;
+    public void setDerivation(int derivation) {
+        this.derivation = derivation;
     }
 
     public int getNumberOfChange() {

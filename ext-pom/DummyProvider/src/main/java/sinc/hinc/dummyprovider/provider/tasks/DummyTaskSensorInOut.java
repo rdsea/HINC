@@ -39,9 +39,15 @@ public class DummyTaskSensorInOut implements Runnable {
         logger.debug("===========================================");
         logger.debug("DummyTaskSensorInOut: " + changePolicy.toJson());
         int numberOfChange = this.changePolicy.getNumberOfChange();
+        int derivation = this.changePolicy.getDerivation();
         Random rand = new Random();
         // do not change everything
-        int numberOfChangeRnd = rand.nextInt(numberOfChange);
+        int actualDerivation = rand.nextInt(derivation);
+        int numberOfChangeRnd = numberOfChange + actualDerivation;
+        if (rand.nextBoolean()) {
+            numberOfChangeRnd = numberOfChange - 2 * actualDerivation;
+        }
+
         logger.debug("Phase Moveout: " + this.phaseMoveOut + ", sensor number to move: " + numberOfChangeRnd);
         List<DummyMetadataItem> dataItemsToSend = new ArrayList<>();
         if (this.phaseMoveOut) {
