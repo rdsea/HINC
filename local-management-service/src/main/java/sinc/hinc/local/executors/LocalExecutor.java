@@ -40,8 +40,8 @@ public class LocalExecutor implements ExecutorsInterface {
             System.out.println(cmd);
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
-            }
-            logger.debug("Command output: {}", sb.toString().trim());
+            }            
+            logger.debug("Command return code: {}, output: {}", p.exitValue(), sb.toString().trim());
             long endTime = new Date().getTime();
             return new ControlResult(ControlResult.CONTROL_RESULT.SUCCESS, 0, sb.toString().trim()).hasExecutionTime(endTime - startTime);
 

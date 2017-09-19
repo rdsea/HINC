@@ -59,7 +59,7 @@ public class DummyTaskSensorInOut implements Runnable {
                 // move out maximum half of total sensors
                 if (this.dummyData.getBuffers().size() < this.dummyData.getDataItems().size()) {
                     this.dummyData.getBuffers().offer(this.dummyData.getDataItems().get(0));
-                    logger.debug("A sensor is moving out: " + this.dummyData.getDataItems().get(0).getId());
+                    //logger.debug("A sensor is moving out: " + this.dummyData.getDataItems().get(0).getId());
                     DummyMetadataItem itemToRemove = new DummyMetadataItem(this.dummyData.getDataItems().get(0).getId());
                     this.dummyData.getDataItems().remove(0);
                     dataItemsToSend.add(itemToRemove);
@@ -72,7 +72,7 @@ public class DummyTaskSensorInOut implements Runnable {
             }
             for (int i = 1; i <= numberOfChangeRnd; i++) {
                 if (!this.dummyData.getBuffers().isEmpty()) {
-                    logger.debug("A sensor is moving in: " + this.dummyData.getBuffers().peek().getId());
+                    //logger.debug("A sensor is moving in: " + this.dummyData.getBuffers().peek().getId());
                     DummyMetadataItem dataitem = this.dummyData.getBuffers().poll();
                     this.dummyData.getDataItems().add(dataitem);
                     dataItemsToSend.add(dataitem);

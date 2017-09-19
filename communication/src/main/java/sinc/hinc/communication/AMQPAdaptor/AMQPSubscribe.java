@@ -118,7 +118,6 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
                     //logger.debug("A message arrived. From: " + em.getFromSalsa() + ". MsgType: " + em.getMsgType() + ". Payload: " + em.getPayload());
                     logger.debug("A message arrived. From: " + em.getSenderID() + ". MsgType: " + em.getMsgType() + ". Stamp/UUID: " + em.getTimeStamp() + "/" + em.getUuid());
                     new Thread(new HandlingThread(handler, em)).start();
-                    logger.debug("If handle message done, it must exit and show this, topic: " + topic);
                     // quit if timeout
                     if (timeout > 0) {
                         logger.debug("YES, timeout > 0");

@@ -71,16 +71,6 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         return this.comMng;
     }
 
-//    static HINCMessageListener listener = null;
-//    @PostConstruct
-//    public void init() {
-//        if (listener == null) {
-//            logger.debug("Start to listen to the UPDATE_INFORMATION message from the group topic");
-//            listener = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-//            listener.addListener(HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HINCMessageType.UPDATE_INFORMATION.toString(), new SingleIoTUnitUpdateHandler());
-//            listener.listen();
-//        }
-//    }
     @Override
     public Set<IoTUnit> queryIoTUnits(int timeout, String hincUUID, String infoBases, int limit, String rescan) {
         logger.debug("Start broadcasting the query for IoT Unit...");
@@ -326,13 +316,6 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     @Override
     public String sendControl(String gatewayid, String resourceid, String actionName, String param) {
         String controlPointUUID = gatewayid + "/" + resourceid + "/" + actionName;
-        HincMessage controlPointRequest = new HincMessage(HINCMessageType.CONTROL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), controlPointUUID);
-        controlPointRequest.hasExtra("param", param);
-        return comMng.synCall(controlPointRequest);
-    }
-
-    @Override
-    public String sendControlByUUID(String controlPointUUID, String param) {
         HincMessage controlPointRequest = new HincMessage(HINCMessageType.CONTROL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), controlPointUUID);
         controlPointRequest.hasExtra("param", param);
         return comMng.synCall(controlPointRequest);

@@ -40,9 +40,9 @@ public class DummyTaskMetaDataChange implements Runnable {
         List<DummyMetadataItem> dataItemsToSend = new ArrayList<>();
         for (int i = 1; i <= numberOfChange; i++) {
             int randomNum = ThreadLocalRandom.current().nextInt(0, size);
-            System.out.println("Change metadata of sensor: " + randomNum + " from:" + dummyData.getDataItems().get(randomNum).toJson());
+            //System.out.println("Change metadata of sensor: " + randomNum + " from:" + dummyData.getDataItems().get(randomNum).toJson());
             dummyData.getDataItems().get(randomNum).reGenerateMetadata();
-            System.out.println("Change metadata of sensor: " + randomNum + " to  :" + dummyData.getDataItems().get(randomNum).toJson() + "\n");
+            //System.out.println("Change metadata of sensor: " + randomNum + " to  :" + dummyData.getDataItems().get(randomNum).toJson() + "\n");
             dataItemsToSend.add(dummyData.getDataItems().get(randomNum));
         }
         Map<String, String> meta = new HashMap<>();

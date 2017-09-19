@@ -221,17 +221,6 @@ public interface ResourcesManagementAPI {
             @ApiParam(value = "The parameter for the control", required = false) @QueryParam("param") String param);
     
     @POST
-    @Path("/control/{controlPointUUID}")
-    @Produces("text/plain")
-    @ApiOperation(value = "Send a control action to a provider. This API returns a message from low level runtime.",
-            notes = "The message is broadcast to find the correct control point",
-            response = String.class,
-            responseContainer = "String")
-    public String sendControlByUUID(
-            @ApiParam(value = "Control point UUID ", required = true) @PathParam("actionName") String controlPointUUID,
-            @ApiParam(value = "The parameter for the control", required = false) @QueryParam("param") String param);
-
-    @POST
     @Path("/slides/data")
     public AppSlice configureDataSlide(String datapointID, String networkID, String cloudServiceID);
 

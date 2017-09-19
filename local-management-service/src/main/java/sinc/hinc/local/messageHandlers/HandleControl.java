@@ -5,15 +5,11 @@
  */
 package sinc.hinc.local.messageHandlers;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.factory.MessageClientFactory;
 import sinc.hinc.communication.payloads.ControlResult;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.local.Main;
 import sinc.hinc.local.executors.LocalExecutor;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
@@ -42,13 +38,12 @@ public class HandleControl implements HINCMessageHander {
                     break;
             }
         } else {
-            result = new ControlResult(ControlResult.CONTROL_RESULT.COMMAND_NOT_FOUND, 0, "Cannot find control point with ID: " + controlPointUUID);
+            System.out.println("Do not find control point id: " + controlPointUUID);
+            return null;
+            // result = new ControlResult(ControlResult.CONTROL_RESULT.COMMAND_NOT_FOUND, 0, "Cannot find control point with ID: " + controlPointUUID);
         }
 
         return new HincMessage(HINCMessageType.CONTROL_RESULT.toString(), HincConfiguration.getMyUUID(), message.getFeedbackTopic(), "", result.toJson());
-//        MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-//        FACTORY.getMessagePublisher().pushMessage(replyMsg);
-//        return replyMsg;
     }
 
 }
