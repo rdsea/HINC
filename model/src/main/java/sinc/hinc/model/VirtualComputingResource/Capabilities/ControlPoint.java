@@ -5,10 +5,12 @@
  */
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import sinc.hinc.model.API.HINCPersistable;
 
 /**
@@ -30,15 +32,21 @@ public class ControlPoint implements HINCPersistable {
         CONNECT_TO_NETWORK,
         SELF_CONFIGURE
     }
-    // uuid to point directly to the control. We use it for identifying in DB also
-    String iotUnitID;
-
+    String uuid = UUID.randomUUID().toString();
     String name;
+
+    // list of virtual resource that the control belongs to
+    List<String> resourceUuid = new ArrayList<>();
+    Map<String, String> meta = new HashMap<>();
+
     /**
-     * Metadata of the control points - controlType: the control is for what
-     * purpose. - condition: the condition to enable the control (e.g. this
-     * control can configure sensor to MQTT broker only) - effect: do not use
-     * this time
+     * Metadata of the control points.
+     * 
+     * - controlType: the purpose of the control
+     *
+     * - condition: the condition to enable the control (e.g. this control can
+     * configure sensor to MQTT broker only) - effect: change the metadata if
+     * the control is done
      */
     ControlType controlType;
     // condition now support state style only, not range or greater/lesser
@@ -50,12 +58,15 @@ public class ControlPoint implements HINCPersistable {
     Map<String, String> effects;
 
     /**
-     * How to call the capability - invokeProtocol: the way to invoke: REST or
-     * command - reference: the URI or command name - parameter: a set of input
-     * of the command. This will be filled on the invocation. the parameters can
-     * be marshalled in different model via JSON in REST call The absolute path
-     * to the service, e.g. http://example.com/rest/start/{id} Note: The
-     * parameters are put in brackets
+     * How to call the capability.
+     *
+     * invokeProtocol: the way to invoke: REST or command reference: the URI or
+     * command name parameter: a set of input of the command.
+     *
+     * This will be filled on the invocation. the parameters can be marshalled
+     * in different model via JSON in REST call The absolute path to the
+     * service, e.g. http://example.com/rest/start/{id} Note: The parameters are
+     * put in brackets
      *
      */
     InvokeProtocol invokeProtocol;
@@ -78,19 +89,9 @@ public class ControlPoint implements HINCPersistable {
         this.reference = reference;
         this.controlType = controlType;
     }
-    
-    // the iotUnitUUID can be used for provider UUID. It can be set by HINC or manually set.
-    public ControlPoint belongTo(String providerOrUnitUUID){
-        this.iotUnitID = providerOrUnitUUID;
-        return this;
-    }
-
-    // to have this field only for Jackson to work properly
-    String uuid;
 
     @Override
     public String getUuid() {
-        this.uuid = this.iotUnitID + "/" + name;
         return this.uuid;
     }
 
@@ -146,8 +147,20 @@ public class ControlPoint implements HINCPersistable {
         this.name = name;
     }
 
-    public String iotUnitResourceID() {
-        return iotUnitID.substring(iotUnitID.indexOf("/") + 1);
+    public List<String> getResourceUuid() {
+        return resourceUuid;
+    }
+
+    public void setResourceUuid(List<String> resourceUuid) {
+        this.resourceUuid = resourceUuid;
+    }
+
+    public Map<String, String> getMeta() {
+        return meta;
+    }
+
+    public void setMeta(Map<String, String> meta) {
+        this.meta = meta;
     }
 
     public ControlPoint hasCondition(String key, String value) {
@@ -170,19 +183,11 @@ public class ControlPoint implements HINCPersistable {
         return controlType;
     }
 
-    public String getIotUnitID() {
-        return iotUnitID;
-    }
-
-    public void setIotUnitID(String iotUnitID) {
-        this.iotUnitID = iotUnitID;
-    }
-
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.iotUnitID);
-        hash = 37 * hash + Objects.hashCode(this.name);
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.uuid);
+        hash = 97 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -198,7 +203,7 @@ public class ControlPoint implements HINCPersistable {
             return false;
         }
         final ControlPoint other = (ControlPoint) obj;
-        if (!Objects.equals(this.iotUnitID, other.iotUnitID)) {
+        if (!Objects.equals(this.uuid, other.uuid)) {
             return false;
         }
         if (!Objects.equals(this.name, other.name)) {

@@ -9,11 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import sinc.hinc.model.API.HINCPersistable;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
@@ -26,13 +29,13 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
  *
  * @author hungld
  */
-public class IoTUnit implements HINCPersistable {
+public class VirtualResource implements HINCPersistable {
 
     /**
-     * The resourceID may link to an external identification, e.g. to the real
-     * sensor ID
+     * Link to an external identification, e.g. to the real sensor/actuator ID
      */
-    String resourceID;
+    List<String> physicalResourceUuid = new ArrayList<>();
+
     /**
      * hincID is used for internal management, to detect which HINC is manage
      * the resource
@@ -51,19 +54,14 @@ public class IoTUnit implements HINCPersistable {
     Set<ControlPoint> controlpoints = new HashSet<>();
     Set<CloudConnectivity> connectivities;
 
-    public IoTUnit() {
-    }
-
-    public IoTUnit(String resourceID) {
-        this.resourceID = resourceID;
+    public VirtualResource() {
     }
 
     // to have this field only for Jackson to work properly
-    String uuid;
+    String uuid = UUID.randomUUID().toString();
 
     @Override
     public String getUuid() {
-        this.uuid = hincID + "/" + resourceID;
         return this.uuid;
     }
 
@@ -71,54 +69,32 @@ public class IoTUnit implements HINCPersistable {
         return hincID;
     }
 
-    public void setHincID(String hincID) {
-        this.hincID = hincID;
-        if (datapoints != null) {
-            for (DataPoint dp : datapoints) {
-                dp.setIotUnitID(getUuid());
-            }
-        }
-        if (controlpoints != null) {
-            for (ControlPoint cp : controlpoints) {
-                cp.setIotUnitID(getUuid());
-            }
-        }
-    }
-
-    public String getResourceID() {
-        return resourceID;
-    }
-
-    public void setResourceID(String resourceID) {
-        this.resourceID = resourceID;
-    }
-
-    public IoTUnit hasDatapoint(DataPoint dp) {
+    public VirtualResource hasDatapoint(DataPoint dp) {
         if (datapoints == null) {
             this.datapoints = new HashSet<>();
         }
-        dp.setIotUnitID(this.getUuid());
+        dp.getResourceUuid().add(this.getUuid());
         this.datapoints.add(dp);
         return this;
     }
 
     public void setDatapoints(Set<DataPoint> datapoints) {
         for (DataPoint dp : datapoints) {
-            dp.setIotUnitID(this.getUuid());
+            dp.getResourceUuid().add(this.getUuid());
         }
         this.datapoints = datapoints;
     }
 
-    public IoTUnit hasControlPoint(ControlPoint cp) {
+    public VirtualResource hasControlPoint(ControlPoint cp) {
         if (controlpoints == null) {
             this.controlpoints = new HashSet<>();
         }
-        cp.setIotUnitID(this.getUuid());
+        cp.getResourceUuid().add(this.getUuid());
         this.controlpoints.add(cp);
         return this;
     }
 
-    public IoTUnit hasControlPoints(ControlPoint... cps) {
+    public VirtualResource hasControlPoints(ControlPoint... cps) {
         for (ControlPoint cp : cps) {
             hasControlPoint(cp);
         }
@@ -127,7 +103,8 @@ public class IoTUnit implements HINCPersistable {
 
     public void setControlpoints(Set<ControlPoint> controlpoints) {
         for (ControlPoint cp : controlpoints) {
-            cp.setIotUnitID(this.getUuid());
+            cp.getResourceUuid().add(this.getUuid()
+            );
         }
         this.controlpoints = controlpoints;
     }
@@ -136,7 +113,7 @@ public class IoTUnit implements HINCPersistable {
         return meta;
     }
 
-    public IoTUnit hasMeta(String key, String value) {
+    public VirtualResource hasMeta(String key, String value) {
         if (this.meta == null) {
             this.meta = new HashMap<>();
         }
@@ -144,7 +121,7 @@ public class IoTUnit implements HINCPersistable {
         return this;
     }
 
-    public IoTUnit hasMeta(Map<String, String> metaMap) {
+    public VirtualResource hasMeta(Map<String, String> metaMap) {
         if (this.meta == null) {
             this.meta = new HashMap<>();
         }
@@ -211,10 +188,10 @@ public class IoTUnit implements HINCPersistable {
         }
     }
 
-    public static IoTUnit fromJson(String json) {
+    public static VirtualResource fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(json, IoTUnit.class);
+            return mapper.readValue(json, VirtualResource.class);
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
@@ -226,16 +203,24 @@ public class IoTUnit implements HINCPersistable {
         return physicalType;
     }
 
-    public IoTUnit hasPhysicalType(String physicalType) {
+    public VirtualResource hasPhysicalType(String physicalType) {
         this.physicalType = physicalType;
         return this;
+    }
+
+    public List<String> getPhysicalResourceUuid() {
+        return physicalResourceUuid;
+    }
+
+    public void setPhysicalResourceUuid(List<String> physicalResourceUuid) {
+        this.physicalResourceUuid = physicalResourceUuid;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.resourceID);
-        hash = 31 * hash + Objects.hashCode(this.hincID);
+        hash = 83 * hash + Objects.hashCode(this.physicalResourceUuid);
+        hash = 83 * hash + Objects.hashCode(this.hincID);
         return hash;
     }
 
@@ -250,11 +235,11 @@ public class IoTUnit implements HINCPersistable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final IoTUnit other = (IoTUnit) obj;
-        if (!Objects.equals(this.resourceID, other.resourceID)) {
+        final VirtualResource other = (VirtualResource) obj;
+        if (!Objects.equals(this.hincID, other.hincID)) {
             return false;
         }
-        if (!Objects.equals(this.hincID, other.hincID)) {
+        if (!Objects.equals(this.physicalResourceUuid, other.physicalResourceUuid)) {
             return false;
         }
         return true;

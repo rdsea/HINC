@@ -5,7 +5,7 @@
  */
 package sinc.hinc.abstraction.transformer;
 
-import sinc.hinc.model.VirtualComputingResource.IoTUnit;
+import sinc.hinc.model.VirtualComputingResource.VirtualResource;
 
 /**
  * To transform some model into IoTUnit.
@@ -24,7 +24,7 @@ public interface IoTUnitTransformer<DomainModel> {
      * @param data Information item captured from provider
      * @return A single data point.
      */
-    public IoTUnit translateIoTUnit(DomainModel data);
+    public VirtualResource translateIoTUnit(DomainModel data);
 
     /**
      * The readable name of the Transformer

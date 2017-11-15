@@ -28,7 +28,7 @@ import sinc.hinc.model.CloudServices.CloudService;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.IoTUnit;
+import sinc.hinc.model.VirtualComputingResource.VirtualResource;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
@@ -79,7 +79,7 @@ public interface ResourcesManagementAPI {
             notes = "All the capabilities will be wrapped in a IoTUnit object. The information contains also the metadata of the site.",
             response = SoftwareDefinedGateway.class,
             responseContainer = "List")
-    Set<IoTUnit> queryIoTUnits(
+    Set<VirtualResource> queryIoTUnits(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID,
             @ApiParam(value = "The namespaces that IoT Unit belong to. Separate namespaces in the list with commas", required = false, defaultValue = "null") @DefaultValue("") @QueryParam("infoBases") String infoBases,

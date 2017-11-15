@@ -6,10 +6,12 @@
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.management.PersistentMBean;
+import java.util.UUID;
 import sinc.hinc.model.API.HINCPersistable;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 
@@ -19,69 +21,41 @@ import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
  */
 public class DataPoint implements HINCPersistable {
 
-    // uuid is for internal identifying, name is for human identifying
-    String iotUnitID;
+    // uuid and name for identification
+    String uuid = UUID.randomUUID().toString();
     String name;
-    // temperature, humidity, GPS, image, video_streaming, state
-    String datatype;
 
-    // if available based on type
-    String measurementUnit;
+    // List of virtual resource this data point belongs to
+    List<String> resourceUuid = new ArrayList<>();
 
-    // reading rate
-//    int rate;
+    // Some data specific metadata
+    // type: temperature, humidity, GPS, image, video_streaming, state
+    // unit: degree, K, M
+    Map<String, String> meta = new HashMap<>();
+
     /**
-     * Any model to represent how the data can be read. This can be domain
-     * model, MQTT/AMPQ persistent, streamming to read/write data. See more in
-     * the package sinc.hinc.model.Extensible.Reading
+     * The dataApi define how to manage data. E.g: MQTTDataSource, FileScanner,
+     * CommandLineParser, etc The parameters are provided by a Map of key,
+     * value.
      */
     String dataApi;
     Map<String, String> dataApiSettings;
 
     /**
-     * The data point is forward to somewhere.
+     * External relationship of the data point. E.g: which service is execute it
      */
     AccessPoint connectingTo;
 
     public DataPoint() {
-
     }
 
-    /**
-     * In the case we have 1 parameter, it is data type. Use this for building
-     * data point template.
-     *
-     * @param name
-     * @param dataType
-     */
-    public DataPoint(String name, String dataType) {
+    public DataPoint(String name) {
         this.name = name;
-        this.datatype = dataType;
     }
-
-    // to have this field only for Jackson to work properly
-    String uuid;
 
     @Override
     public String getUuid() {
-        this.uuid = this.iotUnitID + "/" + name;
         return this.uuid;
-    }
-
-    public String getDatatype() {
-        return datatype;
-    }
-
-    public void setDatatype(String datatype) {
-        this.datatype = datatype;
-    }
-
-    public String getMeasurementUnit() {
-        return measurementUnit;
-    }
-
-    public void setMeasurementUnit(String measurementUnit) {
-        this.measurementUnit = measurementUnit;
     }
 
     public String getDataApi() {
@@ -105,27 +79,6 @@ public class DataPoint implements HINCPersistable {
         this.dataApiSettings = dataApiSettings;
     }
 
-//    public List<ControlPoint> getControlpoints() {
-//        if (controlpoints == null) {
-//            controlpoints = new ArrayList<>();
-//        }
-//        return controlpoints;
-//    }
-//
-//    public void setControlpoints(List<ControlPoint> controlpoints) {
-//        this.controlpoints = controlpoints;
-//    }
-//
-//    public ControlPoint getControlByName(String name) {
-//        if (this.controlpoints != null) {
-//            for (ControlPoint cp : this.controlpoints) {
-//                if (cp.getName().equals(name)) {
-//                    return cp;
-//                }
-//            }
-//        }
-//        return null;
-//    }
     public AccessPoint getConnectingTo() {
         return connectingTo;
     }
@@ -134,12 +87,20 @@ public class DataPoint implements HINCPersistable {
         this.connectingTo = connectingTo;
     }
 
-    public String getIotUnitID() {
-        return iotUnitID;
+    public List<String> getResourceUuid() {
+        return resourceUuid;
     }
 
-    public void setIotUnitID(String iotUnitID) {
-        this.iotUnitID = iotUnitID;
+    public void setResourceUuid(List<String> resourceUuid) {
+        this.resourceUuid = resourceUuid;
+    }
+
+    public Map<String, String> getMeta() {
+        return meta;
+    }
+
+    public void setMeta(Map<String, String> meta) {
+        this.meta = meta;
     }
 
     public String getName() {
@@ -153,8 +114,8 @@ public class DataPoint implements HINCPersistable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.iotUnitID);
-        hash = 89 * hash + Objects.hashCode(this.name);
+        hash = 79 * hash + Objects.hashCode(this.uuid);
+        hash = 79 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -170,7 +131,7 @@ public class DataPoint implements HINCPersistable {
             return false;
         }
         final DataPoint other = (DataPoint) obj;
-        if (!Objects.equals(this.iotUnitID, other.iotUnitID)) {
+        if (!Objects.equals(this.uuid, other.uuid)) {
             return false;
         }
         if (!Objects.equals(this.name, other.name)) {

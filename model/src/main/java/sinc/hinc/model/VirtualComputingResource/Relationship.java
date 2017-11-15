@@ -2,32 +2,32 @@ package sinc.hinc.model.VirtualComputingResource;
 
 public class Relationship {
 
-    private IoTUnit source;
-    private IoTUnit target;
+    private VirtualResource source;
+    private VirtualResource target;
     private RelationshipType type;
 
     public Relationship() {
     }
 
-    public Relationship(IoTUnit source, IoTUnit target, RelationshipType type) {
+    public Relationship(VirtualResource source, VirtualResource target, RelationshipType type) {
         this.source = source;
         this.target = target;
         this.type = type;
     }
 
-    public IoTUnit getSource() {
+    public VirtualResource getSource() {
         return source;
     }
 
-    public void setSource(IoTUnit source) {
+    public void setSource(VirtualResource source) {
         this.source = source;
     }
 
-    public IoTUnit getTarget() {
+    public VirtualResource getTarget() {
         return target;
     }
 
-    public void setTarget(IoTUnit target) {
+    public void setTarget(VirtualResource target) {
         this.target = target;
     }
 
