@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import sinc.hinc.abstraction.ResourceDriver.ProviderListenerAdaptor;
-import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
@@ -25,7 +24,6 @@ import sinc.hinc.local.messageHandlers.HandleControl;
 import sinc.hinc.local.messageHandlers.HandleQueryIoTUnit;
 import sinc.hinc.local.messageHandlers.HandleQueryVNF;
 import sinc.hinc.local.messageHandlers.HandleSyn;
-import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
@@ -38,7 +36,9 @@ import sinc.hinc.local.messageHandlers.HandleUpdateIoTUnit;
 import sinc.hinc.model.API.WrapperMicroService;
 import sinc.hinc.model.VirtualComputingResource.MicroService;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+import sinc.hinc.abstraction.transformer.PhysicalResourceTransformer;
 
 /**
  *
@@ -80,7 +80,7 @@ public class Main {
             if (enabledAdaptors.contains(observer.getName().trim())) {
                 String aName = observer.getName();
                 logger.info("Now run the listener: " + aName);
-                IoTUnitTransformer unitTrans = pluginReg.getIoTUnitTranformerByName(aName);
+                PhysicalResourceTransformer unitTrans = pluginReg.getIoTUnitTranformerByName(aName);
                 observer.listen(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS), unitTrans, new IoTUnitUpdateProcessor(HincConfiguration.getMyUUID()));
             }
         }
@@ -126,7 +126,7 @@ public class Main {
                 String aName = adaptor.getName();
                 logger.info("Querying provider: " + aName);
 
-                IoTUnitTransformer unitTrans = pluginReg.getIoTUnitTranformerByName(aName);
+                PhysicalResourceTransformer unitTrans = pluginReg.getIoTUnitTranformerByName(aName);
 
                 Collection<Object> domains = adaptor.getItems(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
                 logger.debug("We will check {} items.." + domains.size());
@@ -184,7 +184,7 @@ public class Main {
 //        LISTENER.addListener(privaTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
 
         LISTENER.addListener(groupTopic, HINCMessageType.UPDATE_INFO_BASE.toString(), new HandleUpdateInfobase());
-        
+
         LISTENER.addListener(groupTopic, HINCMessageType.PROVIDER_UPDATE_IOT_UNIT.toString(), new HandleUpdateIoTUnit());
 
         LISTENER.listen();

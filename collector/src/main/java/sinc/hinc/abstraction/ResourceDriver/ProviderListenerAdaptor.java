@@ -6,7 +6,7 @@
 package sinc.hinc.abstraction.ResourceDriver;
 
 import java.util.Map;
-import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
+import sinc.hinc.abstraction.transformer.PhysicalResourceTransformer;
 
 /**
  * This provider is for PUSH-BASE mechanism. The device will push to this
@@ -36,7 +36,7 @@ public interface ProviderListenerAdaptor {
      * @param tranformer use this to trigger the transformer
      * @param process use this to inform HINC about the change
      */
-    public void listen(Map<String, String> settings, IoTUnitTransformer tranformer, IoTUnitProcessor process);
+    public void listen(Map<String, String> settings, PhysicalResourceTransformer tranformer, IoTUnitProcessor process);
 
     /**
      * Name is use to get the correct configuration in "source.conf" file.

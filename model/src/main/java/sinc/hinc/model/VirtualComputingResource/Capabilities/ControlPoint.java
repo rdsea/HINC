@@ -51,10 +51,10 @@ public class ControlPoint implements HINCPersistable {
     ControlType controlType;
     // condition now support state style only, not range or greater/lesser
     Map<String, String> conditions;
-    // effect is to change state of the unit. This will be add into the "state"
-    // this will be automatic change the "state" of the unit after the 
-    //   control point is executed successfully
-    // the changing is from HINC
+    
+    /** Effect is to change state of the unit.
+     *  HINC uses this info to update state of the virtual iot resource
+     */    
     Map<String, String> effects;
 
     /**

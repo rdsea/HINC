@@ -6,7 +6,7 @@
 package sinc.hinc.model.slice;
 
 import sinc.hinc.model.CloudServices.CloudService;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 
 /**
@@ -15,15 +15,15 @@ import sinc.hinc.model.VirtualNetworkResource.NetworkService;
  */
 public class InfrastructureSlice {
 
-    SoftwareDefinedGateway gateway;
+    IoTUnit gateway;
     NetworkService network;
     CloudService cloud;
 
-    public SoftwareDefinedGateway getGateway() {
+    public IoTUnit getGateway() {
         return gateway;
     }
 
-    public void setGateway(SoftwareDefinedGateway gateway) {
+    public void setGateway(IoTUnit gateway) {
         this.gateway = gateway;
     }
 

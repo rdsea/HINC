@@ -6,16 +6,16 @@
 package sinc.hinc.transformer.openhab;
 
 import sinc.hinc.transformer.openhab.model.Item;
-import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
+import sinc.hinc.abstraction.transformer.PhysicalResourceTransformer;
 
 /**
  *
  * @author hungld
  */
-public class TranformOpenHABInfo implements IoTUnitTransformer<Item> {
+public class TranformOpenHABInfo implements PhysicalResourceTransformer<Item> {
 
     @Override
     public IoTUnit translateIoTUnit(Item data) {

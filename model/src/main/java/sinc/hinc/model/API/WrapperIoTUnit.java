@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import sinc.hinc.model.VirtualComputingResource.VirtualResource;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  *
@@ -18,12 +18,12 @@ import sinc.hinc.model.VirtualComputingResource.VirtualResource;
  */
 public class WrapperIoTUnit {
 
-    List<VirtualResource> units = new ArrayList<>();
+    List<IoTUnit> units = new ArrayList<>();
 
     public WrapperIoTUnit() {
     }
 
-    public WrapperIoTUnit(List<VirtualResource> list) {
+    public WrapperIoTUnit(List<IoTUnit> list) {
         this.units.addAll(list);
     }
 
@@ -37,11 +37,11 @@ public class WrapperIoTUnit {
         }
     }
 
-    public List<VirtualResource> getUnits() {
+    public List<IoTUnit> getUnits() {
         return units;
     }
 
-    public void setUnits(List<VirtualResource> units) {
+    public void setUnits(List<IoTUnit> units) {
         this.units = units;
     }
 

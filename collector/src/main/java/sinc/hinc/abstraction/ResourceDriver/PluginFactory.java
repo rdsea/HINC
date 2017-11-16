@@ -5,8 +5,6 @@
  */
 package sinc.hinc.abstraction.ResourceDriver;
 
-
-import sinc.hinc.abstraction.transformer.CloudResourceTransformation;
 import sinc.hinc.abstraction.transformer.NetworkResourceTranformationInterface;
 
 /**
@@ -25,29 +23,9 @@ public class PluginFactory {
         }
     }
 
-//    public static IoTResourceTransformation<Object> getIoTResourceTransformer(String transformerClass) {
-//        try {
-//            IoTResourceTransformation<Object> transformer = (IoTResourceTransformation<Object>) Class.forName(transformerClass).newInstance();
-//            return transformer;
-//        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-//            ex.printStackTrace();
-//            return null;
-//        }
-//    }
-
     public static NetworkResourceTranformationInterface<Object> getNetworkResourceTransformer(String transformerClass) {
         try {
             NetworkResourceTranformationInterface<Object> transformer = (NetworkResourceTranformationInterface<Object>) Class.forName(transformerClass).newInstance();
-            return transformer;
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    public static CloudResourceTransformation<Object> getCloudResourceTransformer(String transformerClass) {
-        try {
-            CloudResourceTransformation<Object> transformer = (CloudResourceTransformation<Object>) Class.forName(transformerClass).newInstance();
             return transformer;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             ex.printStackTrace();

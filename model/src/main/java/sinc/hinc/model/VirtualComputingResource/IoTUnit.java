@@ -29,15 +29,16 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
  *
  * @author hungld
  */
-public class VirtualResource implements HINCPersistable {
+public class IoTUnit implements HINCPersistable {
 
     /**
-     * Link to an external identification, e.g. to the real sensor/actuator ID
+     * Link to some external identification where this resource get info from.
+     * E.g. to the real sensors/actuators ID (also captured in PhysicalResource)
      */
     List<String> physicalResourceUuid = new ArrayList<>();
 
     /**
-     * hincID is used for internal management, to detect which HINC is manage
+     * hincID is used for internal management, to detect which HINC is managing
      * the resource
      */
     String hincID;
@@ -54,7 +55,7 @@ public class VirtualResource implements HINCPersistable {
     Set<ControlPoint> controlpoints = new HashSet<>();
     Set<CloudConnectivity> connectivities;
 
-    public VirtualResource() {
+    public IoTUnit() {
     }
 
     // to have this field only for Jackson to work properly
@@ -69,7 +70,19 @@ public class VirtualResource implements HINCPersistable {
         return hincID;
     }
 
-    public VirtualResource hasDatapoint(DataPoint dp) {
+    public void setHincID(String hincID) {
+        this.hincID = hincID;
+    }
+
+    public void setPhysicalType(String physicalType) {
+        this.physicalType = physicalType;
+    }
+    
+    public IoTUnit hasPhysicalResourceUuid(String physicalRsUuid){
+        this.physicalResourceUuid.add(physicalRsUuid);
+    }
+
+    public IoTUnit hasDatapoint(DataPoint dp) {
         if (datapoints == null) {
             this.datapoints = new HashSet<>();
         }
@@ -85,7 +98,7 @@ public class VirtualResource implements HINCPersistable {
         this.datapoints = datapoints;
     }
 
-    public VirtualResource hasControlPoint(ControlPoint cp) {
+    public IoTUnit hasControlPoint(ControlPoint cp) {
         if (controlpoints == null) {
             this.controlpoints = new HashSet<>();
         }
@@ -94,7 +107,7 @@ public class VirtualResource implements HINCPersistable {
         return this;
     }
 
-    public VirtualResource hasControlPoints(ControlPoint... cps) {
+    public IoTUnit hasControlPoints(ControlPoint... cps) {
         for (ControlPoint cp : cps) {
             hasControlPoint(cp);
         }
@@ -113,7 +126,7 @@ public class VirtualResource implements HINCPersistable {
         return meta;
     }
 
-    public VirtualResource hasMeta(String key, String value) {
+    public IoTUnit hasMeta(String key, String value) {
         if (this.meta == null) {
             this.meta = new HashMap<>();
         }
@@ -121,7 +134,7 @@ public class VirtualResource implements HINCPersistable {
         return this;
     }
 
-    public VirtualResource hasMeta(Map<String, String> metaMap) {
+    public IoTUnit hasMeta(Map<String, String> metaMap) {
         if (this.meta == null) {
             this.meta = new HashMap<>();
         }
@@ -188,10 +201,10 @@ public class VirtualResource implements HINCPersistable {
         }
     }
 
-    public static VirtualResource fromJson(String json) {
+    public static IoTUnit fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(json, VirtualResource.class);
+            return mapper.readValue(json, IoTUnit.class);
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
@@ -203,7 +216,7 @@ public class VirtualResource implements HINCPersistable {
         return physicalType;
     }
 
-    public VirtualResource hasPhysicalType(String physicalType) {
+    public IoTUnit hasPhysicalType(String physicalType) {
         this.physicalType = physicalType;
         return this;
     }
@@ -235,7 +248,7 @@ public class VirtualResource implements HINCPersistable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final VirtualResource other = (VirtualResource) obj;
+        final IoTUnit other = (IoTUnit) obj;
         if (!Objects.equals(this.hincID, other.hincID)) {
             return false;
         }

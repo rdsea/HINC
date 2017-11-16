@@ -17,9 +17,9 @@ import java.util.TimerTask;
 import sinc.hinc.abstraction.ResourceDriver.IoTUnitProcessor;
 import sinc.hinc.abstraction.ResourceDriver.ProviderListenerAdaptor;
 import sinc.hinc.abstraction.ResourceDriver.utils.FilesScanner;
-import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.transformer.teit.FileWatcherWithTimer;
+import sinc.hinc.abstraction.transformer.PhysicalResourceTransformer;
 
 /**
  *
@@ -28,7 +28,7 @@ import sinc.hinc.transformer.teit.FileWatcherWithTimer;
 public class TeitSensorAdaptorPush implements ProviderListenerAdaptor {
 
     @Override
-    public void listen(Map<String, String> settings, final IoTUnitTransformer tranformer, final IoTUnitProcessor processor) {
+    public void listen(Map<String, String> settings, final PhysicalResourceTransformer tranformer, final IoTUnitProcessor processor) {
         String workingDir = settings.get("workingdir");
         System.out.println("Settings of TEIT actuator adaptor: " + settings);
         System.out.println("Working dir is: " + workingDir);

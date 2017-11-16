@@ -28,9 +28,8 @@ import sinc.hinc.model.CloudServices.CloudService;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.VirtualResource;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
-import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.model.slice.AppSlice;
@@ -77,9 +76,9 @@ public interface ResourcesManagementAPI {
     @Produces("application/json")
     @ApiOperation(value = "Query all capabilities on the IoT site",
             notes = "All the capabilities will be wrapped in a IoTUnit object. The information contains also the metadata of the site.",
-            response = SoftwareDefinedGateway.class,
+            response = IoTUnit.class,
             responseContainer = "List")
-    Set<VirtualResource> queryIoTUnits(
+    Set<IoTUnit> queryIoTUnits(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID,
             @ApiParam(value = "The namespaces that IoT Unit belong to. Separate namespaces in the list with commas", required = false, defaultValue = "null") @DefaultValue("") @QueryParam("infoBases") String infoBases,
@@ -92,7 +91,7 @@ public interface ResourcesManagementAPI {
     @Produces("application/json")
     @ApiOperation(value = "Query all IoT providers",
             notes = "The APIs of the IoT providers on the gateway.",
-            response = SoftwareDefinedGateway.class,
+            response = IoTUnit.class,
             responseContainer = "List")
     Set<ResourcesProvider> queryResourceProviders(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,

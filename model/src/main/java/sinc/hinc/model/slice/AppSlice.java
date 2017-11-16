@@ -7,7 +7,7 @@ package sinc.hinc.model.slice;
 
 import sinc.hinc.model.CloudServices.CloudService;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
-import sinc.hinc.model.VirtualComputingResource.VirtualResource;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 
 /**
@@ -16,24 +16,24 @@ import sinc.hinc.model.VirtualNetworkResource.NetworkService;
  */
 public class AppSlice {
 
-    VirtualResource iotUnit;
+    IoTUnit iotUnit;
     NetworkService network;
     CloudService cloud;
 
     public AppSlice() {
     }
 
-    public AppSlice(VirtualResource iotUnit, NetworkService network, CloudService cloud) {
+    public AppSlice(IoTUnit iotUnit, NetworkService network, CloudService cloud) {
         this.iotUnit = iotUnit;
         this.network = network;
         this.cloud = cloud;
     }
 
-    public VirtualResource getIotUnit() {
+    public IoTUnit getIotUnit() {
         return iotUnit;
     }
 
-    public void setIotUnit(VirtualResource iotUnit) {
+    public void setIotUnit(IoTUnit iotUnit) {
         this.iotUnit = iotUnit;
     }
 

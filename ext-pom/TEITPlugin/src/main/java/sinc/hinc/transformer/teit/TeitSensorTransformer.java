@@ -16,30 +16,34 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.abstraction.transformer.PhysicalResourceTransformer;
 
 /**
  *
  * @author hungld
  */
-public class TeitSensorTransformer implements IoTUnitTransformer<Properties> {
+public class TeitSensorTransformer implements PhysicalResourceTransformer<Properties> {
 
     @Override
     public IoTUnit translateIoTUnit(Properties prop) {
         // basic of the 
-        IoTUnit unit = new IoTUnit(prop.getProperty("sensorID"));
+        IoTUnit unit = new IoTUnit();
+        unit.hasPhysicalResourceUuid(prop.getProperty("sensorID"));
+        
         unit.hasPhysicalType("Sensor");
-        DataPoint datapoint = new DataPoint(prop.getProperty("sensorID"), prop.getProperty("sensorType"));
+        
+        DataPoint datapoint = new DataPoint(prop.getProperty("sensorID"));
+        datapoint.getMeta().put("type", prop.getProperty("sensorType"));
         String measurement = prop.getProperty("measurement");
         if (measurement != null && !measurement.isEmpty()) {
-            datapoint.setMeasurementUnit(measurement);
+            datapoint.getMeta().put("unit", measurement);
         } else {
-            datapoint.setMeasurementUnit("unknown");
+            datapoint.getMeta().put("unit", "unknown");
         }
         String apiName = mapApiName(prop.getProperty("platform"));
         datapoint.setDataApi(apiName);

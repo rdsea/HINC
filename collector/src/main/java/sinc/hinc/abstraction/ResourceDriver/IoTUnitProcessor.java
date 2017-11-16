@@ -5,19 +5,20 @@
  */
 package sinc.hinc.abstraction.ResourceDriver;
 
-import sinc.hinc.model.VirtualComputingResource.VirtualResource;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  * The processor of IoT Unit is implemented by HINC Local, not by adaptor. This
- * is the input for the ProviderListenerAdaoptor.
+ * is the input for the ProviderListenerAdaptor.
  *
  * @author hungld
  */
 public interface IoTUnitProcessor {
 
     /**
-     * How the HINC Local process the IoT unit when receiving one 
-     * @param unit 
+     * How the HINC Local process the IoT unit when receiving one
+     *
+     * @param unit
      */
-    public void process(VirtualResource unit);
+    public void process(IoTUnit unit);
 }

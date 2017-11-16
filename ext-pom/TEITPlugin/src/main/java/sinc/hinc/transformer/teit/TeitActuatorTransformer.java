@@ -5,21 +5,22 @@
  */
 package sinc.hinc.transformer.teit;
 
-import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import teit.enumactuator.model.EnumActuator;
 import teit.enumactuator.model.EnumControl;
+import sinc.hinc.abstraction.transformer.PhysicalResourceTransformer;
 
 /**
  *
  * @author hungld
  */
-public class TeitActuatorTransformer implements IoTUnitTransformer<EnumActuator> {
+public class TeitActuatorTransformer implements PhysicalResourceTransformer<EnumActuator> {
 
     @Override
     public IoTUnit translateIoTUnit(EnumActuator actuator) {
-        IoTUnit unit = new IoTUnit(actuator.getName());
+        IoTUnit unit = new IoTUnit();
+        unit.getPhysicalResourceUuid().add(actuator.getName());
         unit.setState(actuator.getContext());
         unit.hasPhysicalType(actuator.getType());
         for (EnumControl control : actuator.getControls().values()) {
