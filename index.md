@@ -59,7 +59,7 @@ HINC is under active development. The followings sections provide overview of cu
 ---
 
 - [Duc-Hung Le](http://dsg.tuwien.ac.at/staff/dle/), TU Wien
-- [Hong-Linh Truong](http://dsg.tuwien.ac.at/staff/truong/), TU Wien
+- [Hong-Linh Truong](http://dsg.tuwien.ac.at/staff/truong/), TU Wien (contact)
 - [Nanjangud Narendra](https://sites.google.com/site/ncnaren/), Ericsson Research India
 
 
