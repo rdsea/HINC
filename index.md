@@ -10,7 +10,7 @@ title: "HINC - Harmonizing IoT, Network functions and Clouds"
 
 HINC implements the lowest layer of [the SINC Concept](http://sincconcept.github.io) by interfacing to different providers to obtain resource metadata and to control resources. In this view, HINC aims at supporting the slice concept by not only managing resources but also enabling the interoperability of resources.
 
-HINC work is initially supported by the [H2020 U-Test] (www.u-test.eu) and currently is supported by the [H2020 Inter-IoT] (http://www.inter-iot-project.eu/) through the subproject INTER-HINC.  
+HINC work is initially supported by the [H2020 U-Test](www.u-test.eu) and currently is supported by the [H2020 Inter-IoT](http://www.inter-iot-project.eu/) through the subproject INTER-HINC.  
 
 
 ----
@@ -51,8 +51,8 @@ HINC is under active development. The followings sections provide overview of cu
 ---
 ## Integration with other platforms
 
-- [Inter-IoT systems] under INTER-HINC with use cases from Inter-IoT
-- [City Video Analytics] (http://haivanuni.github.io/haivan) under the HAIVAN project supported by ASEA-UNINET
+- [Inter-IoT systems](http://www.inter-iot-project.eu) under INTER-HINC with use cases from Inter-IoT
+- [City Video Analytics](http://haivanuni.github.io/haivan) under the HAIVAN project supported by ASEA-UNINET
 
 ## Authors and Contributors
 ---
