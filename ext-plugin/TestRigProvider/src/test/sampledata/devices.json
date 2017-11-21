@@ -1,0 +1,55 @@
+{
+    "devices":
+[
+    {
+         
+        "distance": {
+            "url": "http://test.url.com/rig/cart_1/distance/"
+        }, 
+        "device_type": "rig device",
+        "heartrate": {
+            "url": "http://test.url.com/rig/cart_1/heartrate"
+        }, 
+        "id": "cart_1", 
+        "in motion": false, 
+        "move": {
+            "url": "http://test.url.com/rig/cart_1/move"
+        }, 
+        "position": {
+            "url": "http://test.url.com/rig/cart_1/position"
+        }, 
+        "url": "http://test.url.com/rig/cart_1", 
+        "voltage": {
+            "url": "http://test.url.com/rig/cart_1/voltage"
+        }
+    }, 
+    {
+        "device_type": "rig device", 
+        "distance": {
+            "url": "http://test.url.com/rig/cart_2/distance/"
+        }, 
+        "heartrate": {
+            "url": "http://test.url.com/rig/cart_2/heartrate"
+        }, 
+        "id": "cart_2", 
+        "in motion": false, 
+        "move": {
+            "url": "http://test.url.com/rig/cart_2/move"
+        }, 
+        "position": {
+            "url": "http://test.url.com/rig/cart_2/position"
+        }, 
+        "url": "http://test.url.com/rig/cart_2"
+    }, 
+    {
+        "method": "init_devices", 
+        "url": "http://test.url.com/rig/init_devices"
+    }, 
+    {
+        "turn_locator": "L001", 
+        "url": "http://test.url.com/rig/L001/turn_locator/"
+    }
+]
+}
+
+ 
