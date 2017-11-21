@@ -8,8 +8,9 @@ title: "HINC - Harmonizing IoT, Network functions and Clouds"
 
 ---
 
-HINC implements the lowest layer of [the SINC Concept](http://sincconcept.github.io) by interfacing to different providers to obtain resource metadata and to control resources.
-HINC concepts and techniques are described in the paper: Duc-Hung Le, Nanjangud Narendra, Hong-Linh Truong [HINC - Harmonizing Diverse Resource Information Across IoT, Network Functions and Clouds](http://bit.ly/1Y36tIY) ([Submitted PDF](http://bit.ly/1Y36tIY)), [The IEEE 4th International Conference on Future Internet of Things and Cloud (FiCloud2016)](http://www.ficloud.org/2016/), 22-24 Aug, 2016, Vienna, Austria
+HINC implements the lowest layer of [the SINC Concept](http://sincconcept.github.io) by interfacing to different providers to obtain resource metadata and to control resources. In this view, HINC aims at supporting the slice concept by not only managing resources but also enabling the interoperability of resources.
+
+HINC work is initially supported by the [H2020 U-Test] (www.u-test.eu) and currently is supported by the [H2020 Inter-IoT] (http://www.inter-iot-project.eu/) through the subproject INTER-HINC.  
 
 
 ----
@@ -48,7 +49,10 @@ HINC is under active development. The followings sections provide overview of cu
 
 
 ---
+## Integration with other platforms
 
+- [Inter-IoT systems] under INTER-HINC with use cases from Inter-IoT
+- [City Video Analytics] (http://haivanuni.github.io/haivan) under the HAIVAN project supported by ASEA-UNINET
 
 ## Authors and Contributors
 ---
@@ -59,6 +63,10 @@ HINC is under active development. The followings sections provide overview of cu
 
 
 Contact: [Hong-Linh Truong](http://dsg.tuwien.ac.at/staff/truong/) at truong@dsg.tuwien.ac.at for further information.
+
+## Publications
+
+- Duc-Hung Le, Nanjangud Narendra, Hong-Linh Truong [HINC - Harmonizing Diverse Resource Information Across IoT, Network Functions and Clouds](http://bit.ly/1Y36tIY) ([Submitted PDF](http://bit.ly/1Y36tIY)), [The IEEE 4th International Conference on Future Internet of Things and Cloud (FiCloud2016)](http://www.ficloud.org/2016/), 22-24 Aug, 2016, Vienna, Austria
 
 ---
 
