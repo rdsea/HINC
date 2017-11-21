@@ -53,6 +53,7 @@ HINC is under active development. The followings sections provide overview of cu
 
 - [Inter-IoT systems](http://www.inter-iot-project.eu) under INTER-HINC with use cases from Inter-IoT
 - [City Video Analytics](http://haivanuni.github.io/haivan) under the HAIVAN project supported by ASEA-UNINET
+- Building Automation System : [demo-iotsystem-v3.mp4](images/demo-iotsystem-v3.mp4) the Building Automation System Demo, which was developed by Ericsson Research, Bangalore.
 
 ## Authors and Contributors
 ---
