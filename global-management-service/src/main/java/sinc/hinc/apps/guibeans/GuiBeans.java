@@ -71,8 +71,8 @@ public class GuiBeans {
 
     static HINCGlobalMeta controllerMeta;
 
-    ResourcesManagementAPI rest = (ResourcesManagementAPI) JAXRSClientFactory.create("http://localhost:8080/global-management-service-1.0/rest", ResourcesManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
-    HINCManagementAPI hincApi = (HINCManagementAPI) JAXRSClientFactory.create("http://localhost:8080/global-management-service-1.0/rest", HINCManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+    ResourcesManagementAPI rest = (ResourcesManagementAPI) JAXRSClientFactory.create("http://localhost:9000/global-management-service-1.0/rest", ResourcesManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
+    HINCManagementAPI hincApi = (HINCManagementAPI) JAXRSClientFactory.create("http://localhost:9000/global-management-service-1.0/rest", HINCManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
 
     TreeNode selectedNode; // the node of the Gateway tree    
 
