@@ -30,11 +30,12 @@ public class CameraInfoTaskPushHINCLocal {
     List<CameraMetadataItem> dataItems;
     Map<String, String> meta = null;
     String amqpURL;
-
-    public CameraInfoTaskPushHINCLocal(String amqpURL, List<CameraMetadataItem> dataItemsToSend, Map<String, String> meta) {
+    String group ;
+    public CameraInfoTaskPushHINCLocal(String amqpURL, String group, List<CameraMetadataItem> dataItemsToSend, Map<String, String> meta) {
         this.dataItems = dataItemsToSend;
         this.meta = meta;
         this.amqpURL = amqpURL;
+        this.group =group;
     }
 
     public void push() {
@@ -46,8 +47,8 @@ public class CameraInfoTaskPushHINCLocal {
         String json = wrapper.toJson();
         logger.debug(json);
         HINCMessageSender comMng = new HINCMessageSender(amqpURL, "amqp");
-        HincMessage msg = new HincMessage(HINCMessageType.PROVIDER_UPDATE_IOT_UNIT.toString(), "HaivanCityVideoProvider", HincMessageTopic.getBroadCastTopic("haivancamera"), "", json);
-        msg.hasExtra("haivancamera", "experiment");
+        HincMessage msg = new HincMessage(HINCMessageType.PROVIDER_UPDATE_IOT_UNIT.toString(), "HaivanCityVideoProvider", HincMessageTopic.getBroadCastTopic(group), "", json);
+        msg.hasExtra(group, "experiment");
         msg.getExtra().putAll(meta);
         comMng.synCall(msg);
         /*
@@ -73,6 +74,10 @@ public class CameraInfoTaskPushHINCLocal {
     }
 
     public static void main(String args[]) throws InterruptedException {
+        if (args.length < 3) {
+            System.out.println("Usage: " +args[0] + "[broker group]");
+            System.exit(0);
+        }
         CameraIoTDevices allData = new CameraIoTDevices();
         List<CameraMetadataItem> dataItemsToSend = new ArrayList<>();
         CameraMetadataItem item1 = new CameraMetadataItem();
@@ -92,7 +97,7 @@ public class CameraInfoTaskPushHINCLocal {
         Long st_device_change = new Date().getTime();
         meta.put("st_device_change", st_device_change + "");
         CameraInfoTaskPushHINCLocal task;
-        task = new CameraInfoTaskPushHINCLocal(args[1], dataItemsToSend, meta);
+        task = new CameraInfoTaskPushHINCLocal(args[1], args[2], dataItemsToSend, meta);
         while (true) {
             task.push();
             Thread.sleep(10000);
