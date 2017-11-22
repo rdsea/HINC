@@ -6,7 +6,7 @@
     <version>1.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>DummyProvider</artifactId>
+  <artifactId>HaivanCityVideoProvider</artifactId>
   <build>
     <plugins>
       <plugin>
@@ -38,7 +38,7 @@
                   <resource>META-INF/cxf/bus-extensions.txt</resource>
                 </transformer>
                 <transformer>
-                  <mainClass>sinc.hinc.dummyprovider.provider.Server</mainClass>
+                  <mainClass>sinc.hinc.haivancameraprovider.provider.CameraInfoTaskPushHINCLocal</mainClass>
                 </transformer>
               </transformers>
             </configuration>
