@@ -22,7 +22,7 @@ We try to keep this branch up-to-date with the most stable version. Therefore, u
 
 ### Run Local Management Service
 
-The Local Management Service is a lightweight daemon running on a device or gateway to collect information. It requires a set of adaptors, which interface with providers or devices API. A set of adaptors can be found on [ext module on GitHub](https://github.com/SINCConcept/HINC/tree/master/ext-pom">Github). Each adaptor is built as a `.jar` archive and put in a same folder with the `local-management-service-1.0.jar` to load under Java classpath. There are 2 configuration files need to be edited. For the concrete contents, please see the next section about testbed setup.
+The Local Management Service is a lightweight daemon running on a device or gateway to collect information. It requires a set of adaptors, which interface with providers or devices API. A set of adaptors can be found on [ext module on GitHub](https://github.com/SINCConcept/HINC/tree/master/ext-plugin">Github). Each adaptor is built as a `.jar` archive and put in a same folder with the `local-management-service-1.0.jar` to load under Java classpath. There are 2 configuration files need to be edited. For the concrete contents, please see the next section about testbed setup.
 
 - **hinc.conf**: Contains parameters for HINC Local, e.g. group name, queue service.
 - **sources.conf**: Contains paramneters for plugins, e.g. username/password, endpoint.
