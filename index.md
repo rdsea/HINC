@@ -55,13 +55,8 @@ HINC is under active development. The followings sections provide overview of cu
 - [City Video Analytics](http://haivanuni.github.io/haivan) under the HAIVAN project supported by ASEA-UNINET
 - Building Automation System : [demo-iotsystem-v3.mp4](images/demo-iotsystem-v3.mp4) the Building Automation System Demo, which was developed by Ericsson Research, Bangalore.
 
-## Authors and Contributors
----
 
-- [Duc-Hung Le](http://dsg.tuwien.ac.at/staff/dle/), TU Wien
-- [Hong-Linh Truong](http://dsg.tuwien.ac.at/staff/truong/), TU Wien (contact)
-- [Nanjangud Narendra](https://sites.google.com/site/ncnaren/), Ericsson Research India
-
+## Contact
 
 Contact: [Hong-Linh Truong](http://dsg.tuwien.ac.at/staff/truong/) at truong@dsg.tuwien.ac.at for further information.
 
