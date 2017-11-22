@@ -135,6 +135,7 @@ BROKER_TYPE=amqp
 GROUP=myGroup123
 $ java -jar global-management-service-1.0-war-exec.jar -httpPort 9000
 ```
+Note that the port is currently fixed. We will provide a user-defined port in the future.
 
 Open the HINC Global via browser by point to the correct IP/Port to run this `http://localhost:9000/global-management-service-1.0`, we can have the list of APIs as bellow:
 

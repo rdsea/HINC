@@ -44,7 +44,7 @@ An adaptor for new type of provider/resource needs to implement 2 types of plug-
 
  - *Plug-in for transforming information*: Via [informaion transformer interface](https://github.com/SINCConcept/HINC/tree/master/collector/src/main/java/sinc/hinc/abstraction/transformer), HINC can abstract the information to its unified model.
 
- Please check some examples of adaptors for: [virtual resource](https://github.com/SINCConcept/HINC/tree/master/ext-pom/TEITPlugin), [Dummy provider](https://github.com/SINCConcept/HINC/tree/master/ext-pom/DummyProvider), [OpenHAB provider](https://github.com/SINCConcept/HINC/tree/master/ext-pom/TransformOpenHAB) or [Weave virtual router](https://github.com/SINCConcept/HINC/tree/master/ext-pom/TransformWeaveRouter)
+ Please check some examples of adaptors for: [virtual resource](https://github.com/SINCConcept/HINC/tree/master/ext-plugin/TEITPlugin), [Dummy provider](https://github.com/SINCConcept/HINC/tree/master/ext-plugin/DummyProvider), [OpenHAB provider](https://github.com/SINCConcept/HINC/tree/master/ext-plugin/TransformOpenHAB) or [Weave virtual router](https://github.com/SINCConcept/HINC/tree/master/ext-plugin/TransformWeaveRouter)
 
 ** Step 4: Build the new plugin and add to HINC Local **
 
