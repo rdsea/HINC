@@ -47,79 +47,19 @@ GROUP=myGroup123
 
 HINC Local Management Service requires a configuration file describe the resources to interface with. Depending on the IoT resource you created in last step, you need to download a particular plugin and create corresponding configuration file. For each case as followings:
 
-**Emulated sensor**
-
-```sh
-$ wget https://github.com/SINCConcept/HINC/raw/artifacts/plugins/DummyProvider-1.0.jar
-$ nano info-source.conf
-{
-    "source": [
-        {
-            "name": "teit-sensor",
-            "type": "IoT",
-            "interval": 0,
-            "adaptorClass": "sinc.hinc.transformer.teit.TeitSensorAdaptor",
-            "transformerClass": "sinc.hinc.transformer.teit.TeitSensorTransformer",
-            "settings": {
-                "workingDir": "/tmp/teit-sensor"
-            }
-        }
-    ]
-}
-```
-
-
 **Dummy provider**
 
 ```sh
 $ wget https://github.com/SINCConcept/HINC/raw/artifacts/plugins/DummyProvider-1.0.jar
-$ nano info-source.conf
-{
-    "source": [
-        {
-            "name": "Dummy",
-            "type": "IoT",
-            "interval": 0,
-            "adaptorClass": "sinc.hinc.dummyprovider.plugin.DummyProviderAdaptor",
-            "transformerClass": "sinc.hinc.dummyprovider.plugin.DummyProviderTransformer",
-            "settings": {
-                "endpoint": "http://localhost:8080/"
-            }
-        }
-    ]
-}
-
-```
 
 
 **OpenHAB**
 
 ```sh
 $ wget https://github.com/SINCConcept/HINC/blob/artifacts/plugins/TransformOpenHAB-1.0.jar
-$ nano info-source.conf
-{
-    "source": [
-        {
-            "name": "openHAB",
-            "type": "IoT",
-            "interval": 0,
-            "adaptorClass": "sinc.hinc.transformer.openhab.OpenHABAdaptor",
-            "transformerClass": "sinc.hinc.transformer.openhab.TranformOpenHABInfo",
-            "settings": {
-                "endpoint": "http://localhost:8080/rest"
-            }
-        }
-    ]
-}
-```
 
-Note that above configuration assumes that HINC Local Management is deployed on the same host with the resources (e.g. on the same gateway). 
 
-Lately, the HINC Local Management Service can be run by command:
-
-```sh
-$ java -cp "*.jar" sinc.hinc.local.Main
-```
+Lately, the HINC Local Management Service can be run like shown in [simple testbed](simple-testbed.html). 
 
 HINC local will run and start listening the command from the HINC Global Management Service, which will be setup on the next step.
 
