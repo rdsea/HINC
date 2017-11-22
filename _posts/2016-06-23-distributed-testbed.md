@@ -51,13 +51,13 @@ HINC Local Management Service requires a configuration file describe the resourc
 
 ```sh
 $ wget https://github.com/SINCConcept/HINC/raw/artifacts/plugins/DummyProvider-1.0.jar
-
+```
 
 **OpenHAB**
 
 ```sh
 $ wget https://github.com/SINCConcept/HINC/blob/artifacts/plugins/TransformOpenHAB-1.0.jar
-
+```
 
 Lately, the HINC Local Management Service can be run like shown in [simple testbed](simple-testbed.html). 
 
