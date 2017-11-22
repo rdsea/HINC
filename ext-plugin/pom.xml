@@ -6,7 +6,7 @@
         <artifactId>hinc-pom</artifactId>
         <version>1.0</version>
     </parent>
-    <artifactId>ext-pom</artifactId>
+    <artifactId>ext-plugin</artifactId>
     <packaging>pom</packaging>
     <modules>
         <!-- <module>TransformAndroid</module>
