@@ -129,6 +129,9 @@ public class Main {
                 IoTUnitTransformer unitTrans = pluginReg.getIoTUnitTranformerByName(aName);
 
                 Collection<Object> domains = adaptor.getItems(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
+                //simple check
+                if (domains == null)
+                    continue;
                 logger.debug("We will check {} items.." + domains.size());
                 for (Object domain : domains) {
                     logger.debug("Checking item: " + domain.toString());

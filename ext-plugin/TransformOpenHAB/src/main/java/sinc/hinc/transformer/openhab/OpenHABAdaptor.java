@@ -23,36 +23,43 @@ import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
  * @author hungld
  */
 public class OpenHABAdaptor implements ProviderQueryAdaptor<Item> {
-
+    
     @Override
     public Collection<Item> getItems(Map<String, String> settings) {
+        /*
+        This work with only openHAB Distribution 2.1
+         */
+        
         String endpoint = settings.get("endpoint").trim();
         if (endpoint.endsWith("/")) {
             endpoint = endpoint.substring(0, endpoint.length() - 1);
         }
-
+        
         Collection<Item> result = new ArrayList<>();
         // read Item and add
         String itemListJson = RestHandler.callRest(endpoint + "/items", RestHandler.HttpVerb.GET, null, "*/*", "application/json");
 //        System.out.println(itemListJson);
         Items items = new Items();
-        items = (Items) items.readFromJson(itemListJson);
+        //just a simple check
+        if ((itemListJson != null) && !itemListJson.equalsIgnoreCase("[]")) {
+            items = (Items) items.readFromJson(itemListJson);
+        }
         return items.getItem();
     }
-
+    
     @Override
     public void sendControl(String controlAction, Map<String, String> parameters) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public String getName() {
         return "openhab";
     }
-
+    
     @Override
     public ResourcesProvider getProviderAPI(Map<String, String> settings) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
 }

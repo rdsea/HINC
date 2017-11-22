@@ -124,8 +124,11 @@ public class GuiBeans {
 
     public void queryLocalMeta() {
         logger.debug("Querying the datapoint");
-        hinclocals.addAll(hincApi.queryHINCLocal(timeout));
-        logger.debug("Query " + hinclocals.size() + " items");
+        List<HincLocalMeta> results = hincApi.queryHINCLocal(timeout);
+        if (results != null) {
+            hinclocals.addAll(results);
+            logger.debug("Query " + hinclocals.size() + " items");
+        }
     }
 
     public HincLocalMeta getLocalMetaByID() {
@@ -274,7 +277,9 @@ public class GuiBeans {
     public Collection<HincLocalMeta> getHinclocals() {
         if (queryUpdateFlags[0] == true) {
             hinclocals.clear();
-            hinclocals.addAll(hincApi.queryHINCLocal(0));
+            List<HincLocalMeta> result = hincApi.queryHINCLocal(0);
+            if (result !=null)
+            hinclocals.addAll(result);
             queryUpdateFlags[0] = false;
         }
         return hinclocals;
