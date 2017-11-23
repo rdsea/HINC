@@ -6,6 +6,7 @@
 package sinc.hinc.testrigprovider.plugin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -50,6 +51,7 @@ public class RigDeviceData {
       public static void main(String[] args) throws JsonProcessingException, FileNotFoundException, IOException {
           BufferedReader reader = new BufferedReader(new FileReader(args[1]));
           ObjectMapper mapper = new ObjectMapper();
+          mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
           RigDeviceData data = mapper.readValue(reader, RigDeviceData.class);
           for (TestRigMetadataItem item:data.devices){
               logger.debug(mapper.writeValueAsString(item));
