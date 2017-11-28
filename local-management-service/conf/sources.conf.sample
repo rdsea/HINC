@@ -1,0 +1,3 @@
+global.interval=5
+global.enable=openhab
+openhab.endpoint=http://localhost:8080/rest
