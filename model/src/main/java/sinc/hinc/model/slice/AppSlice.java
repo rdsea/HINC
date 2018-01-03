@@ -6,7 +6,6 @@
 package sinc.hinc.model.slice;
 
 import sinc.hinc.model.CloudServices.CloudService;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 
@@ -14,6 +13,7 @@ import sinc.hinc.model.VirtualNetworkResource.NetworkService;
  *
  * @author hungld
  */
+//linhsolar: This is just an extreme simple of application slice
 public class AppSlice {
 
     IoTUnit iotUnit;

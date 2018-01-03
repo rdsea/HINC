@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,11 +45,10 @@ public class PropertiesManager {
     public static String getParameter(String key, String configFile) {
         Properties configuration = getParameters(configFile);
         if (configuration != null) {
-            System.out.println("Trying to get parameter: " + key + " in the configuration file:" + configFile + ", value: " + configuration.getProperty(key));
+            logger.debug("Trying to get parameter: " + key + " in the configuration file:" + configFile + ", value: " + configuration.getProperty(key));
             return configuration.getProperty(key);
         }
-        System.out.println("Cannot load the configuration file:" + configFile + " to load the key: " + key);
-
+        logger.error("Cannot load the configuration file:" + configFile + " to load the key: " + key);
         return null;
     }
 

@@ -8,31 +8,48 @@ package sinc.hinc.testrigprovider.plugin;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Arrays;
+import javax.net.ssl.HttpsURLConnection;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This class is used by HINC, where the Adaptor call TestRigProvider REST
  *
- * @author hungld
+ * @author linhsolar
  */
+//Every RestHandler might have something different but how do we make them generic
 public class RestHandler {
 
     static Logger logger = LoggerFactory.getLogger("TestRig");
     private URL url = null;
-    private HttpURLConnection conn = null;
+    private HttpsURLConnection conn = null;
     private String data;
-
-    public static RestHandler build(String url) throws MalformedURLException, IOException {
+    public static RestHandler build(String url) throws IOException {
+        return build(url,null,null);
+    }
+    public static RestHandler build(String url, String username, String password) throws MalformedURLException, IOException {
         RestHandler rest = new RestHandler();
         rest.url = new URL(url);
-        rest.conn = (HttpURLConnection) rest.url.openConnection();
+        if (username !=null) {
+        //very simple authentication, we need a better way
+        String authenticationPass = username+":"+password;
+        String basicAuth = "Basic " + Arrays.toString(Base64.encodeBase64(authenticationPass.getBytes()));
+        rest.conn = (HttpsURLConnection) rest.url.openConnection();
+        rest.conn.setRequestProperty("Authorization", basicAuth);
+        }
+        else {
+            rest.conn = (HttpsURLConnection) rest.url.openConnection();
+        }
+        rest.conn.setInstanceFollowRedirects(true);
         return rest;
     }
 
@@ -83,8 +100,7 @@ public class RestHandler {
                     wr.write(data.getBytes());
                 }
             }
-
-            try (BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())))) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader((InputStream)conn.getContent()))) {
                 String output;
                 String result = "";
 
@@ -103,6 +119,17 @@ public class RestHandler {
             return null;
         } finally {
 
+        }
+    }
+    public static void main (String args[]) throws IOException {
+        //just a test to see if it is ok or not
+        if (args.length==1) {
+        logger.debug(RestHandler.build(args[0]).callGet());
+        }
+        else {
+            if (args.length==3) {
+            logger.debug(RestHandler.build(args[0],args[1],args[2]).callGet());
+                    }
         }
     }
 }

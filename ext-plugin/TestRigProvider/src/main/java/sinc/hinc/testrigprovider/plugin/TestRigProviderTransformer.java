@@ -5,8 +5,7 @@
  */
 package sinc.hinc.testrigprovider.plugin;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
@@ -19,10 +18,18 @@ public class TestRigProviderTransformer implements IoTUnitTransformer<TestRigMet
 
     @Override
     public IoTUnit translateIoTUnit(TestRigMetadataItem data) {
+        //we have to check the data carefully as the metadata describes 
+        //different types of devices
+        //here we just few
         IoTUnit unit = new IoTUnit();
+        unit.setHincID(UUID.randomUUID().toString());
         unit.setResourceID(data.getId());
-        DataPoint dp = new DataPoint();
-        unit.hasDatapoint(dp);
+        if (data.getDistance() !=null) {
+            DataPoint dp = new DataPoint();
+            dp.setName("distance");
+            dp.setDataApi(data.getDistance().get("url"));
+            unit.hasDatapoint(dp);
+        }
         return unit;
     }
 

@@ -15,7 +15,7 @@ import java.util.Map;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 
 /**
- * To capture provider API
+ * To capture provider APIs
  *
  * @author hungld
  */

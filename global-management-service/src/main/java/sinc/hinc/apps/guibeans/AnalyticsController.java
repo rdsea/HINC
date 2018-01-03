@@ -47,7 +47,7 @@ public class AnalyticsController implements Serializable {
     /**
      * START THE ANALYTICS PART
      */
-    static List<String> analyticAlgos = Arrays.asList("average", "sum");
+    static List<String> analyticAlgos = Arrays.asList("average@local", "sum@local", "btsdataingest@mqtt-bigquery");
     public static Map<String, Thread> analyticActiveList = new HashMap<>();
     public static Map<String, AnalyticRunnable> analyticRunnable = new HashMap<>();
     String[] selectedResourceID;
@@ -125,9 +125,9 @@ public class AnalyticsController implements Serializable {
                     }
                     continue; // not enough data yet, e.g. at the beginning it miss some points
                 }
-                if (analyticFunction.equals("average")) {
+                if (analyticFunction.equals("average@local")) {
                     currentValue = calculateAverage(dataValues);
-                } else if (analyticFunction.equals("sum")) {
+                } else if (analyticFunction.equals("sum@local")) {
                     currentValue = calculateSum(dataValues);
                 } else {
                     logger.debug("Unknown analytic function: " + analyticFunction);

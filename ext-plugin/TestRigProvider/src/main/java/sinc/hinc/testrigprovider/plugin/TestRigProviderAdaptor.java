@@ -22,11 +22,15 @@ public class TestRigProviderAdaptor implements ProviderQueryAdaptor<TestRigMetad
     @Override
     public Collection<TestRigMetadataItem> getItems(Map<String, String> settings) {
         String endpoint = settings.get("endpoint").trim();
+        String username = settings.get("username");
+        String password = settings.get("password");
         if (endpoint.endsWith("/")) {
             endpoint = endpoint.substring(0, endpoint.length() - 1);
         }
         try {
-            String dataJson = RestHandler.build(endpoint + "/rig").callGet();
+            String dataJson = RestHandler.build(endpoint + "/rig",username,password).callGet();
+            if (dataJson ==null)
+                return null;
             ObjectMapper mapper = new ObjectMapper();
             
             RigDeviceData data = mapper.readValue(dataJson, RigDeviceData.class);

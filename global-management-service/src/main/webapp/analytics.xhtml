@@ -15,7 +15,7 @@
         <ui:composition template="layout/layout.xhtml">
 
             <ui:define name="content">      
-                <h3>Realtime analytics</h3>
+                <h3>Slice Composition -- still experimental. No semantic check at the moment</h3>
                 <h:form>
                     <p:panelGrid  columns="5" columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-2, ui-grid-col-2" >
                         <p:outputPanel id="selected-resourceid-panel">
@@ -33,7 +33,7 @@
                         </p:outputLabel>
 
                         <p:outputPanel>
-                            <p:outputLabel value="Select a analytics function" />
+                            <p:outputLabel value="Select a cloud function (e.g. ingestion or analytics)" />
                             <p:selectOneListbox id="analytic_box" value="#{AnalyticController.analyticSelected}" style="width:100%">
                                 <f:selectItems value="#{AnalyticController.analyticAlgos}" var="analyticAlgo" itemLabel="#{analyticAlgo}" itemValue="#{analyticAlgo}" />
                             </p:selectOneListbox>                            

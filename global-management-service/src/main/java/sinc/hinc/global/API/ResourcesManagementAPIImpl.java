@@ -302,15 +302,38 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     public List<VNF> queryVNF(int timeout, String hincUUID) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    //TODO: query and read from static files
+    List<CloudService> staticcloudService=null;
     @Override
     public List<CloudService> queryCloudServices(int timeout, String hincUUID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.debug("Query cloud services");
+        if (staticcloudService == null) {
+            logger.debug("load from static information");
+            CloudService bigQuery = new CloudService(CloudProvider.ProviderType.IaaS.toString());
+            AccessPoint accessPoint = new AccessPoint();
+            accessPoint.setEndpoint("https://www.googleapis.com/bigquery/v2");
+            bigQuery.setAccessPoint(accessPoint);
+            staticcloudService =new ArrayList<>();
+            staticcloudService.add(bigQuery);
+        }
+        return staticcloudService;
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    //TODO: query and load static providers from files.
+    List <CloudProvider> staticcloudProvider=null;
     @Override
     public List<CloudProvider> queryCloudProviders(int timeout, String hincUUID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         logger.debug("Query cloud providers");
+        if (staticcloudProvider==null) {
+             logger.debug("load from static providers");
+        CloudProvider google = new CloudProvider();
+        google.setName("Google");
+        google.setType(CloudProvider.ProviderType.IaaS);
+        staticcloudProvider =new ArrayList<>();
+        staticcloudProvider.add(google);
+        }
+        return staticcloudProvider;
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -379,5 +402,6 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     public InfrastructureSlice configureInfrastructureSlide(String gatewayID, String networkID, String cloudServiceID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 
 }

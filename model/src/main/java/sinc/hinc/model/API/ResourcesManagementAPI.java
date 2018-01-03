@@ -91,7 +91,7 @@ public interface ResourcesManagementAPI {
     @Path("/IoTProviders")
     @Produces("application/json")
     @ApiOperation(value = "Query all IoT providers",
-            notes = "The APIs of the IoT providers on the gateway.",
+            notes = "The APIs of the IoT providers",
             response = SoftwareDefinedGateway.class,
             responseContainer = "List")
     Set<ResourcesProvider> queryResourceProviders(
@@ -221,11 +221,15 @@ public interface ResourcesManagementAPI {
             @ApiParam(value = "The parameter for the control", required = false) @QueryParam("param") String param);
     
     @POST
-    @Path("/slides/data")
+    @Path("/slices/simplest/data")
     public AppSlice configureDataSlide(String datapointID, String networkID, String cloudServiceID);
 
     @POST
-    @Path("/slides/infrastructure")
+    @Path("/slices/simplest/infrastructure")
     public InfrastructureSlice configureInfrastructureSlide(String gatewayID, String networkID, String cloudServiceID);
+
+ 
+
+ 
 
 }

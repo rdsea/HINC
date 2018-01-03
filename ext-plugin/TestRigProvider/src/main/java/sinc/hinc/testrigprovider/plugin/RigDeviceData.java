@@ -12,18 +12,15 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static sinc.hinc.testrigprovider.plugin.TestRigMetadataItem.logger;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  *
- * @author hungld
+ * @author Hong-Linh Truong
  */
 public class RigDeviceData {
 
@@ -47,16 +44,22 @@ public class RigDeviceData {
             return null;
         }
     }
- 
+/*
+    Only for testing purpose
+    */ 
       public static void main(String[] args) throws JsonProcessingException, FileNotFoundException, IOException {
           BufferedReader reader = new BufferedReader(new FileReader(args[1]));
           ObjectMapper mapper = new ObjectMapper();
           mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
           RigDeviceData data = mapper.readValue(reader, RigDeviceData.class);
+          TestRigProviderTransformer transformer = new TestRigProviderTransformer();
           for (TestRigMetadataItem item:data.devices){
               logger.debug(mapper.writeValueAsString(item));
+              IoTUnit unit = transformer.translateIoTUnit(item);
+              logger.debug(unit.toJson());
           }
-        
+          
+                   
        
     }
 

@@ -42,13 +42,14 @@ import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 /**
  *
- * @author hungld
+ * @author hungld, linhsolar
  */
 public class Main {
 
     static Logger logger = HincConfiguration.getLogger();
     static final MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
     static HINCMessageListener LISTENER = new HINCMessageListener(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+    //TODO: we will use a parameter 
     static final String DEFAULT_SOURCE_SETTINGS = "./sources.conf";
     static PluginRegistry pluginReg = new PluginRegistry();
 
@@ -60,6 +61,7 @@ public class Main {
     static int globalInterval;
     //Any other meta data of the environment where collector is deployed e.g. machine name, uname -a, cpu, max ram.     
     Map<String, String> meta;
+    //a list of adaptors, currently just a short string for an adapter name.
     static List<String> enabledAdaptors = new ArrayList<>();
 
     private static void init() {
@@ -115,7 +117,9 @@ public class Main {
             FACTORY.getMessagePublisher().pushMessage(updateMsg);
         }
     }
-
+    
+    //Current it is just a sequence of calls, it is not good for performance
+    //TODO: change it
     public static void scanOnce() throws InterruptedException {
 
         logger.debug("We have {} adaptor... now will check each one", pluginReg.getAdaptors().size());
@@ -166,7 +170,7 @@ public class Main {
         /**
          * ************************
          * HINC listens to some queue channels to answer the query. Because the
-         * limitation of connection to the queue, each HINC local subscribe only
+         * limitation of connection to the queue, each HINC local subscribes only
          * to public topic at the moment. ************************
          */
         String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
@@ -205,8 +209,10 @@ public class Main {
 
         listen();
         detectServices();
-
+        //Linh Note
+        //TODO: a better way to schedule scan
         while (true) {
+            
             scanOnce();
 
             // Process interval 
