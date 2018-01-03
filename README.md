@@ -2,6 +2,8 @@
 
 HINC is a prototype for harmonizing resources from IoT, network functions and clouds. 
 
+HINC implements the concept of Resource Slice Interoperability. 
+
 The work is initially supported by the U-TEST until 2016. Since 2017 the work is supported 
 by H2020 INTER-IoT  through the INTER-HINC project.
 
