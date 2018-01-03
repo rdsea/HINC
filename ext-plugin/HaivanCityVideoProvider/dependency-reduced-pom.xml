@@ -38,7 +38,7 @@
                   <resource>META-INF/cxf/bus-extensions.txt</resource>
                 </transformer>
                 <transformer>
-                  <mainClass>sinc.hinc.haivancameraprovider.provider.CameraInfoTaskPushHINCLocal</mainClass>
+                  <mainClass>sinc.hinc.haivancameraprovider.provider.HaivanCameraProviderAdaptor</mainClass>
                 </transformer>
               </transformers>
             </configuration>

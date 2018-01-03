@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.testrigprovider.plugin;
+package sinc.hinc.haivancameraprovider.provider;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -16,7 +16,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Arrays;
-import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,30 +25,31 @@ import org.slf4j.LoggerFactory;
  *
  * @author linhsolar
  */
-//Every RestHandler might have something different but how do we make them generic
+//Every RestHandler might have something different
+//surely all handlers share something in common. we will have to 
+//deal with that
 public class RestHandler {
 
-    static Logger logger = LoggerFactory.getLogger("TestRig");
-
- 
+    static Logger logger = LoggerFactory.getLogger("CameraProvider");
     private URL url = null;
-    private HttpsURLConnection conn = null;
+    private HttpURLConnection conn = null;
     private String data;
-    //public static RestHandler build(String url) throws IOException {
-    //    return build(url,null,null);
-    //}
+
+    public static RestHandler build(String url) throws IOException {
+        return build(url, null, null);
+    }
+
     public static RestHandler build(String url, String username, String password) throws MalformedURLException, IOException {
         RestHandler rest = new RestHandler();
         rest.url = new URL(url);
-        if (username !=null) {
-        //very simple authentication, we need a better way
-        String authenticationPass = username+":"+password;
-        String basicAuth = "Basic " + Arrays.toString(Base64.encodeBase64(authenticationPass.getBytes()));
-        rest.conn = (HttpsURLConnection) rest.url.openConnection();
-        rest.conn.setRequestProperty("Authorization", basicAuth);
-        }
-        else {
-            rest.conn = (HttpsURLConnection) rest.url.openConnection();
+        if (username != null) {
+            //very simple authentication, we need a better way
+            String authenticationPass = username + ":" + password;
+            String basicAuth = "Basic " + Arrays.toString(Base64.encodeBase64(authenticationPass.getBytes()));
+            rest.conn = (HttpURLConnection) rest.url.openConnection();
+            rest.conn.setRequestProperty("Authorization", basicAuth);
+        } else {
+            rest.conn = (HttpURLConnection) rest.url.openConnection();
         }
         rest.conn.setInstanceFollowRedirects(true);
         return rest;
@@ -102,7 +102,7 @@ public class RestHandler {
                     wr.write(data.getBytes());
                 }
             }
-            try (BufferedReader br = new BufferedReader(new InputStreamReader((InputStream)conn.getContent()))) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader((InputStream) conn.getContent()))) {
                 String output;
                 String result = "";
 
@@ -123,15 +123,13 @@ public class RestHandler {
 
         }
     }
-    public static void main (String args[]) throws IOException {
+
+    public static void main(String args[]) throws IOException {
         //just a test to see if it is ok or not
-        if (args.length==1) {
-        logger.debug(RestHandler.build(args[0]).callGet());
-        }
-        else {
-            if (args.length==3) {
-            logger.debug(RestHandler.build(args[0],args[1],args[2]).callGet());
-                    }
+        if (args.length == 1) {
+            logger.debug(RestHandler.build(args[0]).callGet());
+        } else if (args.length == 3) {
+            logger.debug(RestHandler.build(args[0], args[1], args[2]).callGet());
         }
     }
 }

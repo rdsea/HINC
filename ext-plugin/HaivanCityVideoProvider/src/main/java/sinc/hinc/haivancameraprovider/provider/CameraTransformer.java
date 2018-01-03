@@ -13,17 +13,21 @@ import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  *
- * @author hungld
+ * @author linhsolar
  */
 public class CameraTransformer implements IoTUnitTransformer<CameraMetadataItem> {
 
     @Override
-    public IoTUnit translateIoTUnit(CameraMetadataItem data) {
+    public IoTUnit translateIoTUnit(CameraMetadataItem camera) {
         IoTUnit unit = new IoTUnit();
-        unit.setResourceID(data.getId());
-        DataPoint dp = new DataPoint(data.getUrl(), "video");
+        unit.setResourceID(camera.getId());
+        DataPoint dp = new DataPoint(camera.getDatapoint(), camera.getType());
         dp.setMeasurementUnit("NA");
         unit.hasDatapoint(dp);
+        HashMap<String,String> metadata = new HashMap();
+        metadata.put("address", camera.getAddress());
+        metadata.put("description", camera.getDescription());
+        unit.setMeta(metadata);
         return unit;
     }
 

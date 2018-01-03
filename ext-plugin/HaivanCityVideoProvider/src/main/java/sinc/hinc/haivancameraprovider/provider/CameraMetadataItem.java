@@ -16,14 +16,59 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author hungld
+ * @author linhsolar
+ * 
  */
+/*
+* Sample of data
+id	"2co2.vp9.tv@chn@DNG33"
+name	"Camera gần Trường Mầm Non Tiên Sa"
+description	"view 1 - DNG33 (1010 IPC7)"
+address	"106 Quang Trung, Phường …n Hải Châu, TP. Đà Nẵng"
+phonenumber	"+84 236 3822348"
+type	"video"
+datapoint	"http://2co2.vp9.tv/chn/DNG33"
+datapoint-controller	"dng-camera-provider"
+fps	"20"
+conn	"[object Object],[object Object],[object Object]"
+*/
 public class CameraMetadataItem {
 
     static Logger logger = LoggerFactory.getLogger("HaivanCamera");
 
     String id = null;
+    String address = null;
+    String type = null;
+    String name = null;  
+    String description =  null;
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getDatapoint() {
+        return datapoint;
+    }
+
+    public void setDatapoint(String datapoint) {
+        this.datapoint = datapoint;
+    }
+    
+    String datapoint = null;
+    Map<String, String> metadata = new HashMap<>();
+    
     public String getId() {
         return id;
     }
@@ -48,14 +93,6 @@ public class CameraMetadataItem {
         this.description = description;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public Map<String, String> getMetadata() {
         return metadata;
     }
@@ -63,10 +100,7 @@ public class CameraMetadataItem {
     public void setMetadata(Map<String, String> metadata) {
         this.metadata = metadata;
     }
-    String name = null;  
-    String description =  null;
-    String url =null; 
-    Map<String, String> metadata = new HashMap<>();
+
  
 
     public String toJson() {

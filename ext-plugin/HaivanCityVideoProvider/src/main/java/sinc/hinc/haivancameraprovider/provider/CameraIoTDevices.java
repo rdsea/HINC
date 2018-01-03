@@ -7,10 +7,8 @@ package sinc.hinc.haivancameraprovider.provider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +18,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CameraIoTDevices {
 
-    static Logger logger = LoggerFactory.getLogger("HaivanCamera");
+    static Logger logger = LoggerFactory.getLogger("HaivanCameraDevice");
     List<CameraMetadataItem> cameras = new ArrayList<>();
- 
+
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -30,6 +28,13 @@ public class CameraIoTDevices {
         } catch (JsonProcessingException ex) {
             return null;
         }
+    }
+
+    public CameraIoTDevices() {
+    }
+    //return the list of cameras
+    public List<CameraMetadataItem> getDevices() {
+        return cameras;
     }
 
 

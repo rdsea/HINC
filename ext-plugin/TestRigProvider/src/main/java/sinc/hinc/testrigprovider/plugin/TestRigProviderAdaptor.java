@@ -15,7 +15,7 @@ import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
 /**
  *
- * @author hungld
+ * @author linhsolar
  */
 public class TestRigProviderAdaptor implements ProviderQueryAdaptor<TestRigMetadataItem> {
 
