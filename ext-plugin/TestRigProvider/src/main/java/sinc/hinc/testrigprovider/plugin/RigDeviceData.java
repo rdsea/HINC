@@ -27,8 +27,6 @@ public class RigDeviceData {
     static Logger logger = LoggerFactory.getLogger("TestRig");
     List<TestRigMetadataItem> devices = new ArrayList<>();
 
- 
- 
     public RigDeviceData() {
     }
 
@@ -38,29 +36,29 @@ public class RigDeviceData {
 
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
             return mapper.writeValueAsString(this);
         } catch (JsonProcessingException ex) {
             return null;
         }
     }
-/*
+
+    /*
     Only for testing purpose
-    */ 
-      public static void main(String[] args) throws JsonProcessingException, FileNotFoundException, IOException {
-          BufferedReader reader = new BufferedReader(new FileReader(args[1]));
-          ObjectMapper mapper = new ObjectMapper();
-          mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-          RigDeviceData data = mapper.readValue(reader, RigDeviceData.class);
-          TestRigProviderTransformer transformer = new TestRigProviderTransformer();
-          for (TestRigMetadataItem item:data.devices){
-              logger.debug(mapper.writeValueAsString(item));
-              IoTUnit unit = transformer.translateIoTUnit(item);
-              logger.debug(unit.toJson());
-          }
-          
-                   
-       
+     */
+    public static void main(String[] args) throws JsonProcessingException, FileNotFoundException, IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(args[1]));
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        RigDeviceData data = mapper.readValue(reader, RigDeviceData.class);
+        TestRigProviderTransformer transformer = new TestRigProviderTransformer();
+        for (TestRigMetadataItem item : data.devices) {
+            logger.debug(mapper.writeValueAsString(item));
+            IoTUnit unit = transformer.translateIoTUnit(item);
+            logger.debug(unit.toJson());
+        }
+
     }
 
 }

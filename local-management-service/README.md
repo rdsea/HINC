@@ -6,5 +6,7 @@ A local service will integrate various providers (IoT, Networks and Clouds).
 
 ## Running Local
 java -cp "local-management-service-1.0.jar:plug-ins.jar" sinc.hinc.local.Main
+java -cp "local-management-service-1.0.jar:HaivanCityVideoProvider-1.0.jar:TestRigProvider-1.0.jar" sinc.hinc.local.Main
+
 ## Limitation
 - Secure HTTPS

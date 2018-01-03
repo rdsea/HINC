@@ -33,7 +33,7 @@ public class RestHandler {
 
  
     private URL url = null;
-    private HttpsURLConnection conn = null;
+    private HttpURLConnection conn = null;
     private String data;
     //public static RestHandler build(String url) throws IOException {
     //    return build(url,null,null);
@@ -45,11 +45,11 @@ public class RestHandler {
         //very simple authentication, we need a better way
         String authenticationPass = username+":"+password;
         String basicAuth = "Basic " + Arrays.toString(Base64.encodeBase64(authenticationPass.getBytes()));
-        rest.conn = (HttpsURLConnection) rest.url.openConnection();
+        rest.conn = (HttpURLConnection) rest.url.openConnection();
         rest.conn.setRequestProperty("Authorization", basicAuth);
         }
         else {
-            rest.conn = (HttpsURLConnection) rest.url.openConnection();
+            rest.conn = (HttpURLConnection) rest.url.openConnection();
         }
         rest.conn.setInstanceFollowRedirects(true);
         return rest;
@@ -126,7 +126,7 @@ public class RestHandler {
     public static void main (String args[]) throws IOException {
         //just a test to see if it is ok or not
         if (args.length==1) {
-        logger.debug(RestHandler.build(args[0]).callGet());
+        logger.debug(RestHandler.build(args[0], null,null).callGet());
         }
         else {
             if (args.length==3) {
