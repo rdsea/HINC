@@ -13,6 +13,7 @@ import sinc.hinc.model.VirtualNetworkResource.NetworkService;
  *
  * @author hungld
  */
+//linhsolar: this is just an extremely simple of infrastructure slice: only gateway, network and cloud
 public class InfrastructureSlice {
 
     SoftwareDefinedGateway gateway;

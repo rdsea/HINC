@@ -40,6 +40,7 @@ import sinc.hinc.common.metadata.HINCGlobalMeta;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.model.API.ResourcesManagementAPI;
+import sinc.hinc.model.CloudServices.CloudService;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
@@ -67,6 +68,7 @@ public class GuiBeans {
     static Set<IoTUnit> iotUnits = new HashSet<>();
     static Set<HincLocalMeta> hinclocals = new HashSet<>();
     static Set<NetworkService> networkservices = new HashSet<>();
+    static Set<CloudService> cloudservices = new HashSet<>();
     static Set<ControlPoint> controlpoints = new HashSet<>();
 
     static HINCGlobalMeta controllerMeta;
@@ -225,7 +227,10 @@ public class GuiBeans {
     public void queryNetworkServices() {
         networkservices.addAll(rest.queryNetworkService(0, null));
     }
-
+    public void queryCloudServices() {
+        cloudservices.addAll(rest.queryCloudServices(0, null));
+        logger.info("Nr of services: "+cloudservices.size());
+    }
     public void updateLocalTable() {
         logger.debug("Updating the Hinc Local table ...");
         RequestContext.getCurrentInstance().update("hincLocalTable");
@@ -300,7 +305,12 @@ public class GuiBeans {
         }
         return networkservices;
     }
-
+    public Set<CloudService> getCloudservices() {
+        if (cloudservices.isEmpty()) {
+            queryCloudServices();
+        }
+        return cloudservices;
+    }
     public int getTimeout() {
         return timeout / 1000;
     }

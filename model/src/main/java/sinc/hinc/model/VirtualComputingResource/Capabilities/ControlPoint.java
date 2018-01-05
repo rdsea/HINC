@@ -5,7 +5,6 @@
  */
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

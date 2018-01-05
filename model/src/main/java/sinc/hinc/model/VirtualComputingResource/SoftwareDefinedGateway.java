@@ -12,6 +12,7 @@ import java.util.Set;
  *
  * @author hungld
  */
+//linhsolar: represent a Gateway
 public class SoftwareDefinedGateway {
 
     Set<IoTUnit> units = new HashSet<>();

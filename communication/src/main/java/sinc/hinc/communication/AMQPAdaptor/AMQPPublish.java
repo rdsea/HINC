@@ -23,11 +23,8 @@ import com.rabbitmq.client.ConsumerCancelledException;
 import com.rabbitmq.client.QueueingConsumer;
 import com.rabbitmq.client.ShutdownSignalException;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.common.metadata.HincMessageTopic;
-import sinc.hinc.communication.processing.HINCMessageSender;
 
 /**
  *

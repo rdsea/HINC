@@ -32,7 +32,7 @@ public class HINCMessageSender {
             logger.debug("Will subscribe to the topic: " + requestMessage.getFeedbackTopic() + " to wait for the reply");
             sub.subscribe(requestMessage.getFeedbackTopic(), timeout);
         } else {
-            logger.debug("No feedback topic, Async call will not send the reply");
+            logger.debug("No feedback topic, Async call will not receive the reply");
         }
         MessagePublishInterface pub = FACTORY.getMessagePublisher();
         pub.pushMessage(requestMessage);
@@ -42,6 +42,12 @@ public class HINCMessageSender {
             e.printStackTrace();
         }
         logger.debug("Asyn call done on topic {} ! should close the subscribe now.. ", requestMessage.getFeedbackTopic());
+    }
+
+    public void onewayCall(HincMessage queryMessage) {
+        MessagePublishInterface pub = FACTORY.getMessagePublisher();
+        logger.debug("Calling the function: " + queryMessage.toJson());
+        pub.pushMessage(queryMessage);
     }
 
     // with a single UUID we don't need timeout. We wait for the message return. The result can be only String

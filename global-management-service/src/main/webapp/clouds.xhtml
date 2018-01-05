@@ -18,26 +18,26 @@
             <ui:define name="content">                
                 <div class="ui-fluid">
                     <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank"> 
-                        <h3>Network functions</h3>
+                        <h3>Cloud Services</h3>
                         <h:form>
-                            <p:commandButton update="networkTable" value="Query" id="ajax"  actionListener="#{GuiBeans.queryNetworkServices()}" styleClass="ui-priority-primary" style="display: inline-block; width:inherit;"/>                            
+                            <p:commandButton update="cloudTable" value="Query" id="ajax"  actionListener="#{GuiBeans.queryCloudServices()}" styleClass="ui-priority-primary" style="display: inline-block; width:inherit;"/>                            
                         </h:form>
 
-                        <p:dataTable id="networkTable"  var="nw" value="#{GuiBeans.networkservices}" tableStyle="width:auto"  resizableColumns="true">
-                            <p:column headerText="UUID">
-                                <h:outputText value="#{nw.uuid}" />
+                        <p:dataTable id="cloudTable"  var="nw" value="#{GuiBeans.cloudservices}" tableStyle="width:auto"  resizableColumns="true">
+                            <!--p:column headerText="UUID">
+                                <h:outputText value="#{cloud.uuid}" />
                             </p:column>
 
                             <p:column headerText="ResourceID">
-                                <h:outputText value="#{nw.name}" />
-                            </p:column>
+                                <h:outputText value="#{cloud.name}" />
+                            </p:column-->
 
                             <p:column headerText="Type">
-                                <h:outputText value="#{nw.type}" />
+                                <h:outputText value="#{cloud.type}" />
                             </p:column>   
 
-                            <p:column headerText="Access point">
-                                <h:outputText value="#{nw.accessPoint.endpoint}" />
+                            <p:column headerText="Access Point">
+                                <h:outputText value="#{cloud.accessPoint.endpoint}" />
                             </p:column> 
 
                         </p:dataTable>
