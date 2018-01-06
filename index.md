@@ -8,7 +8,7 @@ title: "HINC - Harmonizing IoT, Network functions and Clouds"
 
 ---
 
-HINC implements the lowest layer of [the SINC Concept](http://sincconcept.github.io) by interfacing to different providers to obtain resource metadata and to control resources. In this view, HINC aims at supporting the slice concept by not only managing resources but also enabling the interoperability of resources.
+HINC implements the lowest level of [the SINC Concept](http://sincconcept.github.io) by interfacing to different providers to obtain resource metadata and to control resources. HINC realizes the concept of Resource Slice Interoperability Hub (rsiHub) in the INTER-HINC subproject of INTER-IoT. In this view, HINC aims at supporting the slice concept by not only managing resources but also enabling the interoperability of resources.
 
 HINC work is initially supported by the [H2020 U-Test](www.u-test.eu) and currently is supported by the [H2020 Inter-IoT](http://www.inter-iot-project.eu/) through the subproject INTER-HINC.  
 
@@ -45,7 +45,7 @@ HINC framework provides an abstraction layer on top of IoT cloud infrastructure 
 
 > HINC provides a set of interface for querying information (one-time query and subscription), and control IoT resource. Based on such interface, we can add more adaptors to interface more providers. A new provider can join the existing system without any interuption.
 
-HINC is under active development. The followings sections provide overview of current states and ongoing work.
+HINC is under active development. 
 
 
 ---
@@ -58,7 +58,7 @@ HINC is under active development. The followings sections provide overview of cu
 
 ## Contact
 
-Contact: [Hong-Linh Truong](http://dsg.tuwien.ac.at/staff/truong/) at truong@dsg.tuwien.ac.at for further information.
+Contact: [Hong-Linh Truong](http://www.infosys.tuwien.ac.at/staff/truong/) at hong-linh.truong@tuwien.ac.at for further information.
 
 ## Publications
 
