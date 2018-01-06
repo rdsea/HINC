@@ -12,6 +12,7 @@ HINC implements the lowest level of [the SINC Concept](http://sincconcept.github
 
 HINC work is initially supported by the [H2020 U-Test](www.u-test.eu) and currently is supported by the [H2020 Inter-IoT](http://www.inter-iot-project.eu/) through the subproject INTER-HINC.  
 
+Download the [HINC source code from Github](https://github.com/SINCConcept/HINC) and play with it.
 
 ----
 
@@ -53,7 +54,7 @@ HINC is under active development.
 
 - [Inter-IoT systems](http://www.inter-iot-project.eu) under INTER-HINC with use cases from Inter-IoT
 - [City Video Analytics](http://haivanuni.github.io/haivan) under the HAIVAN project supported by ASEA-UNINET
-- Building Automation System : [demo-iotsystem-v3.mp4](images/demo-iotsystem-v3.mp4) the Building Automation System Demo, which was developed by Ericsson Research, Bangalore.
+- Building Automation System : [demo-iotsystem-v3.mp4](http://sincconcept.github.io/HINC/images/demo-iotsystem-v3.mp4) the Building Automation System Demo, which was developed by Ericsson Research, Bangalore.
 
 
 ## Contact
