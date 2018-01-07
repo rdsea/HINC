@@ -14,11 +14,6 @@ HINC can be build with Java 1.7+ and Maven as followings:
 2. Run `$ mvn clean install`
 3. Take 2 artifacts corresponding to the components: `local-management-service-1.0.jar` and `global-management-service-1.0.jar`.
 
-### Use ready-to-run artifacts
-
-The artifacts can be downloaded from the [artifact branch on Github](https://github.com/SINCConcept/HINC/tree/artifacts).
-
-We try to keep this branch up-to-date with the most stable version. Therefore, use this branch only when you have problems to compile the source code. 
 
 ### Run Local Management Service
 
