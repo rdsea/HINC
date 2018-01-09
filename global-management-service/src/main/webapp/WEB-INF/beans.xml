@@ -39,23 +39,12 @@ http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
         <property name="scan" value="true"/>
         <property name="resourcePackage" value="sinc.hinc.common.API,sinc.hinc.model.API"/>
         <property name="contact" value=""/>
-        <property name="description" value="Harmonizing Diverse Resource Information Across IoT, Network Functions and Clouds"/>
-        <property name="title" value="HINC Global API"/>
+        <property name="description" value="Resource Slice Interoperability Hub"/>
+        <property name="title" value="rsiHub Global Management Service API"/>
         <property name="version" value="1.0"/>
 
     </bean>
 
-<!--
-    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
-        <property name="resourcePackage" value="sinc.hinc.*"/>
-        <property name="version" value="1.0"/>
-        <property name="basePath" value="http://global-management-service-1.0/rest"/>
-        <property name="title" value="HINC Global Management Service"/>
-        <property name="description" value="The endpoint to interact with HINC Local Management Services" />
-        <property name="contact" value="d.le@dsg.tuwien.ac.at"/>
-        <property name="license" value="Apache 2.0 License"/>
-        <property name="licenseUrl" value="http://www.apache.org/licenses/LICENSE-2.0.html"/>
-        <property name="scan" value="true"/>
-    </bean>-->
+
 
 </beans>

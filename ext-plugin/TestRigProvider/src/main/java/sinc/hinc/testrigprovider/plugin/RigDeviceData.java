@@ -6,6 +6,7 @@
 package sinc.hinc.testrigprovider.plugin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
@@ -34,6 +35,10 @@ public class RigDeviceData {
         return devices;
     }
 
+    public void setDevices(List<TestRigMetadataItem> devices) {
+        this.devices = devices;
+    }
+
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -48,10 +53,13 @@ public class RigDeviceData {
     Only for testing purpose
      */
     public static void main(String[] args) throws JsonProcessingException, FileNotFoundException, IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(args[1]));
+        BufferedReader reader = new BufferedReader(new FileReader(args[0]));
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        RigDeviceData data = mapper.readValue(reader, RigDeviceData.class);
+        List<TestRigMetadataItem> devices = mapper.readValue(reader, new TypeReference<List<TestRigMetadataItem>>() {});
+        RigDeviceData data = new RigDeviceData();
+        data.setDevices(devices);
+//RigDeviceData data = mapper.readValue(reader, RigDeviceData.class);
         TestRigProviderTransformer transformer = new TestRigProviderTransformer();
         for (TestRigMetadataItem item : data.devices) {
             logger.debug(mapper.writeValueAsString(item));

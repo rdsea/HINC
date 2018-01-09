@@ -38,6 +38,15 @@ public class TestRigMetadataItem {
     Map<String, String> voltage = new HashMap<>();
     String method= null; //this indicates control APIs
     String turn_locator=null;
+    String in_motion;
+
+    public String getIn_motion() {
+        return in_motion;
+    }
+
+    public void setIn_motion(String in_motion) {
+        this.in_motion = in_motion;
+    }
     public String getDevice_type() {
         return device_type;
     }
