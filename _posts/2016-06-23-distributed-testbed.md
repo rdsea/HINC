@@ -6,7 +6,7 @@ date: 2016-06-23 13:19:32
 order: 7
 ---
 
-We setup a distributed testbed (see the figure below) for HINC. The testbed is spread over distributed sites: in Vienna, in Bangalore, in Hanoi and several public service (AmazonEC, CloudAMQP). This testbed and HINC will demonstrate the ability to manage distributed and large scale system and network. What we are going to setup is in the figure below:
+We setup a distributed testbed (see the figure below) for rsiHub  HINC. The testbed is spread over distributed sites: in Vienna, in Bangalore, in Hanoi and several public service (AmazonEC, CloudAMQP). This testbed and rsiHub HINC will demonstrate the ability to manage distributed and large scale system and network. What we are going to setup is in the figure below:
 
 ![Testbed](../images/testbed-02-distributed.png "Testbed -- Inlab and distributed parts"){:width="500px"}
 
@@ -14,7 +14,7 @@ In this guideline, we just setup the IoT parts of the testbed. The network and c
 
 ### Step 1: Setup a message queue broker on cloud
 
-Before deploy HINC components and connect them, we need a communication middleware. In this tutorial, we register a free account on https://www.cloudamqp.com/ and create a Little Lemur plan (free), please follow the guideline on the website. 
+Before deploy rsiHub HINC components and connect them, we need a communication middleware. In this tutorial, we register a free account on https://www.cloudamqp.com/ and create a Little Lemur plan (free), please follow the guideline on the website. 
 
 After this step, you will get an **endpoint** to the message queue server which has been created.
 
@@ -26,17 +26,17 @@ Please follow [IoT resource tutorials](/iot-resources.html) to setup several sen
 
 Note that, the sensors can be deployed on docker containers, on physical machines, or on virtual machines.
 
-### Step 3: Configure and run HINC local
+### Step 3: Configure and run rsiHub HINC local
 
-On each IoT resource site you have setup above, deploy a HINC Local Management Service for them. Firstly, you need to create a working folder and download the artifact:
+On each IoT resource site you have setup above, deploy a rsiHub HINC Local Management Service for them. Firstly, you need to create a working folder and download the artifact:
 
 ```sh
 $ mkdir /tmp/hinc-local
 $ cd /tmp/hinc-local
-$ wget https://github.com/SINCConcept/HINC/raw/artifacts/local-management-service-1.0.jar
+$ cp ... local-management-service-1.0.jar
 ``` 
 
-HINC Local Management Service requires a configuration file to run, create a *hinc.conf* with the contents like below. Note that you need to edit the *BROKER* as per the CloudAMQP created before. The *GROUP* is customized to let a set of HINC components can communicate together.
+rsiHub HINC Local Management Service requires a configuration file to run, create a *hinc.conf* with the contents like below. Note that you need to edit the *BROKER* as per the CloudAMQP created before. The *GROUP* is customized to let a set of rsiHub HINC components can communicate together.
 
 ```sh
 $ nano hinc.conf
@@ -45,30 +45,29 @@ BROKER_TYPE=amqp
 GROUP=myGroup123
 ```
 
-HINC Local Management Service requires a configuration file describe the resources to interface with. Depending on the IoT resource you created in last step, you need to download a particular plugin and create corresponding configuration file. For each case as followings:
+rsiHub HINC Local Management Service requires a configuration file describe the resources to interface with. Depending on the IoT resource you created in last step, you need to download a particular plugin and create corresponding configuration file. For each case as followings:
 
 **Dummy provider**
 
 ```sh
-$ wget https://github.com/SINCConcept/HINC/raw/artifacts/plugins/DummyProvider-1.0.jar
+$ cd ext-plugin/DummyProvider
 ```
 
 **OpenHAB**
 
 ```sh
-$ wget https://github.com/SINCConcept/HINC/blob/artifacts/plugins/TransformOpenHAB-1.0.jar
+$cd ext-plugin/TransformOpenHAB
 ```
 
-Lately, the HINC Local Management Service can be run like shown in [simple testbed](simple-testbed.html). 
+Lately, the rsiHub HINC Local Management Service can be run like shown in [simple testbed](simple-testbed.html). 
 
-HINC local will run and start listening the command from the HINC Global Management Service, which will be setup on the next step.
+rsiHub HINC local will run and start listening the command from the rsiHub HINC Global Management Service, which will be setup on the next step.
 
-### Step 4: Run HINC Global Management Service and query information
+### Step 4: Run rsiHub HINC Global Management Service and query information
 
-You need to download the artifact of the HINC Global Management Service and put the same *hinc.conf* as above. In following commands, HINC Global run on the port 9000.
+You need to download the artifact of the rsiHub HINC Global Management Service and put the same *hinc.conf* as above. In following commands, rsiHub HINC Global run on the port 9000.
 
 ```sh
-$ wget https://github.com/SINCConcept/HINC/raw/artifacts/global-management-service-1.0-war-exec.jar
 $ nano hinc.conf
 BROKER=amqp://<username>:<password>@bunny.cloudamqp.com/uluzkylq 
 BROKER_TYPE=amqp 
@@ -77,14 +76,13 @@ $ java -jar global-management-service-1.0-war-exec.jar -httpPort 9000
 ```
 Note that the port is currently fixed. We will provide a user-defined port in the future.
 
-Open the HINC Global via browser by point to the correct IP/Port to run this `http://localhost:9000/global-management-service-1.0`, we can have the list of APIs as bellow:
+Open the rsiHub HINC Global via browser by point to the correct IP/Port to run this `http://localhost:9000/global-management-service-1.0`, we can have the list of APIs as bellow:
 
 ![HINC Swagger](../images/HINC-Swagger.png "HINC_Swagger"){:width="500px"}
 
-The client can be used to query the information. Note that to replace *localhost* and *9000* with the correct IP and port of the HINC Global.
+The client can be used to query the information. Note that to replace *localhost* and *9000* with the correct IP and port of the rsiHub HINC Global.
 
 ```sh
-$ wget https://github.com/SINCConcept/HINC/raw/artifacts/client-gui-1.0.jar
 $ java -jar client-gui-1.0.jar localhost 9000
 ```
 
