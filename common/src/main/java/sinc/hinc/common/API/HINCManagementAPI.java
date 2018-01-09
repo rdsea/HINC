@@ -26,16 +26,16 @@ import sinc.hinc.common.metadata.HincLocalMeta;
 
 /**
  * The API to manage HINC components including the HINC Global Services and HINC Local Services.
- * 
+ * In the new version, the Local/Global Management Service becomes part of rsiHub
  * @author hungld
  */
 @Path("/")
-@Api(value = "HINC Management API")
+@Api(value = "rsiHub Management API")
 @SwaggerDefinition(
         info = @Info(
-                title = "HINC Management API",
-                version = "1.0",
-                description = "This API provides functions to manage the HINC components.",
+                title = "rsiHub Management API",
+                version = "1.1",
+                description = "This API provides functions to manage the rsiHub services",
                 license = @License(name = "APACHE LICENSE", url = "http://www.apache.org/licenses/LICENSE-2.0")),
         tags = @Tag(name = "Public", description = "This API is for public usage"),
         schemes = (SwaggerDefinition.Scheme.HTTP),
@@ -53,8 +53,8 @@ public interface HINCManagementAPI {
     @GET
     @Path("/meta")
     @Produces("application/json")
-    @ApiOperation(value = "Get this HINC Global metadata",
-            notes = "HINC Global Meta include the communication group, communication middleware and location of the service.",
+    @ApiOperation(value = "Get rsiHub Global metadata",
+            notes = "rsiHub Global Meta include the communication group, communication middleware and location of the service.",
             response = HINCGlobalMeta.class)
     public HINCGlobalMeta getHINCGlobalMeta();
 
@@ -66,11 +66,11 @@ public interface HINCManagementAPI {
     @POST
     @Path("/meta")
     @Consumes("application/json")
-    @ApiOperation(value = "Update this HINC Global metadata",
-            notes = "This merge the HINC global meta, e.g. to update the communication group and middleware. The fields which are null or empty will not be updated.",
+    @ApiOperation(value = "Update this rsiHub Global metadata",
+            notes = "This merge the rsiHub global meta, e.g. to update the communication group and middleware. The fields which are null or empty will not be updated.",
             response = void.class)
     public void setHINCGlobalMeta(
-             @ApiParam(value = "The metadata of HINC Global in JSON", required = true) HINCGlobalMeta meta);
+             @ApiParam(value = "The metadata of rsiHub Global in JSON", required = true) HINCGlobalMeta meta);
 
     /**
      * Collect all the HINC locals information.
@@ -80,18 +80,18 @@ public interface HINCManagementAPI {
      * @return A list of HINC Locals.
      */
     @GET
-    @Path("/hinc")
+    @Path("/rsiHub")
     @Produces("application/json")
     @Consumes("application/json")
-    @ApiOperation(value = "Query the list of HINC Local",
-            notes = "The list of HINC Local which are joining the same communication group",
+    @ApiOperation(value = "Query the list of rsiHub Local Management Service",
+            notes = "The list of rsiHub Local Management Service which are joining the same communication group",
             response = HincLocalMeta.class,
             responseContainer = "List")
     public List<HincLocalMeta> queryHINCLocal(
             @ApiParam(value = "The miliseconds to wait for the response", required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout);
     
     @POST
-    @Path("/hinc/{localUUID}/infobase")
+    @Path("/rsiHub/{localUUID}/infobase")
     @Consumes("text/plain")
      @ApiOperation(value = "Update the information base for a local service, which support Information Centric Network query.",
             notes = "This function should be in the local service itself. This API is a quick way to manually set the Information Base",
@@ -99,7 +99,7 @@ public interface HINCManagementAPI {
             responseContainer = "String")
     public void setHINCLocalTopic(
             @ApiParam(value = "List of namespace, separated by comma", required = true) String infoBase,
-            @ApiParam(value = "The UUID of the HINC local", required = true) @PathParam("localUUID") String localUUID,
+            @ApiParam(value = "The UUID of the rsiHub Local Management Service", required = true) @PathParam("localUUID") String localUUID,
             @ApiParam(value = "True: append more infobase, False: clear and update new infobase", required = false, defaultValue = "false") @DefaultValue("false") @QueryParam("append") String append
     );
 }

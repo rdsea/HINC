@@ -5,9 +5,12 @@
  */
 package sinc.hinc.testrigprovider.plugin;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
@@ -19,6 +22,9 @@ import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
  */
 public class TestRigProviderAdaptor implements ProviderQueryAdaptor<TestRigMetadataItem> {
 
+    public TestRigProviderAdaptor() {
+    }
+
     @Override
     public Collection<TestRigMetadataItem> getItems(Map<String, String> settings) {
         String endpoint = settings.get("endpoint").trim();
@@ -28,12 +34,16 @@ public class TestRigProviderAdaptor implements ProviderQueryAdaptor<TestRigMetad
             endpoint = endpoint.substring(0, endpoint.length() - 1);
         }
         try {
-            String dataJson = RestHandler.build(endpoint + "/rig",username,password).callGet();
-            if (dataJson ==null)
+            String dataJson = RestHandler.build(endpoint + "/rig", username, password).callGet();
+            if (dataJson == null) {
                 return null;
+            }
             ObjectMapper mapper = new ObjectMapper();
-            
-            RigDeviceData data = mapper.readValue(dataJson, RigDeviceData.class);
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            List<TestRigMetadataItem> devices = mapper.readValue(dataJson, new TypeReference<List<TestRigMetadataItem>>() {
+            });
+            RigDeviceData data = new RigDeviceData();
+            data.setDevices(devices);//mapper.readValue(dataJson, RigDeviceData.class);
             return data.getDevices();
         } catch (IOException ex) {
             ex.printStackTrace();

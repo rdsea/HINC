@@ -37,28 +37,28 @@ import sinc.hinc.model.slice.AppSlice;
 import sinc.hinc.model.slice.InfrastructureSlice;
 
 /**
- * The HINC global API to query the information of different type of components.
+ * The rsiHub global API to query the information of different type of components.
  * Most of the information query APIs have the followings parameters:
  *
  * <p>
  * "timeout":, which is the delay to wait for the information. The reason to
- * have timeout is HINCGlobal do not know how many HINC Local are available and
- * send back information. Set timeout=0 to let HINC Global to read from its
+ * have timeout is rsiHubGlobal do not know how many rsiHub Local are available and
+ * send back information. Set timeout=0 to let rsiHub Global to read from its
  * local database, which contain the results of previous queries.
  * <p>
- * "hincUUID": the query should be send to this HINC Local. The hincUUID can be
+ * "hincUUID": the query should be send to this rsiHub Local. The hincUUID can be
  * null or empty to broadcast.
  *
- * This level of API aims to hide the HINC Local from the user view, which
+ * This level of API aims to hide the rsiHub Local from the user view, which
  * provide a general access to the information grid.
  *
  * @author hungld
  */
 @Path("/")
-@Api(value = "Resource Management API")
+@Api(value = "rsiHub - Resource Management API")
 @SwaggerDefinition(
         info = @Info(
-                title = "Resource management API",
+                title = "rsiHub - Resource management API",
                 version = "1.0",
                 description = "This API provides functions to query the information of distributed resources.",
                 license = @License(name = "APACHE LICENSE", url = "http://www.apache.org/licenses/LICENSE-2.0")),
@@ -69,8 +69,8 @@ import sinc.hinc.model.slice.InfrastructureSlice;
 )
 public interface ResourcesManagementAPI {
 
-    final String timeoutParameterDescription = "The miliseconds to wait for the response. Set to 0 to query from HINC Global database.";
-    final String hincUUIDParameterDescription = "The HINC to query from. Leave empty to query from all HINC Local.";
+    final String timeoutParameterDescription = "The miliseconds to wait for the response. Set to 0 to query from rsiHub Global database.";
+    final String hincUUIDParameterDescription = "The rsiHub to query from. Leave empty to query from all rsiHub Local.";
 
     @GET
     @Path("/IoTUnits")
@@ -83,8 +83,8 @@ public interface ResourcesManagementAPI {
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID,
             @ApiParam(value = "The namespaces that IoT Unit belong to. Separate namespaces in the list with commas", required = false, defaultValue = "null") @DefaultValue("") @QueryParam("infoBases") String infoBases,
-            @ApiParam(value = "The maximum records to return from each HINC Local.", required = false, defaultValue = "0") @DefaultValue("0") @QueryParam("limit") int limit,
-            @ApiParam(value = "To force the HINC Local to rescan resource", required = false, defaultValue = "false") @DefaultValue("false") @QueryParam("rescan") String forceRescan
+            @ApiParam(value = "The maximum records to return from each rsiHub Local.", required = false, defaultValue = "0") @DefaultValue("0") @QueryParam("limit") int limit,
+            @ApiParam(value = "To force the rsiHub Local to rescan resource", required = false, defaultValue = "false") @DefaultValue("false") @QueryParam("rescan") String forceRescan
     );
 
     @GET
@@ -98,8 +98,8 @@ public interface ResourcesManagementAPI {
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID,
             @ApiParam(value = "The namespaces that providers belong to. Separate namespaces in the list with commas", required = false, defaultValue = "null") @DefaultValue("") @QueryParam("infoBases") String infoBases,
-            @ApiParam(value = "The maximum records to return from each HINC Local.", required = false, defaultValue = "0") @DefaultValue("0") @QueryParam("limit") int limit,
-            @ApiParam(value = "To force the HINC Local to rescan resource", required = false, defaultValue = "false") @DefaultValue("false") @QueryParam("rescan") String forceRescan
+            @ApiParam(value = "The maximum records to return from each rsiHub Local.", required = false, defaultValue = "0") @DefaultValue("0") @QueryParam("limit") int limit,
+            @ApiParam(value = "To force the rsiHub Local to rescan resource", required = false, defaultValue = "false") @DefaultValue("false") @QueryParam("rescan") String forceRescan
     );
 
     @GET

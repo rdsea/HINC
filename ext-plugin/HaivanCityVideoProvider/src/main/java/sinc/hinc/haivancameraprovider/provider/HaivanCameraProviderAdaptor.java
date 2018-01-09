@@ -36,13 +36,16 @@ public class HaivanCameraProviderAdaptor implements ProviderQueryAdaptor<CameraM
     String amqpURL;
     String group;
 
+    public HaivanCameraProviderAdaptor() {
+    }
+
     public HaivanCameraProviderAdaptor(String amqpURL, String group, List<CameraMetadataItem> dataItemsToSend, Map<String, String> meta) {
         this.dataItems = dataItemsToSend;
         this.meta = meta;
         this.amqpURL = amqpURL;
         this.group = group;
     }
-    
+
     public void push() {
         CameraTransformer transformer = new CameraTransformer();
         WrapperIoTUnit wrapper = new WrapperIoTUnit();
@@ -87,7 +90,7 @@ public class HaivanCameraProviderAdaptor implements ProviderQueryAdaptor<CameraM
             endpoint = endpoint.substring(0, endpoint.length() - 1);
         }
         try {
-            String dataJson = RestHandler.build(endpoint + "/camera/list", null,null).callGet();
+            String dataJson = RestHandler.build(endpoint + "/camera/list", null, null).callGet();
             if (dataJson == null) {
                 return null;
             }
@@ -99,7 +102,7 @@ public class HaivanCameraProviderAdaptor implements ProviderQueryAdaptor<CameraM
             ex.printStackTrace();
             return null;
         }
-        
+
     }
 
     @Override

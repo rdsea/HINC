@@ -16,10 +16,8 @@ import sinc.hinc.abstraction.transformer.DataPointTransformer;
 import sinc.hinc.abstraction.transformer.ExecutionEnvironmentTransformer;
 import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 import sinc.hinc.abstraction.ResourceDriver.ServiceDetector;
-import sinc.hinc.model.VirtualComputingResource.MicroService;
 
 /**
  *
