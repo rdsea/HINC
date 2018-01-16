@@ -8,10 +8,8 @@ package sinc.hinc.transformer.teit;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -21,7 +19,7 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 
 /**
  *
@@ -103,7 +101,7 @@ public class TeitSensorTransformer implements IoTUnitTransformer<Properties> {
 
                 if (cp.getName().equals("connect-mqtt")) {
                     cp.setControlType(ControlPoint.ControlType.CONNECT_TO_NETWORK);
-                    cp.hasCondition("network-type", NetworkService.NetworkServiceType.BROKER_MQTT.toString());
+                    cp.hasCondition("network-type", NetworkFunctionService.NetworkServiceType.BROKER_MQTT.toString());
                 } else {
                     cp.setControlType(ControlPoint.ControlType.SELF_CONFIGURE);
                 }

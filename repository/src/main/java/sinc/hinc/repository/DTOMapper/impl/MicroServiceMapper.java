@@ -6,7 +6,7 @@
 package sinc.hinc.repository.DTOMapper.impl;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import sinc.hinc.model.VirtualComputingResource.MicroService;
+import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
 import sinc.hinc.repository.Utils;
 
@@ -14,11 +14,12 @@ import sinc.hinc.repository.Utils;
  *
  * @author hungld
  */
-public class MicroServiceMapper implements DTOMapperInterface<MicroService> {
+public class MicroServiceMapper implements DTOMapperInterface<MicroserviceArtifact> {
 
     @Override
-    public MicroService fromODocument(ODocument doc) {
-        MicroService service = new MicroService();
+    public MicroserviceArtifact fromODocument(ODocument doc) {
+        MicroserviceArtifact service = new MicroserviceArtifact();
+        service.setSourceEndpoint(String.valueOf(doc.field("sourceendpoint")));
         service.setEndpoint(String.valueOf(doc.field("endpoint")));
         service.setHostID(String.valueOf(doc.field("hostid")));
         service.setName(String.valueOf(doc.field("name")));
@@ -28,10 +29,10 @@ public class MicroServiceMapper implements DTOMapperInterface<MicroService> {
     }
 
     @Override
-    public ODocument toODocument(MicroService object) {
+    public ODocument toODocument(MicroserviceArtifact object) {
         ODocument doc = new ODocument();
-        doc.setClassName(MicroService.class.getSimpleName());
-
+        doc.setClassName(MicroserviceArtifact.class.getSimpleName());
+        doc.field("sourceendpoint", object.getSourceEndpoint());
         doc.field("endpoint", object.getEndpoint());
         doc.field("hostid", object.getHostID());
         doc.field("name", object.getName());

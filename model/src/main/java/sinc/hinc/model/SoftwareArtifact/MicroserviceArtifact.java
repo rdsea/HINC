@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.model.VirtualComputingResource;
+package sinc.hinc.model.SoftwareArtifact;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,15 +11,34 @@ import java.util.Map;
 /**
  *
  * @author hungld
+ * @author linhsolar
  */
-public class MicroService {
+/*
+ * We use this one to describe possible software artifact that can be deployed as microservice
+ * The artifact is available in some repositories. It is not provided by any provider but 
+ * as long as we want we can take it and deploy it. in rsiHUB it is used to deploy bridge 
+ * for interoperability. The artifacts and their instances can be combined into pipelines 
+ * to perform complex work
+ */
+public class MicroserviceArtifact {
 
+    //indicate where is the artifact
+    String sourceEndpoint;
+    //indicate runtime information when the artifact is deployed
+    //we should refactor it to separate betwen artifact and instance.
     String endpoint;
     String resourceID;
     String name;
     String hostID;
     Map<String, String> meta;
 
+    public String getSourceEndpoint() {
+        return sourceEndpoint;
+    }
+
+    public void setSourceEndpoint(String sourceEndpoint) {
+        this.sourceEndpoint = sourceEndpoint;
+    }
     public String getEndpoint() {
         return endpoint;
     }
@@ -52,7 +71,7 @@ public class MicroService {
         this.hostID = hostID;
     }
 
-    public MicroService hasMeta(String key, String value) {
+    public MicroserviceArtifact hasMeta(String key, String value) {
         if (this.meta == null) {
             this.meta = new HashMap<>();
         }

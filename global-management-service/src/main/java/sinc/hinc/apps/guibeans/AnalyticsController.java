@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
-import java.util.logging.Level;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -33,7 +32,7 @@ import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 
 /**
  *
@@ -73,7 +72,7 @@ public class AnalyticsController implements Serializable {
     public List<String> getNetworkServiceIDForAnalytics() {
         List<String> nwServices = new ArrayList<>();
         GuiBeans guibean = new GuiBeans();
-        for (NetworkService nw : guibean.getNetworkservices()) {
+        for (NetworkFunctionService nw : guibean.getNetworkservices()) {
             nwServices.add(nw.getAccessPoint().getEndpoint());
         }
         return nwServices;
@@ -158,9 +157,9 @@ public class AnalyticsController implements Serializable {
 
     ResourcesManagementAPI rest = (ResourcesManagementAPI) JAXRSClientFactory.create("http://localhost:8080/global-management-service-1.0/rest", ResourcesManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
 
-    private NetworkService getNetworkServiceSelectedByEndpoint() {
+    private NetworkFunctionService getNetworkServiceSelectedByEndpoint() {
         GuiBeans guibean = new GuiBeans();
-        for (NetworkService nw : guibean.getNetworkservices()) {
+        for (NetworkFunctionService nw : guibean.getNetworkservices()) {
             if (nw.getAccessPoint().getEndpoint().equals(selectedNetworkService)) {
                 return nw;
             }

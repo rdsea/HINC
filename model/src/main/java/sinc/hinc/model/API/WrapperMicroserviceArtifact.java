@@ -10,38 +10,38 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import sinc.hinc.model.VirtualComputingResource.MicroService;
+import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 
 /**
  *
  * @author hungld
  */
-public class WrapperMicroService {
+public class WrapperMicroserviceArtifact {
 
-    List<MicroService> mServices = new ArrayList<>();
+    List<MicroserviceArtifact> mServices = new ArrayList<>();
 
-    public WrapperMicroService() {
+    public WrapperMicroserviceArtifact() {
     }
 
-    public WrapperMicroService(List<MicroService> services) {
+    public WrapperMicroserviceArtifact(List<MicroserviceArtifact> services) {
         this.mServices = services;
     }
 
-    public WrapperMicroService(String json) {
+    public WrapperMicroserviceArtifact(String json) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            WrapperMicroService wrapper = mapper.readValue(json, WrapperMicroService.class);
+            WrapperMicroserviceArtifact wrapper = mapper.readValue(json, WrapperMicroserviceArtifact.class);
             this.mServices = wrapper.getmServices();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    public List<MicroService> getmServices() {
+    public List<MicroserviceArtifact> getmServices() {
         return mServices;
     }
 
-    public void setmServices(List<MicroService> mServices) {
+    public void setmServices(List<MicroserviceArtifact> mServices) {
         this.mServices = mServices;
     }
 

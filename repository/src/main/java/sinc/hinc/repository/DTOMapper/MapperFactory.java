@@ -11,9 +11,9 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ExecutionEnvironment;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
-import sinc.hinc.model.VirtualComputingResource.MicroService;
+import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DTOMapper.impl.ConnectivityMapper;
 import sinc.hinc.repository.DTOMapper.impl.ControlPointMapper;
@@ -47,7 +47,7 @@ public class MapperFactory {
             return new ResourceProviderMapper();
         }
 
-        if (clazz.equals(MicroService.class)) {
+        if (clazz.equals(MicroserviceArtifact.class)) {
             return new MicroServiceMapper();
         }
 
@@ -75,7 +75,7 @@ public class MapperFactory {
             return new HINCMetaMapper();
         }
 
-        if (clazz.equals(NetworkService.class)) {
+        if (clazz.equals(NetworkFunctionService.class)) {
             return new NetworkServiceMapper();
         }
 

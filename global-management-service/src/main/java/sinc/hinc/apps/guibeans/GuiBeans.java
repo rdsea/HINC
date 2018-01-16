@@ -44,7 +44,7 @@ import sinc.hinc.model.CloudServices.CloudService;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 /**
@@ -67,7 +67,7 @@ public class GuiBeans {
 
     static Set<IoTUnit> iotUnits = new HashSet<>();
     static Set<HincLocalMeta> hinclocals = new HashSet<>();
-    static Set<NetworkService> networkservices = new HashSet<>();
+    static Set<NetworkFunctionService> networkservices = new HashSet<>();
     static Set<CloudService> cloudservices = new HashSet<>();
     static Set<ControlPoint> controlpoints = new HashSet<>();
 
@@ -299,7 +299,7 @@ public class GuiBeans {
         return iotUnits;
     }
 
-    public Set<NetworkService> getNetworkservices() {
+    public Set<NetworkFunctionService> getNetworkservices() {
         if (networkservices.isEmpty()) {
             queryNetworkServices();
         }

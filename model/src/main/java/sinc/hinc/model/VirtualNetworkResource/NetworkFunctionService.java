@@ -4,7 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
 
-public class NetworkService {
+/*
+* we use this class to represent generic network function services
+* They can be router, broker, or firewall. 
+*/
+public class NetworkFunctionService {
 
     public enum NetworkServiceType {
         BROKER_MQTT, BROKER_COAP,
@@ -18,10 +22,10 @@ public class NetworkService {
     // a Network service can have a access point to let other service connect to
     AccessPoint accessPoint;
 
-    public NetworkService() {
+    public NetworkFunctionService() {
     }
 
-    public NetworkService(String uuid, String name, NetworkServiceType type, AccessPoint accessPoint) {
+    public NetworkFunctionService(String uuid, String name, NetworkServiceType type, AccessPoint accessPoint) {
         this.uuid = uuid;
         this.name = name;
         this.type = type;
@@ -87,7 +91,7 @@ public class NetworkService {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final NetworkService other = (NetworkService) obj;
+        final NetworkFunctionService other = (NetworkFunctionService) obj;
         if (!Objects.equals(this.uuid, other.uuid)) {
             return false;
         }

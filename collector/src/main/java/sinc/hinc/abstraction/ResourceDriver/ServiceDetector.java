@@ -6,7 +6,7 @@
 package sinc.hinc.abstraction.ResourceDriver;
 
 import java.util.Map;
-import sinc.hinc.model.VirtualComputingResource.MicroService;
+import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 
 /**
  *
@@ -14,7 +14,7 @@ import sinc.hinc.model.VirtualComputingResource.MicroService;
  */
 public interface ServiceDetector {
 
-    MicroService detect(Map<String, String> settings);
+    MicroserviceArtifact detect(Map<String, String> settings);
 
     String getName();
 }
