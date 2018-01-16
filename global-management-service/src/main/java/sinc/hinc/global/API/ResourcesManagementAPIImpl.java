@@ -321,16 +321,27 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         logger.debug("Query cloud services");
         if (staticcloudService == null) {
             logger.debug("load from static information");
+            //we assume here two services 
+            //first a big query service provided by google
             CloudService bigQuery = new CloudService(CloudProvider.ProviderType.IaaS.toString());
             AccessPoint accessPoint = new AccessPoint();
             accessPoint.setEndpoint("https://www.googleapis.com/bigquery/v2");
             bigQuery.setAccessPoint(accessPoint);
             staticcloudService = new ArrayList<>();
             staticcloudService.add(bigQuery);
+            //second assume that a consumer creates a service for storing data
+            //the service gives a bucket name interhincdemo
+            CloudService appStorage = new CloudService(CloudProvider.ProviderType.IaaS.toString());
+            AccessPoint accessPointApp = new AccessPoint();
+            accessPointApp.setEndpoint("https://www.googleapis.com/storage/v1/b/interhincdemo/o");
+            appStorage.setAccessPoint(accessPointApp);
+            staticcloudService.add(appStorage);
+
         }
         return staticcloudService;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
     //TODO: query and load static providers from files.
     List<CloudProvider> staticcloudProvider = null;
 
@@ -429,11 +440,16 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             logger.debug("load from static information about artifacts");
             MicroserviceArtifact msa1= new MicroserviceArtifact();
             msa1.setName("MQTTBigQueryIngest");
-            msa1.setSourceEndpoint("docker/docker");
+            msa1.setSourceEndpoint("https://hub.docker.com/r/rdsea/ingestion/");
             msa1.setResourceID(hincUUID); 
             staticArtifact = new ArrayList<>();
             staticArtifact.add(msa1);
             
+            MicroserviceArtifact msa2= new MicroserviceArtifact();
+            msa2.setName("MQTTBigQueryIngest");
+            msa2.setSourceEndpoint("https://hub.docker.com/r/rdsea/ingestion/");
+            msa2.setResourceID(hincUUID); 
+            staticArtifact.add(msa2);
         }
         return staticArtifact; 
     }
