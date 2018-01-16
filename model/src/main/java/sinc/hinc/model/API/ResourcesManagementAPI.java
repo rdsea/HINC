@@ -25,13 +25,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import sinc.hinc.model.CloudServices.CloudProvider;
 import sinc.hinc.model.CloudServices.CloudService;
+import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.model.slice.AppSlice;
 import sinc.hinc.model.slice.InfrastructureSlice;
@@ -145,25 +146,25 @@ public interface ResourcesManagementAPI {
      * @return
      */
     @GET
-    @Path("/networkservice")
+    @Path("/networkfunctionservice")
     @Produces("application/json")
-    @ApiOperation(value = "Query the list of the network services",
+    @ApiOperation(value = "Query the list of the network function services",
             notes = "The list of the Network Function Services available from a single or multiple sites",
-            response = NetworkService.class,
+            response = NetworkFunctionService.class,
             responseContainer = "List")
-    public Collection<NetworkService> queryNetworkService(
+    public Collection<NetworkFunctionService> queryNetworkService(
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID);
 
     @POST
-    @Path("/networkservice")
+    @Path("/networkfunctionservice")
     @Produces("application/json")
     @Consumes("applicaiton/json")
-    @ApiOperation(value = "Register a new network service",
+    @ApiOperation(value = "Register a new network function service",
             notes = "A json defines the network service is sent. Return the JSON object in database after saving",
             response = String.class,
             responseContainer = "String")
-    public String addNetworkService(NetworkService networkService);
+    public String addNetworkService(NetworkFunctionService networkService);
 
     /**
      * For individual virtual network functions. E.g. a single router component.
@@ -173,7 +174,7 @@ public interface ResourcesManagementAPI {
      * @return
      */
     @GET
-    @Path("/networkservice/VNF")
+    @Path("/networkfunctionservice/VNF")
     @Produces("application/json")
     @ApiOperation(value = "Query the list of the virtual network functions",
             notes = "The list of the Virtual Network Functions available from a single or multiple sites",
@@ -183,6 +184,37 @@ public interface ResourcesManagementAPI {
             @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
             @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID);
 
+/*
+ * for software artifact   
+ */
+     /**
+     * This query the complete network service (which is not supported yet)
+     *
+     * @param timeout
+     * @param hincUUID
+     * @return
+     */
+    @GET
+    @Path("/softwareartifact")
+    @Produces("application/json")
+    @ApiOperation(value = "Query the list of existing software artifacts that can be used to deploy microservice for bridges",
+            notes = "The list of the software artifact available from a single or multiple repositories",
+            response = NetworkFunctionService.class,
+            responseContainer = "List")
+    public Collection<MicroserviceArtifact> queryMicroserviceArtifact(
+            @ApiParam(value = timeoutParameterDescription, required = false, defaultValue = "2000") @DefaultValue("2000") @QueryParam("timeout") int timeout,
+            @ApiParam(value = hincUUIDParameterDescription, required = false, defaultValue = "null") @DefaultValue("") @QueryParam("hincUUID") String hincUUID);
+
+    @POST
+    @Path("/softwareartifact")
+    @Produces("application/json")
+    @Consumes("applicaiton/json")
+    @ApiOperation(value = "Register a new software artifact",
+            notes = "A json describing the artifact is sent. Return the JSON object in database after saving",
+            response = String.class,
+            responseContainer = "String")
+    public String addMicroserviceArtifact(MicroserviceArtifact msArtifact);   
+    
     @GET
     @Path("/cloudservice")
     @Produces("application/json")
@@ -229,7 +261,4 @@ public interface ResourcesManagementAPI {
     public InfrastructureSlice configureInfrastructureSlide(String gatewayID, String networkID, String cloudServiceID);
 
  
-
- 
-
 }

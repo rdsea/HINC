@@ -17,7 +17,7 @@ import sinc.hinc.communication.processing.HINCMessageSender;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.CloudServices.CloudProvider;
 import sinc.hinc.model.CloudServices.CloudService;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
 import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
 
@@ -38,6 +38,7 @@ import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.model.API.WrapperIoTUnit;
 import sinc.hinc.model.API.WrapperProvider;
+import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
@@ -71,6 +72,9 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         return this.comMng;
     }
 
+    /*
+    * IoTUnit represents an IoT Virtual Resource, including datapoint, controlpoint, etc.
+     */
     @Override
     public Set<IoTUnit> queryIoTUnits(int timeout, String hincUUID, String infoBases, int limit, String rescan) {
         logger.debug("Start broadcasting the query for IoT Unit...");
@@ -270,19 +274,23 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         return connectivity;
     }
 
-    List<NetworkService> networkServiceMock;
+    /*
+    * This is just a mockdata. We will change it by loading data from preconfiguration file
+    * for well-known network services or through dynamic registration
+     */
+    List<NetworkFunctionService> networkServiceMock;
 
     private void generateNetworkMock() { // create MOCK
         networkServiceMock = new ArrayList<>();
-        networkServiceMock.add(new NetworkService(UUID.randomUUID().toString(), "iot.eclipse.org", NetworkService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://iot.eclipse.org:1883")));
-        networkServiceMock.add(new NetworkService(UUID.randomUUID().toString(), "test.mosquitto.org", NetworkService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://test.mosquitto.org:1883")));
-        networkServiceMock.add(new NetworkService(UUID.randomUUID().toString(), "broker.hivemq.com", NetworkService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://broker.hivemq.com:1883")));
-        networkServiceMock.add(new NetworkService(UUID.randomUUID().toString(), "californium.eclipse.org", NetworkService.NetworkServiceType.BROKER_COAP, new AccessPoint("coap://californium.eclipse.org:5683/")));
+        networkServiceMock.add(new NetworkFunctionService(UUID.randomUUID().toString(), "iot.eclipse.org", NetworkFunctionService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://iot.eclipse.org:1883")));
+        networkServiceMock.add(new NetworkFunctionService(UUID.randomUUID().toString(), "test.mosquitto.org", NetworkFunctionService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://test.mosquitto.org:1883")));
+        networkServiceMock.add(new NetworkFunctionService(UUID.randomUUID().toString(), "broker.hivemq.com", NetworkFunctionService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://broker.hivemq.com:1883")));
+        networkServiceMock.add(new NetworkFunctionService(UUID.randomUUID().toString(), "californium.eclipse.org", NetworkFunctionService.NetworkServiceType.BROKER_COAP, new AccessPoint("coap://californium.eclipse.org:5683/")));
     }
 
     // TODO: really implement network service querying instead of using MOCK info
     @Override
-    public Collection<NetworkService> queryNetworkService(int timeout, String hincUUID) {
+    public Collection<NetworkFunctionService> queryNetworkService(int timeout, String hincUUID) {
         if (networkServiceMock == null) {
             generateNetworkMock();
         }
@@ -292,9 +300,9 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     }
 
     @Override
-    public String addNetworkService(NetworkService networkService) {
+    public String addNetworkService(NetworkFunctionService networkService) {
         logger.debug("Saving a Netwetworkork Service: " + networkService.toJson());
-        AbstractDAO<NetworkService> dao = new AbstractDAO<>(NetworkService.class);
+        AbstractDAO<NetworkFunctionService> dao = new AbstractDAO<>(NetworkFunctionService.class);
         return dao.save(networkService).toString();
     }
 
@@ -302,8 +310,12 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     public List<VNF> queryVNF(int timeout, String hincUUID) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    //TODO: query and read from static files
-    List<CloudService> staticcloudService=null;
+    /*
+     * TODO: query and read from static files about cloud providers
+    * also we need to implement registration
+     */
+    List<CloudService> staticcloudService = null;
+
     @Override
     public List<CloudService> queryCloudServices(int timeout, String hincUUID) {
         logger.debug("Query cloud services");
@@ -313,24 +325,25 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             AccessPoint accessPoint = new AccessPoint();
             accessPoint.setEndpoint("https://www.googleapis.com/bigquery/v2");
             bigQuery.setAccessPoint(accessPoint);
-            staticcloudService =new ArrayList<>();
+            staticcloudService = new ArrayList<>();
             staticcloudService.add(bigQuery);
         }
         return staticcloudService;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     //TODO: query and load static providers from files.
-    List <CloudProvider> staticcloudProvider=null;
+    List<CloudProvider> staticcloudProvider = null;
+
     @Override
     public List<CloudProvider> queryCloudProviders(int timeout, String hincUUID) {
-         logger.debug("Query cloud providers");
-        if (staticcloudProvider==null) {
-             logger.debug("load from static providers");
-        CloudProvider google = new CloudProvider();
-        google.setName("Google");
-        google.setType(CloudProvider.ProviderType.IaaS);
-        staticcloudProvider =new ArrayList<>();
-        staticcloudProvider.add(google);
+        logger.debug("Query cloud providers");
+        if (staticcloudProvider == null) {
+            logger.debug("load from static providers");
+            CloudProvider google = new CloudProvider();
+            google.setName("Google");
+            google.setType(CloudProvider.ProviderType.IaaS);
+            staticcloudProvider = new ArrayList<>();
+            staticcloudProvider.add(google);
         }
         return staticcloudProvider;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -348,12 +361,12 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     public AppSlice configureDataSlide(String iotUnitID, String networkID, String cloudServiceID) {
 
         AbstractDAO<IoTUnit> dao1 = new AbstractDAO<>(IoTUnit.class);
-        AbstractDAO<NetworkService> dao2 = new AbstractDAO<>(NetworkService.class);
+        AbstractDAO<NetworkFunctionService> dao2 = new AbstractDAO<>(NetworkFunctionService.class);
         AbstractDAO<CloudService> dao3 = new AbstractDAO<>(CloudService.class);
         AbstractDAO<ControlPoint> dao4 = new AbstractDAO<>(ControlPoint.class);
 
         IoTUnit unit = dao1.read(iotUnitID);
-        NetworkService network = dao2.read(networkID);
+        NetworkFunctionService network = dao2.read(networkID);
         ControlPoint control = getControlPointConnectToNetwork(iotUnitID, network);
         if (control != null) {
             System.out.println("Found a control point to connect IoTUnit: " + unit.getResourceID() + " to the network" + network.getName());
@@ -387,7 +400,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         return connectionControl;
     }
 
-    public ControlPoint getControlPointConnectToNetwork(String datapoinID, NetworkService network) {
+    public ControlPoint getControlPointConnectToNetwork(String datapoinID, NetworkFunctionService network) {
         List<ControlPoint> controls = getControlPointOfType(datapoinID, ControlPoint.ControlType.CONNECT_TO_NETWORK);
         for (ControlPoint cp : controls) {
             if (cp.getConditions().get("network-type").equals(network.getType().toString())) {
@@ -403,5 +416,36 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /*
+     * TODO: query and read from static files about software artifact
+    * also we need to implement registration
+    * only mockup for demonstration purpose
+     */
+    List<MicroserviceArtifact> staticArtifact = null;
+    
+    @Override
+    public Collection<MicroserviceArtifact> queryMicroserviceArtifact(int timeout, String hincUUID) {
+        if (staticArtifact ==null) {
+            logger.debug("load from static information about artifacts");
+            MicroserviceArtifact msa1= new MicroserviceArtifact();
+            msa1.setName("MQTTBigQueryIngest");
+            msa1.setSourceEndpoint("docker/docker");
+            msa1.setResourceID(hincUUID); 
+            staticArtifact = new ArrayList<>();
+            staticArtifact.add(msa1);
+            
+        }
+        return staticArtifact; 
+    }
+    //just mockup to illustrate the idea
+    @Override
+    public String addMicroserviceArtifact(MicroserviceArtifact msArtifact) {
+        if (staticArtifact==null) {
+            staticArtifact = new ArrayList<>();
+        }
+        staticArtifact.add(msArtifact);
+        String out ="{\"result\":\"test is Ok\"}";
+        return out;
+    }
 
 }

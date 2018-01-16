@@ -6,7 +6,7 @@
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 
 /**
  * It define the network which this component is following
@@ -15,7 +15,7 @@ import sinc.hinc.model.VirtualNetworkResource.NetworkService;
  */
 public class CloudConnectivity {
 
-    NetworkService.NetworkServiceType networkType;
+    NetworkFunctionService.NetworkServiceType networkType;
 
     AccessPoint connectingTo;
 

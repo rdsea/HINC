@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import sinc.hinc.abstraction.ResourceDriver.ServiceDetector;
 import sinc.hinc.abstraction.ResourceDriver.utils.RestHandler;
-import sinc.hinc.model.VirtualComputingResource.MicroService;
+import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 
 /**
  *
@@ -29,7 +29,7 @@ import sinc.hinc.model.VirtualComputingResource.MicroService;
 public class CalvinDetector implements ServiceDetector {
 
     @Override
-    public MicroService detect(Map<String, String> settings) {
+    public MicroserviceArtifact detect(Map<String, String> settings) {
         String ip = getEth0Address();
         try {
             System.out.println("  -- CalvinDetector - IP :" + ip);
@@ -39,7 +39,7 @@ public class CalvinDetector implements ServiceDetector {
             CalvinIdResponse id = mapper.readValue(idJson, CalvinIdResponse.class);
             if (id != null) {
                 System.out.println("  -- CalvinDetector - Id in string :" + id.getId());
-                MicroService calvinService = new MicroService();
+                MicroserviceArtifact calvinService = new MicroserviceArtifact();
                 calvinService.setEndpoint("http://" + ip + ":5001");
                 calvinService.setName("calvin");
                 calvinService.setResourceID(id.getId());

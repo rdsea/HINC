@@ -11,6 +11,10 @@ import java.util.Map;
  * DataBase cluster, Elastic EventProcessing Unit
  *
  * @author hungld
+ * @author linhsolar:
+ * A Cloud Provider can offer a Cloud Service for the consumer. But a Cloud Provider can also offer a Cloud Service 
+ *  through which the consumer can control the cloud service to create a new Cloud Service (e.g., Google allows the consumer
+ *  connect to Google Cloud Platform (as a service) to create a virtual machine (as a service) for the customer.
  */
 public class CloudService {
 
@@ -20,7 +24,10 @@ public class CloudService {
 
     // the provider who managed this. The IaaS can manage VM/docker, the higher tool like SALSA, Chef can manage application level services.
     private String providerUUID;
-
+    // the consumer who owns it. Sometimes it is the same with providerID
+    
+    private String consumerUUID;
+    
     // the service are hosted on particular VM/docker/container. If this can be capture, we know how to reconfigure the service.
     private String hostedOnUUID;
 

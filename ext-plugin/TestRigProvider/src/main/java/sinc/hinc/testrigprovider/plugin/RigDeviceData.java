@@ -50,7 +50,7 @@ public class RigDeviceData {
     }
 
     /*
-    Only for testing purpose
+    * Only for testing purpose
      */
     public static void main(String[] args) throws JsonProcessingException, FileNotFoundException, IOException {
         BufferedReader reader = new BufferedReader(new FileReader(args[0]));

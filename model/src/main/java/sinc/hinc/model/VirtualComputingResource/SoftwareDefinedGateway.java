@@ -12,7 +12,15 @@ import java.util.Set;
  *
  * @author hungld
  */
-//linhsolar: represent a Gateway
+
+/*
+ * linhsolar: represent a Software-defined Gateway (SDG)
+ * SDG is an abstract entity and we use it to manage different IoT Units
+ * that have something in common. For example, SDG could be a virtual gateway
+ * provided for a customer with similar execution policies and underlying resource
+ * capabilities (e.g., CPU, RAM). 
+ * SDG can also be used to represent edge systems.  
+ */
 public class SoftwareDefinedGateway {
 
     Set<IoTUnit> units = new HashSet<>();

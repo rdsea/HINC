@@ -23,8 +23,11 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
  * The IoTUnit abstracts multiple low level resources into a model related to
  * data, control, connectivity. Some addition information: metadata, state, main
  * physical device.
+ * in the context of rsiHUB: IoTUnit can be understood as an IoTResource that 
+ * can be used to monitor or control Things
  *
  * @author hungld
+ * @author linhsolar
  */
 public class IoTUnit implements HINCPersistable {
 
@@ -40,13 +43,15 @@ public class IoTUnit implements HINCPersistable {
     String hincID;
 
     // the static information
+    // currently we can also use it for dataquality and other information
     Map<String, String> meta;
     // the dynamic state, use by the control point management
     Map<String, String> state;
 
     // to specify which is the *MAIN* physical device this iot unit aim to
     String physicalType;
-
+    
+    //an IoT unit does not need to have everything
     Set<DataPoint> datapoints = new HashSet<>();
     Set<ControlPoint> controlpoints = new HashSet<>();
     Set<CloudConnectivity> connectivities;
