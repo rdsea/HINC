@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.haivancameraprovider.provider;
+package sinc.hinc.haivancameraprovider.plugin;
 
 import java.util.HashMap;
-import java.util.Map;
 import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
@@ -21,9 +20,13 @@ public class CameraTransformer implements IoTUnitTransformer<CameraMetadataItem>
     public IoTUnit translateIoTUnit(CameraMetadataItem camera) {
         IoTUnit unit = new IoTUnit();
         unit.setResourceID(camera.getId());
-        DataPoint dp = new DataPoint(camera.getDatapoint(), camera.getType());
-        dp.setMeasurementUnit("NA");
-        unit.hasDatapoint(dp);
+        //let us get two data points. the first one is about all possible video
+        DataPoint dp_all = new DataPoint(camera.getDatapoint(), "text");
+        DataPoint dp_latest = new DataPoint((String)(camera.getMetadata().get("haivancameraprovider"))+"/camera/"+camera.getId()+"/list/now",camera.getType());
+        dp_all.setMeasurementUnit("NA");
+        unit.hasDatapoint(dp_all);
+        dp_latest.setMeasurementUnit("NA");
+        unit.hasDatapoint(dp_latest);
         HashMap<String,String> metadata = new HashMap();
         metadata.put("address", camera.getAddress());
         metadata.put("description", camera.getDescription());
@@ -33,7 +36,7 @@ public class CameraTransformer implements IoTUnitTransformer<CameraMetadataItem>
 
     @Override
     public String getName() {
-        return "CameraProvider";
+        return "haivancamera";
     }
 
 }

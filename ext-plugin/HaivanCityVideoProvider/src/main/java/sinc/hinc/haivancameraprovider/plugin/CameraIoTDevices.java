@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.haivancameraprovider.provider;
+package sinc.hinc.haivancameraprovider.plugin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +20,10 @@ public class CameraIoTDevices {
 
     static Logger logger = LoggerFactory.getLogger("HaivanCameraDevice");
     List<CameraMetadataItem> cameras = new ArrayList<>();
+
+    public void setDevices(List<CameraMetadataItem> cameras) {
+        this.cameras = cameras;
+    }
 
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();
