@@ -8,7 +8,7 @@ package sinc.hinc.global.client.programming;
 import sinc.hinc.model.CloudServices.CloudService;
 
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 
 import java.util.Arrays;
 import sinc.hinc.model.Extensible.ExtensibleModel;

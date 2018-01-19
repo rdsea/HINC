@@ -13,7 +13,7 @@ import java.util.UUID;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
+import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 
 /**
  *
@@ -22,20 +22,20 @@ import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 public class GeneratePublicBrokerNetworkService {
 
     public static void main(String[] args) {
-        List<NetworkService> nws = getMockNetworkService();
+        List<NetworkFunctionService> nws = getMockNetworkService();
         ResourcesManagementAPI rest = (ResourcesManagementAPI) JAXRSClientFactory.create("http://localhost:8080/global-management-service-1.0/rest", ResourcesManagementAPI.class, Collections.singletonList(new JacksonJaxbJsonProvider()));
-        for (NetworkService s : nws) {
+        for (NetworkFunctionService s : nws) {
             System.out.println("Adding network service: " + s.getAccessPoint().getEndpoint());
             rest.addNetworkService(s);
         }
     }
 
-    public static List<NetworkService> getMockNetworkService() {
-        List<NetworkService> nws = new ArrayList<>();
-        nws.add(new NetworkService(UUID.randomUUID().toString(), "iot.eclipse.org", NetworkService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://iot.eclipse.org:1883")));
-        nws.add(new NetworkService(UUID.randomUUID().toString(), "test.mosquitto.org", NetworkService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://test.mosquitto.org:1883")));
-        nws.add(new NetworkService(UUID.randomUUID().toString(), "broker.hivemq.com", NetworkService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://broker.hivemq.com:1883")));
-        nws.add(new NetworkService(UUID.randomUUID().toString(), "californium.eclipse.org", NetworkService.NetworkServiceType.BROKER_COAP, new AccessPoint("coap://californium.eclipse.org:5683/")));
+    public static List<NetworkFunctionService> getMockNetworkService() {
+        List<NetworkFunctionService> nws = new ArrayList<>();
+        nws.add(new NetworkFunctionService(UUID.randomUUID().toString(), "iot.eclipse.org", NetworkFunctionService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://iot.eclipse.org:1883")));
+        nws.add(new NetworkFunctionService(UUID.randomUUID().toString(), "test.mosquitto.org", NetworkFunctionService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://test.mosquitto.org:1883")));
+        nws.add(new NetworkFunctionService(UUID.randomUUID().toString(), "broker.hivemq.com", NetworkFunctionService.NetworkServiceType.BROKER_MQTT, new AccessPoint("tcp://broker.hivemq.com:1883")));
+        nws.add(new NetworkFunctionService(UUID.randomUUID().toString(), "californium.eclipse.org", NetworkFunctionService.NetworkServiceType.BROKER_COAP, new AccessPoint("coap://californium.eclipse.org:5683/")));
         return nws;
     }
 }

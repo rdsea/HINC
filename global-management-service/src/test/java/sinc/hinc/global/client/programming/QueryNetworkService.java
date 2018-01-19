@@ -5,8 +5,6 @@
  */
 package sinc.hinc.global.client.programming;
 
-import sinc.hinc.model.CloudServices.CloudService;
-import sinc.hinc.model.VirtualNetworkResource.NetworkService;
 
 /**
  * @author hungld

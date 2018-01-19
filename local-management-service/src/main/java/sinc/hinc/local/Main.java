@@ -35,8 +35,8 @@ import sinc.hinc.local.messageHandlers.HandleQueryProviders;
 import sinc.hinc.local.messageHandlers.HandleQueryService;
 import sinc.hinc.local.messageHandlers.HandleUpdateInfobase;
 import sinc.hinc.local.messageHandlers.HandleUpdateIoTUnit;
-import sinc.hinc.model.API.WrapperMicroService;
-import sinc.hinc.model.VirtualComputingResource.MicroService;
+import sinc.hinc.model.API.WrapperMicroserviceArtifact;
+import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
@@ -90,7 +90,7 @@ public class Main {
 
     public static void detectServices() {
         logger.info("Start to detect services may running ... Total scanned adaptor: " + pluginReg.getServiceDetectors().size());
-        WrapperMicroService wrapper = new WrapperMicroService();
+        WrapperMicroserviceArtifact wrapper = new WrapperMicroserviceArtifact();
 
         String enabled = "";
         for (String s : enabledAdaptors) {
@@ -102,10 +102,10 @@ public class Main {
             logger.debug("Detecting: " + detector.getName() + " among enabled: " + enabledAdaptors);
             if (enabledAdaptors.contains(detector.getName().trim())) {
                 logger.info("Detecting service : " + detector.getName());
-                MicroService mService = detector.detect(PropertiesManager.getSettings(detector.getName().trim(), DEFAULT_SOURCE_SETTINGS));
+                MicroserviceArtifact mService = detector.detect(PropertiesManager.getSettings(detector.getName().trim(), DEFAULT_SOURCE_SETTINGS));
                 mService.setHostID(HincConfiguration.getMyUUID());
                 // save to DB
-                AbstractDAO<MicroService> serviceDAO = new AbstractDAO(MicroService.class);
+                AbstractDAO<MicroserviceArtifact> serviceDAO = new AbstractDAO(MicroserviceArtifact.class);
                 serviceDAO.save(mService);
                 wrapper.getmServices().add(mService);
             }
