@@ -7,6 +7,7 @@ package sinc.hinc.haivancameraprovider.plugin;
 
 import java.util.HashMap;
 import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
@@ -27,6 +28,12 @@ public class CameraTransformer implements IoTUnitTransformer<CameraMetadataItem>
         unit.hasDatapoint(dp_all);
         dp_latest.setMeasurementUnit("NA");
         unit.hasDatapoint(dp_latest);
+        ControlPoint cp=new ControlPoint();
+        cp.setControlType(ControlPoint.ControlType.CONNECT_TO_NETWORK);
+        cp.setInvokeProtocol(ControlPoint.InvokeProtocol.POST);
+        //cp.setParameters("cameraname");
+        cp.setReference((String)(camera.getMetadata().get("haivancameraprovider"))+"/camera/"+camera.getId());
+        unit.hasControlPoint(cp);
         HashMap<String,String> metadata = new HashMap();
         metadata.put("address", camera.getAddress());
         metadata.put("description", camera.getDescription());

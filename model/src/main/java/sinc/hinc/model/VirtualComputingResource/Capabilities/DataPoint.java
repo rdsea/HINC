@@ -6,10 +6,8 @@
 package sinc.hinc.model.VirtualComputingResource.Capabilities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import java.util.Objects;
-import javax.management.PersistentMBean;
 import sinc.hinc.model.API.HINCPersistable;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 
