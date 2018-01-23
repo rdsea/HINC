@@ -61,6 +61,7 @@ public class OrientDBConnector {
     public void closeConnection() {
         if (this.connection != null && !this.connection.isClosed()) {
             this.connection.close();
+            this.connection = null;
         }
     }
 
