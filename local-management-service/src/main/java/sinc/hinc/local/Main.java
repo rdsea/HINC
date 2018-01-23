@@ -145,8 +145,13 @@ public class Main {
                     units.add(unit);
                 }
                 // check provider APIs
-                ResourcesProvider rp = adaptor.getProviderAPI(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
-                resourceProviders.add(rp);
+                try{
+                    ResourcesProvider rp = adaptor.getProviderAPI(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
+                    resourceProviders.add(rp);
+                }catch(UnsupportedOperationException e){
+                    logger.warn(e.getMessage());
+                }
+
                 Thread.sleep(1000); // a short break between sources
             }
         }
