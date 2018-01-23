@@ -1,0 +1,25 @@
+version: '3'
+services:
+  amqp:
+    image: rabbitmq:3.7-alpine
+    ports:
+      - 5672:5672
+  
+  openhab:
+    build: ./openhab
+    ports:
+      - 8080:8080
+    depends_on:
+      - amqp
+
+  local-management-service:
+    build: ./local-management-service
+    depends_on:
+      - openhab
+  
+  global-management-service:
+    build: ./global-management-service
+    ports:
+      - 9000:9000
+    depends_on:
+      - openhab
