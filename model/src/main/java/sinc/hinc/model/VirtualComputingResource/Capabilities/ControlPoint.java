@@ -27,7 +27,8 @@ public class ControlPoint implements HINCPersistable {
 
     public static enum ControlType {
         CONNECT_TO_NETWORK,
-        SELF_CONFIGURE
+        SELF_CONFIGURE,
+        PROVISION,
     }
     // uuid to point directly to the control. We use it for identifying in DB also
     String iotUnitID;

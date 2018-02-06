@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.local.messageHandlers;
+package sinc.hinc.local.messageHandlers.control;
 
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
