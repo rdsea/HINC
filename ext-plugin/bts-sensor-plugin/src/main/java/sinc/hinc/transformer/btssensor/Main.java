@@ -1,5 +1,6 @@
-import model.SensorItem;
-import org.junit.Test;
+package sinc.hinc.transformer.btssensor;
+
+import sinc.hinc.transformer.btssensor.model.SensorItem;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 import java.util.*;

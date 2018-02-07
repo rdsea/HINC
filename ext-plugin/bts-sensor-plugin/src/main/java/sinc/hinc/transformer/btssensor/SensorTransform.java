@@ -1,4 +1,6 @@
-import model.SensorItem;
+package sinc.hinc.transformer.btssensor;
+
+import sinc.hinc.transformer.btssensor.model.SensorItem;
 import sinc.hinc.abstraction.transformer.IoTUnitTransformer;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;

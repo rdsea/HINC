@@ -1,8 +1,5 @@
 #! /bin/sh
 
-docker-compose up -d openhab
-sleep 5
-
 docker-compose up -d amqp
 sleep 5
 

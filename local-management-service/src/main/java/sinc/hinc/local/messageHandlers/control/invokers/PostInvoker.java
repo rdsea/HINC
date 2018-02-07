@@ -1,6 +1,6 @@
 package sinc.hinc.local.messageHandlers.control.invokers;
 
-import com.squareup.okhttp.*;
+import okhttp3.*;
 import sinc.hinc.communication.payloads.ControlResult;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 

@@ -1,4 +1,4 @@
-package model;
+package sinc.hinc.transformer.btssensor.model;
 
 
 import org.json.simple.JSONArray;

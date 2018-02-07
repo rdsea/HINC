@@ -1,5 +1,5 @@
-import model.Sensor;
-import model.SensorMetadata;
+import sinc.hinc.transformer.btssensor.model.Sensor;
+import sinc.hinc.transformer.btssensor.model.SensorMetadata;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
