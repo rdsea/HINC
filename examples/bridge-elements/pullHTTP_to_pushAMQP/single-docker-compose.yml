@@ -1,0 +1,8 @@
+version: '3'
+services:
+  bridgeelement:
+    build: .
+networks:
+  default:
+    external:
+      name: mybridge

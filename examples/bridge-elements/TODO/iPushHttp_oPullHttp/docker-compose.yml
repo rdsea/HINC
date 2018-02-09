@@ -1,0 +1,20 @@
+version: '3'
+services:
+  output:
+    build: ./elasticsearch_output
+    ports:
+      - 9200:9200
+      - 9300:9300
+    
+  
+  input:
+    build: ./logstash_input
+    depends_on:
+      - output
+    #networks:
+     # default:
+      #  driver: bridge
+networks:
+  default:
+    external:
+      name: mybridge

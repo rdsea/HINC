@@ -1,0 +1,10 @@
+version: "3"
+services:
+  datasource:
+    build: .
+    ports:
+      - "80:80"
+networks:
+  default:
+   external:
+    name: mybridge

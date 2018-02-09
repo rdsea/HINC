@@ -1,0 +1,10 @@
+version: '3'
+services:
+  rabbitmq:
+   image: rabbitmq:3.7-management-alpine
+   ports: 
+     - 15672:15672
+  bridgeelement:
+   build: .
+  datasource:
+   build: ../datasource_pushHTTP

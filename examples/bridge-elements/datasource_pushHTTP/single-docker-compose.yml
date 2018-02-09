@@ -1,0 +1,8 @@
+version: '3'
+services:
+  datasource:
+    build: .
+networks:
+  default:
+    external:
+      name: mybridge

@@ -1,0 +1,10 @@
+version: '3'
+services:
+  bridgeelement:
+    build: .
+    hostname: bridgeelement
+    #container_name: bridgeelement
+networks:
+  default:
+    external:
+      name: mybridge

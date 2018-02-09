@@ -1,0 +1,20 @@
+version: '3'
+services:
+  elasticsearch:
+    build: ./elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+  
+  logstash:
+    build: ./logstash
+    ports:
+      - 5044:5044
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    user: filebeat
+    build: ./filebeat
+    depends_on:
+      - logstash
