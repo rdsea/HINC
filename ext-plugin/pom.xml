@@ -22,5 +22,6 @@
         <module>DummyProvider</module>       
         <module>TEITPlugin</module>
         <module>Calvin</module>
+        <module>LogstashPlugin</module>
     </modules>
 </project>

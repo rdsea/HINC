@@ -199,6 +199,7 @@ public class Main {
         
         LISTENER.addListener(groupTopic, HINCMessageType.PROVIDER_UPDATE_IOT_UNIT.toString(), new HandleUpdateIoTUnit());
 
+
         LISTENER.listen();
 
         /**
