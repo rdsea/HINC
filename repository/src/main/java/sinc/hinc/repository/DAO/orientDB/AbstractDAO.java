@@ -111,13 +111,13 @@ public class AbstractDAO<T> {
                 ODocument odoc = mapper.toODocument(obj);
                 logger.trace("Adaptor done, obj is: " + odoc.toJSON());
                 String uuid = odoc.field("uuid");
-                logger.trace("Ok, now saving item with uuid = " + uuid);
+                logger.debug("Ok, now saving item with uuid = " + uuid);
                 ODocument existed = null;
 
                 // Search for exist record                
                 String query1 = "SELECT * FROM " + className + " WHERE uuid = '" + uuid + "'";
                 List<ODocument> existed_items = db.query(new OSQLSynchQuery<ODocument>(query1));
-                logger.trace("Query: " + query1 + ". Result: " + existed_items.size());
+                logger.debug("Query: " + query1 + ". Result: " + existed_items.size());
                 if (!existed_items.isEmpty()) {
                     logger.trace("There is " + existed_items.size() + " existing item with id: " + uuid);
                     for (ODocument eee : existed_items) {

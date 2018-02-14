@@ -19,4 +19,4 @@ RUN mvn clean install
 WORKDIR /HINC/local-management-service/target
 RUN cp /HINC/ext-plugin/bts-sensor-plugin/target/bts-sensor-plugin-1.0-SNAPSHOT.jar .
 
-CMD ["java", "-cp", "local-management-service-1.0.jar:bts-sensor-plugin-1.0-SNAPSHOT.jar", "sinc.hinc.local.Main"]
+CMD ["/bin/sh", "-c", "./wait-for-it.sh amqp:5672 && java -cp local-management-service-1.0.jar:bts-sensor-plugin-1.0-SNAPSHOT.jar sinc.hinc.local.Main"]

@@ -86,7 +86,9 @@ public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
             controlPoint.setName(metadata.getType() + " sensor provider");
             controlPoint.setInvokeProtocol(ControlPoint.InvokeProtocol.POST);
 
+            controlPoint.setReference(metadata.getUrl());
             controlPoint.setParameters(metadata.getConfiguration());
+            controlPoint.setIotUnitID(provider.getUri());
             controlPoints.add(controlPoint);
         }
         logger.info(controlPoints.size()+" apis obtained from "+provider.getName());

@@ -9,8 +9,13 @@ services:
     build: ./local-management-service
     volumes:
       - ./local-management-service/sources.conf:/HINC/local-management-service/target/sources.conf 
+      - ./local-management-service/wait-for-it.sh:/HINC/local-management-service/target/wait-for-it.sh
+    depends_on: 
+      - amqp
   
   global-management-service:
     build: ./global-management-service
     ports:
       - 9000:9000
+    depends_on:
+      - amqp

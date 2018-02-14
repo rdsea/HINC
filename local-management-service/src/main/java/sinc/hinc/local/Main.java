@@ -147,6 +147,7 @@ public class Main {
                 // check provider APIs
                 try{
                     ResourcesProvider rp = adaptor.getProviderAPI(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
+                    logger.debug("obtained resource provider");
                     resourceProviders.add(rp);
                 }catch(UnsupportedOperationException e){
                     logger.warn(e.getMessage());
