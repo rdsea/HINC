@@ -3,7 +3,6 @@ package sinc.hinc.logstash.plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
-import sinc.hinc.logstash.plugin.command.*;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
 import java.util.ArrayList;
@@ -12,15 +11,8 @@ import java.util.Map;
 
 public class LogstashAdapter implements ProviderQueryAdaptor<LogstashItem> {
 
-    private LogstashCommandFactory logstashCommandFactory;
     private static Logger logger = LoggerFactory.getLogger(LogstashAdapter.class.getSimpleName());
 
-    public LogstashAdapter(){
-        logstashCommandFactory = new LogstashCommandFactory();
-        logstashCommandFactory.registerCommand(new StartCommand());
-        logstashCommandFactory.registerCommand(new StopCommand());
-        logstashCommandFactory.registerCommand(new EditConfigCommand());
-    }
 
 
     @Override
@@ -57,8 +49,6 @@ public class LogstashAdapter implements ProviderQueryAdaptor<LogstashItem> {
         //* change config
         //* stop logstash
 
-        LogstashCommand command = logstashCommandFactory.createCommand(controlAction, parameters);
-        command.execute();
     }
 
     @Override

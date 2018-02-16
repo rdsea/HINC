@@ -10,7 +10,9 @@ import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.payloads.ControlResult;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.local.executors.ExecutorsInterface;
 import sinc.hinc.local.executors.LocalExecutor;
+import sinc.hinc.local.executors.LocalAsyncExecutor;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
@@ -32,6 +34,13 @@ public class HandleControl implements HINCMessageHander {
                     cp.setParameters(message.getExtra().get("param"));
                     LocalExecutor executor = new LocalExecutor();
                     result = executor.execute(cp);
+                    break;
+                case LOCAL_ASYNC_EXECUTE:
+                    if(message.getExtra().get("param")!=null){
+                        cp.setParameters(message.getExtra().get("param"));
+                    }
+                    ExecutorsInterface executorsInterface = new LocalAsyncExecutor();
+                    result = executorsInterface.execute(cp);
                     break;
                 default:
                     result = new ControlResult(ControlResult.CONTROL_RESULT.EXECUTOR_NOT_SUPPORT, 0, "Method " + cp.getInvokeProtocol() + " in the control point is not supported to execute yet !");

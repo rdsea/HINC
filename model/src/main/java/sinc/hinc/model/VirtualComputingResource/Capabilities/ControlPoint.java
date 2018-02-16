@@ -21,13 +21,15 @@ public class ControlPoint implements HINCPersistable {
 
     public static enum InvokeProtocol {
         GET, POST, DELETE, PUT,
-        LOCAL_EXECUTE,
+        LOCAL_EXECUTE, LOCAL_ASYNC_EXECUTE,
         MOCK
     }
 
     public static enum ControlType {
         CONNECT_TO_NETWORK,
-        SELF_CONFIGURE
+        SELF_CONFIGURE,
+        EXECUTE_LOCAL_PROCESS,
+        DESTROY_LOCAL_PROCESS
     }
     // uuid to point directly to the control. We use it for identifying in DB also
     String iotUnitID;

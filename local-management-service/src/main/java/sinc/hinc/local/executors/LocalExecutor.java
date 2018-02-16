@@ -6,6 +6,7 @@
 package sinc.hinc.local.executors;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
@@ -26,7 +27,7 @@ public class LocalExecutor implements ExecutorsInterface {
     public ControlResult execute(ControlPoint controlPoint) {
         try {
             long startTime = new Date().getTime();
-            String cmd = "/bin/bash " + controlPoint.getReference() + " " + controlPoint.getParameters();
+            String cmd = "/bin/bash " + controlPoint.getReference() + " " + (controlPoint.getParameters()==null?"":controlPoint.getParameters());
             cmd = cmd.replaceAll("(?s)\\<.*?\\>", "");
             cmd = cmd.replaceAll("(?s)\\[.*?\\]", "").trim();
             logger.debug("Running command: " + cmd);
