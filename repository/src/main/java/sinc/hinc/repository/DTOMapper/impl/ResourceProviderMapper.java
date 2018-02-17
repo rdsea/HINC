@@ -36,6 +36,7 @@ public class ResourceProviderMapper implements DTOMapperInterface<ResourcesProvi
     public ODocument toODocument(ResourcesProvider object) {
         ODocument doc = new ODocument();
         doc.setClassName(ResourcesProvider.class.getSimpleName());
+        doc.field("uuid", object.getUuid());
         doc.field("name", object.getName());
         doc.field("uri", object.getUri());
         doc.field("apis", Utils.ControlPointListToJson(object.getApis()));

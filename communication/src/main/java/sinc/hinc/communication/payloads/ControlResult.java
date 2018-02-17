@@ -40,6 +40,30 @@ public class ControlResult {
         this.output = output;
     }
 
+    public void setResult(CONTROL_RESULT result) {
+        this.result = result;
+    }
+
+    public void setExitcode(int exitcode) {
+        this.exitcode = exitcode;
+    }
+
+    public void setOutput(String output) {
+        this.output = output;
+    }
+
+    public void setExecutionTime(long executionTime) {
+        this.executionTime = executionTime;
+    }
+
+    public IoTUnit getUpdateIoTUnit() {
+        return updateIoTUnit;
+    }
+
+    public void setUpdateIoTUnit(IoTUnit updateIoTUnit) {
+        this.updateIoTUnit = updateIoTUnit;
+    }
+
     public CONTROL_RESULT getResult() {
         return result;
     }

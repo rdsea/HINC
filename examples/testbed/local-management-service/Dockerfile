@@ -13,11 +13,10 @@ RUN echo "global.interval=0" >> sources.conf
 RUN echo "global.enable=openhab" >> sources.conf
 RUN echo "openhab.endpoint=http://openhab:8080/rest" >> sources.conf
 
-WORKDIR /HINC/ext-plugin/TransformOpenHAB
+WORKDIR /HINC/ext-plugin/bts-sensor-plugin
 RUN mvn clean install
 
 WORKDIR /HINC/local-management-service/target
-RUN cp /HINC/ext-plugin/TransformOpenHAB/target/TransformOpenHAB-1.0.jar .
+RUN cp /HINC/ext-plugin/bts-sensor-plugin/target/bts-sensor-plugin-1.0-SNAPSHOT.jar .
 
-
-CMD ["java", "-cp", "local-management-service-1.0.jar:TransformOpenHAB-1.0.jar", "sinc.hinc.local.Main"]
+CMD ["/bin/sh", "-c", "./wait-for-it.sh amqp:5672 && java -cp local-management-service-1.0.jar:bts-sensor-plugin-1.0-SNAPSHOT.jar sinc.hinc.local.Main"]
