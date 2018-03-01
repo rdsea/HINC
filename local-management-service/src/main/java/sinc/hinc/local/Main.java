@@ -21,7 +21,7 @@ import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.processing.HINCMessageListener;
-import sinc.hinc.local.messageHandlers.HandleControl;
+import sinc.hinc.local.messageHandlers.control.HandleControl;
 import sinc.hinc.local.messageHandlers.HandleQueryIoTUnit;
 import sinc.hinc.local.messageHandlers.HandleQueryVNF;
 import sinc.hinc.local.messageHandlers.HandleSyn;
@@ -147,6 +147,7 @@ public class Main {
                 // check provider APIs
                 try{
                     ResourcesProvider rp = adaptor.getProviderAPI(PropertiesManager.getSettings(aName, DEFAULT_SOURCE_SETTINGS));
+                    logger.debug("obtained resource provider");
                     resourceProviders.add(rp);
                 }catch(UnsupportedOperationException e){
                     logger.warn(e.getMessage());

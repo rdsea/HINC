@@ -28,6 +28,7 @@ public class ControlPoint implements HINCPersistable {
     public static enum ControlType {
         CONNECT_TO_NETWORK,
         SELF_CONFIGURE,
+        PROVISION,
         EXECUTE_LOCAL_PROCESS,
         DESTROY_LOCAL_PROCESS
     }

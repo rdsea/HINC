@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import sinc.hinc.model.API.HINCPersistable;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 
 /**
@@ -19,10 +21,13 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
  *
  * @author hungld
  */
-public class ResourcesProvider {
+public class ResourcesProvider implements HINCPersistable {
 
     String name;
     String uri;
+
+    // to have this field only for Jackson to work properly
+    String uuid;
 
     // will be imported from the adaptor
     Map<String, String> settings;
@@ -108,4 +113,9 @@ public class ResourcesProvider {
 
     }
 
+    @Override
+    public String getUuid() {
+        this.uuid = this.uri;
+        return this.uuid;
+    }
 }

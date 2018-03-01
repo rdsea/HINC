@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.local.messageHandlers;
+package sinc.hinc.local.messageHandlers.control;
 
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
@@ -13,6 +13,8 @@ import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.local.executors.ExecutorsInterface;
 import sinc.hinc.local.executors.LocalExecutor;
 import sinc.hinc.local.executors.LocalAsyncExecutor;
+import sinc.hinc.local.messageHandlers.control.invokers.Invoker;
+import sinc.hinc.local.messageHandlers.control.invokers.PostInvoker;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
@@ -41,6 +43,11 @@ public class HandleControl implements HINCMessageHander {
                     }
                     ExecutorsInterface executorsInterface = new LocalAsyncExecutor();
                     result = executorsInterface.execute(cp);
+                    break;
+                case POST:
+                    cp.setParameters(message.getExtra().get("param"));
+                    Invoker invoker = new PostInvoker();
+                    result = invoker.invoke(cp);
                     break;
                 default:
                     result = new ControlResult(ControlResult.CONTROL_RESULT.EXECUTOR_NOT_SUPPORT, 0, "Method " + cp.getInvokeProtocol() + " in the control point is not supported to execute yet !");
