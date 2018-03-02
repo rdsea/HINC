@@ -24,7 +24,7 @@ public class ControlPointMapper implements DTOMapperInterface<ControlPoint> {
         con.setIotUnitID(String.valueOf(doc.field("iotunituuid")));
 
         con.setInvokeProtocol(ControlPoint.InvokeProtocol.valueOf(doc.field("invokeprotocol").toString()));
-        con.setParameters(String.valueOf(doc.field("parameters")));
+        con.setParameters(Utils.jsonToMap(String.valueOf(doc.field("parameters"))));
         con.setReference(String.valueOf(doc.field("reference")));
 
         con.setControlType(ControlPoint.ControlType.valueOf((String.valueOf(doc.field("controlType")))));
@@ -42,7 +42,7 @@ public class ControlPointMapper implements DTOMapperInterface<ControlPoint> {
         doc.field("iotunituuid", object.getIotUnitID());
 
         doc.field("invokeprotocol", object.getInvokeProtocol().toString());
-        doc.field("parameters", object.getParameters());
+        doc.field("parameters", Utils.mapToJson(object.getParameters()));
         doc.field("reference", object.getReference());
 
         doc.field("controlType", object.getControlType());

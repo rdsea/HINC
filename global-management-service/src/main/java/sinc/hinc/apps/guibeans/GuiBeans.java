@@ -418,10 +418,11 @@ public class GuiBeans {
 
         ControlPoint cp = getControlPointOfSelected();
         IoTUnit unit = getIoTUnitByResourceid();
-        cp.setParameters(controlParameter);
+        // TODO refactor for new control point model
+        //cp.setParameters(controlParameter);
 
         logger.debug("Invoking a control with \n -> GatewayID: {}\n -> ResourceID: {}\n -> Name: {}\n -> Parameters: {}", unit.getHincID(), unit.getResourceID(), cp.getName(), cp.getParameters());
-        String lastControlResultTmp = rest.sendControl(unit.getHincID(), unit.getResourceID(), cp.getName(), cp.getParameters());
+        String lastControlResultTmp = rest.sendControl(unit.getHincID(), unit.getResourceID(), cp.getName(), ""); //cp.getParameters()); TODO refactor for new control point model
         if (!lastControlResultTmp.startsWith("Cannot find")) {
             lastControlResult = lastControlResultTmp;
         } else {

@@ -60,7 +60,7 @@ public class ControlPoint implements HINCPersistable {
      */
     InvokeProtocol invokeProtocol;
     String reference;
-    String parameters = "";
+    Map<String, String> parameters = new HashMap<>();
 
     public ControlPoint() {
     }
@@ -110,16 +110,16 @@ public class ControlPoint implements HINCPersistable {
         this.reference = reference;
     }
 
-    public String getParameters() {
+    public void setControlType(ControlType controlType) {
+        this.controlType = controlType;
+    }
+
+    public Map<String, String> getParameters() {
         return parameters;
     }
 
-    public void setParameters(String parameters) {
+    public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
-    }
-
-    public void setControlType(ControlType controlType) {
-        this.controlType = controlType;
     }
 
     public Map<String, String> getConditions() {

@@ -23,7 +23,7 @@
         </dependency>
         
          <dependency>
-            <groupId>at.ac.tuwien.dsg.hinc</groupId>                        
+            <groupId>at.ac.tuwien.dsg.hinc</groupId>
             <artifactId>common</artifactId>
             <version>1.0</version>
         </dependency>

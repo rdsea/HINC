@@ -1,12 +1,11 @@
 package sinc.hinc.transformer.btssensor;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOError;
 import java.io.IOException;
 
 public class APIHandler {
@@ -25,6 +24,28 @@ public class APIHandler {
         logger.debug(body);
 
         return body;
+    }
+
+    public static String post(String url, String body) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        logger.info("post request to "+url);
+        logger.debug(body);
+        Response response = client.newCall(request).execute();
+        if(!response.isSuccessful()) {
+            logger.error("POST request error");
+            logger.error(response.body().string());
+            throw new IOException("Unexpected code "+response.code());
+        }
+
+        logger.info("successfully posted to "+url);
+        logger.debug(response.body().string());
+        return response.body().string();
     }
 
 }

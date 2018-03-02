@@ -10,15 +10,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.apache.log4j.Level;
+
 import org.slf4j.Logger;
 import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.local.LocalManagementService;
 import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
 import sinc.hinc.communication.processing.HINCMessageHander;
-import sinc.hinc.local.Main;
 import sinc.hinc.model.API.WrapperIoTUnit;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
@@ -55,11 +54,7 @@ public class HandleQueryIoTUnit implements HINCMessageHander {
         Long timeStamp2 = (new Date()).getTime();
 
         if (msg.getPayload().contains("rescan")) {
-            try {
-                Main.scanOnce();
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+            LocalManagementService.scanAdaptors();
         }
 
         Long timeStamp3 = (new Date()).getTime();

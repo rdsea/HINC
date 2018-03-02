@@ -22,7 +22,6 @@
         <module>communication</module>
         <module>collector</module>
         <module>local-management-service</module>
-        <module>ext-plugin</module>
         <module>repository</module>
         <module>global-management-service</module>
         <module>common</module>

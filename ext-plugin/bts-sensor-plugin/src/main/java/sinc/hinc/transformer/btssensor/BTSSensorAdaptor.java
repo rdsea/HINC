@@ -1,5 +1,10 @@
 package sinc.hinc.transformer.btssensor;
 
+import org.apache.commons.lang3.RandomUtils;
+import org.json.simple.JSONObject;
+import sinc.hinc.abstraction.ResourceDriver.PluginDataRepository;
+import sinc.hinc.abstraction.ResourceDriver.ProviderControlResult;
+import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.transformer.btssensor.model.Sensor;
 import sinc.hinc.transformer.btssensor.model.SensorItem;
 import sinc.hinc.transformer.btssensor.model.SensorMetadata;
@@ -9,10 +14,9 @@ import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import javax.naming.ldap.Control;
+import java.io.IOException;
+import java.util.*;
 
 public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
     Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -55,8 +59,28 @@ public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
         return sensorItems;
     }
 
-    public void sendControl(String s, Map<String, String> settings) {
+    public ProviderControlResult sendControl(ControlPoint controlPoint) {
+        ProviderControlResult result = new ProviderControlResult();
+        JSONObject configuration = new JSONObject();
+        Iterator keyIt = controlPoint.getParameters().keySet().iterator();
+        while(keyIt.hasNext()){
+            String key = (String) keyIt.next();
+            configuration.put(key, controlPoint.getParameters().get(key));
+        }
+        try {
+            String response = APIHandler.post(controlPoint.getReference(), configuration.toJSONString());
+            result.setOutput(response);
+            result.setResult(ProviderControlResult.CONTROL_RESULT.SUCCESS);
+            // TODO create new iot unit, not that urgent local management service periodically scans anyway
+            //result.setUpdateIoTUnit();
+        } catch (IOException e) {
+            result.setOutput(e.getMessage());
+            result.setResult(ProviderControlResult.CONTROL_RESULT.COMMAND_EXIT_ERROR);
+            logger.error("failed to send control");
+            e.printStackTrace();
+        }
 
+        return result;
     }
 
     public ResourcesProvider getProviderAPI(Map<String, String> settings) {
@@ -99,5 +123,28 @@ public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
 
     public String getName() {
         return "bts-sensor";
+    }
+
+    @Override
+    public void createResources(PluginDataRepository pluginDataRepository, Map<String, String> settings) {
+        Collection<SensorItem> items = this.getItems(settings);
+        SensorTransform transformer = new SensorTransform();
+        List<IoTUnit> units = new ArrayList<>();
+        logger.info("found "+units.size()+"IoTUnits from "+getName());
+        for(SensorItem item: items){
+            IoTUnit unit = transformer.translateIoTUnit(item);
+            units.add(unit);
+        }
+
+        pluginDataRepository.saveIoTUnits(units);
+
+        ResourcesProvider provider = this.getProviderAPI(settings);
+        List<ResourcesProvider> providers = new ArrayList<>();
+        providers.add(provider);
+        logger.info("found "+providers.size()+"resource providers from "+getName());
+        pluginDataRepository.saveResourceProviders(providers);
+
+        System.out.println("Random number with external dependency: "+RandomUtils.nextInt());
+
     }
 }

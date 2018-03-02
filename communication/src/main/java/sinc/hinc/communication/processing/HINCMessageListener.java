@@ -95,6 +95,7 @@ public class HINCMessageListener {
                         String msgType = msg.getMsgType();
                         HINCMessageHander handlerMethod = getHandlerMethod(msgTopic, msgType);
                         if (handlerMethod != null) {
+                            System.out.println(msg.toJson());
 //                        logger.debug("Get message: {}, topic: {}. Found a handler: {}", msgType, msgTopic, handlerMethod.getClass().getSimpleName());
                             logger.debug("Get message: " + msgType + ", topic: " + msgTopic + ", found handler: " + handlerMethod.getClass().getSimpleName());
                             HincMessage replyMsg = handlerMethod.handleMessage(msg);

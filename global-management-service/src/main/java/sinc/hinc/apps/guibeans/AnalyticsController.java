@@ -189,7 +189,8 @@ public class AnalyticsController implements Serializable {
                         logger.debug("Found a control: {}", c.getName());
                         String parameter = getNetworkServiceSelectedByEndpoint().getAccessPoint().getEndpoint() + " mysensor1234";
                         logger.debug("Call control connect-mqtt of " + sensorid + " to endpoint: " + parameter);
-                        c.setParameters(parameter);
+                        // TODO refactor this for new control point model
+                        //c.setParameters(parameter);
                         rest.sendControl(unit.getHincID(), unit.getResourceID(), c.getName(), parameter);
                         controlFound = controlFound + 1;
                     }
@@ -233,7 +234,8 @@ public class AnalyticsController implements Serializable {
                         logger.debug("Found a control: {}", c.getName());
                         String parameter = getNetworkServiceSelectedByEndpoint().getAccessPoint().getEndpoint() + " mysensor1234";
                         logger.debug("Call control connect-mqtt of " + sensorid + " to endpoint: " + parameter);
-                        c.setParameters(parameter);
+                        // TODO refactor this for new controil point model
+                        //c.setParameters(parameter);
                         rest.sendControl(unit.getHincID(), unit.getResourceID(), c.getName(), parameter);
                         controlFound = controlFound + 1;
                     }

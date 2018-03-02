@@ -113,6 +113,8 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
                     String mm = new String(delivery.getBody());
 
                     ObjectMapper mapper = new ObjectMapper();
+                    System.out.println("message received");
+                    System.out.println(mm);
                     HincMessage em = (HincMessage) mapper.readValue(mm, HincMessage.class);
                     this.topic = em.getTopic();
                     //logger.debug("A message arrived. From: " + em.getFromSalsa() + ". MsgType: " + em.getMsgType() + ". Payload: " + em.getPayload());
