@@ -7,6 +7,9 @@ package sinc.hinc.abstraction.ResourceDriver;
 
 import java.util.Collection;
 import java.util.Map;
+
+import sinc.hinc.abstraction.transformer.ControlPointTransformer;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
 /**
@@ -47,15 +50,15 @@ public interface ProviderQueryAdaptor<DomainClass> {
     public Collection<DomainClass> getItems(Map<String, String> settings);
 
     /**
-     * This is for sending a control to a provider. The implementation of this
-     * method must do following: 1. Translate the controlAction and parameters
-     * into provider API call 2. The execution of the command can reuse some
-     * default HINC functions, e.g. RESTManager
+     * This method is responsible for sending controls to the provider
+     * The different settings and parameters are modelled on a high level
+     * in the ControlPoint class. We assume that the creator of the plugin
+     * knows how to use the modelled information to communicate with the provider
      *
-     * @param controlAction the
-     * @param parameters
+     * @param controlPoint the modelled control point of the provider
+     * @return a ProviderControlResult object containing metadata about execution result
      */
-    public void sendControl(String controlAction, Map<String, String> parameters);
+    public ProviderControlResult sendControl(ControlPoint controlPoint);
     
     /**
      * Get a ResourcesProvider instance.
@@ -74,5 +77,11 @@ public interface ProviderQueryAdaptor<DomainClass> {
      * @return 
      */
     public String getName();
+
+    /**
+     * Create all relevant HINC resources from the plugn
+     * @param repository
+     */
+    public void createResources(PluginDataRepository repository, Map<String, String> settings);
 
 }

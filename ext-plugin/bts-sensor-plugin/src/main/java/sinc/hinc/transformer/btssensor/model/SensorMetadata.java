@@ -6,15 +6,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class SensorMetadata {
     String type;
     String measurement;
     String unit;
-    String configuration;
+    Map<String, String> configuration;
     List<String> communication;
     String url;
 
@@ -54,11 +52,11 @@ public class SensorMetadata {
         this.unit = unit;
     }
 
-    public String getConfiguration() {
+    public Map<String, String> getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(String configuration) {
+    public void setConfiguration(Map<String, String> configuration) {
         this.configuration = configuration;
     }
 
@@ -92,7 +90,17 @@ public class SensorMetadata {
             metadata.setUnit((String) sensorType.get("unit"));
             metadata.setType((String) sensorType.get("type"));
             metadata.setUrl((String) sensorType.get("url"));
-            metadata.setConfiguration(((JSONObject) sensorType.get("sampleConfiguration")).toJSONString());
+
+            JSONObject jsonConfiguration = (JSONObject) sensorType.get("sampleConfiguration");
+            Map<String, String> configuration = new HashMap<>();
+            final Iterator<String> keysItr = jsonConfiguration.keySet().iterator();
+            while (keysItr.hasNext()) {
+                final String key = keysItr.next();
+                configuration.put(key, (String) jsonConfiguration.get(key));
+            }
+
+            metadata.setConfiguration(configuration);
+
 
             JSONArray communication = (JSONArray) sensorType.get("communication");
             Iterator i = communication.iterator();

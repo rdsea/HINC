@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
@@ -33,19 +34,10 @@ public class AdaptorUnitTests {
         assert(sensorMetadata.get(0).getUnit().equals("xxx"));
         assert(sensorMetadata.get(0).getUrl().equals("/sensor/bts/param"));
 
-        String configuration = sensorMetadata.get(0).getConfiguration();
-        JSONParser parser = new JSONParser();
-        JSONObject obj = new JSONObject();
+        Map<String, String> configuration = sensorMetadata.get(0).getConfiguration();
 
-        try {
-            obj = (JSONObject) parser.parse(configuration);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            fail("exception occurred parsing configuration");
-        }
-
-        assert(((String) obj.get("topic")).equals("myTopic"));
-        assert(((String) obj.get("broker")).equals("127.0.0.1"));
+        assert(((String) configuration.get("topic")).equals("myTopic"));
+        assert(((String) configuration.get("broker")).equals("127.0.0.1"));
     }
 
     @Test public void getSensorParse(){

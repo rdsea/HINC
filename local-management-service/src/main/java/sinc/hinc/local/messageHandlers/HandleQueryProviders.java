@@ -14,7 +14,7 @@ import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.local.Main;
+import sinc.hinc.local.LocalManagementService;
 import sinc.hinc.model.API.WrapperProvider;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
@@ -49,11 +49,7 @@ public class HandleQueryProviders implements HINCMessageHander {
         }
 
         if (msg.getPayload().contains("rescan")) {
-            try {
-                Main.scanOnce();
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+            LocalManagementService.scanAdaptors();
         }
         
         int limit = -1;
