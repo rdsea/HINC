@@ -11,18 +11,12 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Sensor {
-    String id;
+    String clientId;
+    String uri;
     String type;
-    String broker;
     String topic;
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getType() {
         return type;
@@ -32,13 +26,7 @@ public class Sensor {
         this.type = type;
     }
 
-    public String getBroker() {
-        return broker;
-    }
 
-    public void setBroker(String broker) {
-        this.broker = broker;
-    }
 
     public String getTopic() {
         return topic;
@@ -48,21 +36,19 @@ public class Sensor {
         this.topic = topic;
     }
 
-    // parse json into sensors
-    public static List<Sensor> getSensors(String body) throws ParseException {
-        JSONParser parser = new JSONParser();
-        JSONArray jsonArray = (JSONArray) parser.parse(body);
+    public String getClientId() {
+        return clientId;
+    }
 
-        List<Sensor> sensors = new ArrayList<Sensor>();
-        for(Iterator it = jsonArray.iterator(); it.hasNext();){
-            JSONObject jsonObject = (JSONObject) it.next();
-            Sensor sensor = new Sensor();
-            sensor.setBroker((String) jsonObject.get("broker"));
-            sensor.setTopic((String) jsonObject.get("topic"));
-            sensor.setId((String) jsonObject.get("clientId"));
-            sensor.setType((String) jsonObject.get("type"));
-            sensors.add(sensor);
-        }
-        return sensors;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 }

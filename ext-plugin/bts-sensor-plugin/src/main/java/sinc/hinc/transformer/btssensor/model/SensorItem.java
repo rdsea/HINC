@@ -1,23 +1,25 @@
 package sinc.hinc.transformer.btssensor.model;
 
+import java.util.List;
+
 public class SensorItem {
 
-    Sensor sensor;
-    SensorMetadata metadata;
+    private SensorDescription description;
+    private List<Sensor> sensors;
 
-    public Sensor getSensor() {
-        return sensor;
+    public SensorDescription getDescription() {
+        return description;
     }
 
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
+    public void setDescription(SensorDescription description) {
+        this.description = description;
     }
 
-    public SensorMetadata getMetadata() {
-        return metadata;
+    public List<Sensor> getSensors() {
+        return sensors;
     }
 
-    public void setMetadata(SensorMetadata metadata) {
-        this.metadata = metadata;
+    public void setSensors(List<Sensor> sensors) {
+        this.sensors = sensors;
     }
 }

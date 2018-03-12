@@ -1,20 +1,23 @@
 package sinc.hinc.transformer.btssensor;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomUtils;
 import org.json.simple.JSONObject;
 import sinc.hinc.abstraction.ResourceDriver.PluginDataRepository;
 import sinc.hinc.abstraction.ResourceDriver.ProviderControlResult;
+import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
+import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import sinc.hinc.transformer.btssensor.model.Sensor;
+import sinc.hinc.transformer.btssensor.model.SensorDescription;
 import sinc.hinc.transformer.btssensor.model.SensorItem;
-import sinc.hinc.transformer.btssensor.model.SensorMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.abstraction.ResourceDriver.ProviderQueryAdaptor;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 
-import javax.naming.ldap.Control;
 import java.io.IOException;
 import java.util.*;
 
@@ -24,36 +27,38 @@ public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
     public Collection<SensorItem> getItems(Map<String, String> settings) {
         String endpoint = settings.get("endpoint").trim();
 
-        List<SensorItem> sensorItems = new ArrayList<SensorItem>();
-
-        // first we get the metadata
-        List<SensorMetadata> sensorMetadata = new ArrayList<SensorMetadata>();
+        List<SensorDescription> sensorDescriptions = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         try {
-            logger.info("fetching sensor metadata");
-            sensorMetadata = SensorMetadata.getMetaData(APIHandler.get(endpoint,"/sensor/bts"));
-            logger.info("found "+sensorMetadata.size()+" metadata entities");
+            logger.info("fetching sensor descriptions");
+            String response = APIHandler.get(endpoint, "/sensor/bts");
+            sensorDescriptions = Arrays.asList(mapper.readValue(response, SensorDescription[].class));
+            logger.info("found "+sensorDescriptions.size()+" metadata entities");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        List<SensorItem> sensorItems = new ArrayList<SensorItem>();
+
+
         // go through each sensor endpoint and extract sensors
         logger.info("fetching sensors");
-        for(SensorMetadata metadata: sensorMetadata) {
-            List<Sensor> sensors = new ArrayList<Sensor>();
+
+        for(SensorDescription description: sensorDescriptions){
+            List<Sensor> sensors = new ArrayList<>();
             try {
-                sensors = Sensor.getSensors(APIHandler.get(endpoint, metadata.getUrl()));
-                logger.info(sensors.size() + " " + metadata.getType() + " sensors found");
+                String response = APIHandler.get(endpoint, description.getUrl());
+                sensors = Arrays.asList(mapper.readValue(response, Sensor[].class));
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            for (Sensor sensor : sensors) {
-                SensorItem item = new SensorItem();
-                item.setMetadata(metadata);
-                item.setSensor(sensor);
-                sensorItems.add(item);
-            }
+            SensorItem item = new SensorItem();
+            item.setDescription(description);
+            item.setSensors(sensors);
+            sensorItems.add(item);
         }
 
         return sensorItems;
@@ -93,25 +98,26 @@ public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
         List<ControlPoint> controlPoints = new ArrayList<ControlPoint>();
 
         // we get the metadata
-        logger.info("obtaining sensor metadata");
-        List<SensorMetadata> sensorMetadata = new ArrayList<SensorMetadata>();
-
+        logger.info("obtaining sensor descriptions");
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        List<SensorDescription> sensorDescriptions = new ArrayList<>();
         try {
-            sensorMetadata = SensorMetadata.getMetaData(APIHandler.get(endpoint,"/sensor/bts"));
-            logger.info(sensorMetadata.size()+" metadata obtained");
+            logger.info("fetching sensor descriptions");
+            String response = APIHandler.get(endpoint, "/sensor/bts");
+            sensorDescriptions = Arrays.asList(mapper.readValue(response, SensorDescription[].class));
+            logger.info("found "+sensorDescriptions.size()+" metadata entities");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // go through each sensor type and grab it's configuration
-        for(SensorMetadata metadata: sensorMetadata){
+        for(SensorDescription description: sensorDescriptions){
             ControlPoint controlPoint = new ControlPoint();
             controlPoint.setControlType(ControlPoint.ControlType.PROVISION);
-            controlPoint.setName(metadata.getType() + " sensor provider");
+            controlPoint.setName(description.getName() + " sensor provider");
             controlPoint.setInvokeProtocol(ControlPoint.InvokeProtocol.POST);
-
-            controlPoint.setReference(metadata.getUrl());
-            controlPoint.setParameters(metadata.getConfiguration());
+            controlPoint.setReference(description.getUrl());
+            controlPoint.setParameters(description.getSampleConfiguration().asMap());
             controlPoint.setIotUnitID(provider.getUri());
             controlPoints.add(controlPoint);
         }
@@ -128,12 +134,22 @@ public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
     @Override
     public void createResources(PluginDataRepository pluginDataRepository, Map<String, String> settings) {
         Collection<SensorItem> items = this.getItems(settings);
-        SensorTransform transformer = new SensorTransform();
         List<IoTUnit> units = new ArrayList<>();
         logger.info("found "+units.size()+"IoTUnits from "+getName());
         for(SensorItem item: items){
-            IoTUnit unit = transformer.translateIoTUnit(item);
-            units.add(unit);
+            for(Sensor sensor: item.getSensors()){
+                IoTUnit unit = new IoTUnit();
+                unit.setResourceID(sensor.getClientId());
+
+                DataPoint dp = new DataPoint();
+                dp.setDatatype(item.getDescription().getMeasurement());
+                dp.setConnectingTo(new AccessPoint(sensor.getUri()));
+                dp.setMeasurementUnit(item.getDescription().getUnit());
+                dp.setName(item.getDescription().getName());
+
+                unit.hasDatapoint(dp);
+                units.add(unit);
+            }
         }
 
         pluginDataRepository.saveIoTUnits(units);

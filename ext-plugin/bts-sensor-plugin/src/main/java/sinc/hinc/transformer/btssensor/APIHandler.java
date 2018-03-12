@@ -5,7 +5,6 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOError;
 import java.io.IOException;
 
 public class APIHandler {
@@ -44,8 +43,9 @@ public class APIHandler {
         }
 
         logger.info("successfully posted to "+url);
-        logger.debug(response.body().string());
-        return response.body().string();
+        String responseBody = response.body().string();
+        logger.debug(responseBody);
+        return responseBody;
     }
 
 }
