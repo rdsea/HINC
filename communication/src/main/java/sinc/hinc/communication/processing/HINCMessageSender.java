@@ -16,6 +16,7 @@ import sinc.hinc.communication.factory.MessageSubscribeInterface;
  *
  * @author hungld
  */
+//TODO adjust to new Software Design, remove unused functions
 public class HINCMessageSender {
 
     Logger logger = LoggerFactory.getLogger(HINCMessageSender.class);

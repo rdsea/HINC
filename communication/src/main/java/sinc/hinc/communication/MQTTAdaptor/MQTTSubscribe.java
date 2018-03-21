@@ -30,6 +30,7 @@ import sinc.hinc.communication.processing.HINCMessageHander;
  *
  * @author Duc-Hung Le
  */
+//TODO remove, communication between globalMS and localMS will solely happen through AMQP
 public class MQTTSubscribe extends MQTTConnector implements MessageSubscribeInterface {
 
     HINCMessageHander handler;

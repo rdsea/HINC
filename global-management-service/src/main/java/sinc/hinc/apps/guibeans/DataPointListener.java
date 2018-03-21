@@ -27,6 +27,7 @@ import sinc.hinc.common.utils.HincConfiguration;
  *
  * @author hungld
  */
+//TODO Remove Class
 public class DataPointListener implements Runnable {
 
     public static class DataSeries {

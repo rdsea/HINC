@@ -51,6 +51,7 @@ import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
  *
  * @author hungld
  */
+//TODO Check what this class is truly responsible for
 @ManagedBean(name = "GuiBeans")
 @ViewScoped
 public class GuiBeans {

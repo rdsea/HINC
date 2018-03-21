@@ -10,7 +10,45 @@ package sinc.hinc.common.metadata;
  * @author hungld
  */
 public enum HINCMessageType {
-    
+        //TODO remove unused
+        /**
+         * TODO remove comment
+         * Used by Global:
+         *
+         * SEND:
+         * QUERY_IOT_UNIT
+         * QUERY_IOT_PROVIDERS
+         * CONTROL
+         * SYN_REQUEST
+         * UPDATE_INFO_BASE
+         *
+         * RECEIVE:
+         * SYN_REPLY
+         * UPDATE_INFORMATION_SINGLEIOTUNIT
+         * CONTROL_RESULT
+         */
+        /**
+         * TODO remove comment
+         * Used by Local:
+         *
+         * SEND:
+         * CONTROL_RESULT
+         * UPDATE_INFORMATION_SINGLEIOTUNIT
+         * SYN_REPLY
+         *
+         * RECEIVE:
+         * SYN_REQUEST
+         * QUERY_IOT_UNIT
+         * QUERY_IOT_PROVIDERS
+         * CONTROL
+         * UPDATE_INFO_BASE
+         *
+         * LISTEN BUT NOT CALLED:
+         * QUERY_MICRO_SERVICE_LOCAL
+         * QUERY_NFV_LOCAL
+         * PROVIDER_UPDATE_IOT_UNIT
+         */
+
         SYN_REQUEST,
         SYN_REPLY,
         // unicast:local->global, local manager register it self 

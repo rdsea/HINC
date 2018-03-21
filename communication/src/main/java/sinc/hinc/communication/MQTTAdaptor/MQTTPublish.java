@@ -26,6 +26,7 @@ import sinc.hinc.communication.processing.HincMessage;
  *
  * @author Duc-Hung Le
  */
+//TODO remove, communication between globalMS and localMS will solely happen through AMQP
 public class MQTTPublish extends MQTTConnector implements MessagePublishInterface {
 
     public MQTTPublish() {

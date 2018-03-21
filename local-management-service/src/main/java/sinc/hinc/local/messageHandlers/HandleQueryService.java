@@ -17,6 +17,7 @@ import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
  *
  * @author hungld
  */
+//TODO not called from Global
 public class HandleQueryService implements HINCMessageHander {
 
     @Override

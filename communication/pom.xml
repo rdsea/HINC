@@ -14,7 +14,8 @@
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
             <version>1.0.2</version>
         </dependency>
-        
+
+        <!--TODO upgrade client-->
         <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>

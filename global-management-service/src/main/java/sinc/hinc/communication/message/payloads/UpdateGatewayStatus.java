@@ -16,6 +16,7 @@ import sinc.hinc.model.VirtualComputingResource.IoTUnit;
  *
  * @author hungld
  */
+//TODO Remove Class
 public class UpdateGatewayStatus {
 
     List<IoTUnit> appear = new ArrayList<>();

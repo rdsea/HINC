@@ -26,6 +26,7 @@ import sinc.hinc.communication.processing.HINCMessageHander;
 /**
  * @author hungld
  */
+//TODO Remove Class --> Unused
 public class SubscriptionManager {
 
     static Logger logger = LoggerFactory.getLogger("DELISE");

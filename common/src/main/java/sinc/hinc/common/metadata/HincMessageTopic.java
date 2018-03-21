@@ -23,6 +23,7 @@ import java.util.UUID;
  *
  * @author Duc-Hung Le
  */
+//TODO check which topics are truly necessary
 public class HincMessageTopic {
 
     private static final String PREFIX = "sinc.hinc.";

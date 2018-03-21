@@ -34,6 +34,8 @@ import sinc.hinc.communication.processing.HINCMessageHander;
  *
  * @author Duc-Hung Le
  */
+
+//TODO remove QueueingConsumer. make subscribe eventdriven
 public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInterface {
 
     HINCMessageHander handler;

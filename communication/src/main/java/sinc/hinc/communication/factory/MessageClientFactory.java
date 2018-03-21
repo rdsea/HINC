@@ -17,6 +17,7 @@ import sinc.hinc.communication.MQTTAdaptor.MQTTSubscribe;
  * @author Duc-Hung LE
  * Modified by Hong-Linh Truong
  */
+//TODO remove, communication between globalMS and localMS will solely happen through AMQP
 public class MessageClientFactory {
 
 	

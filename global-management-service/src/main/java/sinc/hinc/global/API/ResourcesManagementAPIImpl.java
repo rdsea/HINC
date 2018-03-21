@@ -102,6 +102,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             payload = "rescan";
         }
 
+        //TODO Broadcast QUERY_IOT_UNIT (SenderID:UUID of Global, ResponseTopic: Temporary)
         HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_IOT_UNIT.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
         if (limit > 0) {
             queryMessage.hasExtra("limit", limit + "");
@@ -183,6 +184,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         }
 
         String feedBackTopic = HincMessageTopic.getTemporaryTopic();
+        //TODO Broadcast QUERY_IOT_PROVIDERS (SenderID:UUID of Global, ResponseTopic: Temporary)
         HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_IOT_PROVIDERS.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
         if (limit > 0) {
             queryMessage.hasExtra("limit", limit + "");
@@ -317,6 +319,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     List<CloudService> staticcloudService = null;
 
     @Override
+    //TODO mocked call
     public List<CloudService> queryCloudServices(int timeout, String hincUUID) {
         logger.debug("Query cloud services");
         if (staticcloudService == null) {
@@ -346,6 +349,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     List<CloudProvider> staticcloudProvider = null;
 
     @Override
+    //TODO mocked call
     public List<CloudProvider> queryCloudProviders(int timeout, String hincUUID) {
         logger.debug("Query cloud providers");
         if (staticcloudProvider == null) {
@@ -363,6 +367,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     @Override
     public String sendControl(String gatewayid, String resourceid, String actionName, String param) {
         String controlPointUUID = gatewayid + "/" + resourceid + "/" + actionName;
+        //TODO Groupcast/Broadcast CONTROL (SenderID:UUID of Global, ResponseTopic: Temporary)
         HincMessage controlPointRequest = new HincMessage(HINCMessageType.CONTROL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), controlPointUUID);
         controlPointRequest.hasExtra("param", param);
         return comMng.synCall(controlPointRequest);
@@ -435,6 +440,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     List<MicroserviceArtifact> staticArtifact = null;
     
     @Override
+    //TODO mocked call
     public Collection<MicroserviceArtifact> queryMicroserviceArtifact(int timeout, String hincUUID) {
         if (staticArtifact ==null) {
             logger.debug("load from static information about artifacts");

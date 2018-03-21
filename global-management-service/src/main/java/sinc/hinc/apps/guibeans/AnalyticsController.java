@@ -38,6 +38,7 @@ import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
  *
  * @author hungld
  */
+//TODO Remove Class
 @ManagedBean(name = "AnalyticController")
 @ViewScoped
 public class AnalyticsController implements Serializable {

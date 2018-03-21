@@ -30,6 +30,7 @@ import sinc.hinc.common.metadata.HincMessageTopic;
  *
  * @author Duc-Hung Le
  */
+//TODO adjust to new Messaging Design, remove unused functions
 public class AMQPPublish extends AMQPConnector implements MessagePublishInterface {
 
     public AMQPPublish() {

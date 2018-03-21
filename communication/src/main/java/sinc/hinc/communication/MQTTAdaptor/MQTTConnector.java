@@ -30,6 +30,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
  *
  * @author Duc-Hung Le
  */
+//TODO remove, communication between globalMS and localMS will solely happen through AMQP
 public class MQTTConnector {
 
     Logger logger;
