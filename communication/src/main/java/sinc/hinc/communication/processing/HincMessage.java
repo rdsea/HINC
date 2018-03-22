@@ -50,6 +50,8 @@ public class HincMessage {
 
     Map<String, String> extra;
 
+    private HINCMessageType hincMessageType;
+
     public HincMessage() {
     }
 
@@ -179,6 +181,10 @@ public class HincMessage {
         this.feedbackTopic = feedbackTopic;
     }
 
+    public void setMsgType(String msgType) {
+        this.msgType = msgType;
+    }
+
     public Map<String, String> getExtra() {
         return extra;
     }
@@ -199,4 +205,11 @@ public class HincMessage {
         return "HINCMessage{" + "MsgType=" + msgType + ", payload=" + payload + '}';
     }
 
+    public HINCMessageType getHincMessageType() {
+        return hincMessageType;
+    }
+
+    public void setHincMessageType(HINCMessageType hincMessageType) {
+        this.hincMessageType = hincMessageType;
+    }
 }
