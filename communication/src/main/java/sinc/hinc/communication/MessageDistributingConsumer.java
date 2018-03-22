@@ -5,6 +5,8 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.communication.processing.HincMessage;
 
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MessageDistributingConsumer extends DefaultConsumer {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ObjectMapper objectMapper = new ObjectMapper();
     //TODO check concurrency
     private Map<HINCMessageType, List<IMessageHandler>> messageHandlerMap = new HashMap<>();
@@ -32,6 +35,8 @@ public class MessageDistributingConsumer extends DefaultConsumer {
             throws IOException {
 
         HincMessage hincMessage = objectMapper.readValue(body, HincMessage.class);
+
+        logger.debug("received and distributing: " + hincMessage.toString());
 
         List<IMessageHandler> messageHandlerList = messageHandlerMap.get(hincMessage.getHincMessageType());
         if(messageHandlerList!=null) {

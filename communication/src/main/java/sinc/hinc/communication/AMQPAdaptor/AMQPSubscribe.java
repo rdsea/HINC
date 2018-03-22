@@ -17,10 +17,12 @@
  */
 package sinc.hinc.communication.AMQPAdaptor;
 
+import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.DefaultConsumer;
 import sinc.hinc.communication.factory.MessageSubscribeInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.ConsumerCancelledException;
-import com.rabbitmq.client.QueueingConsumer;
+//import com.rabbitmq.client.QueueingConsumer;
 import com.rabbitmq.client.ShutdownSignalException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -59,7 +61,8 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
             String queueName = amqpChannel.queueDeclare().getQueue();
             amqpChannel.queueBind(queueName, topic, "");
 
-            QueueingConsumer consumer = new QueueingConsumer(amqpChannel);
+            Consumer consumer = new DefaultConsumer(amqpChannel);
+            //QueueingConsumer consumer = new QueueingConsumer(amqpChannel);
             amqpChannel.basicConsume(queueName, true, consumer);
             System.out.println("AMQP Subscribed. Exchange name: " + topic + ", queue name: " + queueName);
             new Thread(new ThreadQueueSubscribe(consumer, handler, timeout)).start();
@@ -80,12 +83,12 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
     private class ThreadQueueSubscribe implements Runnable {
 
         HINCMessageHander handler;
-        QueueingConsumer consumer;
+        Consumer consumer;
         String topic;
         long timeout;
         long startTime;
 
-        ThreadQueueSubscribe(QueueingConsumer consumer, HINCMessageHander handler, long timeout) {
+        ThreadQueueSubscribe(Consumer consumer, HINCMessageHander handler, long timeout) {
             this.handler = handler;
             this.consumer = consumer;;
             this.timeout = timeout; // in miliseconds
@@ -94,13 +97,13 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
 
         @Override
         public void run() {
-            //logger.debug("Inside the queue subscribing thread, process is continueing...");
+            /*//logger.debug("Inside the queue subscribing thread, process is continueing...");
             try {
                 while (true) {
 
                     logger.debug("Looping and waiting for the message, timeout: " + timeout);
 
-                    QueueingConsumer.Delivery delivery;
+                    Consumer delivery;
                     if (timeout == 0) {
                         delivery = consumer.nextDelivery();
                     } else {
@@ -144,7 +147,7 @@ public class AMQPSubscribe extends AMQPConnector implements MessageSubscribeInte
                 ex.printStackTrace();
                 logger.error("Interrupt during the subscribing to topic: {}", topic, ex);
             }
-
+*/
         }
     }
 

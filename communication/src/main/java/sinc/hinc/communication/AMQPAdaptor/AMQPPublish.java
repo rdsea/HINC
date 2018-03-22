@@ -20,7 +20,7 @@ package sinc.hinc.communication.AMQPAdaptor;
 import sinc.hinc.communication.factory.MessagePublishInterface;
 
 import com.rabbitmq.client.ConsumerCancelledException;
-import com.rabbitmq.client.QueueingConsumer;
+//import com.rabbitmq.client.QueueingConsumer;
 import com.rabbitmq.client.ShutdownSignalException;
 import java.io.IOException;
 import sinc.hinc.communication.processing.HincMessage;
@@ -67,7 +67,7 @@ public class AMQPPublish extends AMQPConnector implements MessagePublishInterfac
 
     @Override
     public HincMessage callFunction(HincMessage content) {
-        logger.debug("Calling function by message: " + content.toJson());
+        /*logger.debug("Calling function by message: " + content.toJson());
 
         connect();
 
@@ -112,7 +112,7 @@ public class AMQPPublish extends AMQPConnector implements MessagePublishInterfac
             ex.printStackTrace();
             logger.error("Error when waiting for the reply: " + ex.getMessage());
         }
-
+        */
         return null;
     }
 

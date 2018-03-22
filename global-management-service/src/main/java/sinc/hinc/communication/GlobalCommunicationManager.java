@@ -1,9 +1,11 @@
 package sinc.hinc.communication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
 import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.communication.messagehandlers.HandleControlResult;
+import sinc.hinc.communication.messagehandlers.HandleSynReply;
+import sinc.hinc.communication.messagehandlers.HandleUpdateInformationSingleIotUnit;
 import sinc.hinc.communication.processing.HincMessage;
 
 import java.io.IOException;
@@ -19,11 +21,14 @@ public class GlobalCommunicationManager {
     private Channel managementChannel = null;
     private Channel publishChannel = null;
 
-    private String outgoingExchange = "global_outgoing_topic";
+    private String outgoingBroadcast = "global_outgoing_broadcast";
+    private String outgoingGroupcast = "global_outgoing_groupcast";
+    private String outgoingUnicast = "global_outgoing_unicast";
     private String incomingExchange = "global_incoming_direct";
 
     private Map<HINCMessageType, UnmarshallingConsumer> messageTypeQueues = new HashMap<>();
 
+    //TODO make singleton
     public GlobalCommunicationManager(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
         connect(connectionFactory);
     }
@@ -35,6 +40,7 @@ public class GlobalCommunicationManager {
         publishChannel = connection.createChannel();
 
         setUpExchanges();
+        registerMessageHandler();
     }
 
     public void disconnect() throws IOException, TimeoutException {
@@ -45,12 +51,27 @@ public class GlobalCommunicationManager {
 
 
     public void setUpExchanges() throws IOException {
-        //declare/create outgoing exchange
+        //declare/create outgoing broadcast exchange
         /* TODO tweak exchange settings
         Map<String, Object> exchangeArguments = new HashMap<>();
         managementChannel.exchangeDeclare(outgoingExchange, BuiltinExchangeType.TOPIC, true, false, true, exchangeArguments);
         */
-        managementChannel.exchangeDeclare(outgoingExchange, BuiltinExchangeType.TOPIC, true);
+        managementChannel.exchangeDeclare(outgoingBroadcast, BuiltinExchangeType.FANOUT, true);
+
+        //declare/create outgoing groupcast exchange
+        /* TODO tweak exchange settings
+        Map<String, Object> exchangeArguments = new HashMap<>();
+        managementChannel.exchangeDeclare(outgoingExchange, BuiltinExchangeType.TOPIC, true, false, true, exchangeArguments);
+        */
+        managementChannel.exchangeDeclare(outgoingGroupcast, BuiltinExchangeType.DIRECT, true);
+
+        //declare/create outgoing unicast exchange
+        /* TODO tweak exchange settings
+        Map<String, Object> exchangeArguments = new HashMap<>();
+        managementChannel.exchangeDeclare(outgoingExchange, BuiltinExchangeType.TOPIC, true, false, true, exchangeArguments);
+        */
+        managementChannel.exchangeDeclare(outgoingUnicast, BuiltinExchangeType.DIRECT, true);
+
 
         //declare/create incoming exchange
         /* TODO tweak exchange settings
@@ -64,9 +85,9 @@ public class GlobalCommunicationManager {
     public void addMessageHandler(IMessageHandler messageHandler) throws IOException {
         String queueName = messageHandler.getMessageType().name();
 
-        //TODO create Consumer with messageHandler
+        //TODO tweak queue settings
         Map<String, Object> queueArguments = new HashMap<>();
-        managementChannel.queueDeclare(queueName, true, true, true, queueArguments);
+        managementChannel.queueDeclare(queueName, true, true, false, queueArguments);
         //bindqueue
 
         String routing_key = messageHandler.getMessageType().name();
@@ -89,27 +110,88 @@ public class GlobalCommunicationManager {
         }
     }
 
-    //TODO maybe add convenient methods --> broadcast, entire group, single receiver
-    public void publishMessage(String routing_key, HincMessage hincMessage) throws IOException {
-
+    public void broadcastMessage(HincMessage hincMessage) throws IOException {
         AMQP.BasicProperties basicProperties = null;
-
         byte[] message = objectMapper.writeValueAsBytes(hincMessage);
         //TODO check basicproperties and other flags (boolean mandatory, boolean immediate)
-        publishChannel.basicPublish(outgoingExchange, routing_key, basicProperties, message);
-
+        publishChannel.basicPublish(outgoingBroadcast, "", basicProperties, message);
     }
 
-    public void addLocalManagementService(String id){
-
+    public void groupcastMessage(String group, HincMessage hincMessage) throws IOException {
+        AMQP.BasicProperties basicProperties = null;
+        byte[] message = objectMapper.writeValueAsBytes(hincMessage);
+        //TODO check basicproperties and other flags (boolean mandatory, boolean immediate)
+        publishChannel.basicPublish(outgoingGroupcast, group, basicProperties, message);
     }
 
-    public void removeLocalManagementService(String id){
+    public void unicastMessage(String group, String lmsId, HincMessage hincMessage) throws IOException {
+        String routingKey = group + "." + lmsId;
 
+        AMQP.BasicProperties basicProperties = null;
+        byte[] message = objectMapper.writeValueAsBytes(hincMessage);
+        //TODO check basicproperties and other flags (boolean mandatory, boolean immediate)
+        publishChannel.basicPublish(outgoingUnicast, routingKey, basicProperties, message);
     }
 
+    public void addLocalManagementService(String lmsQueue, String lmsGroup, String lmsID) throws IOException {
+        managementChannel.queueBind(lmsQueue, outgoingBroadcast, "");
+        managementChannel.queueBind(lmsQueue, outgoingGroupcast, lmsGroup);
+        managementChannel.queueBind(lmsQueue, outgoingUnicast, lmsGroup+"." + lmsID);
+    }
+
+    public void removeLocalManagementService(String lmsQueue, String lmsGroup, String lmsID) throws IOException {
+        managementChannel.queueUnbind(lmsQueue, outgoingBroadcast, "");
+        managementChannel.queueUnbind(lmsQueue, outgoingGroupcast, lmsGroup);
+        managementChannel.queueUnbind(lmsQueue, outgoingUnicast, lmsGroup+"." + lmsID);
+    }
+
+
+    private void registerMessageHandler() throws IOException {
+        this.addMessageHandler(new HandleControlResult());
+        this.addMessageHandler(new HandleSynReply(this));
+        this.addMessageHandler(new HandleUpdateInformationSingleIotUnit());
+    }
 
     //TODO manage results -> callback queues
 
+
+    //TODO remove main - it's just for testing purposes
+    public static void main(String[] args) throws Exception {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        connectionFactory.setHost("localhost");
+
+        GlobalCommunicationManager globalCommunicationManager = new GlobalCommunicationManager(connectionFactory);
+
+        int i = 0;
+        while(true){
+            HincMessage message = new HincMessage();
+            message.setHincMessageType(HINCMessageType.CONTROL);
+            System.out.println("publish from global");
+            i++;
+            i = i%3;
+            switch (i){
+                case 0:
+                    message.setPayload("broadcast");
+                    globalCommunicationManager.broadcastMessage(message);
+                    break;
+                case 1:
+                    message.setPayload("groupcast");
+                    globalCommunicationManager.groupcastMessage("group", message);
+                    break;
+                case 2:
+                    message.setPayload("unicast");
+                    globalCommunicationManager.unicastMessage("group", "id", message);
+                    break;
+            }
+
+
+            try {
+                Thread.sleep(5000);
+            }catch (InterruptedException e){
+                System.out.println("interrupted");
+            }
+        }
+
+    }
 
 }

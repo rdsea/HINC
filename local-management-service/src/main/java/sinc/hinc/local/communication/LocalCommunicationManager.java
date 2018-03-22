@@ -9,6 +9,7 @@ import sinc.hinc.communication.MessageDistributingConsumer;
 import sinc.hinc.communication.processing.HINCMessageHander;
 import sinc.hinc.communication.processing.HINCMessageListener;
 import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.local.communication.messagehandlers.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class LocalCommunicationManager {
     private String id;
     private String globalExchange;
 
+    //TODO make singleton
     public LocalCommunicationManager(ConnectionFactory connectionFactory, String group, String id, String globalExchange) throws IOException, TimeoutException {
         groupName = group;
         this.id = id;
@@ -44,6 +46,7 @@ public class LocalCommunicationManager {
         setUpQueue(queueName);
 
         messageDistributingConsumer = new MessageDistributingConsumer(connection.createChannel(), queueName);
+        registerMessageHandler();
         messageDistributingConsumer.start();
 
         registerAtGlobal();
@@ -53,7 +56,7 @@ public class LocalCommunicationManager {
         Map<String,Object> queueArguments = new HashMap<>();
         //TODO escape dots in groupName and id
 
-        publishChannel.queueDeclare(queueName, true, true, true, queueArguments);
+        publishChannel.queueDeclare(queueName, true, false, true, queueArguments);
     }
 
     public void disconnect() throws IOException, TimeoutException {
@@ -83,4 +86,55 @@ public class LocalCommunicationManager {
     }
 
 
+    private void registerMessageHandler(){
+        this.addMessageHandler(new HandleControl());
+        this.addMessageHandler(new HandleQueryIotProviders());
+        this.addMessageHandler(new HandleQueryIotUnit());
+        this.addMessageHandler(new HandleSynRequest());
+        this.addMessageHandler(new HandleUpdateInfoBase());
+    }
+
+
+    //TODO remove - for testing purpose only
+    public static void main(String[] args) throws Exception {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        connectionFactory.setHost("localhost");
+        String group = "group";
+        String id = "id";
+
+        LocalCommunicationManager localCommunicationManager = new LocalCommunicationManager(connectionFactory, group, id, "global_incoming_direct");
+
+        HincMessage register = new HincMessage();
+        register.setHincMessageType(HINCMessageType.SYN_REPLY);
+        register.setGroup("group");
+        register.setSenderID("id");
+        localCommunicationManager.publishMessage(register);
+
+        int i = 0;
+        while(true){
+            i++;
+            HincMessage message = testMessage(i);
+            System.out.println("publish to global");
+            localCommunicationManager.publishMessage(message);
+            i = i%3;
+
+            try {
+                Thread.sleep(2000);
+            }catch (InterruptedException e){
+                System.out.println("interrupted");
+            }
+        }
+
+    }
+    private static HincMessage testMessage(int i){
+        HincMessage message = new HincMessage();
+        message.setPayload("testpayload");
+
+        switch (i%3) {
+            case 0:message.setHincMessageType(HINCMessageType.CONTROL_RESULT);break;
+            case 1:message.setHincMessageType(HINCMessageType.SYN_REPLY);break;
+            case 2:message.setHincMessageType(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT);break;
+        }
+        return message;
+    }
 }

@@ -51,6 +51,7 @@ public class HincMessage {
     Map<String, String> extra;
 
     private HINCMessageType hincMessageType;
+    private String group;
 
     public HincMessage() {
     }
@@ -209,7 +210,36 @@ public class HincMessage {
         return hincMessageType;
     }
 
+
     public void setHincMessageType(HINCMessageType hincMessageType) {
         this.hincMessageType = hincMessageType;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public void setSenderID(String senderID) {
+        this.senderID = senderID;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setExtra(Map<String, String> extra) {
+        this.extra = extra;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 }
