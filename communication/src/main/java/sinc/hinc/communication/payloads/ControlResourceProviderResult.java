@@ -8,15 +8,14 @@ package sinc.hinc.communication.payloads;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
 /**
  *
  * @author hungld
  */
-public class ControlResult {
+public class ControlResourceProviderResult {
 
     public enum CONTROL_RESULT {
         SUCCESS,
@@ -31,10 +30,10 @@ public class ControlResult {
     long executionTime;
     IoTUnit updateIoTUnit;
 
-    public ControlResult() {
+    public ControlResourceProviderResult() {
     }
 
-    public ControlResult(CONTROL_RESULT result, int exitcode, String output) {
+    public ControlResourceProviderResult(CONTROL_RESULT result, int exitcode, String output) {
         this.result = result;
         this.exitcode = exitcode;
         this.output = output;
@@ -80,12 +79,12 @@ public class ControlResult {
         return executionTime;
     }
 
-    public ControlResult hasExecutionTime(long time) {
+    public ControlResourceProviderResult hasExecutionTime(long time) {
         this.executionTime = time;
         return this;
     }
 
-    public ControlResult hasUnitToUpdate(IoTUnit unit) {
+    public ControlResourceProviderResult hasUnitToUpdate(IoTUnit unit) {
         this.updateIoTUnit = unit;
         return this;
     }
@@ -99,10 +98,10 @@ public class ControlResult {
         }
     }
 
-    public static ControlResult fromJson(String json) {
+    public static ControlResourceProviderResult fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(json, ControlResult.class);
+            return mapper.readValue(json, ControlResourceProviderResult.class);
         } catch (IOException ex) {
             return null;
         }

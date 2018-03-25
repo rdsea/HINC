@@ -25,7 +25,8 @@ public enum HINCMessageType {
         // unicast: Client->local, send a control command to local
 //        RPC_CONTROL_LOCAL,
         // unicast: Client->global, send a control command to global
-        CONTROL,
+        CONTROL_IOT_UNIT,
+        CONTROL_RESOURCE_PROVIDER,
         CONTROL_RESULT,
         // unicast/broadcast: Client--> local: subscribe the changes in the gateway
         SUBSCRIBE_SDGATEWAY_LOCAL,
@@ -34,6 +35,7 @@ public enum HINCMessageType {
         UPDATE_INFORMATION_SINGLEIOTUNIT,
         UPDATE_INFORMATION_MICRO_SERVICE,
         UPDATE_INFORMATION_IOTPROVIDER,
+        UPDATE_INFORMATION_CLOUDSERVICE,
         
         // HINC Local update info base: global --> client
         UPDATE_INFO_BASE,

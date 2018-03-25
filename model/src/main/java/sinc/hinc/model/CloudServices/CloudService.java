@@ -37,6 +37,8 @@ public class CloudService {
     // the generic map for describing the service
     private Map<String, String> attributes;
 
+    private String uuid;
+
     public CloudService() {
     }
 
@@ -94,6 +96,14 @@ public class CloudService {
 
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
+    }
+
+    public String getUuid(){
+        return uuid;
+    }
+
+    public void setUuid(String uuid){
+        this.uuid = uuid;
     }
 
     public String toJson() {

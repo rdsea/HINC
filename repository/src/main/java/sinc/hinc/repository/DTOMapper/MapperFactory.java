@@ -6,6 +6,7 @@
 package sinc.hinc.repository.DTOMapper;
 
 import sinc.hinc.common.metadata.HincLocalMeta;
+import sinc.hinc.model.CloudServices.CloudService;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
@@ -15,16 +16,7 @@ import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.model.VirtualNetworkResource.VNF;
-import sinc.hinc.repository.DTOMapper.impl.ConnectivityMapper;
-import sinc.hinc.repository.DTOMapper.impl.ControlPointMapper;
-import sinc.hinc.repository.DTOMapper.impl.DataPointMapper;
-import sinc.hinc.repository.DTOMapper.impl.ExecutionEnvironmentMapper;
-import sinc.hinc.repository.DTOMapper.impl.HINCMetaMapper;
-import sinc.hinc.repository.DTOMapper.impl.IoTUnitMapper;
-import sinc.hinc.repository.DTOMapper.impl.MicroServiceMapper;
-import sinc.hinc.repository.DTOMapper.impl.NetworkServiceMapper;
-import sinc.hinc.repository.DTOMapper.impl.ResourceProviderMapper;
-import sinc.hinc.repository.DTOMapper.impl.VNFMapper;
+import sinc.hinc.repository.DTOMapper.impl.*;
 
 /**
  *
@@ -77,6 +69,10 @@ public class MapperFactory {
 
         if (clazz.equals(NetworkFunctionService.class)) {
             return new NetworkServiceMapper();
+        }
+
+        if (clazz.equals(CloudService.class)) {
+            return new CloudServiceMapper();
         }
 
         System.out.println("Do not found the mapper to persist DB for: " + name);

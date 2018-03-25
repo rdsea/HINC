@@ -90,7 +90,7 @@ public class ControlPoint implements HINCPersistable {
 
     @Override
     public String getUuid() {
-        this.uuid = this.iotUnitID + "/" + name;
+        this.uuid = this.reference + "/" + name;
         return this.uuid;
     }
 

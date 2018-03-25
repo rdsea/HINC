@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>at.ac.tuwien.dsg</groupId>
+    <artifactId>big-query-provider</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
     <parent>
         <groupId>at.ac.tuwien.dsg.hinc</groupId>
         <artifactId>ext-plugin</artifactId>
         <version>1.0</version>
     </parent>
-
-    <groupId>at.ac.tuwien.dsg</groupId>
-    <artifactId>mosquitt-broker-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -49,29 +49,6 @@
 
 
     </dependencies>
-
-    <build>
-        <plugins>
-            <!-- any other plugins -->
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 
 </project>

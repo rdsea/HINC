@@ -109,7 +109,7 @@ public class AbstractDAO<T> {
             logger.debug("Prepare to save " + objects.size() + " items -- " + taskID);
             for (T obj : objects) {
                 ODocument odoc = mapper.toODocument(obj);
-                logger.trace("Adaptor done, obj is: " + odoc.toJSON());
+                logger.debug("Adaptor done, obj is: " + odoc.toJSON());
                 String uuid = odoc.field("uuid");
                 logger.debug("Ok, now saving item with uuid = " + uuid);
                 ODocument existed = null;

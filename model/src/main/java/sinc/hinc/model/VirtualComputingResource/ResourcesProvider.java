@@ -25,6 +25,7 @@ public class ResourcesProvider implements HINCPersistable {
 
     String name;
     String uri;
+    Class resourceType;
 
     // to have this field only for Jackson to work properly
     String uuid;
@@ -91,8 +92,16 @@ public class ResourcesProvider implements HINCPersistable {
     public void setUri(String uri) {
         this.uri = uri;
     }
-    
-     public String toJson() {
+
+    public Class getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(Class resourceType) {
+        this.resourceType = resourceType;
+    }
+
+    public String toJson() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);

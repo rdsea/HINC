@@ -1,7 +1,4 @@
-package sinc.hinc.transformer.btssensor;
-
 import okhttp3.*;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +6,7 @@ import java.io.IOException;
 
 public class APIHandler {
     static Logger logger = LoggerFactory.getLogger(APIHandler.class.getSimpleName());
-    public static String get(String urlBase, String path) throws IOException, ParseException {
+    public static String get(String urlBase, String path) throws IOException {
         urlBase += path;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

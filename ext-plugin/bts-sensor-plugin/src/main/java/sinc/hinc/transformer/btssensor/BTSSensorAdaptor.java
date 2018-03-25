@@ -2,7 +2,6 @@ package sinc.hinc.transformer.btssensor;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.RandomUtils;
 import org.json.simple.JSONObject;
 import sinc.hinc.abstraction.ResourceDriver.PluginDataRepository;
 import sinc.hinc.abstraction.ResourceDriver.ProviderControlResult;
@@ -94,6 +93,7 @@ public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
         provider.setSettings(settings);
         provider.setName("bts sensor provider");
         provider.setUri(endpoint+"/sensor/bts");
+        provider.setResourceType(IoTUnit.class);
 
         List<ControlPoint> controlPoints = new ArrayList<ControlPoint>();
 
@@ -116,7 +116,7 @@ public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
             controlPoint.setControlType(ControlPoint.ControlType.PROVISION);
             controlPoint.setName(description.getName() + " sensor provider");
             controlPoint.setInvokeProtocol(ControlPoint.InvokeProtocol.POST);
-            controlPoint.setReference(description.getUrl());
+            controlPoint.setReference(endpoint+description.getUrl());
             controlPoint.setParameters(description.getSampleConfiguration().asMap());
             controlPoint.setIotUnitID(provider.getUri());
             controlPoints.add(controlPoint);
@@ -159,8 +159,5 @@ public class BTSSensorAdaptor implements ProviderQueryAdaptor<SensorItem>{
         providers.add(provider);
         logger.info("found "+providers.size()+"resource providers from "+getName());
         pluginDataRepository.saveResourceProviders(providers);
-
-        System.out.println("Random number with external dependency: "+RandomUtils.nextInt());
-
     }
 }

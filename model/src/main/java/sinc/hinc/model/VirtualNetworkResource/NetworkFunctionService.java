@@ -2,13 +2,15 @@ package sinc.hinc.model.VirtualNetworkResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import sinc.hinc.model.API.HINCPersistable;
+
 import java.util.Objects;
 
 /*
 * we use this class to represent generic network function services
 * They can be router, broker, or firewall. 
 */
-public class NetworkFunctionService {
+public class NetworkFunctionService implements HINCPersistable {
 
     public enum NetworkServiceType {
         BROKER_MQTT, BROKER_COAP,

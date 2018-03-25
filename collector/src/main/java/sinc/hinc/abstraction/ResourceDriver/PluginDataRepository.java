@@ -1,6 +1,7 @@
 package sinc.hinc.abstraction.ResourceDriver;
 
 import sinc.hinc.model.CloudServices.CloudService;
+import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;

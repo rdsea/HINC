@@ -8,6 +8,7 @@ package sinc.hinc.repository.DAO.orientDB;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
+import sinc.hinc.model.CloudServices.CloudService;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
@@ -24,7 +25,16 @@ import static sinc.hinc.repository.DAO.orientDB.AbstractDAO.logger;
  */
 public class DatabaseUtils {
 
-    static Class[] clazzes = {IoTUnit.class, MicroserviceArtifact.class, SoftwareDefinedGateway.class, DataPoint.class, ControlPoint.class, CloudConnectivity.class, ExecutionEnvironment.class, NetworkFunctionService.class};
+    static Class[] clazzes = {
+            IoTUnit.class,
+            MicroserviceArtifact.class,
+            SoftwareDefinedGateway.class,
+            DataPoint.class, ControlPoint.class,
+            CloudConnectivity.class,
+            ExecutionEnvironment.class,
+            NetworkFunctionService.class,
+            CloudService.class
+    };
 
     public static void initDB() {
         logger.debug("Initilizing the database... any data will be cleaned!");

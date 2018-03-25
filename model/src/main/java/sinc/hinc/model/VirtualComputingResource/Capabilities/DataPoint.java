@@ -19,6 +19,7 @@ public class DataPoint implements HINCPersistable {
 
     // uuid is for internal identifying, name is for human identifying
     String iotUnitID;
+    String cloudServiceId;
     String name;
     // temperature, humidity, GPS, image, video_streaming, state
     String datatype;

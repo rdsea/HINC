@@ -6,9 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
 
-public class ControlBody {
+public class ControlResourceProviderBody {
     private Map<String, String> parameters;
-    private String controlPointUUID;
+    private String resouceProviderUuid;
+    private String controlPointUuid;
     private String adaptorName;
 
 
@@ -20,12 +21,12 @@ public class ControlBody {
         this.parameters = parameters;
     }
 
-    public String getControlPointUUID() {
-        return controlPointUUID;
+    public String getResouceProviderUuid() {
+        return resouceProviderUuid;
     }
 
-    public void setControlPointUUID(String controlPointUUID) {
-        this.controlPointUUID = controlPointUUID;
+    public void setResouceProviderUuid(String resouceProviderUuid) {
+        this.resouceProviderUuid = resouceProviderUuid;
     }
 
     public String getAdaptorName() {
@@ -34,6 +35,14 @@ public class ControlBody {
 
     public void setAdaptorName(String adaptorName) {
         this.adaptorName = adaptorName;
+    }
+
+    public String getControlPointUuid() {
+        return controlPointUuid;
+    }
+
+    public void setControlPointUuid(String controlPointUuid) {
+        this.controlPointUuid = controlPointUuid;
     }
 
     public String toJson() {
@@ -45,11 +54,12 @@ public class ControlBody {
         }
     }
 
-    public static ControlBody fromJson(String json) {
+    public static ControlResourceProviderBody fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(json, ControlBody.class);
+            return mapper.readValue(json, ControlResourceProviderBody.class);
         } catch (IOException ex) {
+            ex.printStackTrace();
             return null;
         }
     }

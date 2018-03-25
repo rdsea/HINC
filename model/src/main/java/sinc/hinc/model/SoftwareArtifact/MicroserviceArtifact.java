@@ -13,13 +13,14 @@ import java.util.Map;
  * @author hungld
  * @author linhsolar
  */
+
 /*
- * We use this one to describe possible software artifact that can be deployed as microservice
- * The artifact is available in some repositories. It is not provided by any provider but 
- * as long as we want we can take it and deploy it. in rsiHUB it is used to deploy bridge 
- * for interoperability. The artifacts and their instances can be combined into pipelines 
- * to perform complex work
+ * This class defines a software unit that performs a specific function. This software
+ * unit can be provided by a provider as a SaaS (pre deployed) or simply as an artifact
+ * e.g. JAR, container. We can also use this to deploy interoperability bridges for internal
+ * rsiHUB usage. The software units can be combined in to pipelines to perform complex work.
  */
+
 public class MicroserviceArtifact {
 
     //indicate where is the artifact

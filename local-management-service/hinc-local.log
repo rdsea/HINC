@@ -1,0 +1,6 @@
+ INFO 21:39:59,387 [main] (Main.java:32) - Starting HINC Local Management Service...
+ERROR 21:39:59,404 [main] (PropertiesManager.java:34) - Configuration file not found: ./sources.conf. Return a black properties.
+DEBUG 21:39:59,405 [main] (PropertiesManager.java:48) - Trying to get parameter: global.interval in the configuration file:./sources.conf, value: null
+ INFO 21:40:14,501 [main] (Main.java:32) - Starting HINC Local Management Service...
+ERROR 21:40:14,516 [main] (PropertiesManager.java:34) - Configuration file not found: ./sources.conf. Return a black properties.
+DEBUG 21:40:14,517 [main] (PropertiesManager.java:48) - Trying to get parameter: global.interval in the configuration file:./sources.conf, value: null
