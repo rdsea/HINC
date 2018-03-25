@@ -15,6 +15,7 @@ import java.util.concurrent.TimeoutException;
 
 public class GlobalCommunicationManager {
     private ObjectMapper objectMapper = new ObjectMapper();
+    private static GlobalCommunicationManager globalCommunicationManager;
 
     private ConnectionFactory factory = null;
     private Connection connection = null;
@@ -29,8 +30,29 @@ public class GlobalCommunicationManager {
     private Map<HINCMessageType, UnmarshallingConsumer> messageTypeQueues = new HashMap<>();
 
     //TODO make singleton
-    public GlobalCommunicationManager(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
+    private GlobalCommunicationManager(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
         connect(connectionFactory);
+    }
+
+    public static GlobalCommunicationManager getInstance(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
+        if(globalCommunicationManager == null){
+            globalCommunicationManager = new GlobalCommunicationManager(connectionFactory);
+        }
+        return globalCommunicationManager;
+    }
+
+    public static GlobalCommunicationManager getInstance() throws IOException, TimeoutException {
+        if(globalCommunicationManager == null){
+            globalCommunicationManager = new GlobalCommunicationManager(getDefaultConnectionFactory());
+        }
+        return globalCommunicationManager;
+    }
+
+    //TODO change connectionfactory behaviour
+    private static ConnectionFactory getDefaultConnectionFactory(){
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        connectionFactory.setHost("localhost");
+        return connectionFactory;
     }
 
     public void connect(ConnectionFactory connectionFactory) throws IOException, TimeoutException {

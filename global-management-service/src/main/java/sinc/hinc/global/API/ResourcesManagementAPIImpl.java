@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import sinc.hinc.common.metadata.HincLocalMeta;
+import sinc.hinc.communication.GlobalCommunicationManager;
 import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
@@ -30,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
+
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
@@ -50,27 +53,37 @@ import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
  * @author hungld
  */
 @Service
-//@Path("/")
 public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
 
-    static Logger logger = LoggerFactory.getLogger("HINC");
-    HINCMessageSender comMng = getCommunicationManager();
-    List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private GlobalCommunicationManager globalCommunicationManager;
 
-    {
-        // check database, if not exist then create
-        DatabaseUtils.initDB();
-    }
+
+    //private HINCMessageSender comMng = getCommunicationManager();
+    private List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
+    private List<MicroserviceArtifact> staticArtifact = new ArrayList<>();
+    private List<NetworkFunctionService> networkServiceMock = new ArrayList<>();
+    private List<CloudService> staticcloudService = new ArrayList<>();
+    private List<CloudProvider> staticcloudProvider = new ArrayList<>();
+
 
     public ResourcesManagementAPIImpl() {
+        // check database, if not exist then create
+        DatabaseUtils.initDB();
+        try {
+            globalCommunicationManager = GlobalCommunicationManager.getInstance();
+        } catch (IOException | TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
+    /* TODO remove old code
     public HINCMessageSender getCommunicationManager() {
         if (comMng == null) {
             this.comMng = new HINCMessageSender(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
         }
         return this.comMng;
-    }
+    }*/
 
     /*
     * IoTUnit represents an IoT Virtual Resource, including datapoint, controlpoint, etc.
@@ -113,6 +126,16 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         if (infoBases != null && !infoBases.isEmpty() && !infoBases.trim().equals("null")) {
             queryMessage.hasExtra("infoBases", infoBases);
         }
+
+        try {
+            //TODO async result
+            //TODO check if another messagehandler is necessary (because old code uses a seperate messagehandler)
+            globalCommunicationManager.broadcastMessage(queryMessage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /*
         comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
             long latestTime = 0;
             long quantity = 0;
@@ -163,6 +186,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
+        */
 
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(eventFileName, true)))) {
             logger.debug("Now saving events to file: " + eventFileName);
@@ -205,7 +229,14 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         }
 
         final Set<ResourcesProvider> result = new HashSet<>();
-        comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
+        try {
+            //TODO async result
+            //TODO check if another messagehandler is necessary (because old code uses a seperate messagehandler)
+            globalCommunicationManager.broadcastMessage(queryMessage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /*comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
             @Override
             public HincMessage handleMessage(HincMessage message) {
                 WrapperProvider wrapper = new WrapperProvider(message.getPayload());
@@ -223,7 +254,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             Thread.sleep(timeout);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
-        }
+        }*/
         return result;
     }
 
@@ -280,7 +311,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     * This is just a mockdata. We will change it by loading data from preconfiguration file
     * for well-known network services or through dynamic registration
      */
-    List<NetworkFunctionService> networkServiceMock;
+
 
     private void generateNetworkMock() { // create MOCK
         networkServiceMock = new ArrayList<>();
@@ -316,7 +347,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
      * TODO: query and read from static files about cloud providers
     * also we need to implement registration
      */
-    List<CloudService> staticcloudService = null;
+
 
     @Override
     //TODO mocked call
@@ -346,7 +377,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     }
     
     //TODO: query and load static providers from files.
-    List<CloudProvider> staticcloudProvider = null;
+
 
     @Override
     //TODO mocked call
@@ -370,7 +401,16 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         //TODO Groupcast/Broadcast CONTROL (SenderID:UUID of Global, ResponseTopic: Temporary)
         HincMessage controlPointRequest = new HincMessage(HINCMessageType.CONTROL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), controlPointUUID);
         controlPointRequest.hasExtra("param", param);
-        return comMng.synCall(controlPointRequest);
+        try {
+            //TODO async result
+            //TODO check if another messagehandler is necessary (because old code uses a seperate messagehandler)
+            //TODO change to unicast
+            globalCommunicationManager.broadcastMessage(controlPointRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "todo";
     }
 
     @Override
@@ -437,7 +477,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     * also we need to implement registration
     * only mockup for demonstration purpose
      */
-    List<MicroserviceArtifact> staticArtifact = null;
+
     
     @Override
     //TODO mocked call

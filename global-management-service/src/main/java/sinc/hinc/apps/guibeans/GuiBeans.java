@@ -283,6 +283,7 @@ public class GuiBeans {
     public Collection<HincLocalMeta> getHinclocals() {
         if (queryUpdateFlags[0] == true) {
             hinclocals.clear();
+            //TODO change to async call
             List<HincLocalMeta> result = hincApi.queryHINCLocal(0);
             if (result !=null)
             hinclocals.addAll(result);
