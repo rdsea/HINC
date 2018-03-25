@@ -16,6 +16,7 @@ import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
  *
  * @author hungld
  */
+//TODO remove
 public class WrapperProvider {
 
     List<ResourcesProvider> units = new ArrayList<>();

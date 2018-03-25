@@ -141,7 +141,7 @@ public class HincLocalMeta {
             return mapper.writeValueAsString(this);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
-            return null;
+            return "";
         }
     }
 
@@ -200,7 +200,7 @@ public class HincLocalMeta {
             return mapper.readValue(json, HincLocalMeta.class);
         } catch (IOException ex) {
             ex.printStackTrace();
-            return null;
+            return new HincLocalMeta();
         }
 
     }

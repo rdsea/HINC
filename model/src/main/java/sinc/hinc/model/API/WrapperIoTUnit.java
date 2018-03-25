@@ -16,6 +16,7 @@ import sinc.hinc.model.VirtualComputingResource.IoTUnit;
  *
  * @author hungld
  */
+//TODO remove
 public class WrapperIoTUnit {
 
     List<IoTUnit> units = new ArrayList<>();

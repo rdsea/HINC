@@ -50,11 +50,13 @@ public class HandleUpdateInfoBase implements IMessageHandler {
         //TODO check this questionable piece of code
         // update handlers to send back the metadata of HINC local
         HincLocalMeta meta = HincConfiguration.getLocalMeta();
-        System.out.println("GETTING HANDLLER. NUMBER of HANDERS: " + Main.getListener().getHandlers().size());
+        /*System.out.println("GETTING HANDLLER. NUMBER of HANDERS: " + Main.getListener().getHandlers().size());
         for (HINCMessageListener.Handler handler: Main.getListener().getHandlers()){
             System.out.println("adding handler ...: " + handler.getTopic() + " -- " + handler.getMessageType());
             meta.hasHandler(handler.getTopic(), handler.getMessageType(), handler.getHandlerMethod().getClass().getName());
-        }
+        }*/
+
+        //TODO add metadata to message: handler.getTopic(), handler.getMessageType(), handler.getClass
 
         HincMessage reply =  new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), hincMessage.getFeedbackTopic(), "", meta.toJson());
         localCommunicationManager.sendToGlobal(reply);

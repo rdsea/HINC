@@ -16,6 +16,7 @@ import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
  *
  * @author hungld
  */
+//TODO remove
 public class WrapperMicroserviceArtifact {
 
     List<MicroserviceArtifact> mServices = new ArrayList<>();
