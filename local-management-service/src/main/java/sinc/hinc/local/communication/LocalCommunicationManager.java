@@ -102,7 +102,7 @@ public class LocalCommunicationManager {
 
 
     private void registerMessageHandler(){
-        this.addMessageHandler(new HandleControl());
+        this.addMessageHandler(new HandleControl(this));
         this.addMessageHandler(new HandleQueryIotProviders(this));
         this.addMessageHandler(new HandleQueryIotUnit(this));
         this.addMessageHandler(new HandleSynRequest(this));
