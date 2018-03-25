@@ -19,5 +19,7 @@ public class HandleControlResult implements IMessageHandler {
     public void handleMessage(HincMessage hincMessage) {
         logger.debug("received " + hincMessage.toString());
         //TODO implement MessageHandler
+
+        //TODO make async
     }
 }

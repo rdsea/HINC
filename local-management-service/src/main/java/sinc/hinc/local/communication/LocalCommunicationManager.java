@@ -4,10 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
 import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.IMessageHandler;
 import sinc.hinc.communication.MessageDistributingConsumer;
-import sinc.hinc.communication.processing.HINCMessageHander;
-import sinc.hinc.communication.processing.HINCMessageListener;
 import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.local.communication.messagehandlers.*;
 
@@ -65,9 +64,18 @@ public class LocalCommunicationManager {
     }
 
     public void registerAtGlobal(){
-        HincMessage hincMessage = new HincMessage();
+        HincMessage registerMessage = new HincMessage();
         //TODO change to correct messagetype
-        hincMessage.setMsgType(HINCMessageType.SYN_REPLY.toString());
+        registerMessage.setMsgType(HINCMessageType.SYN_REPLY.toString());
+        //registerMessage.setSenderID(HincConfiguration.getMyUUID());
+        registerMessage.setSenderID(id);
+        //registerMessage.setTopic(HincConfiguration.getGroupName());
+        registerMessage.setTopic(groupName);
+        registerMessage.setFeedbackTopic("");
+        registerMessage.setPayload(HincConfiguration.getLocalMeta().toJson());
+
+        registerMessage.setGroup(groupName);
+        registerMessage.setHincMessageType(HINCMessageType.SYN_REPLY);
 
         //TODO send message to GMS --> GMS will then bind LMS Queue to GMS Exchange
     }
@@ -76,22 +84,29 @@ public class LocalCommunicationManager {
         messageDistributingConsumer.addMessageHandler(messageHandler);
     }
 
-    public void publishMessage(HincMessage hincMessage) throws IOException {
-        AMQP.BasicProperties basicProperties = null;
+    public void sendToGlobal(HincMessage hincMessage) {
+        try {
 
-        byte[] message = objectMapper.writeValueAsBytes(hincMessage);
-        //TODO check basicproperties and other flags (boolean mandatory, boolean immediate)
-        String routing_key = hincMessage.getHincMessageType().name();
-        publishChannel.basicPublish(globalExchange, routing_key, basicProperties, message);
+            AMQP.BasicProperties basicProperties = null;
+            byte[] message = objectMapper.writeValueAsBytes(hincMessage);
+
+            //TODO check basicproperties and other flags (boolean mandatory, boolean immediate)
+            String routing_key = hincMessage.getHincMessageType().name();
+            publishChannel.basicPublish(globalExchange, routing_key, basicProperties, message);
+
+        } catch (IOException e) {
+            //TODO errorhandling
+            e.printStackTrace();
+        }
     }
 
 
     private void registerMessageHandler(){
         this.addMessageHandler(new HandleControl());
-        this.addMessageHandler(new HandleQueryIotProviders());
-        this.addMessageHandler(new HandleQueryIotUnit());
-        this.addMessageHandler(new HandleSynRequest());
-        this.addMessageHandler(new HandleUpdateInfoBase());
+        this.addMessageHandler(new HandleQueryIotProviders(this));
+        this.addMessageHandler(new HandleQueryIotUnit(this));
+        this.addMessageHandler(new HandleSynRequest(this));
+        this.addMessageHandler(new HandleUpdateInfoBase(this));
     }
 
 
@@ -108,14 +123,14 @@ public class LocalCommunicationManager {
         register.setHincMessageType(HINCMessageType.SYN_REPLY);
         register.setGroup("group");
         register.setSenderID("id");
-        localCommunicationManager.publishMessage(register);
+        localCommunicationManager.sendToGlobal(register);
 
         int i = 0;
         while(true){
             i++;
             HincMessage message = testMessage(i);
             System.out.println("publish to global");
-            localCommunicationManager.publishMessage(message);
+            localCommunicationManager.sendToGlobal(message);
             i = i%3;
 
             try {
