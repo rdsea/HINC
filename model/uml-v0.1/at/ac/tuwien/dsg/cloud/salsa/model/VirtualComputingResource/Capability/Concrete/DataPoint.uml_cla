@@ -6,7 +6,7 @@
    isActive='false'
    isFinalSpecialization='false'
    isLeaf='false'
-   name='DataPoint'
+   name='sinc.hinc.model.capabilities.DataPoint'
    visibility='public'>
   <generalization xmi:type='uml:Generalization' xmi:uuid='urn:uuid:90cc9571-61c8-417b-ada5-7c636898a503'
     isSubstitutable='true'>
@@ -89,7 +89,7 @@
      value='1'
      visibility='public'/>
    <ownedComment xmi:type='uml:Comment' xmi:uuid='urn:uuid:4b8f88e1-9d81-4c6f-b803-0cba5703a0d6'
-     body='&#xa;The class which implementation functions to interact with this DataPoint Some function can be: - onStateChanged() - onBufferChanged(String bufferName,&#xa;Object oldData, Object newData); - Stream&lt;Object> getDataStream(String buffer); - setData(String bufferName, Object newData); - changeDataRate(DataPoint&#xa;datapoint, Long rate);&#xa;'/>
+     body='&#xa;The class which implementation functions to interact with this sinc.hinc.model.capabilities.DataPoint Some function can be: - onStateChanged() - onBufferChanged(String bufferName,&#xa;Object oldData, Object newData); - Stream&lt;Object> getDataStream(String buffer); - setData(String bufferName, Object newData); - changeDataRate(sinc.hinc.model.capabilities.DataPoint&#xa;datapoint, Long rate);&#xa;'/>
    <upperValue xmi:type='uml:LiteralUnlimitedNatural' xmi:uuid='urn:uuid:26007244-36b8-4431-85a2-2397582afc8f'
      value='1'
      visibility='public'/>

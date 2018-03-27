@@ -1565,7 +1565,7 @@
             <property xmi:type='DI:Property' key='EvenRowColor' value='#eef2f5'/>
             <property xmi:type='DI:Property' key='showOperations' value='true'/>
             <property xmi:type='DI:Property' key='showAttributes' value='true'/>
-            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDC;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Concrete;;###;;ControlPoint' presentation='SYMBOLIC'/>
+            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDC;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Concrete;;###;;sinc.hinc.model.capabilities.ControlPoint' presentation='SYMBOLIC'/>
             <size xmi:type='DI:Dimension' height='114.828125' width='200.0'/>
           </contained>
           <contained xmi:type='DI:GraphNode' xmi:id='ide9d30a41-615e-4aaa-a7b5-a5c3d3704c46'>
@@ -1770,7 +1770,7 @@
             <property xmi:type='DI:Property' key='EvenRowColor' value='#eef2f5'/>
             <property xmi:type='DI:Property' key='showOperations' value='true'/>
             <property xmi:type='DI:Property' key='showAttributes' value='true'/>
-            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDC;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Concrete;;###;;DataPoint' presentation='SYMBOLIC'/>
+            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDC;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Concrete;;###;;sinc.hinc.model.capabilities.DataPoint' presentation='SYMBOLIC'/>
             <size xmi:type='DI:Dimension' height='159.2421875' width='200.0'/>
           </contained>
           <contained xmi:type='DI:GraphNode' xmi:id='id419fc745-77a2-482e-be40-b2bb53b1d97c'>
@@ -2026,7 +2026,7 @@
             <property xmi:type='DI:Property' key='lineColor' value='#646464'/>
             <property xmi:type='DI:Property' key='fontColor' value='#0'/>
             <property xmi:type='DI:Property' key='lineWidth' value='1.0'/>
-            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDEXT;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Concrete;;DataPoint;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Capability'/>
+            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDEXT;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Concrete;;sinc.hinc.model.capabilities.DataPoint;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Capability'/>
             <waypoint xmi:type='DI:Point' x='583.938720703125' y='521.8604736328125'/>
             <waypoint xmi:type='DI:Point' x='183.41395568847656' y='423.3224182128906'/>
           </contained>
@@ -2098,7 +2098,7 @@
             <property xmi:type='DI:Property' key='lineColor' value='#646464'/>
             <property xmi:type='DI:Property' key='fontColor' value='#0'/>
             <property xmi:type='DI:Property' key='lineWidth' value='1.0'/>
-            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDEXT;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Concrete;;ControlPoint;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Capability'/>
+            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDEXT;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Concrete;;sinc.hinc.model.capabilities.ControlPoint;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualComputingResource.Capability.Capability'/>
             <waypoint xmi:type='DI:Point' x='450.08428955078125' y='398.0401916503906'/>
             <waypoint xmi:type='DI:Point' x='246.49998474121094' y='398.0401916503906'/>
             <waypoint xmi:type='DI:Point' x='246.49998474121094' y='399.4563293457031'/>
@@ -3234,7 +3234,7 @@
             <property xmi:type='DI:Property' key='EvenRowColor' value='#eef2f5'/>
             <property xmi:type='DI:Property' key='showOperations' value='true'/>
             <property xmi:type='DI:Property' key='showAttributes' value='true'/>
-            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDC;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualNetworkResource;;###;;AccessPoint' presentation='SYMBOLIC'/>
+            <semanticModel xmi:type='DI:CoreSemanticModelBridge' element='JAVA:JIDC;;at.ac.tuwien.dsg.cloud.salsa.model.VirtualNetworkResource;;###;;sinc.hinc.model.accessPoint.AccessPoint' presentation='SYMBOLIC'/>
             <size xmi:type='DI:Dimension' height='114.828125' width='200.0'/>
           </contained>
           <contained xmi:type='DI:GraphNode' xmi:id='id1c0e8345-1af4-48c1-8d05-2942e96b3b82'>
