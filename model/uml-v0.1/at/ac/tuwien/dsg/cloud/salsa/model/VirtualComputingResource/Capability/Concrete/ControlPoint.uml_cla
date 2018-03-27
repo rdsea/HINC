@@ -6,7 +6,7 @@
    isActive='false'
    isFinalSpecialization='false'
    isLeaf='false'
-   name='ControlPoint'
+   name='sinc.hinc.model.capabilities.ControlPoint'
    visibility='public'>
   <generalization xmi:type='uml:Generalization' xmi:uuid='urn:uuid:0dbdfe89-968f-4f82-b00a-4228acbceda6'
     isSubstitutable='true'>
