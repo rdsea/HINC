@@ -12,16 +12,9 @@ import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.processing.HINCMessageListener;
-import sinc.hinc.local.messageHandlers.HandleControl;
-import sinc.hinc.local.messageHandlers.HandleQueryIoTUnit;
-import sinc.hinc.local.messageHandlers.HandleQueryVNF;
-import sinc.hinc.local.messageHandlers.HandleSyn;
+import sinc.hinc.local.messageHandlers.*;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.local.messageHandlers.HandleQueryProviders;
-import sinc.hinc.local.messageHandlers.HandleQueryService;
-import sinc.hinc.local.messageHandlers.HandleUpdateInfobase;
-import sinc.hinc.local.messageHandlers.HandleUpdateIoTUnit;
 
 import static sinc.hinc.local.LocalManagementService.FACTORY;
 import static sinc.hinc.local.LocalManagementService.LISTENER;
