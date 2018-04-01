@@ -10,6 +10,9 @@ package sinc.hinc.common.metadata;
  * @author hungld
  */
 public enum HINCMessageType {
+        QUERY_RESOURCES,
+        QUERY_RESOURCES_REPLY,
+
         //TODO remove unused
         /**
          * TODO remove comment
