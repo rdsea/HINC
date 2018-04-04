@@ -91,6 +91,7 @@ public class LocalCommunicationManager {
         registerMessage.setGroup(groupName);
         registerMessage.setHincMessageType(HINCMessageType.SYN_REPLY);
 
+        sendToGlobal(registerMessage);
     }
 
     public void addMessageHandler(HINCMessageHandler messageHandler){
@@ -156,12 +157,6 @@ public class LocalCommunicationManager {
 
         LocalCommunicationManager.initialize("localhost", group, id, "global_incoming_direct");
         LocalCommunicationManager localCommunicationManager = LocalCommunicationManager.getInstance();
-
-        HincMessage register = new HincMessage();
-        register.setHincMessageType(HINCMessageType.SYN_REPLY);
-        register.setGroup("group");
-        register.setSenderID("id");
-        localCommunicationManager.sendToGlobal(register);
 
         int i = 0;
         while(true){
