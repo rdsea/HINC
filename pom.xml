@@ -19,7 +19,6 @@
 
     <modules>
         <module>model</module>
-        <module>communication</module>
         <module>collector</module>
         <module>local-management-service</module>
         <module>repository</module>
