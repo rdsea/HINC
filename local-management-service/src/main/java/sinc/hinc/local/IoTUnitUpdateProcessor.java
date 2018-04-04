@@ -5,13 +5,6 @@
  */
 package sinc.hinc.local;
 
-import sinc.hinc.abstraction.ResourceDriver.IoTUnitProcessor;
-import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.common.metadata.HincMessageTopic;
-import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.factory.MessageClientFactory;
-import sinc.hinc.communication.processing.HincMessage;
-
 /**
  *
  * @author hungld

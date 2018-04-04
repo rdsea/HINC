@@ -22,6 +22,7 @@ public class HandleQueryIotUnit extends HINCMessageHandler{
 
     @Override
     protected void doHandle(HincMessage msg) {
+        logger.debug("received " + msg.toString());
         //TODO implement Handler
     }
 }

@@ -57,9 +57,5 @@ public class Main {
                 }
             }
         }
-
-        // try to register itself
-        localManagementService.connect();
-        localManagementService.registerAtGlobal();
     }
 }

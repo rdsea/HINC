@@ -79,7 +79,6 @@ public class LocalCommunicationManager {
 
     public void registerAtGlobal(){
         HincMessage registerMessage = new HincMessage();
-        //TODO change to correct messagetype
         registerMessage.setMsgType(HINCMessageType.SYN_REPLY.toString());
         //registerMessage.setSenderID(HincConfiguration.getMyUUID());
         registerMessage.setSenderID(id);
@@ -91,7 +90,6 @@ public class LocalCommunicationManager {
         registerMessage.setGroup(groupName);
         registerMessage.setHincMessageType(HINCMessageType.SYN_REPLY);
 
-        //TODO send message to GMS --> GMS will then bind LMS Queue to GMS Exchange
     }
 
     public void addMessageHandler(HINCMessageHandler messageHandler){

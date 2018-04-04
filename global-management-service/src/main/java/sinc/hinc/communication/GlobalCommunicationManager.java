@@ -8,6 +8,8 @@ import sinc.hinc.communication.messagehandlers.HandleSynReply;
 import sinc.hinc.communication.messagehandlers.HandleUpdateInformationSingleIotUnit;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 public class GlobalCommunicationManager {
@@ -54,6 +56,7 @@ public class GlobalCommunicationManager {
         managementChannel = connection.createChannel();
         publishChannel = connection.createChannel();
 
+        setUpInput();
         setUpExchanges();
 
         messageDistributingConsumer = new MessageDistributingConsumer(connection.createChannel(), incomingExchange);
@@ -67,6 +70,18 @@ public class GlobalCommunicationManager {
         connection.close();
     }
 
+    private void setUpInput() throws IOException {
+        Map<String,Object> queueArguments = new HashMap<>();
+
+        publishChannel.queueDeclare(incomingExchange, true, false, true, queueArguments);
+        //declare/create incoming exchange
+        /* TODO tweak exchange settings
+        exchangeArguments = new HashMap<>();
+        managementChannel.exchangeDeclare(incomingExchange, BuiltinExchangeType.FANOUT, true, false, false, exchangeArguments);
+        */
+        managementChannel.exchangeDeclare(incomingExchange, BuiltinExchangeType.FANOUT, true);
+        managementChannel.queueBind(incomingExchange, incomingExchange, "");
+    }
 
     public void setUpExchanges() throws IOException {
         //declare/create outgoing broadcast exchange
@@ -89,14 +104,6 @@ public class GlobalCommunicationManager {
         managementChannel.exchangeDeclare(outgoingExchange, BuiltinExchangeType.TOPIC, true, false, true, exchangeArguments);
         */
         managementChannel.exchangeDeclare(outgoingUnicast, BuiltinExchangeType.DIRECT, true);
-
-
-        //declare/create incoming exchange
-        /* TODO tweak exchange settings
-        exchangeArguments = new HashMap<>();
-        managementChannel.exchangeDeclare(incomingExchange, BuiltinExchangeType.FANOUT, true, false, false, exchangeArguments);
-        */
-        managementChannel.exchangeDeclare(incomingExchange, BuiltinExchangeType.FANOUT, true);
     }
 
 
@@ -150,8 +157,8 @@ public class GlobalCommunicationManager {
     //TODO remove main - it's just for testing purposes
     public static void main(String[] args) throws Exception {
 
-        GlobalCommunicationManager globalCommunicationManager = GlobalCommunicationManager.getInstance();
         GlobalCommunicationManager.initialize("localhost");
+        GlobalCommunicationManager globalCommunicationManager = GlobalCommunicationManager.getInstance();
 
         int i = 0;
         while(true){

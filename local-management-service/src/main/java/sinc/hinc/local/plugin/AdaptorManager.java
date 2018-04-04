@@ -2,7 +2,6 @@ package sinc.hinc.local.plugin;
 
 import org.slf4j.Logger;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.factory.MessageClientFactory;
 import sinc.hinc.local.LocalManagementService;
 import sinc.hinc.local.PropertiesManager;
 

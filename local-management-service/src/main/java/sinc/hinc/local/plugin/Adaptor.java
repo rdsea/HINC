@@ -3,7 +3,7 @@ package sinc.hinc.local.plugin;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.HincMessage;
-import sinc.hinc.communication.factory.MessageClientFactory;
+import sinc.hinc.local.communication.LocalCommunicationManager;
 
 import java.util.Map;
 
@@ -38,8 +38,7 @@ public class Adaptor {
     }
 
     public void pushMessage(HincMessage message){
-        MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker());
-        FACTORY.getMessagePublisher().pushMessage(message);
+        LocalCommunicationManager.getInstance().sendToGlobal(message);
     }
 
     public void scanResources(){
