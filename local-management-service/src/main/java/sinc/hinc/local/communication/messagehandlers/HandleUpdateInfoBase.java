@@ -5,15 +5,11 @@ import org.slf4j.LoggerFactory;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.IMessageHandler;
-import sinc.hinc.communication.processing.HINCMessageListener;
-import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.local.Main;
+import sinc.hinc.communication.HINCMessageHandler;
+import sinc.hinc.communication.HincMessage;
 import sinc.hinc.local.communication.LocalCommunicationManager;
 
-import java.io.IOException;
-
-public class HandleUpdateInfoBase implements IMessageHandler {
+public class HandleUpdateInfoBase extends HINCMessageHandler{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private LocalCommunicationManager localCommunicationManager;
 
@@ -22,12 +18,12 @@ public class HandleUpdateInfoBase implements IMessageHandler {
     }
 
     @Override
-    public HINCMessageType getMessageType() {
+    protected HINCMessageType acceptedMessageType() {
         return HINCMessageType.UPDATE_INFO_BASE;
     }
 
     @Override
-    public void handleMessage(HincMessage hincMessage) {
+    protected void doHandle(HincMessage hincMessage) {
         logger.debug("received " + hincMessage.toString());
         //TODO implement MessageHandler
 
@@ -59,6 +55,9 @@ public class HandleUpdateInfoBase implements IMessageHandler {
         //TODO add metadata to message: handler.getTopic(), handler.getMessageType(), handler.getClass
 
         HincMessage reply =  new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), hincMessage.getFeedbackTopic(), "", meta.toJson());
+
         localCommunicationManager.sendToGlobal(reply);
+
     }
+
 }

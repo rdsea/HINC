@@ -8,7 +8,6 @@ import com.rabbitmq.client.Envelope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.communication.processing.HincMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,8 +18,7 @@ import java.util.Map;
 public class MessageDistributingConsumer extends DefaultConsumer {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ObjectMapper objectMapper = new ObjectMapper();
-    //TODO check concurrency
-    private Map<HINCMessageType, List<IMessageHandler>> messageHandlerMap = new HashMap<>();
+    private HINCMessageHandler handler;
     private String queue;
 
     public MessageDistributingConsumer(Channel channel, String queue) {
@@ -35,26 +33,20 @@ public class MessageDistributingConsumer extends DefaultConsumer {
             throws IOException {
 
         HincMessage hincMessage = objectMapper.readValue(body, HincMessage.class);
-
         logger.debug("received and distributing: " + hincMessage.toString());
-
-        List<IMessageHandler> messageHandlerList = messageHandlerMap.get(hincMessage.getHincMessageType());
-        if(messageHandlerList!=null) {
-            messageHandlerList.parallelStream().forEach(x -> x.handleMessage(hincMessage));
-        }
+        this.handler.handleMessage(hincMessage);
     }
 
 
-    //TODO check concurrency
-    public void addMessageHandler(IMessageHandler messageHandler){
-        List<IMessageHandler> messageHandlerList = messageHandlerMap.get(messageHandler.getMessageType());
-
-        if(messageHandlerList == null){
-            messageHandlerList = new ArrayList<>();
-            messageHandlerList.add(messageHandler);
-            messageHandlerMap.put(messageHandler.getMessageType(), messageHandlerList);
+    public void addMessageHandler(HINCMessageHandler handler){
+        if(this.handler == null){
+            this.handler = handler;
         }else{
-            messageHandlerList.add(messageHandler);
+            HINCMessageHandler cur = this.handler;
+            while(cur.getNextHandler() != null){
+                cur = cur.getNextHandler();
+            }
+            cur.setNextHandler(handler);
         }
     }
 

@@ -6,7 +6,7 @@ import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.communication.messagehandlers.HandleControlResult;
 import sinc.hinc.communication.messagehandlers.HandleSynReply;
 import sinc.hinc.communication.messagehandlers.HandleUpdateInformationSingleIotUnit;
-import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.communication.messagehandlers.UnmarshallingConsumer;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,6 +29,7 @@ public class GlobalCommunicationManager {
     private String incomingExchange = "global_incoming_direct";
 
     private Map<HINCMessageType, UnmarshallingConsumer> messageTypeQueues = new HashMap<>();
+
 
     //TODO make singleton
     private GlobalCommunicationManager(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
@@ -105,31 +106,31 @@ public class GlobalCommunicationManager {
     }
 
 
-    public void addMessageHandler(IMessageHandler messageHandler) throws IOException {
-        String queueName = messageHandler.getMessageType().name();
+    public void addMessageHandler(HINCMessageHandler messageHandler) throws IOException {
+        String queueName = messageHandler.acceptedMessageType().name();
 
         //TODO tweak queue settings
         Map<String, Object> queueArguments = new HashMap<>();
         managementChannel.queueDeclare(queueName, true, true, false, queueArguments);
         //bindqueue
 
-        String routing_key = messageHandler.getMessageType().name();
+        String routing_key = messageHandler.acceptedMessageType().name();
         managementChannel.queueBind(queueName, incomingExchange, routing_key);
 
         UnmarshallingConsumer consumer = new UnmarshallingConsumer(connection.createChannel(), messageHandler, queueName);
         removeMessageHandler(messageHandler);
-        messageTypeQueues.put(messageHandler.getMessageType(), consumer);
+        messageTypeQueues.put(messageHandler.acceptedMessageType(), consumer);
         consumer.start();
     }
 
-    public void removeMessageHandler(IMessageHandler messageHandler) throws IOException {
-        UnmarshallingConsumer consumer = messageTypeQueues.remove(messageHandler.getMessageType());
+    public void removeMessageHandler(HINCMessageHandler messageHandler) throws IOException {
+        UnmarshallingConsumer consumer = messageTypeQueues.remove(messageHandler.acceptedMessageType());
         if(consumer!=null){
             consumer.close();
 
-            String routing_key = messageHandler.getMessageType().name();
-            managementChannel.queueUnbind(messageHandler.getMessageType().name(), incomingExchange, routing_key);
-            managementChannel.queueDelete(messageHandler.getMessageType().name());
+            String routing_key = messageHandler.acceptedMessageType().name();
+            managementChannel.queueUnbind(messageHandler.acceptedMessageType().name(), incomingExchange, routing_key);
+            managementChannel.queueDelete(messageHandler.acceptedMessageType().name());
         }
     }
 
@@ -175,7 +176,7 @@ public class GlobalCommunicationManager {
         this.addMessageHandler(new HandleUpdateInformationSingleIotUnit());
     }
 
-    //TODO manage results -> callback queues
+    //TODO send query results to temporary queue
     /*public void temporaryBroadcast(HincMessage hincMessage, IMessageHandler messageHandler) throws IOException {
         String uuid = UUID.randomUUID().toString();
         String feedbackRoutingKey = hincMessage.getHincMessageType().name() + uuid;

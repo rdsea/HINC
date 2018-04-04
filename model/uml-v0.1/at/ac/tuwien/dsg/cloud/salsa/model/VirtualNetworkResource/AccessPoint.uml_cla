@@ -6,7 +6,7 @@
    isActive='false'
    isFinalSpecialization='false'
    isLeaf='false'
-   name='AccessPoint'
+   name='sinc.hinc.model.accessPoint.AccessPoint'
    visibility='public'>
   <ownedAttribute xmi:type='uml:Property' xmi:uuid='urn:uuid:f82fcec2-cf43-4a4b-a455-0487575093b8'
     isDerived='false'

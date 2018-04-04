@@ -1,24 +1,19 @@
 package sinc.hinc.local.communication.messagehandlers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.IMessageHandler;
-import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.communication.HINCMessageHandler;
+import sinc.hinc.communication.HincMessage;
 import sinc.hinc.local.LocalManagementService;
 import sinc.hinc.local.communication.LocalCommunicationManager;
-import sinc.hinc.model.API.WrapperProvider;
-import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class HandleQueryIotProviders implements IMessageHandler {
+public class HandleQueryIotProviders extends HINCMessageHandler{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private LocalCommunicationManager localCommunicationManager;
 
@@ -27,12 +22,7 @@ public class HandleQueryIotProviders implements IMessageHandler {
     }
 
     @Override
-    public HINCMessageType getMessageType() {
-        return HINCMessageType.QUERY_IOT_PROVIDERS;
-    }
-
-    @Override
-    public void handleMessage(HincMessage hincMessage) {
+    protected void doHandle(HincMessage hincMessage) {
         logger.debug("received " + hincMessage.toString());
         //TODO implement MessageHandler
 
@@ -51,7 +41,6 @@ public class HandleQueryIotProviders implements IMessageHandler {
             }
             if (found == false) {
                 // this local service does not in the Information Bases of the query, so just pass.
-                return;
             }
         }
 
@@ -68,19 +57,10 @@ public class HandleQueryIotProviders implements IMessageHandler {
             }
         }
 
-        AbstractDAO<ResourcesProvider> rpDAO = new AbstractDAO<>(ResourcesProvider.class);
-        List<ResourcesProvider> providerList = rpDAO.readAll(limit);
-        WrapperProvider wrapper = new WrapperProvider(providerList);
-        ObjectMapper mapper = new ObjectMapper();
-        String replyPayload;
-        try {
-            replyPayload = mapper.writeValueAsString(wrapper);
-            logger.debug("Size of the reply message: " + (replyPayload.length() / 1024) + "KB");
-            HincMessage replyMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT.toString(), HincConfiguration.getMyUUID(), hincMessage.getFeedbackTopic(), "", replyPayload);
-            logger.debug("Resource provider reply: " + replyMsg.toJson());
-            localCommunicationManager.sendToGlobal(replyMsg);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    }
+
+    @Override
+    protected HINCMessageType acceptedMessageType() {
+        return HINCMessageType.QUERY_IOT_PROVIDERS;
     }
 }

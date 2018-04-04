@@ -5,15 +5,19 @@
  */
 package sinc.hinc.repository.DAO.orientDB;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import sinc.hinc.repository.DTOMapper.DTOMapperInterface;
-import sinc.hinc.repository.DTOMapper.MapperFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -29,16 +33,16 @@ import org.slf4j.LoggerFactory;
  */
 public class AbstractDAO<T> {
 
-    DTOMapperInterface<T> mapper;
+    ObjectMapper mapper;
     String className;
+    Class<T> clazz;
     static Logger logger = LoggerFactory.getLogger("HINC");
 
     public AbstractDAO(Class clazz) {
-        mapper = MapperFactory.getMapper(clazz);
+        mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.className = clazz.getSimpleName();
-        if (mapper == null) {
-            logger.error("No mapper for class " + className + " is found. Error!");
-        }
+        this.clazz = clazz;
         // if class name is not existed, create one
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
@@ -65,7 +69,9 @@ public class AbstractDAO<T> {
         OrientDBConnector manager = new OrientDBConnector();
         ODatabaseDocumentTx db = manager.getConnection();
         try {
-            ODocument odoc = mapper.toODocument(object);
+            ODocument odoc = new ODocument();
+            odoc.setClassName(className);
+            odoc.fromJSON(mapper.writeValueAsString(object));
             String uuid = odoc.field("uuid");
             ODocument existed = null;
 
@@ -93,9 +99,12 @@ public class AbstractDAO<T> {
             logger.debug("Save object done: " + uuid);
             logger.trace("Save done: " + result.toJSON());
             return result;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         } finally {
             manager.closeConnection();
         }
+        return null;
     }
 
     public List<ODocument> saveAll(Collection<T> objects) {
@@ -108,7 +117,9 @@ public class AbstractDAO<T> {
             Long startTime = (new Date()).getTime();
             logger.debug("Prepare to save " + objects.size() + " items -- " + taskID);
             for (T obj : objects) {
-                ODocument odoc = mapper.toODocument(obj);
+                ODocument odoc = new ODocument();
+                odoc.fromJSON(mapper.writeValueAsString(obj));
+                odoc.setClassName(className);
                 logger.trace("Adaptor done, obj is: " + odoc.toJSON());
                 String uuid = odoc.field("uuid");
                 logger.debug("Ok, now saving item with uuid = " + uuid);
@@ -165,13 +176,16 @@ public class AbstractDAO<T> {
         ODatabaseDocumentTx db = manager.getConnection();
         if (db.getMetadata().getSchema().existsClass(className)) {
             try {
-                ODocument odoc = mapper.toODocument(object);
+                ODocument odoc = new ODocument();
+                odoc.fromJSON(mapper.writeValueAsString(object));
                 logger.debug("Deleting odoc object: " + odoc.toJSON());
                 String uuid = odoc.field("uuid");
                 String command = "DELETE FROM " + className + " WHERE uuid = '" + uuid + "'";
                 logger.debug("I will execute a query: " + command);
                 db.command(new OCommandSQL(command)).execute();
                 return object;
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
             } finally {
                 manager.closeConnection();
             }
@@ -220,8 +234,14 @@ public class AbstractDAO<T> {
 
 //                logger.debug("Read odoc JSON, " + result.size() + " items:" + doc.toJSON());
                 logger.trace("End reading: " + uuid);
-                return mapper.fromODocument(doc);
+                return mapper.readValue(doc.toJSON(), this.clazz);
             }
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             manager.closeConnection();
         }
@@ -245,14 +265,23 @@ public class AbstractDAO<T> {
                 for (ODocument doc : result) {
 //                    logger.debug("Read with conditions:" + doc.toJSON());
 //                    logger.debug("END READ CONDITION====================");
-                    convertedResult.add(mapper.fromODocument(doc));
+                    convertedResult.add( mapper.readValue(doc.toJSON(), this.clazz));
                 }
+                return convertedResult;
             }
             logger.trace("Read condition done, objects: " + result.size());
             return convertedResult;
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             manager.closeConnection();
         }
+
+        return new ArrayList<>();
     }
 
     /**
@@ -277,13 +306,21 @@ public class AbstractDAO<T> {
 //            logger.debug("Query: " + query + ". Result: " + oResult.size());
             List<T> tResult = new ArrayList<>();
             for (ODocument o : oResult) {
-                tResult.add(mapper.fromODocument(o));
+                tResult.add(mapper.readValue(o.toJSON(), this.clazz));
             }
             logger.trace("Read all done: " + className + ". Objs: " + tResult.size());
             return tResult;
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             manager.closeConnection();
         }
+
+        return new ArrayList<>();
     }
     
     public List<T> readAll(){

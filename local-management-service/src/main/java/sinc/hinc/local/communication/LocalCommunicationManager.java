@@ -1,13 +1,12 @@
 package sinc.hinc.local.communication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.IMessageHandler;
+import sinc.hinc.communication.HINCMessageHandler;
+import sinc.hinc.communication.HincMessage;
 import sinc.hinc.communication.MessageDistributingConsumer;
-import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.local.communication.messagehandlers.*;
 
 import java.io.IOException;
@@ -28,15 +27,32 @@ public class LocalCommunicationManager {
     private String id;
     private String globalExchange;
 
+    private static LocalCommunicationManager localCommunicationManager;
+
     //TODO make singleton
-    public LocalCommunicationManager(String group, String id, String globalExchange) {
+    protected LocalCommunicationManager(String host, String group, String id, String globalExchange) throws IOException, TimeoutException {
         groupName = group;
         this.id = id;
         this.globalExchange = globalExchange;
+        connect(host);
     }
 
-    public void connect(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
-        factory = connectionFactory;
+    public static void initialize(String host, String group, String id, String globalExchange){
+        try {
+            localCommunicationManager = new LocalCommunicationManager(host, group, id, globalExchange);
+        } catch (Exception e) {
+            // TODO log
+            e.printStackTrace();
+        }
+    }
+
+    public static LocalCommunicationManager getInstance(){
+        return localCommunicationManager;
+    }
+
+    public void connect(String host) throws IOException, TimeoutException {
+        factory = new ConnectionFactory();
+        factory.setHost(host);
         connection = factory.newConnection();
         publishChannel = connection.createChannel();
 
@@ -47,6 +63,7 @@ public class LocalCommunicationManager {
         registerMessageHandler();
         messageDistributingConsumer.start();
 
+        registerAtGlobal();
     }
 
     private void setUpQueue(String queueName) throws IOException {
@@ -78,7 +95,7 @@ public class LocalCommunicationManager {
         //TODO send message to GMS --> GMS will then bind LMS Queue to GMS Exchange
     }
 
-    public void addMessageHandler(IMessageHandler messageHandler){
+    public void addMessageHandler(HINCMessageHandler messageHandler){
         messageDistributingConsumer.addMessageHandler(messageHandler);
     }
 
@@ -115,8 +132,8 @@ public class LocalCommunicationManager {
         String group = "group";
         String id = "id";
 
-        LocalCommunicationManager localCommunicationManager = new LocalCommunicationManager(group, id, "global_incoming_direct");
-        localCommunicationManager.connect(connectionFactory);
+        LocalCommunicationManager.initialize("localhost", group, id, "global_incoming_direct");
+        LocalCommunicationManager localCommunicationManager = LocalCommunicationManager.getInstance();
 
         HincMessage register = new HincMessage();
         register.setHincMessageType(HINCMessageType.SYN_REPLY);

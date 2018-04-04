@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.communication.GlobalCommunicationManager;
-import sinc.hinc.communication.IMessageHandler;
-import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.communication.HINCMessageHandler;
+import sinc.hinc.communication.HincMessage;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class HandleSynReply implements IMessageHandler {
+public class HandleSynReply extends HINCMessageHandler {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private GlobalCommunicationManager globalCommunicationManager;
 
@@ -23,12 +23,12 @@ public class HandleSynReply implements IMessageHandler {
     }
 
     @Override
-    public HINCMessageType getMessageType() {
+    protected HINCMessageType acceptedMessageType() {
         return HINCMessageType.SYN_REPLY;
     }
 
     @Override
-    public void handleMessage(HincMessage hincMessage) {
+    protected void doHandle(HincMessage hincMessage) {
         logger.debug("received " + hincMessage.toString());
 
         //TODO improve implementation --> hincMessage properties
@@ -68,4 +68,5 @@ public class HandleSynReply implements IMessageHandler {
             }
         }
     }
+
 }

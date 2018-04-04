@@ -11,14 +11,12 @@ import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.factory.MessageClientFactory;
 import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.model.VirtualComputingResource.IoTUnit;
-import sinc.hinc.repository.DAO.orientDB.IoTUnitDAO;
 
 /**
  *
  * @author hungld
  */
-public class IoTUnitUpdateProcessor implements IoTUnitProcessor {
+public class IoTUnitUpdateProcessor {
 
     String hincUUID;
 
@@ -26,18 +24,9 @@ public class IoTUnitUpdateProcessor implements IoTUnitProcessor {
         this.hincUUID = hincUUID;
     }
 
-    @Override
-    public void process(IoTUnit unit) {
-        // save to DB
-        unit.setHincID(hincUUID);
-        IoTUnitDAO unitDAO = new IoTUnitDAO();
-        unitDAO.save(unit);
 
-        // send message to the group topic, message type: UPDATE_INFORMATION
-        String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
-        HincMessage updateMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT.toString(), HincConfiguration.getMyUUID(), groupTopic, "", unit.toJson());
-        MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
-        FACTORY.getMessagePublisher().pushMessage(updateMsg);
+    public void process(String unit) {
+
     }
 
 }

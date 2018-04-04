@@ -1,0 +1,96 @@
+DEBUG 17:06:20,021 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:06:20,171 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:06:20,172 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic test, stamp/uuid: 1522767980017/c5a666
+DEBUG 17:06:20,174 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: test
+DEBUG 17:06:20,185 [main] (AMQPPublish.java:57) -   --> Message QUERY_RESOURCES is FAILED to publish on topic test 
+DEBUG 17:06:20,185 [main] (AMQPPublish.java:58) -   --> msg null
+DEBUG 17:06:20,185 [main] (AMQPPublish.java:59) -   -->loc null
+DEBUG 17:06:20,186 [main] (AMQPPublish.java:60) -   --> excep java.io.IOException
+DEBUG 17:06:20,189 [main] (AMQPPublish.java:63) -   --> Message QUERY_RESOURCES is published on topic test 
+DEBUG 17:09:09,547 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:09:09,703 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:09:09,704 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522768149544/fdab98
+DEBUG 17:09:09,706 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:09:09,977 [main] (AMQPPublish.java:63) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:15:34,847 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:15:34,996 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:15:34,996 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testyy, stamp/uuid: 1522768534842/553e8a
+DEBUG 17:15:34,998 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testyy
+DEBUG 17:15:35,251 [main] (AMQPPublish.java:63) -   --> Message QUERY_RESOURCES is published on topic testyy 
+DEBUG 17:16:20,663 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:16:20,792 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:16:20,793 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testyy, stamp/uuid: 1522768580659/85ce25
+DEBUG 17:16:20,796 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testyy
+DEBUG 17:16:21,050 [main] (AMQPPublish.java:63) -   --> Message QUERY_RESOURCES is published on topic testyy 
+DEBUG 17:16:47,211 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:16:47,346 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:16:47,346 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522768607208/e605aa
+DEBUG 17:16:47,348 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:16:47,353 [main] (AMQPPublish.java:57) -   --> Message QUERY_RESOURCES is FAILED to publish on topic testy 
+DEBUG 17:16:47,353 [main] (AMQPPublish.java:58) -   --> msg null
+DEBUG 17:16:47,354 [main] (AMQPPublish.java:59) -   -->loc null
+DEBUG 17:16:47,354 [main] (AMQPPublish.java:60) -   --> excep java.io.IOException
+DEBUG 17:16:47,356 [main] (AMQPPublish.java:63) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:18:37,616 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:18:39,733 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:18:39,881 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:18:39,882 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522768719730/230995
+DEBUG 17:18:39,884 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:18:39,907 [main] (AMQPPublish.java:57) -   --> Message QUERY_RESOURCES is FAILED to publish on topic testy 
+DEBUG 17:18:39,908 [main] (AMQPPublish.java:58) -   --> msg null
+DEBUG 17:18:39,908 [main] (AMQPPublish.java:59) -   -->loc null
+DEBUG 17:18:39,908 [main] (AMQPPublish.java:60) -   --> excep java.io.IOException
+DEBUG 17:18:39,911 [main] (AMQPPublish.java:63) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:19:29,533 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:19:29,746 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:19:30,186 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522768757648/8dfc18
+DEBUG 17:19:40,094 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:19:40,118 [main] (AMQPPublish.java:57) -   --> Message QUERY_RESOURCES is FAILED to publish on topic testy 
+DEBUG 17:19:40,119 [main] (AMQPPublish.java:58) -   --> msg null
+DEBUG 17:19:40,122 [main] (AMQPPublish.java:59) -   -->loc null
+DEBUG 17:19:40,122 [main] (AMQPPublish.java:60) -   --> excep java.io.IOException
+DEBUG 17:19:40,126 [main] (AMQPPublish.java:63) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:20:07,225 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:20:07,374 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:20:07,374 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522768807216/2dcbe9
+DEBUG 17:20:07,376 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:20:07,383 [main] (AMQPPublish.java:58) -   --> Message QUERY_RESOURCES is FAILED to publish on topic testy 
+DEBUG 17:20:07,384 [main] (AMQPPublish.java:59) -   --> msg null
+DEBUG 17:20:07,384 [main] (AMQPPublish.java:60) -   -->loc null
+DEBUG 17:20:07,384 [main] (AMQPPublish.java:61) -   --> excep java.io.IOException
+DEBUG 17:20:07,387 [main] (AMQPPublish.java:64) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:22:27,653 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:22:27,768 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:22:27,768 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522768947634/dae389
+DEBUG 17:22:27,771 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:22:28,029 [main] (AMQPPublish.java:64) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:25:08,329 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:25:08,490 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:25:08,491 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522769108325/3973be
+DEBUG 17:25:08,493 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:25:08,757 [main] (AMQPPublish.java:64) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:25:43,649 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:25:43,795 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:25:43,795 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522769143644/24fd29
+DEBUG 17:25:43,797 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:25:44,061 [main] (AMQPPublish.java:64) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:26:23,641 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:26:23,813 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:26:23,814 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522769183636/0926f5
+DEBUG 17:26:23,816 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:26:24,076 [main] (AMQPPublish.java:64) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:27:50,387 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:27:50,518 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:27:50,519 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522769270383/37352e
+DEBUG 17:27:50,521 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:27:50,769 [main] (AMQPPublish.java:64) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:30:48,180 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:30:48,395 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:30:48,396 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522769448176/2f02ea
+DEBUG 17:30:48,400 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:30:48,726 [main] (AMQPPublish.java:64) -   --> Message QUERY_RESOURCES is published on topic testy 
+DEBUG 17:30:53,784 [main] (AMQPConnector.java:58) - Trying to connect to AMQP broker: amqp://guest:guest@localhost
+DEBUG 17:30:53,942 [main] (AMQPConnector.java:68) - AMQP connected. Connection: ---, Channel: 1
+DEBUG 17:30:53,942 [main] (AMQPPublish.java:47) - Start publishing message QUERY_RESOURCES on topic testy, stamp/uuid: 1522769453772/1f386d
+DEBUG 17:30:53,944 [main] (AMQPPublish.java:53) -   --> EXCHANGE_NAME: testy
+DEBUG 17:30:54,200 [main] (AMQPPublish.java:64) -   --> Message QUERY_RESOURCES is published on topic testy 
