@@ -6,13 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.communication.HincMessage;
 import sinc.hinc.communication.IMessageHandler;
-import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.local.LocalManagementService;
 import sinc.hinc.local.communication.LocalCommunicationManager;
-import sinc.hinc.model.API.WrapperProvider;
-import sinc.hinc.model.VirtualComputingResource.ResourcesProvider;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -68,19 +65,6 @@ public class HandleQueryIotProviders implements IMessageHandler {
             }
         }
 
-        AbstractDAO<ResourcesProvider> rpDAO = new AbstractDAO<>(ResourcesProvider.class);
-        List<ResourcesProvider> providerList = rpDAO.readAll(limit);
-        WrapperProvider wrapper = new WrapperProvider(providerList);
-        ObjectMapper mapper = new ObjectMapper();
-        String replyPayload;
-        try {
-            replyPayload = mapper.writeValueAsString(wrapper);
-            logger.debug("Size of the reply message: " + (replyPayload.length() / 1024) + "KB");
-            HincMessage replyMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT.toString(), HincConfiguration.getMyUUID(), hincMessage.getFeedbackTopic(), "", replyPayload);
-            logger.debug("Resource provider reply: " + replyMsg.toJson());
-            localCommunicationManager.sendToGlobal(replyMsg);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+
     }
 }

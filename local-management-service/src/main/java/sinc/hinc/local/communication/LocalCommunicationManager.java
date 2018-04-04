@@ -1,14 +1,12 @@
 package sinc.hinc.local.communication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.IMessageHandler;
+import sinc.hinc.communication.HINCMessageHandler;
+import sinc.hinc.communication.HincMessage;
 import sinc.hinc.communication.MessageDistributingConsumer;
-import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.local.communication.messagehandlers.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,16 +26,32 @@ public class LocalCommunicationManager {
     private String id;
     private String globalExchange;
 
+    private static LocalCommunicationManager localCommunicationManager;
+
     //TODO make singleton
-    public LocalCommunicationManager(ConnectionFactory connectionFactory, String group, String id, String globalExchange) throws IOException, TimeoutException {
+    protected LocalCommunicationManager(String host, String group, String id, String globalExchange) throws IOException, TimeoutException {
         groupName = group;
         this.id = id;
         this.globalExchange = globalExchange;
-        connect(connectionFactory);
+        connect(host);
     }
 
-    public void connect(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
-        factory = connectionFactory;
+    public static void initialize(String host, String group, String id, String globalExchange){
+        try {
+            localCommunicationManager = new LocalCommunicationManager(host, group, id, globalExchange);
+        } catch (Exception e) {
+            // TODO log
+            e.printStackTrace();
+        }
+    }
+
+    public static LocalCommunicationManager getInstance(){
+        return localCommunicationManager;
+    }
+
+    public void connect(String host) throws IOException, TimeoutException {
+        factory = new ConnectionFactory();
+        factory.setHost(host);
         connection = factory.newConnection();
         publishChannel = connection.createChannel();
 
@@ -80,7 +94,7 @@ public class LocalCommunicationManager {
         //TODO send message to GMS --> GMS will then bind LMS Queue to GMS Exchange
     }
 
-    public void addMessageHandler(IMessageHandler messageHandler){
+    public void addMessageHandler(HINCMessageHandler messageHandler){
         messageDistributingConsumer.addMessageHandler(messageHandler);
     }
 
@@ -102,11 +116,14 @@ public class LocalCommunicationManager {
 
 
     private void registerMessageHandler(){
-        this.addMessageHandler(new HandleControl(this));
-        this.addMessageHandler(new HandleQueryIotProviders(this));
-        this.addMessageHandler(new HandleQueryIotUnit(this));
-        this.addMessageHandler(new HandleSynRequest(this));
-        this.addMessageHandler(new HandleUpdateInfoBase(this));
+        // TODO refactor message handlers to HINCMessageHandler
+        /*
+            this.addMessageHandler(new HandleControl(this));
+            this.addMessageHandler(new HandleQueryIotProviders(this));
+            this.addMessageHandler(new HandleQueryIotUnit(this));
+            this.addMessageHandler(new HandleSynRequest(this));
+            this.addMessageHandler(new HandleUpdateInfoBase(this));
+        */
     }
 
 
@@ -117,7 +134,8 @@ public class LocalCommunicationManager {
         String group = "group";
         String id = "id";
 
-        LocalCommunicationManager localCommunicationManager = new LocalCommunicationManager(connectionFactory, group, id, "global_incoming_direct");
+        LocalCommunicationManager.initialize("localhost", group, id, "global_incoming_direct");
+        LocalCommunicationManager localCommunicationManager = LocalCommunicationManager.getInstance();
 
         HincMessage register = new HincMessage();
         register.setHincMessageType(HINCMessageType.SYN_REPLY);

@@ -15,7 +15,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package sinc.hinc.communication.processing;
+package sinc.hinc.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -47,6 +47,10 @@ public class HincMessage {
     long timeStamp;
 
     String uuid;
+
+    String routingKey = "";
+
+    String exchangeType;
 
     Map<String, String> extra;
 
@@ -113,6 +117,14 @@ public class HincMessage {
         return this;
     }
 
+    public String getExchangeType() {
+        return exchangeType;
+    }
+
+    public void setExchangeType(String exchangeType) {
+        this.exchangeType = exchangeType;
+    }
+
     public HincMessage hasPayload(String payload) {
         this.payload = payload;
         return this;
@@ -140,6 +152,14 @@ public class HincMessage {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    public String getRoutingKey() {
+        return routingKey;
+    }
+
+    public void setRoutingKey(String routingKey) {
+        this.routingKey = routingKey;
     }
 
     public String getMsgType() {

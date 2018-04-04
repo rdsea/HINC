@@ -92,6 +92,8 @@ public class HincConfiguration {
         return getGenericParameter("GROUP", "DEFAULT");
     }
 
+
+
     public static boolean detectLocation() {
         String isDetected = getGenericParameter("AUTO_LOCATION", "false");
         return Boolean.parseBoolean(isDetected);
