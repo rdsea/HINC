@@ -29,7 +29,6 @@ public class LocalCommunicationManager {
 
     private static LocalCommunicationManager localCommunicationManager;
 
-    //TODO make singleton
     protected LocalCommunicationManager(String host, String group, String id, String globalExchange) throws IOException, TimeoutException {
         groupName = group;
         this.id = id;
