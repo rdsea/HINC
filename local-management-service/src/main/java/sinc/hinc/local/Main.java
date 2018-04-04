@@ -23,8 +23,8 @@ import sinc.hinc.local.messageHandlers.HandleQueryService;
 import sinc.hinc.local.messageHandlers.HandleUpdateInfobase;
 import sinc.hinc.local.messageHandlers.HandleUpdateIoTUnit;
 
-import static sinc.hinc.local.LocalManagementService.FACTORY;
-import static sinc.hinc.local.LocalManagementService.LISTENER;
+/*import static sinc.hinc.local.LocalManagementService.FACTORY;
+import static sinc.hinc.local.LocalManagementService.LISTENER;*/
 import static sinc.hinc.local.LocalManagementService.globalInterval;
 
 /**
@@ -44,13 +44,13 @@ public class Main {
         Long time2 = (new Date()).getTime();
         logger.info("Time to bring up DB is: " + (time2 - time1) / 1000);
 
-        /**
+        /** TODO remove
          * ************************
          * HINC listens to some queue channels to answer the query. Because the
          * limitation of connection to the queue, each HINC local subscribes only
          * to public topic at the moment. ************************
          */
-        String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
+        /*String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
         LISTENER.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
         LISTENER.addListener(groupTopic, HINCMessageType.QUERY_IOT_UNIT.toString(), new HandleQueryIoTUnit());
         LISTENER.addListener(groupTopic, HINCMessageType.QUERY_IOT_PROVIDERS.toString(), new HandleQueryProviders());
@@ -59,7 +59,7 @@ public class Main {
         LISTENER.addListener(groupTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
         LISTENER.addListener(groupTopic, HINCMessageType.UPDATE_INFO_BASE.toString(), new HandleUpdateInfobase());
         LISTENER.addListener(groupTopic, HINCMessageType.PROVIDER_UPDATE_IOT_UNIT.toString(), new HandleUpdateIoTUnit());
-        LISTENER.listen();
+        LISTENER.listen();*/
 
         /**
          * ************************
@@ -91,13 +91,16 @@ public class Main {
             }
         }
 
+        //TODO remove
+        //HincMessage synMsg = new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), "", HincConfiguration.getLocalMeta().toJson());
+        //FACTORY.getMessagePublisher().pushMessage(synMsg);
         // try to register itself
-        HincMessage synMsg = new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), "", HincConfiguration.getLocalMeta().toJson());
-        FACTORY.getMessagePublisher().pushMessage(synMsg);
+        localManagementService.connect();
+        localManagementService.registerAtGlobal();
     }
 
-    public static HINCMessageListener getListener() {
+    /*public static HINCMessageListener getListener() {
         return LISTENER;
-    }
+    }*/
 
 }

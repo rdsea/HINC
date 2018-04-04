@@ -11,6 +11,7 @@ import sinc.hinc.communication.processing.HincMessage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 public class GlobalCommunicationManager {
@@ -175,6 +176,17 @@ public class GlobalCommunicationManager {
     }
 
     //TODO manage results -> callback queues
+    /*public void temporaryBroadcast(HincMessage hincMessage, IMessageHandler messageHandler) throws IOException {
+        String uuid = UUID.randomUUID().toString();
+        String feedbackRoutingKey = hincMessage.getHincMessageType().name() + uuid;
+        hincMessage.setTopic(feedbackRoutingKey);
+
+        //TODO tweak queue settings
+        Map<String, Object> queueArguments = new HashMap<>();
+        managementChannel.queueDeclare(feedbackRoutingKey, true, true, false, queueArguments);
+        managementChannel.queueBind(feedbackRoutingKey, incomingExchange, feedbackRoutingKey);
+
+    }*/
 
 
     //TODO remove main - it's just for testing purposes

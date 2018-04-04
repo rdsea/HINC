@@ -29,11 +29,10 @@ public class LocalCommunicationManager {
     private String globalExchange;
 
     //TODO make singleton
-    public LocalCommunicationManager(ConnectionFactory connectionFactory, String group, String id, String globalExchange) throws IOException, TimeoutException {
+    public LocalCommunicationManager(String group, String id, String globalExchange) {
         groupName = group;
         this.id = id;
         this.globalExchange = globalExchange;
-        connect(connectionFactory);
     }
 
     public void connect(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
@@ -48,7 +47,6 @@ public class LocalCommunicationManager {
         registerMessageHandler();
         messageDistributingConsumer.start();
 
-        registerAtGlobal();
     }
 
     private void setUpQueue(String queueName) throws IOException {
@@ -117,7 +115,8 @@ public class LocalCommunicationManager {
         String group = "group";
         String id = "id";
 
-        LocalCommunicationManager localCommunicationManager = new LocalCommunicationManager(connectionFactory, group, id, "global_incoming_direct");
+        LocalCommunicationManager localCommunicationManager = new LocalCommunicationManager(group, id, "global_incoming_direct");
+        localCommunicationManager.connect(connectionFactory);
 
         HincMessage register = new HincMessage();
         register.setHincMessageType(HINCMessageType.SYN_REPLY);

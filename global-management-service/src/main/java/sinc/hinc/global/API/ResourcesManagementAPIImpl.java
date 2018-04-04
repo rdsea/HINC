@@ -467,7 +467,6 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     }
 
     @Override
-
     public InfrastructureSlice configureInfrastructureSlide(String gatewayID, String networkID, String cloudServiceID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

@@ -13,6 +13,7 @@ import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.local.IoTUnitUpdateProcessor;
 import sinc.hinc.local.PropertiesManager;
+import sinc.hinc.local.communication.LocalCommunicationManager;
 import sinc.hinc.local.watch.PluginWatcher;
 import sinc.hinc.model.API.WrapperMicroserviceArtifact;
 import sinc.hinc.model.SoftwareArtifact.MicroserviceArtifact;
@@ -26,7 +27,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static sinc.hinc.local.LocalManagementService.DEFAULT_SOURCE_SETTINGS;
-import static sinc.hinc.local.LocalManagementService.FACTORY;
 
 public class PluginManager {
     static Logger logger = HincConfiguration.getLogger();
@@ -42,7 +42,9 @@ public class PluginManager {
     private Map<String, ConnectivityTransformater> connectivityTransformaters = new ConcurrentHashMap<>();
     private Map<String, ServiceDetector> serviceDetectors = new ConcurrentHashMap<>();
 
-    public PluginManager(HashSet<String> enabledPlugins){
+    private LocalCommunicationManager localCommunicationManager;
+
+    public PluginManager(HashSet<String> enabledPlugins, LocalCommunicationManager localCommunicationManager){
         File pluginFolder = new File(PluginWatcher.PLUGIN_FOLDER);
         File[] listOfFiles = pluginFolder.listFiles();
         List<URL> urls = new ArrayList<>();
@@ -140,7 +142,7 @@ public class PluginManager {
             if (!wrapper.getmServices().isEmpty()) {
                 String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
                 HincMessage updateMsg = new HincMessage(HINCMessageType.UPDATE_INFORMATION_MICRO_SERVICE.toString(), HincConfiguration.getMyUUID(), groupTopic, "", wrapper.toJson());
-                FACTORY.getMessagePublisher().pushMessage(updateMsg);
+                localCommunicationManager.sendToGlobal(updateMsg);
             }
         }
 

@@ -109,6 +109,7 @@ public class HincConfiguration {
         return logger;
     }
 
+    //TODO refactor to Filewatcher
     private static String getGenericParameter(String key, String theDefault) {
         Properties prop = new Properties();
         InputStream input;
