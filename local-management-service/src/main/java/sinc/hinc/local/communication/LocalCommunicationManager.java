@@ -2,11 +2,12 @@ package sinc.hinc.local.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
-import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HincMessage;
+import sinc.hinc.common.communication.MessageDistributingConsumer;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.HINCMessageHandler;
-import sinc.hinc.communication.HincMessage;
-import sinc.hinc.communication.MessageDistributingConsumer;
+import sinc.hinc.local.communication.messagehandlers.HandleResourcesUpdate;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -114,9 +115,25 @@ public class LocalCommunicationManager {
         }
     }
 
+    public void sendMessage(HincMessage hincMessage){
+        try {
+
+            AMQP.BasicProperties basicProperties = null;
+            byte[] message = objectMapper.writeValueAsBytes(hincMessage);
+
+            // TODO check basicproperties and other flags (boolean mandatory, boolean immediate)
+            publishChannel.basicPublish(hincMessage.getTopic(), hincMessage.getRoutingKey(), basicProperties, message);
+
+        } catch (IOException e) {
+            //TODO errorhandling
+            e.printStackTrace();
+        }
+    }
+
 
     private void registerMessageHandler(){
         // TODO refactor message handlers to HINCMessageHandler
+        this.addMessageHandler(new HandleResourcesUpdate(HINCMessageType.UPDATE_RESOURCES));
         /*
             this.addMessageHandler(new HandleControl(this));
             this.addMessageHandler(new HandleQueryIotProviders(this));
