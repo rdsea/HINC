@@ -2,10 +2,10 @@ package sinc.hinc.local.communication.messagehandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.HINCMessageHandler;
-import sinc.hinc.communication.HincMessage;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.local.LocalManagementService;
 import sinc.hinc.local.communication.LocalCommunicationManager;
 
@@ -18,6 +18,7 @@ public class HandleQueryIotProviders extends HINCMessageHandler{
     private LocalCommunicationManager localCommunicationManager;
 
     public HandleQueryIotProviders(LocalCommunicationManager localCommunicationManager) {
+        super(HINCMessageType.QUERY_IOT_PROVIDERS);
         this.localCommunicationManager = localCommunicationManager;
     }
 
@@ -57,10 +58,5 @@ public class HandleQueryIotProviders extends HINCMessageHandler{
             }
         }
 
-    }
-
-    @Override
-    protected HINCMessageType acceptedMessageType() {
-        return HINCMessageType.QUERY_IOT_PROVIDERS;
     }
 }

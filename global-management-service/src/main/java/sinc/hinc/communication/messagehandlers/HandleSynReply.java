@@ -2,11 +2,11 @@ package sinc.hinc.communication.messagehandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.communication.GlobalCommunicationManager;
-import sinc.hinc.communication.HINCMessageHandler;
-import sinc.hinc.communication.HincMessage;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 import java.io.IOException;
@@ -19,12 +19,8 @@ public class HandleSynReply extends HINCMessageHandler {
     private GlobalCommunicationManager globalCommunicationManager;
 
     public HandleSynReply(GlobalCommunicationManager globalCommunicationManager){
+        super(HINCMessageType.SYN_REPLY);
         this.globalCommunicationManager = globalCommunicationManager;
-    }
-
-    @Override
-    protected HINCMessageType acceptedMessageType() {
-        return HINCMessageType.SYN_REPLY;
     }
 
     @Override

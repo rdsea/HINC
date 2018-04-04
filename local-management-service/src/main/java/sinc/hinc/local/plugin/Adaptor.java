@@ -1,8 +1,9 @@
 package sinc.hinc.local.plugin;
 
-import sinc.hinc.common.metadata.HINCMessageType;
+
+import sinc.hinc.common.communication.HincMessage;
+import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.HincMessage;
 import sinc.hinc.local.communication.LocalCommunicationManager;
 
 import java.util.Map;

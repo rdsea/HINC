@@ -2,7 +2,10 @@ package sinc.hinc.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
-import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HincMessage;
+import sinc.hinc.common.communication.MessageDistributingConsumer;
 import sinc.hinc.communication.messagehandlers.HandleControlResult;
 import sinc.hinc.communication.messagehandlers.HandleSynReply;
 import sinc.hinc.communication.messagehandlers.HandleUpdateInformationSingleIotUnit;

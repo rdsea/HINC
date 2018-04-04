@@ -1,11 +1,13 @@
-package sinc.hinc.communication;
-
-
-import sinc.hinc.common.metadata.HINCMessageType;
+package sinc.hinc.common.communication;
 
 public abstract class HINCMessageHandler {
 
+    protected HINCMessageType messageType;
     protected HINCMessageHandler nextHandler;
+
+    public HINCMessageHandler(HINCMessageType messageType){
+        this.messageType = messageType;
+    }
 
     public void setNextHandler(HINCMessageHandler handler){
         this.nextHandler = handler;
@@ -16,7 +18,7 @@ public abstract class HINCMessageHandler {
     }
 
     public void handleMessage(HincMessage msg){
-        if(this.acceptedMessageType() == msg.getHincMessageType()){
+        if(this.messageType == msg.getHincMessageType()){
             doHandle(msg);
         }
         else if(this.nextHandler != null){
@@ -24,6 +26,5 @@ public abstract class HINCMessageHandler {
         }
     }
 
-    abstract protected HINCMessageType acceptedMessageType();
     abstract protected void doHandle(HincMessage msg);
 }

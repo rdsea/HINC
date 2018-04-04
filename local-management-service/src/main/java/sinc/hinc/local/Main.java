@@ -6,12 +6,7 @@
 package sinc.hinc.local;
 
 import org.slf4j.Logger;
-import java.util.Date;
-
-import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.HincMessage;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 
 import static sinc.hinc.local.LocalManagementService.globalInterval;

@@ -1,6 +1,5 @@
 package sinc.hinc.local;
 
-import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.communication.LocalCommunicationManager;

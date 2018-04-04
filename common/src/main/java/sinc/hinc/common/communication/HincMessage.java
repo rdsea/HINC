@@ -15,15 +15,15 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package sinc.hinc.communication;
+package sinc.hinc.common.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import sinc.hinc.common.metadata.HINCMessageType;
 
 /**
  * This class define type of messages between GLOBAL and LOCAL resource manager

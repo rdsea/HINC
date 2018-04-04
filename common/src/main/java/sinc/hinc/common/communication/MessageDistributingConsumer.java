@@ -1,4 +1,4 @@
-package sinc.hinc.communication;
+package sinc.hinc.common.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
@@ -7,13 +7,8 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HINCMessageType;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MessageDistributingConsumer extends DefaultConsumer {
     private Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -2,16 +2,15 @@ package sinc.hinc.communication.messagehandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.communication.HINCMessageHandler;
-import sinc.hinc.communication.HincMessage;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HincMessage;
 
 public class HandleUpdateInformationSingleIotUnit extends HINCMessageHandler {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override
-    protected HINCMessageType acceptedMessageType() {
-        return HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT;
+    public HandleUpdateInformationSingleIotUnit(){
+        super(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT);
     }
 
     @Override

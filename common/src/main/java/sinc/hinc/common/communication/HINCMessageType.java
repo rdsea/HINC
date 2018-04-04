@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sinc.hinc.common.metadata;
+package sinc.hinc.common.communication;
 
 /**
  *
@@ -83,5 +83,7 @@ public enum HINCMessageType {
         PROVIDER_UPDATE_IOT_UNIT,
         
         // MISC
-        MISC
+        MISC,
+
+        UPDATE_RESOURCES,
 }
