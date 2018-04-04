@@ -35,11 +35,6 @@
             <artifactId>common</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>at.ac.tuwien.dsg.hinc</groupId>
-            <artifactId>communication</artifactId>
-            <version>1.0</version>
-        </dependency>
         <!--        <dependency>
             <groupId>at.ac.tuwien.dsg.hinc</groupId>
             <artifactId>collector</artifactId>
