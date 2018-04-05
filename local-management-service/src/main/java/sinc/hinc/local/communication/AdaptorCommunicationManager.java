@@ -9,7 +9,9 @@ import sinc.hinc.common.communication.HINCMessageHandler;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.communication.MessageDistributingConsumer;
+import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.local.communication.messagehandlers.HandleControlResult;
 import sinc.hinc.local.communication.messagehandlers.HandleProviderUpdate;
 import sinc.hinc.local.communication.messagehandlers.HandleResourcesUpdate;
 import sinc.hinc.local.plugin.Adaptor;
@@ -115,25 +117,8 @@ public class AdaptorCommunicationManager {
     private void registerMessageHandler(){
         this.addMessageHandler(new HandleResourcesUpdate(HINCMessageType.UPDATE_RESOURCES));
         this.addMessageHandler(new HandleProviderUpdate(HINCMessageType.UPDATE_PROVIDER));
+        this.addMessageHandler(new HandleControlResult(HINCMessageType.CONTROL_RESULT));
     }
 
-    public static void main(String[] args){
-        String group = "test";
-        String host = "localhost";
-        String id = "xx";
-
-        AdaptorCommunicationManager.initialize(host, group, id);
-
-        AdaptorManager adaptorManager = AdaptorManager.getInstance();
-
-        Adaptor adaptor = new Adaptor();
-        HashMap<String, String> settings = new HashMap<>();
-        settings.put("routingKey", "testy");
-        adaptor.setSettings(settings);
-        adaptor.setName("test adaptor");
-
-        adaptorManager.addAdaptor(adaptor.getName(), adaptor);
-        adaptorManager.scanAll();
-    }
 
 }

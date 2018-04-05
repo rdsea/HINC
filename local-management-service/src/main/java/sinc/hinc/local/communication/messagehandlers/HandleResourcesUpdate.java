@@ -14,13 +14,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class HandleResourcesUpdate extends HINCMessageHandler {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    private ObjectMapper objectMapper;
-
     public HandleResourcesUpdate(HINCMessageType messageType) {
         super(messageType);
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     @Override

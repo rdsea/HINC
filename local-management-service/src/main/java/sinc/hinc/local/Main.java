@@ -7,6 +7,7 @@ package sinc.hinc.local;
 
 import org.slf4j.Logger;
 import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.local.communication.AdaptorCommunicationManager;
 import sinc.hinc.local.communication.LocalCommunicationManager;
 import sinc.hinc.local.plugin.AdaptorManager;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
@@ -29,7 +30,14 @@ public class Main {
                 HincConfiguration.getGroupName(),
                 HincConfiguration.getMyUUID(),
                 HincConfiguration.getGroupName());
-        logger.info("initialized communication manager");
+        logger.info("initialized hinc communication manager");
+
+        AdaptorCommunicationManager.initialize(
+                HincConfiguration.getBroker(),
+                HincConfiguration.getGroupName(),
+                HincConfiguration.getMyUUID()
+        );
+        logger.info("initialized adaptor communication manager");
 
         /**
          * ************************

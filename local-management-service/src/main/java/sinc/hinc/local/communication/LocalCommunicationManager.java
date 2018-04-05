@@ -7,7 +7,6 @@ import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.communication.MessageDistributingConsumer;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.local.communication.messagehandlers.HandleResourcesUpdate;
 import sinc.hinc.local.communication.messagehandlers.*;
 
 import java.io.IOException;
@@ -83,19 +82,15 @@ public class LocalCommunicationManager {
     }
 
     public void registerAtGlobal(){
-       /* HincMessage registerMessage = new HincMessage();
-        registerMessage.setMsgType(HINCMessageType.SYN_REPLY.toString());
-        //registerMessage.setSenderID(HincConfiguration.getMyUUID());
+        HincMessage registerMessage = new HincMessage();
+        registerMessage.setSenderID(HincConfiguration.getMyUUID());
         registerMessage.setSenderID(id);
-        //registerMessage.setTopic(HincConfiguration.getGroupName());
-        registerMessage.setTopic(groupName);
-        registerMessage.setRoutingKey("");
-        registerMessage.setFeedbackTopic("");
+        registerMessage.setDestination(groupName, "");
+        registerMessage.setReply("", "");
         registerMessage.setPayload(HincConfiguration.getLocalMeta().toJson());
 
-        registerMessage.setGroup(groupName);
-        registerMessage.setHincMessageType(HINCMessageType.SYN_REPLY);
-        this.sendMessage(registerMessage);*/
+        registerMessage.setMsgType(HINCMessageType.SYN_REPLY);
+        this.sendMessage(registerMessage);
     }
 
     public void addMessageHandler(HINCMessageHandler messageHandler){
@@ -122,12 +117,8 @@ public class LocalCommunicationManager {
 
 
     private void registerMessageHandler(){
-        // TODO refactor message handlers to HINCMessageHandler
-        /*
-            this.addMessageHandler(new HandleControl(this));
-            this.addMessageHandler(new HandleSynRequest(this));
-            this.addMessageHandler(new HandleUpdateInfoBase(this));
-        */
+        this.addMessageHandler(new HandleFetchResources(HINCMessageType.FETCH_RESOURCES));
+        this.addMessageHandler(new HandleFetchProviders(HINCMessageType.FETCH_PROVIDERS));
     }
 
     public String getExchange(){

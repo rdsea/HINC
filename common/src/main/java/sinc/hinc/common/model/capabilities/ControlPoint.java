@@ -20,6 +20,15 @@ public class ControlPoint {
     private JsonNode parameters;
     private ControlType controlType;
     private Collection<AccessPoint> accessPoints = new ArrayList<>();
+    private String uuid;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
     public String getName() {
         return name;

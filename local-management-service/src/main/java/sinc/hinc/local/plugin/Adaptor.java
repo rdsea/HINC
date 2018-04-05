@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import sinc.hinc.common.communication.HincMessage;
 import java.util.Map;
 import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.communication.AdaptorCommunicationManager;
 import sinc.hinc.common.model.capabilities.ControlPoint;
@@ -72,13 +73,13 @@ public class Adaptor {
         AdaptorCommunicationManager.getInstance().sendMessage(message);
     }
 
-    public void sendControl(ControlPoint controlPoint){
+    public void sendControl(Control control){
         String routingKey = settings.get("routingKey");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         try {
-            String payload = objectMapper.writeValueAsString(controlPoint);
+            String payload = objectMapper.writeValueAsString(control);
 
             HincMessage message = new HincMessage(
                     HINCMessageType.CONTROL,

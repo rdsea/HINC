@@ -1,16 +1,20 @@
 package sinc.hinc.common.communication;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class HINCMessageHandler {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected ObjectMapper objectMapper;
 
     protected HINCMessageType messageType;
     protected HINCMessageHandler nextHandler;
 
     public HINCMessageHandler(HINCMessageType messageType){
         this.messageType = messageType;
+        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     public void setNextHandler(HINCMessageHandler handler){
