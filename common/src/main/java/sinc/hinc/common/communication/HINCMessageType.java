@@ -11,7 +11,9 @@ package sinc.hinc.common.communication;
  */
 public enum HINCMessageType {
         QUERY_RESOURCES,
-        QUERY_RESOURCES_REPLY,
+        UPDATE_RESOURCES,
+        QUERY_PROVIDER,
+        UPDATE_PROVIDER,
 
         //TODO remove unused
         /**
@@ -85,5 +87,4 @@ public enum HINCMessageType {
         // MISC
         MISC,
 
-        UPDATE_RESOURCES,
 }

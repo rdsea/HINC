@@ -6,16 +6,10 @@
 package sinc.hinc.local;
 
 import org.slf4j.Logger;
-import java.util.Date;
-
-import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.HincMessage;
+import sinc.hinc.local.communication.LocalCommunicationManager;
+import sinc.hinc.local.plugin.AdaptorManager;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
-
-import static sinc.hinc.local.LocalManagementService.FACTORY;
-import static sinc.hinc.local.LocalManagementService.globalInterval;
 
 /**
  *
@@ -24,13 +18,19 @@ import static sinc.hinc.local.LocalManagementService.globalInterval;
 public class Main {
 
     static Logger logger = HincConfiguration.getLogger();
+    public static int globalInterval = Integer.parseInt(PropertiesManager.getParameter("global.interval", "./sources.conf"));
 
     public static void main(String[] args) throws Exception {
         logger.info("Starting HINC Local Management Service...");
-        LocalManagementService localManagementService = new LocalManagementService();
         DatabaseUtils.initDB();
         logger.info("DB initialized");
 
+        LocalCommunicationManager.initialize(
+                HincConfiguration.getBroker(),
+                HincConfiguration.getGroupName(),
+                HincConfiguration.getMyUUID(),
+                HincConfiguration.getGroupName());
+        logger.info("initialized communication manager");
 
         /**
          * ************************
@@ -40,27 +40,15 @@ public class Main {
          * SoftwareDefinedGateway
          */
         while (true) {
-            
-            LocalManagementService.scanAdaptors();
-
+            AdaptorManager.getInstance().scanAll();
             // Process interval 
-            int interval = globalInterval;
-            // TODO: read local interval setting
-            if (interval == 0) {
-                System.out.println("Interval equals 0, query done!");
-                break;
-            } else if (interval > 0) {
-                try {
-                    System.out.println("Sleeping " + interval + " before next query.");
-                    Thread.sleep(interval * 3000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
+            try {
+                System.out.println("Sleeping " + globalInterval + " before next query.");
+                Thread.sleep(globalInterval * 1000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
         }
 
-        // try to register itself
-        HincMessage synMsg = new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), "", HincConfiguration.getLocalMeta().toJson());
-        FACTORY.getMessagePublisher().pushMessage(synMsg);
     }
 }

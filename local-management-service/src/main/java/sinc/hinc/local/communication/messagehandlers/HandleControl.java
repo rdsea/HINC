@@ -1,3 +1,4 @@
+/*
 package sinc.hinc.local.communication.messagehandlers;
 
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ public class HandleControl implements IMessageHandler{
         logger.debug("received " + hincMessage.toString());
         //TODO implement MessageHandler
 
-        localCommunicationManager.sendToGlobal(null);
+        localCommunicationManager.sendMessage(null);
     }
 }
+*/

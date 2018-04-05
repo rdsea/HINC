@@ -1,9 +1,10 @@
 package sinc.hinc.local.plugin;
 
-import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.HincMessage;
-import sinc.hinc.communication.factory.MessageClientFactory;
+import sinc.hinc.local.communication.AdaptorCommunicationManager;
+import sinc.hinc.local.communication.LocalCommunicationManager;
 
 import java.util.Map;
 
@@ -12,6 +13,10 @@ public class Adaptor {
     private Map<String, String> settings;
     private String name;
     private String exchange;
+
+    public Adaptor(){
+        this.exchange = AdaptorCommunicationManager.getInstance().getExchange();
+    }
 
     public String getExchange() {
         return exchange;
@@ -37,23 +42,18 @@ public class Adaptor {
         this.name = name;
     }
 
-    public void pushMessage(HincMessage message){
-        MessageClientFactory FACTORY = new MessageClientFactory(HincConfiguration.getBroker());
-        FACTORY.getMessagePublisher().pushMessage(message);
-    }
-
     public void scanResources(){
         String routingKey = settings.get("routingKey");
         HincMessage message = new HincMessage(
                 HINCMessageType.QUERY_RESOURCES.toString(),
                 HincConfiguration.getMyUUID(),
-                this.exchange ,
-                "", // TODO add routing key
-                null);
+                "");
 
-        message.setRoutingKey(routingKey);
-        message.setExchangeType("direct");
-        this.pushMessage(message);
+        message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), routingKey);
+        message.setReply(AdaptorCommunicationManager.getInstance().getExchange(), AdaptorCommunicationManager.getInstance().getRoutingKey());
+
+
+        AdaptorCommunicationManager.getInstance().sendMessage(message);
     }
 
     public void scanResourceProvider(){

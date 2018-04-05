@@ -1,5 +1,6 @@
 package sinc.hinc.common.communication;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -18,6 +19,7 @@ public class MessageDistributingConsumer extends DefaultConsumer {
 
     public MessageDistributingConsumer(Channel channel, String queue) {
         super(channel);
+        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         this.queue = queue;
     }
 

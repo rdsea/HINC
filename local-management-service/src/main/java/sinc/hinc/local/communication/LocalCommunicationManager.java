@@ -7,7 +7,6 @@ import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.communication.MessageDistributingConsumer;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.local.communication.messagehandlers.HandleResourcesUpdate;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,7 +20,7 @@ public class LocalCommunicationManager {
     private Connection connection = null;
     private Channel publishChannel = null;
 
-    private MessageDistributingConsumer messageDistributingConsumer;
+    private MessageDistributingConsumer globalMessageCosumer;
 
     private String groupName;
     private String id;
@@ -29,12 +28,12 @@ public class LocalCommunicationManager {
 
     private static LocalCommunicationManager localCommunicationManager;
 
-    //TODO make singleton
     protected LocalCommunicationManager(String host, String group, String id, String globalExchange) throws IOException, TimeoutException {
         groupName = group;
         this.id = id;
         this.globalExchange = globalExchange;
-        connect(host);
+        initConnection(host);
+        connect();
     }
 
     public static void initialize(String host, String group, String id, String globalExchange){
@@ -50,18 +49,20 @@ public class LocalCommunicationManager {
         return localCommunicationManager;
     }
 
-    public void connect(String host) throws IOException, TimeoutException {
+    private void initConnection(String host) throws IOException, TimeoutException{
         factory = new ConnectionFactory();
         factory.setHost(host);
         connection = factory.newConnection();
         publishChannel = connection.createChannel();
+    }
 
+    private void connect() throws IOException, TimeoutException {
         String queueName = groupName + "." + id;
         setUpQueue(queueName);
 
-        messageDistributingConsumer = new MessageDistributingConsumer(connection.createChannel(), queueName);
+        globalMessageCosumer = new MessageDistributingConsumer(connection.createChannel(), queueName);
         registerMessageHandler();
-        messageDistributingConsumer.start();
+        globalMessageCosumer.start();
 
         registerAtGlobal();
     }
@@ -71,6 +72,7 @@ public class LocalCommunicationManager {
         //TODO escape dots in groupName and id
 
         publishChannel.queueDeclare(queueName, true, false, true, queueArguments);
+        publishChannel.queueBind(queueName, this.getExchange(), "");
     }
 
     public void disconnect() throws IOException, TimeoutException {
@@ -86,33 +88,18 @@ public class LocalCommunicationManager {
         registerMessage.setSenderID(id);
         //registerMessage.setTopic(HincConfiguration.getGroupName());
         registerMessage.setTopic(groupName);
+        registerMessage.setRoutingKey("");
         registerMessage.setFeedbackTopic("");
         registerMessage.setPayload(HincConfiguration.getLocalMeta().toJson());
 
         registerMessage.setGroup(groupName);
         registerMessage.setHincMessageType(HINCMessageType.SYN_REPLY);
 
-        //TODO send message to GMS --> GMS will then bind LMS Queue to GMS Exchange
+        this.sendMessage(registerMessage);
     }
 
     public void addMessageHandler(HINCMessageHandler messageHandler){
-        messageDistributingConsumer.addMessageHandler(messageHandler);
-    }
-
-    public void sendToGlobal(HincMessage hincMessage) {
-        try {
-
-            AMQP.BasicProperties basicProperties = null;
-            byte[] message = objectMapper.writeValueAsBytes(hincMessage);
-
-            //TODO check basicproperties and other flags (boolean mandatory, boolean immediate)
-            String routing_key = hincMessage.getHincMessageType().name();
-            publishChannel.basicPublish(globalExchange, routing_key, basicProperties, message);
-
-        } catch (IOException e) {
-            //TODO errorhandling
-            e.printStackTrace();
-        }
+        globalMessageCosumer.addMessageHandler(messageHandler);
     }
 
     public void sendMessage(HincMessage hincMessage){
@@ -133,14 +120,15 @@ public class LocalCommunicationManager {
 
     private void registerMessageHandler(){
         // TODO refactor message handlers to HINCMessageHandler
-        this.addMessageHandler(new HandleResourcesUpdate(HINCMessageType.UPDATE_RESOURCES));
         /*
             this.addMessageHandler(new HandleControl(this));
-            this.addMessageHandler(new HandleQueryIotProviders(this));
-            this.addMessageHandler(new HandleQueryIotUnit(this));
             this.addMessageHandler(new HandleSynRequest(this));
             this.addMessageHandler(new HandleUpdateInfoBase(this));
         */
+    }
+
+    public String getExchange(){
+        return this.groupName;
     }
 
 
@@ -158,14 +146,14 @@ public class LocalCommunicationManager {
         register.setHincMessageType(HINCMessageType.SYN_REPLY);
         register.setGroup("group");
         register.setSenderID("id");
-        localCommunicationManager.sendToGlobal(register);
+        localCommunicationManager.sendMessage(register);
 
         int i = 0;
         while(true){
             i++;
             HincMessage message = testMessage(i);
             System.out.println("publish to global");
-            localCommunicationManager.sendToGlobal(message);
+            localCommunicationManager.sendMessage(message);
             i = i%3;
 
             try {

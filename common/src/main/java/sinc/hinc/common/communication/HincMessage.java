@@ -32,33 +32,18 @@ import java.util.UUID;
  */
 public class HincMessage {
 
-    String msgType;
-
-    String topic;
-
-    String senderID;
-
-    String receiverID; // = null or empty for broadcast
-
-    String feedbackTopic;
-
-    String payload;
-
-    long timeStamp;
-
-    String uuid;
-
-    String routingKey = "";
-
-    String exchangeType;
-
-    Map<String, String> extra;
+    private String msgType;
+    private String senderID;
+    private String receiverID; // = null or empty for broadcast
+    private String payload;
+    private long timeStamp;
+    private String uuid;
+    private HincMessageDestination destination;
+    private HincMessageDestination reply;
 
     private HINCMessageType hincMessageType;
-    private String group;
 
-    public HincMessage() {
-    }
+    public HincMessage() {}
 
     /**
      * Construct a HINC Message with full information for the sender and
@@ -66,15 +51,11 @@ public class HincMessage {
      *
      * @param msgType
      * @param senderid
-     * @param topic
-     * @param feedbackTopic
      * @param payload
      */
-    public HincMessage(String msgType, String senderid, String topic, String feedbackTopic, String payload) {
+    public HincMessage(String msgType, String senderid, String payload) {
         this.msgType = msgType;
         this.senderID = senderid;
-        this.topic = topic;
-        this.feedbackTopic = feedbackTopic;
         this.payload = payload;
         this.timeStamp = System.currentTimeMillis();
         this.uuid = UUID.randomUUID().toString().substring(0, 6);
@@ -85,49 +66,9 @@ public class HincMessage {
      *
      * @param msgType
      * @param senderid
-     * @param topic
      */
-    public HincMessage(String msgType, String senderid, String topic) {
-        this.msgType = msgType;
-        this.senderID = senderid;
-        this.topic = topic;
-        this.feedbackTopic = "sinc.hinc.temp." + UUID.randomUUID();
-        this.payload = "";
-        this.timeStamp = System.currentTimeMillis();
-        this.uuid = UUID.randomUUID().toString().substring(0, 6);
-    }
-
-    public HincMessage hasType(HINCMessageType type) {
-        this.msgType = type.toString();
-        return this;
-    }
-
-    public HincMessage hasSenderID(String senderID) {
-        this.senderID = senderID;
-        return this;
-    }
-
-    public HincMessage hasTopic(String topic) {
-        this.topic = topic;
-        return this;
-    }
-
-    public HincMessage hasFeedbackTopic(String feedbackTopic) {
-        this.feedbackTopic = feedbackTopic;
-        return this;
-    }
-
-    public String getExchangeType() {
-        return exchangeType;
-    }
-
-    public void setExchangeType(String exchangeType) {
-        this.exchangeType = exchangeType;
-    }
-
-    public HincMessage hasPayload(String payload) {
-        this.payload = payload;
-        return this;
+    public HincMessage(String msgType, String senderid) {
+        this(msgType, senderid,"");
     }
 
     public String toJson() {
@@ -154,13 +95,6 @@ public class HincMessage {
         }
     }
 
-    public String getRoutingKey() {
-        return routingKey;
-    }
-
-    public void setRoutingKey(String routingKey) {
-        this.routingKey = routingKey;
-    }
 
     public String getMsgType() {
         return msgType;
@@ -178,14 +112,6 @@ public class HincMessage {
         this.receiverID = receiverID;
     }
 
-    public String getTopic() {
-        return topic;
-    }
-
-    public String getFeedbackTopic() {
-        return feedbackTopic;
-    }
-
     public String getPayload() {
         return payload;
     }
@@ -194,27 +120,8 @@ public class HincMessage {
         return timeStamp;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public void setFeedbackTopic(String feedbackTopic) {
-        this.feedbackTopic = feedbackTopic;
-    }
-
     public void setMsgType(String msgType) {
         this.msgType = msgType;
-    }
-
-    public Map<String, String> getExtra() {
-        return extra;
-    }
-
-    public void hasExtra(String key, String value) {
-        if (extra == null) {
-            extra = new HashMap<>();
-        }
-        extra.put(key, value);
     }
 
     public String getUuid() {
@@ -223,13 +130,12 @@ public class HincMessage {
 
     @Override
     public String toString() {
-        return "HINCMessage{" + "MsgType=" + msgType + ", payload=" + payload + '}';
+        return this.toJson();
     }
 
     public HINCMessageType getHincMessageType() {
         return hincMessageType;
     }
-
 
     public void setHincMessageType(HINCMessageType hincMessageType) {
         this.hincMessageType = hincMessageType;
@@ -251,15 +157,47 @@ public class HincMessage {
         this.uuid = uuid;
     }
 
-    public void setExtra(Map<String, String> extra) {
-        this.extra = extra;
+    public void setDestination(String exchange, String routingKey){
+        this.destination = new HincMessageDestination(exchange, routingKey);
     }
 
-    public String getGroup() {
-        return group;
+    public void setReply(String exchange, String routingKey){
+        this.reply = new HincMessageDestination(exchange, routingKey);
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public HincMessageDestination getDestination(){
+        return this.destination;
+    }
+
+    public HincMessageDestination getReply(){
+        return this.reply;
+    }
+
+
+
+    public class HincMessageDestination{
+        private String exchange;
+        private String routingKey;
+
+        public HincMessageDestination(String exchange, String routingKey){
+            this.exchange = exchange;
+            this.routingKey = routingKey;
+        }
+
+        public String getExchange() {
+            return exchange;
+        }
+
+        public void setExchange(String exchange) {
+            this.exchange = exchange;
+        }
+
+        public String getRoutingKey() {
+            return routingKey;
+        }
+
+        public void setRoutingKey(String routingKey) {
+            this.routingKey = routingKey;
+        }
     }
 }

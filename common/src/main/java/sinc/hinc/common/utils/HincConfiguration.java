@@ -81,7 +81,7 @@ public class HincConfiguration {
     }
 
     public static String getBroker() {
-        return getGenericParameter("BROKER", "ampq://localhost");
+        return getGenericParameter("BROKER_HOST", "localhost");
     }
 
     public static String getBrokerType() {

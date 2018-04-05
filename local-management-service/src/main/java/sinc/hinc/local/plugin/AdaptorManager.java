@@ -2,8 +2,6 @@ package sinc.hinc.local.plugin;
 
 import org.slf4j.Logger;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.factory.MessageClientFactory;
-import sinc.hinc.local.LocalManagementService;
 import sinc.hinc.local.PropertiesManager;
 
 import java.util.*;
@@ -13,7 +11,20 @@ public class AdaptorManager {
     Map<String, Adaptor> adaptors = new HashMap<>();
 
     public static String DEFAULT_SOURCE_SETTINGS = "./sources.conf";
-    static Logger logger = HincConfiguration.getLogger();
+    private Logger logger = HincConfiguration.getLogger();
+    private static AdaptorManager adaptorManager;
+
+    protected AdaptorManager(){
+        //adaptorManager.init();
+    }
+
+    public static AdaptorManager getInstance(){
+        if(adaptorManager == null){
+            return new AdaptorManager();
+        }else{
+            return adaptorManager;
+        }
+    }
 
     // detect enabled adaptors from source config
     public void init(){
@@ -27,7 +38,7 @@ public class AdaptorManager {
             adaptor.setExchange(exchange);
             adaptor.setSettings(PropertiesManager.getSettings(adaptorName, DEFAULT_SOURCE_SETTINGS));
 
-            adaptors.put(adaptorName, adaptor);
+            this.addAdaptor(adaptorName, adaptor);
             logger.debug("Enabled adaptor: " + s);
         }
     }
@@ -44,6 +55,10 @@ public class AdaptorManager {
 
     public void setAdaptors(Map<String, Adaptor> adaptors) {
         this.adaptors = adaptors;
+    }
+
+    public void addAdaptor(String name, Adaptor adaptor){
+        this.adaptors.put(name, adaptor);
     }
 
 }
