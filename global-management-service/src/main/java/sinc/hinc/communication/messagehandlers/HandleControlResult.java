@@ -2,22 +2,20 @@ package sinc.hinc.communication.messagehandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.communication.IMessageHandler;
-import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HincMessage;
 
-public class HandleControlResult implements IMessageHandler {
+public class HandleControlResult extends HINCMessageHandler {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
-    @Override
-    public HINCMessageType getMessageType() {
-        return HINCMessageType.CONTROL_RESULT;
+    public HandleControlResult() {
+        super(HINCMessageType.CONTROL_RESULT);
     }
 
     @Override
-    public void handleMessage(HincMessage hincMessage) {
-        logger.debug("received " + hincMessage.toString());
+    protected void doHandle(HincMessage msg) {
+        logger.debug("received " + msg.toString());
         //TODO implement MessageHandler
 
         //TODO make async

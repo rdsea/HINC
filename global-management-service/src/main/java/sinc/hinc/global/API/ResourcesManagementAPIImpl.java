@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.communication.GlobalCommunicationManager;
-import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.communication.HincMessage;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.processing.HINCMessageSender;

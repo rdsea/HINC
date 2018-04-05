@@ -2,11 +2,13 @@ package sinc.hinc.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
-import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HincMessage;
+import sinc.hinc.common.communication.MessageDistributingConsumer;
 import sinc.hinc.communication.messagehandlers.HandleControlResult;
 import sinc.hinc.communication.messagehandlers.HandleSynReply;
 import sinc.hinc.communication.messagehandlers.HandleUpdateInformationSingleIotUnit;
-import sinc.hinc.communication.processing.HincMessage;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,52 +19,52 @@ public class GlobalCommunicationManager {
     private ObjectMapper objectMapper = new ObjectMapper();
     private static GlobalCommunicationManager globalCommunicationManager;
 
+    private MessageDistributingConsumer messageDistributingConsumer;
+
     private ConnectionFactory factory = null;
     private Connection connection = null;
     private Channel managementChannel = null;
     private Channel publishChannel = null;
 
+    private String host;
     private String outgoingBroadcast = "global_outgoing_broadcast";
     private String outgoingGroupcast = "global_outgoing_groupcast";
     private String outgoingUnicast = "global_outgoing_unicast";
     private String incomingExchange = "global_incoming_direct";
 
-    private Map<HINCMessageType, UnmarshallingConsumer> messageTypeQueues = new HashMap<>();
-
-    //TODO make singleton
-    private GlobalCommunicationManager(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
-        connect(connectionFactory);
+    private GlobalCommunicationManager(String host) throws IOException, TimeoutException {
+        connect(host);
     }
 
-    public static GlobalCommunicationManager getInstance(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
-        if(globalCommunicationManager == null){
-            globalCommunicationManager = new GlobalCommunicationManager(connectionFactory);
-        }
+    public static GlobalCommunicationManager getInstance(){
         return globalCommunicationManager;
     }
 
-    public static GlobalCommunicationManager getInstance() throws IOException, TimeoutException {
-        if(globalCommunicationManager == null){
-            globalCommunicationManager = new GlobalCommunicationManager(getDefaultConnectionFactory());
+    public static void initialize(String host){
+        try {
+            globalCommunicationManager = new GlobalCommunicationManager(host);
+        } catch (Exception e) {
+            // TODO log
+            e.printStackTrace();
         }
-        return globalCommunicationManager;
     }
 
-    //TODO change connectionfactory behaviour
-    private static ConnectionFactory getDefaultConnectionFactory(){
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost("localhost");
-        return connectionFactory;
-    }
 
-    public void connect(ConnectionFactory connectionFactory) throws IOException, TimeoutException {
-        factory = connectionFactory;
+    private void connect(String host) throws IOException, TimeoutException {
+        this.host = host;
+
+        factory = new ConnectionFactory();
+        factory.setHost(this.host);
         connection = factory.newConnection();
         managementChannel = connection.createChannel();
         publishChannel = connection.createChannel();
 
+        setUpInput();
         setUpExchanges();
+
+        messageDistributingConsumer = new MessageDistributingConsumer(connection.createChannel(), incomingExchange);
         registerMessageHandler();
+        messageDistributingConsumer.start();
     }
 
     public void disconnect() throws IOException, TimeoutException {
@@ -71,6 +73,18 @@ public class GlobalCommunicationManager {
         connection.close();
     }
 
+    private void setUpInput() throws IOException {
+        Map<String,Object> queueArguments = new HashMap<>();
+
+        publishChannel.queueDeclare(incomingExchange, true, false, true, queueArguments);
+        //declare/create incoming exchange
+        /* TODO tweak exchange settings
+        exchangeArguments = new HashMap<>();
+        managementChannel.exchangeDeclare(incomingExchange, BuiltinExchangeType.FANOUT, true, false, false, exchangeArguments);
+        */
+        managementChannel.exchangeDeclare(incomingExchange, BuiltinExchangeType.FANOUT, true);
+        managementChannel.queueBind(incomingExchange, incomingExchange, "");
+    }
 
     public void setUpExchanges() throws IOException {
         //declare/create outgoing broadcast exchange
@@ -93,43 +107,11 @@ public class GlobalCommunicationManager {
         managementChannel.exchangeDeclare(outgoingExchange, BuiltinExchangeType.TOPIC, true, false, true, exchangeArguments);
         */
         managementChannel.exchangeDeclare(outgoingUnicast, BuiltinExchangeType.DIRECT, true);
-
-
-        //declare/create incoming exchange
-        /* TODO tweak exchange settings
-        exchangeArguments = new HashMap<>();
-        managementChannel.exchangeDeclare(incomingExchange, BuiltinExchangeType.DIRECT, true, false, false, exchangeArguments);
-        */
-        managementChannel.exchangeDeclare(incomingExchange, BuiltinExchangeType.DIRECT, true);
     }
 
 
-    public void addMessageHandler(IMessageHandler messageHandler) throws IOException {
-        String queueName = messageHandler.getMessageType().name();
-
-        //TODO tweak queue settings
-        Map<String, Object> queueArguments = new HashMap<>();
-        managementChannel.queueDeclare(queueName, true, true, false, queueArguments);
-        //bindqueue
-
-        String routing_key = messageHandler.getMessageType().name();
-        managementChannel.queueBind(queueName, incomingExchange, routing_key);
-
-        UnmarshallingConsumer consumer = new UnmarshallingConsumer(connection.createChannel(), messageHandler, queueName);
-        removeMessageHandler(messageHandler);
-        messageTypeQueues.put(messageHandler.getMessageType(), consumer);
-        consumer.start();
-    }
-
-    public void removeMessageHandler(IMessageHandler messageHandler) throws IOException {
-        UnmarshallingConsumer consumer = messageTypeQueues.remove(messageHandler.getMessageType());
-        if(consumer!=null){
-            consumer.close();
-
-            String routing_key = messageHandler.getMessageType().name();
-            managementChannel.queueUnbind(messageHandler.getMessageType().name(), incomingExchange, routing_key);
-            managementChannel.queueDelete(messageHandler.getMessageType().name());
-        }
+    public void addMessageHandler(HINCMessageHandler messageHandler) throws IOException {
+        messageDistributingConsumer.addMessageHandler(messageHandler);
     }
 
     public void broadcastMessage(HincMessage hincMessage) throws IOException {
@@ -174,15 +156,12 @@ public class GlobalCommunicationManager {
         this.addMessageHandler(new HandleUpdateInformationSingleIotUnit());
     }
 
-    //TODO manage results -> callback queues
-
 
     //TODO remove main - it's just for testing purposes
     public static void main(String[] args) throws Exception {
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost("localhost");
 
-        GlobalCommunicationManager globalCommunicationManager = new GlobalCommunicationManager(connectionFactory);
+        GlobalCommunicationManager.initialize("localhost");
+        GlobalCommunicationManager globalCommunicationManager = GlobalCommunicationManager.getInstance();
 
         int i = 0;
         while(true){

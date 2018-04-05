@@ -10,24 +10,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
+import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
-import sinc.hinc.communication.GlobalCommunicationManager;
-import sinc.hinc.communication.processing.HincMessage;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.processing.HINCMessageSender;
+import sinc.hinc.communication.GlobalCommunicationManager;
+import sinc.hinc.communication.HincMessage;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
-import javax.annotation.PostConstruct;
-import sinc.hinc.apps.guibeans.handlers.HincLocalSyncHandler;
-import sinc.hinc.apps.guibeans.handlers.SingleIoTUnitUpdateHandler;
-import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.communication.processing.HINCMessageHander;
-import sinc.hinc.communication.processing.HINCMessageListener;
 
 /**
  * @author hungld

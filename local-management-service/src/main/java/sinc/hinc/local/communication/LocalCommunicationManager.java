@@ -7,6 +7,8 @@ import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.communication.MessageDistributingConsumer;
 import sinc.hinc.common.utils.HincConfiguration;
+import sinc.hinc.local.communication.messagehandlers.HandleResourcesUpdate;
+import sinc.hinc.local.communication.messagehandlers.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -81,8 +83,7 @@ public class LocalCommunicationManager {
     }
 
     public void registerAtGlobal(){
-        HincMessage registerMessage = new HincMessage();
-        //TODO change to correct messagetype
+       /* HincMessage registerMessage = new HincMessage();
         registerMessage.setMsgType(HINCMessageType.SYN_REPLY.toString());
         //registerMessage.setSenderID(HincConfiguration.getMyUUID());
         registerMessage.setSenderID(id);
@@ -94,8 +95,7 @@ public class LocalCommunicationManager {
 
         registerMessage.setGroup(groupName);
         registerMessage.setHincMessageType(HINCMessageType.SYN_REPLY);
-
-        this.sendMessage(registerMessage);
+        this.sendMessage(registerMessage);*/
     }
 
     public void addMessageHandler(HINCMessageHandler messageHandler){
@@ -109,7 +109,10 @@ public class LocalCommunicationManager {
             byte[] message = objectMapper.writeValueAsBytes(hincMessage);
 
             // TODO check basicproperties and other flags (boolean mandatory, boolean immediate)
-            publishChannel.basicPublish(hincMessage.getTopic(), hincMessage.getRoutingKey(), basicProperties, message);
+            publishChannel.basicPublish(
+                    hincMessage.getDestination().getExchange(),
+                    hincMessage.getDestination().getRoutingKey(),
+                    basicProperties, message);
 
         } catch (IOException e) {
             //TODO errorhandling
@@ -141,13 +144,6 @@ public class LocalCommunicationManager {
 
         LocalCommunicationManager.initialize("localhost", group, id, "global_incoming_direct");
         LocalCommunicationManager localCommunicationManager = LocalCommunicationManager.getInstance();
-
-        HincMessage register = new HincMessage();
-        register.setHincMessageType(HINCMessageType.SYN_REPLY);
-        register.setGroup("group");
-        register.setSenderID("id");
-        localCommunicationManager.sendMessage(register);
-
         int i = 0;
         while(true){
             i++;

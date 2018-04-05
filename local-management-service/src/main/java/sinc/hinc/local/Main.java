@@ -10,7 +10,6 @@ import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.communication.LocalCommunicationManager;
 import sinc.hinc.local.plugin.AdaptorManager;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
-
 /**
  *
  * @author hungld, linhsolar
@@ -49,6 +48,5 @@ public class Main {
                 ex.printStackTrace();
             }
         }
-
     }
 }

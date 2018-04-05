@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.communication.message.payloads;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,10 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
+*/
 /**
  *
  * @author hungld
- */
+ *//*
+
 //TODO Remove Class
 public class UpdateGatewayStatus {
 
@@ -71,3 +74,4 @@ public class UpdateGatewayStatus {
     }
 
 }
+*/

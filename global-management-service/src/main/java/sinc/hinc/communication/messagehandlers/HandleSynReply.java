@@ -2,11 +2,11 @@ package sinc.hinc.communication.messagehandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.communication.GlobalCommunicationManager;
-import sinc.hinc.communication.IMessageHandler;
-import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 import java.io.IOException;
@@ -14,21 +14,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class HandleSynReply implements IMessageHandler {
+public class HandleSynReply extends HINCMessageHandler {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private GlobalCommunicationManager globalCommunicationManager;
 
     public HandleSynReply(GlobalCommunicationManager globalCommunicationManager){
+        super(HINCMessageType.SYN_REPLY);
         this.globalCommunicationManager = globalCommunicationManager;
     }
 
     @Override
-    public HINCMessageType getMessageType() {
-        return HINCMessageType.SYN_REPLY;
-    }
-
-    @Override
-    public void handleMessage(HincMessage hincMessage) {
+    protected void doHandle(HincMessage hincMessage) {
         logger.debug("received " + hincMessage.toString());
 
         //TODO improve implementation --> hincMessage properties
@@ -68,4 +64,5 @@ public class HandleSynReply implements IMessageHandler {
             }
         }
     }
+
 }

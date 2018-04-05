@@ -3,32 +3,24 @@ package sinc.hinc.local.communication.messagehandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.IMessageHandler;
-import sinc.hinc.communication.processing.HINCMessageListener;
-import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.local.Main;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.local.communication.LocalCommunicationManager;
 
-import java.io.IOException;
-
-public class HandleUpdateInfoBase implements IMessageHandler {
+public class HandleUpdateInfoBase extends HINCMessageHandler{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private LocalCommunicationManager localCommunicationManager;
 
     public HandleUpdateInfoBase(LocalCommunicationManager localCommunicationManager) {
+        super(HINCMessageType.UPDATE_INFO_BASE);
         this.localCommunicationManager = localCommunicationManager;
     }
 
     @Override
-    public HINCMessageType getMessageType() {
-        return HINCMessageType.UPDATE_INFO_BASE;
-    }
-
-    @Override
-    public void handleMessage(HincMessage hincMessage) {
+    protected void doHandle(HincMessage hincMessage) {
         logger.debug("received " + hincMessage.toString());
         //TODO implement MessageHandler
 
@@ -64,5 +56,6 @@ public class HandleUpdateInfoBase implements IMessageHandler {
         HincMessage reply =  new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), hincMessage.getFeedbackTopic(), "", meta.toJson());
         localCommunicationManager.sendMessage(reply);
     }
+
 }
 */

@@ -3,33 +3,25 @@ package sinc.hinc.local.communication.messagehandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.IMessageHandler;
-import sinc.hinc.communication.processing.HINCMessageListener;
-import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.local.Main;
+import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageHandler;
+import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.local.communication.LocalCommunicationManager;
 
-import java.io.IOException;
-
-public class HandleSynRequest implements IMessageHandler{
+public class HandleSynRequest extends HINCMessageHandler{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private LocalCommunicationManager localCommunicationManager;
 
     public HandleSynRequest(LocalCommunicationManager localCommunicationManager) {
+        super(HINCMessageType.SYN_REQUEST);
         this.localCommunicationManager = localCommunicationManager;
     }
 
     @Override
-    public HINCMessageType getMessageType() {
-        return HINCMessageType.SYN_REQUEST;
-    }
-
-    @Override
-    public void handleMessage(HincMessage hincMessage) {
-        logger.debug("received " + hincMessage.toString());
+    protected void doHandle(HincMessage msg) {
+        logger.debug("received " + msg.toString());
         //TODO implement MessageHandler
 
 
