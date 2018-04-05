@@ -165,9 +165,9 @@ public class LocalCommunicationManager {
         message.setPayload("testpayload");
 
         switch (i%3) {
-            case 0:message.setHincMessageType(HINCMessageType.CONTROL_RESULT);break;
-            case 1:message.setHincMessageType(HINCMessageType.SYN_REPLY);break;
-            case 2:message.setHincMessageType(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT);break;
+            case 0:message.setMsgType(HINCMessageType.CONTROL_RESULT);break;
+            case 1:message.setMsgType(HINCMessageType.SYN_REPLY);break;
+            case 2:message.setMsgType(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT);break;
         }
         return message;
     }

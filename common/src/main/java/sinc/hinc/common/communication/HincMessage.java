@@ -32,7 +32,7 @@ import java.util.UUID;
  */
 public class HincMessage {
 
-    private String msgType;
+    private HINCMessageType msgType;
     private String senderID;
     private String receiverID; // = null or empty for broadcast
     private String payload;
@@ -40,8 +40,6 @@ public class HincMessage {
     private String uuid;
     private HincMessageDestination destination;
     private HincMessageDestination reply;
-
-    private HINCMessageType hincMessageType;
 
     public HincMessage() {}
 
@@ -53,7 +51,7 @@ public class HincMessage {
      * @param senderid
      * @param payload
      */
-    public HincMessage(String msgType, String senderid, String payload) {
+    public HincMessage(HINCMessageType msgType, String senderid, String payload) {
         this.msgType = msgType;
         this.senderID = senderid;
         this.payload = payload;
@@ -67,7 +65,7 @@ public class HincMessage {
      * @param msgType
      * @param senderid
      */
-    public HincMessage(String msgType, String senderid) {
+    public HincMessage(HINCMessageType msgType, String senderid) {
         this(msgType, senderid,"");
     }
 
@@ -96,7 +94,7 @@ public class HincMessage {
     }
 
 
-    public String getMsgType() {
+    public HINCMessageType getMsgType() {
         return msgType;
     }
 
@@ -120,7 +118,7 @@ public class HincMessage {
         return timeStamp;
     }
 
-    public void setMsgType(String msgType) {
+    public void setMsgType(HINCMessageType msgType) {
         this.msgType = msgType;
     }
 
@@ -131,14 +129,6 @@ public class HincMessage {
     @Override
     public String toString() {
         return this.toJson();
-    }
-
-    public HINCMessageType getHincMessageType() {
-        return hincMessageType;
-    }
-
-    public void setHincMessageType(HINCMessageType hincMessageType) {
-        this.hincMessageType = hincMessageType;
     }
 
     public void setPayload(String payload) {
@@ -178,6 +168,8 @@ public class HincMessage {
     public class HincMessageDestination{
         private String exchange;
         private String routingKey;
+
+        public HincMessageDestination() {};
 
         public HincMessageDestination(String exchange, String routingKey){
             this.exchange = exchange;

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import sinc.hinc.common.communication.HINCMessageHandler;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
-import sinc.hinc.model.ResourceProvider;
+import sinc.hinc.common.model.ResourceProvider;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 import java.io.IOException;

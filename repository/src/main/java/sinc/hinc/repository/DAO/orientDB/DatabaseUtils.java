@@ -8,7 +8,7 @@ package sinc.hinc.repository.DAO.orientDB;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
-import sinc.hinc.model.Resource;
+import sinc.hinc.common.model.Resource;
 import static sinc.hinc.repository.DAO.orientDB.AbstractDAO.logger;
 
 /**

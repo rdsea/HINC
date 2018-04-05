@@ -1,15 +1,14 @@
 package sinc.hinc.local.plugin;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import sinc.hinc.common.communication.HincMessage;
-
 import java.util.Map;
 import sinc.hinc.common.communication.HINCMessageType;
-import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.communication.AdaptorCommunicationManager;
-import sinc.hinc.local.communication.LocalCommunicationManager;
-
-import java.util.Map;
+import sinc.hinc.common.model.capabilities.ControlPoint;
 
 public class Adaptor {
 
@@ -48,7 +47,7 @@ public class Adaptor {
     public void scanResources(){
         String routingKey = settings.get("routingKey");
         HincMessage message = new HincMessage(
-                HINCMessageType.QUERY_RESOURCES.toString(),
+                HINCMessageType.QUERY_RESOURCES,
                 HincConfiguration.getMyUUID(),
                 "");
 
@@ -60,6 +59,38 @@ public class Adaptor {
     }
 
     public void scanResourceProvider(){
-        // TODO
+        String routingKey = settings.get("routingKey");
+        HincMessage message = new HincMessage(
+                HINCMessageType.QUERY_PROVIDER,
+                HincConfiguration.getMyUUID(),
+                "");
+
+        message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), routingKey);
+        message.setReply(AdaptorCommunicationManager.getInstance().getExchange(), AdaptorCommunicationManager.getInstance().getRoutingKey());
+
+
+        AdaptorCommunicationManager.getInstance().sendMessage(message);
+    }
+
+    public void sendControl(ControlPoint controlPoint){
+        String routingKey = settings.get("routingKey");
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        try {
+            String payload = objectMapper.writeValueAsString(controlPoint);
+
+            HincMessage message = new HincMessage(
+                    HINCMessageType.CONTROL,
+                    HincConfiguration.getMyUUID(),
+                    payload);
+
+            message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), routingKey);
+            message.setReply(AdaptorCommunicationManager.getInstance().getExchange(), AdaptorCommunicationManager.getInstance().getRoutingKey());
+            AdaptorCommunicationManager.getInstance().sendMessage(message);
+        } catch (JsonProcessingException e) {
+            // TODO log
+            e.printStackTrace();
+        }
     }
 }

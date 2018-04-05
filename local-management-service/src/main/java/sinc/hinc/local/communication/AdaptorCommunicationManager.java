@@ -108,7 +108,7 @@ public class AdaptorCommunicationManager {
         Map<String,Object> queueArguments = new HashMap<>();
 
         publishChannel.queueDeclare(queueName, true, false, true, queueArguments);
-        publishChannel.queueBind(queueName, this.getExchange(), "");
+        publishChannel.queueBind(queueName, this.getExchange(), this.getRoutingKey());
     }
 
 
@@ -134,7 +134,6 @@ public class AdaptorCommunicationManager {
 
         adaptorManager.addAdaptor(adaptor.getName(), adaptor);
         adaptorManager.scanAll();
-
     }
 
 }

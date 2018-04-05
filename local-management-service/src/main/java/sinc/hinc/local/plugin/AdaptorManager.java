@@ -46,6 +46,7 @@ public class AdaptorManager {
     public void scanAll(){
         for(Adaptor adaptor: adaptors.values()){
             adaptor.scanResources();
+            adaptor.scanResourceProvider();
         }
     }
 
