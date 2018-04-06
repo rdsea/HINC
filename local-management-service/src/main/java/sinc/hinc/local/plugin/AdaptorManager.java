@@ -20,10 +20,11 @@ public class AdaptorManager {
 
     public static AdaptorManager getInstance(){
         if(adaptorManager == null){
-            return new AdaptorManager();
-        }else{
-            return adaptorManager;
+            adaptorManager = new AdaptorManager();
+            adaptorManager.init();
         }
+
+        return adaptorManager;
     }
 
     // detect enabled adaptors from source config

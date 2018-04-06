@@ -55,6 +55,7 @@ public class LocalCommunicationManager {
         factory.setHost(host);
         connection = factory.newConnection();
         publishChannel = connection.createChannel();
+        publishChannel.exchangeDeclare(this.getExchange(), "fanout");
     }
 
     private void connect() throws IOException, TimeoutException {

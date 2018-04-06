@@ -14,6 +14,7 @@ public abstract class HINCMessageHandler {
 
     public HINCMessageHandler(HINCMessageType messageType){
         this.messageType = messageType;
+        this.objectMapper = new ObjectMapper();
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
