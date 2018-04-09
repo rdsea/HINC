@@ -1,14 +1,16 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.config;
 
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.Receiver;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleControlResult;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleSynReply;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleUpdateInformationSingleIotUnit;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import sinc.hinc.common.communication.MessageDistributingConsumer;
 
 @Configuration
 public class RabbitMQConfig {
@@ -74,8 +76,18 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(Receiver receiver) {
+    MessageListenerAdapter listenerAdapter(HandleSynReply handleSynReply) {
+        HandleControlResult handleControlResult = new HandleControlResult();
+        HandleUpdateInformationSingleIotUnit handleUpdateInformationSingleIotUnit = new HandleUpdateInformationSingleIotUnit();
 
-        return new MessageListenerAdapter(receiver, "receiveMessage");
+        handleControlResult.addMessageHandler(handleUpdateInformationSingleIotUnit);
+        handleSynReply.addMessageHandler(handleControlResult);
+
+        return new MessageListenerAdapter(handleSynReply, "handleMessage");
+    }
+
+    @Bean
+    RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory){
+        return new RabbitAdmin(connectionFactory);
     }
 }
