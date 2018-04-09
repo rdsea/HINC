@@ -166,7 +166,7 @@ public class GlobalCommunicationManager {
         int i = 0;
         while(true){
             HincMessage message = new HincMessage();
-            message.setHincMessageType(HINCMessageType.CONTROL);
+            message.setMsgType(HINCMessageType.CONTROL);
             System.out.println("publish from global");
             i++;
             i = i%3;

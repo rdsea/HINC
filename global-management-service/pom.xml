@@ -23,18 +23,13 @@
     
     
     <dependencies>
-        
-        <dependency>
-            <groupId>at.ac.tuwien.dsg.hinc</groupId>
-            <artifactId>model</artifactId>
-            <version>1.0</version>
-        </dependency>
 
         <dependency>
             <groupId>at.ac.tuwien.dsg.hinc</groupId>
             <artifactId>common</artifactId>
             <version>1.0</version>
         </dependency>
+
         <!--        <dependency>
             <groupId>at.ac.tuwien.dsg.hinc</groupId>
             <artifactId>collector</artifactId>
@@ -44,6 +39,14 @@
             <groupId>at.ac.tuwien.dsg.hinc</groupId>
             <artifactId>repository</artifactId>
             <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.2.0</version>
+            <!--<version>3.5.4</version>-->
+            <type>jar</type>
         </dependency>
         <!--        <dependency>
             <groupId>com.google.guava</groupId>
