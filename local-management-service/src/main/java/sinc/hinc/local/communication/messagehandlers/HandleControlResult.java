@@ -8,8 +8,8 @@ import sinc.hinc.common.model.payloads.ControlResult;
 import java.io.IOException;
 
 public class HandleControlResult extends HINCMessageHandler{
-    public HandleControlResult(HINCMessageType messageType) {
-        super(messageType);
+    public HandleControlResult() {
+        super(HINCMessageType.CONTROL_RESULT);
     }
 
     @Override

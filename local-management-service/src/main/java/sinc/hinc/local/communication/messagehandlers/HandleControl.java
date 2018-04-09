@@ -1,29 +1,44 @@
-/*
+
 package sinc.hinc.local.communication.messagehandlers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sinc.hinc.common.communication.HINCMessageHandler;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
+import sinc.hinc.common.model.ResourceProvider;
+import sinc.hinc.common.model.capabilities.ControlPoint;
+import sinc.hinc.common.model.payloads.Control;
+import sinc.hinc.local.communication.AdaptorCommunicationManager;
 import sinc.hinc.local.communication.LocalCommunicationManager;
+import sinc.hinc.local.plugin.AdaptorManager;
+import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+
+import java.io.IOException;
 
 public class HandleControl extends HINCMessageHandler {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private LocalCommunicationManager localCommunicationManager;
-
-    public HandleControl(LocalCommunicationManager localCommunicationManager) {
+    public HandleControl() {
         super(HINCMessageType.CONTROL);
-        this.localCommunicationManager = localCommunicationManager;
     }
 
     @Override
     protected void doHandle(HincMessage msg) {
         logger.debug("received " + msg.toString());
-        //TODO implement MessageHandler
+        AbstractDAO<ResourceProvider> resourceProviderDAO = new AbstractDAO<>(ResourceProvider.class);
+        try {
+            Control control = this.objectMapper.readValue(msg.getPayload(), Control.class);
 
-        localCommunicationManager.sendMessage(null);
+            // fetch access point data from selected control point
+            ResourceProvider provider = resourceProviderDAO.read(control.getResourceProviderUuid());
+            for(ControlPoint controlPoint: provider.getManagementPoints()){
+                if(controlPoint.getUuid().equals(control.getControlPointUuid()))
+                    control.setAccessPoints(controlPoint.getAccessPoints());
+            }
+
+            AdaptorManager.getInstance().sendControl(control.getResourceProviderUuid(), control, msg.getReply());
+        } catch (IOException e) {
+            logger.error("failed to marshall control payload "+msg.getPayload());
+            e.printStackTrace();
+        }
 
     }
 }
-*/
+

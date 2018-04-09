@@ -118,8 +118,8 @@ public class LocalCommunicationManager {
 
 
     private void registerMessageHandler(){
-        this.addMessageHandler(new HandleFetchResources(HINCMessageType.FETCH_RESOURCES));
-        this.addMessageHandler(new HandleFetchProviders(HINCMessageType.FETCH_PROVIDERS));
+        this.addMessageHandler(new HandleFetchResources());
+        this.addMessageHandler(new HandleFetchProviders());
     }
 
     public String getExchange(){
