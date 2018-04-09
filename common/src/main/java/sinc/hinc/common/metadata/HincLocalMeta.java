@@ -14,12 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.data.annotation.Id;
 /**
  *
  * @author hungld
  */
 public class HincLocalMeta {
-
+    @Id
     String uuid;
     String ip;
     String unicastTopic;

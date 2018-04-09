@@ -1,5 +1,7 @@
 package sinc.hinc.common.model.capabilities;
 
+import org.springframework.data.annotation.Id;
+
 public class DataPoint {
     // add more as needed
     public enum DataType{
@@ -8,6 +10,8 @@ public class DataPoint {
         FLOAT,
     }
 
+    @Id
+    private String uuid;
     private String name;
     private DataType dataType;
     private String unit;

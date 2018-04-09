@@ -1,5 +1,6 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers;
 
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.HincLocalMetaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
@@ -12,15 +13,12 @@ import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.metadata.HincLocalMeta;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 @Component
 public class HandleSynReply extends HINCMessageHandler {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final RabbitAdmin rabbitAdmin;
+    private final HincLocalMetaRepository hincLocalMetaRepository;
 
     @Value("${hinc.global.rabbitmq.output.broadcast}")
     private String outputBroadcast;
@@ -33,10 +31,11 @@ public class HandleSynReply extends HINCMessageHandler {
 
 
     @Autowired
-    public HandleSynReply(RabbitAdmin rabbitAdmin){
+    public HandleSynReply(RabbitAdmin rabbitAdmin, HincLocalMetaRepository hincLocalMetaRepository){
         super(HINCMessageType.SYN_REPLY);
 
         this.rabbitAdmin = rabbitAdmin;
+        this.hincLocalMetaRepository = hincLocalMetaRepository;
     }
 
     @Override
@@ -56,24 +55,10 @@ public class HandleSynReply extends HINCMessageHandler {
 
 
             if(hincMessage.getPayload() != null) {
-                List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
                 HincLocalMeta meta = HincLocalMeta.fromJson(hincMessage.getPayload());
                 logger.debug("  --> Meta: " + meta.toJson());
-                // remove the exist meta if need before update
-                Iterator<HincLocalMeta> metas = listOfHINCLocal.iterator();
-                while (metas.hasNext()) {
-                    HincLocalMeta existed = metas.next();
-                    if (meta.getUuid().equals(existed.getUuid())) {
-                        listOfHINCLocal.remove(existed);
-                    }
-                }
-                listOfHINCLocal.add(meta);
-
-                //TODO save to repository
-                /*AbstractDAO<HincLocalMeta> metaDAO = new AbstractDAO<>(HincLocalMeta.class);
-                metaDAO.save(meta);*/
+                hincLocalMetaRepository.save(meta);
             }
-
         }
     }
 
