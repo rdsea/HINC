@@ -1,0 +1,21 @@
+{
+  "name": "slice-management-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lingfangao@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "clui": "^0.3.6",
+    "figlet": "^1.2.0",
+    "inquirer": "^5.2.0",
+    "nedb": "^1.8.0",
+    "randomstring": "^1.1.5",
+    "uuid": "^3.2.1",
+    "yargs": "^11.0.0"
+  }
+}

@@ -73,7 +73,7 @@ public class Adaptor {
         AdaptorCommunicationManager.getInstance().sendMessage(message);
     }
 
-    public void sendControl(Control control){
+    public void sendControl(Control control, HincMessage.HincMessageDestination reply){
         String routingKey = settings.get("routingKey");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -87,7 +87,7 @@ public class Adaptor {
                     payload);
 
             message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), routingKey);
-            message.setReply(AdaptorCommunicationManager.getInstance().getExchange(), AdaptorCommunicationManager.getInstance().getRoutingKey());
+            message.setReply(reply.getExchange(), reply.getRoutingKey());
             AdaptorCommunicationManager.getInstance().sendMessage(message);
         } catch (JsonProcessingException e) {
             // TODO log

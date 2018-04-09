@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.communication.AdaptorCommunicationManager;
 import sinc.hinc.local.communication.LocalCommunicationManager;
+import sinc.hinc.local.plugin.Adaptor;
 import sinc.hinc.local.plugin.AdaptorManager;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
 /**

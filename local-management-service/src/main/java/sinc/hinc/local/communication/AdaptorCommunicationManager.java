@@ -11,9 +11,7 @@ import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.communication.MessageDistributingConsumer;
 import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.local.communication.messagehandlers.HandleControlResult;
-import sinc.hinc.local.communication.messagehandlers.HandleProviderUpdate;
-import sinc.hinc.local.communication.messagehandlers.HandleResourcesUpdate;
+import sinc.hinc.local.communication.messagehandlers.*;
 import sinc.hinc.local.plugin.Adaptor;
 import sinc.hinc.local.plugin.AdaptorManager;
 
@@ -78,6 +76,8 @@ public class AdaptorCommunicationManager {
             AMQP.BasicProperties basicProperties = null;
             byte[] message = objectMapper.writeValueAsBytes(hincMessage);
 
+            System.out.println("xxxxxxxxxxx");
+            System.out.println(objectMapper.writeValueAsString(hincMessage));
             publishChannel.basicPublish(
                     hincMessage.getDestination().getExchange(),
                     hincMessage.getDestination().getRoutingKey(),
@@ -115,9 +115,12 @@ public class AdaptorCommunicationManager {
 
 
     private void registerMessageHandler(){
-        this.addMessageHandler(new HandleResourcesUpdate(HINCMessageType.UPDATE_RESOURCES));
-        this.addMessageHandler(new HandleProviderUpdate(HINCMessageType.UPDATE_PROVIDER));
-        this.addMessageHandler(new HandleControlResult(HINCMessageType.CONTROL_RESULT));
+        this.addMessageHandler(new HandleResourcesUpdate());
+        this.addMessageHandler(new HandleProviderUpdate());
+        this.addMessageHandler(new HandleControlResult());
+        this.addMessageHandler(new HandleFetchResources());
+        this.addMessageHandler(new HandleFetchProviders());
+        this.addMessageHandler(new HandleControl());
     }
 
 

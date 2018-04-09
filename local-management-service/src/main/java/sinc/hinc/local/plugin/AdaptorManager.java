@@ -1,6 +1,8 @@
 package sinc.hinc.local.plugin;
 
 import org.slf4j.Logger;
+import sinc.hinc.common.communication.HincMessage;
+import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.PropertiesManager;
 
@@ -45,9 +47,20 @@ public class AdaptorManager {
     }
 
     public void scanAll(){
+        logger.info("scanning adaptors");
         for(Adaptor adaptor: adaptors.values()){
             adaptor.scanResources();
             adaptor.scanResourceProvider();
+        }
+    }
+
+    public void sendControl(String adaptorName, Control control, HincMessage.HincMessageDestination reply){
+        for(Adaptor adaptor: adaptors.values()){
+            if(adaptor.getName().equals(adaptorName)){
+                logger.info("sending control to adaptor "+adaptor.getName());
+                adaptor.sendControl(control, reply);
+                break;
+            }
         }
     }
 

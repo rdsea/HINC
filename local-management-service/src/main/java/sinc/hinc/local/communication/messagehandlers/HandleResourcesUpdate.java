@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class HandleResourcesUpdate extends HINCMessageHandler {
-    public HandleResourcesUpdate(HINCMessageType messageType) {
-        super(messageType);
+    public HandleResourcesUpdate() {
+        super(HINCMessageType.UPDATE_RESOURCES);
     }
 
     @Override

@@ -9,6 +9,7 @@ public class ResourceProvider {
     private String name;
     private Collection<Resource> resources;
     private Collection<ControlPoint> managementPoints;
+    private String uuid;
 
     public String getName() {
         return name;
@@ -33,4 +34,13 @@ public class ResourceProvider {
     public void setManagementPoints(Collection<ControlPoint> managementPoints) {
         this.managementPoints = managementPoints;
     }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
 }
