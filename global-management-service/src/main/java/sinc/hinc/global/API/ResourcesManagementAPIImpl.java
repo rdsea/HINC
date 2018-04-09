@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.global.API;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -49,9 +50,11 @@ import sinc.hinc.model.slice.AppSlice;
 import sinc.hinc.model.slice.InfrastructureSlice;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
+*/
 /**
  * @author hungld
- */
+ *//*
+
 @Service
 public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
 
@@ -77,17 +80,21 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         }
     }
 
-    /* TODO remove old code
+    */
+/* TODO remove old code
     public HINCMessageSender getCommunicationManager() {
         if (comMng == null) {
             this.comMng = new HINCMessageSender(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
         }
         return this.comMng;
-    }*/
+    }*//*
 
-    /*
+
+    */
+/*
     * IoTUnit represents an IoT Virtual Resource, including datapoint, controlpoint, etc.
-     */
+     *//*
+
     @Override
     public Set<IoTUnit> queryIoTUnits(int timeout, String hincUUID, String infoBases, int limit, String rescan) {
         logger.debug("Start broadcasting the query for IoT Unit...");
@@ -135,7 +142,8 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             e.printStackTrace();
         }
 
-        /*
+        */
+/*
         comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
             long latestTime = 0;
             long quantity = 0;
@@ -186,7 +194,8 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
-        */
+        *//*
+
 
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(eventFileName, true)))) {
             logger.debug("Now saving events to file: " + eventFileName);
@@ -236,7 +245,8 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
+        */
+/*comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
             @Override
             public HincMessage handleMessage(HincMessage message) {
                 WrapperProvider wrapper = new WrapperProvider(message.getPayload());
@@ -254,7 +264,8 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             Thread.sleep(timeout);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
-        }*/
+        }*//*
+
         return result;
     }
 
@@ -307,10 +318,12 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         return connectivity;
     }
 
-    /*
+    */
+/*
     * This is just a mockdata. We will change it by loading data from preconfiguration file
     * for well-known network services or through dynamic registration
-     */
+     *//*
+
 
 
     private void generateNetworkMock() { // create MOCK
@@ -343,10 +356,12 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     public List<VNF> queryVNF(int timeout, String hincUUID) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    /*
+    */
+/*
      * TODO: query and read from static files about cloud providers
     * also we need to implement registration
-     */
+     *//*
+
 
 
     @Override
@@ -472,11 +487,13 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /*
+    */
+/*
      * TODO: query and read from static files about software artifact
     * also we need to implement registration
     * only mockup for demonstration purpose
-     */
+     *//*
+
 
     
     @Override
@@ -511,3 +528,4 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     }
 
 }
+*/

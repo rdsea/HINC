@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.apps.guibeans;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
@@ -34,19 +35,23 @@ import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 
+*/
 /**
  *
  * @author hungld
- */
+ *//*
+
 //TODO Remove Class
 @ManagedBean(name = "AnalyticController")
 @ViewScoped
 public class AnalyticsController implements Serializable {
 
     static Logger logger = LoggerFactory.getLogger(AnalyticsController.class);
-    /**
+    */
+/**
      * START THE ANALYTICS PART
-     */
+     *//*
+
     static List<String> analyticAlgos = Arrays.asList("average@local", "sum@local", "btsdataingest@mqtt-bigquery");
     public static Map<String, Thread> analyticActiveList = new HashMap<>();
     public static Map<String, AnalyticRunnable> analyticRunnable = new HashMap<>();
@@ -418,3 +423,4 @@ public class AnalyticsController implements Serializable {
         analyticSelected = runnable.analyticFunction;
     }
 }
+*/

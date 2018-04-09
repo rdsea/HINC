@@ -213,9 +213,6 @@
                         <phase>package</phase>
                         <configuration>
                             <path>/${project.build.finalName}</path>
-                            <systemProperties>
-                                <JAVA_OPTS>-Xms256m -Xmx512m -XX:MaxPermSize=256m</JAVA_OPTS>
-                            </systemProperties>
                         </configuration>
                     </execution>
                 </executions>

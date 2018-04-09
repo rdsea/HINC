@@ -10,12 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sinc.hinc.common.API.HINCManagementAPI;
 import sinc.hinc.common.metadata.HINCGlobalMeta;
-import sinc.hinc.common.metadata.HINCMessageType;
+import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.GlobalCommunicationManager;
-import sinc.hinc.communication.HincMessage;
+import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 import javax.annotation.PostConstruct;
@@ -42,11 +42,9 @@ public class HINCManagementImpl implements HINCManagementAPI {
     public void init() {
         logger.debug("Init HINCManagementImpl");
         logger.debug("Get GlobalCommunicationManager");
-        try {
-            globalCommunicationManager = GlobalCommunicationManager.getInstance();
-        } catch (IOException | TimeoutException e) {
-            e.printStackTrace();
-        }
+
+        globalCommunicationManager = GlobalCommunicationManager.getInstance();
+        GlobalCommunicationManager.initialize("localhost");
 
         /*TODO remove old code
         if (listener == null) {

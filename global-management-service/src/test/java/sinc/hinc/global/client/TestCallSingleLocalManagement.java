@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.global.client;
 
 import sinc.hinc.common.API.HINCManagementAPI;
@@ -15,9 +16,11 @@ import sinc.hinc.model.VirtualComputingResource.SoftwareDefinedGateway;
 import java.util.Set;
 import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 
+*/
 /**
  * @author hungld
- */
+ *//*
+
 public class TestCallSingleLocalManagement {
 
     public static void main(String[] args) throws Exception {
@@ -34,3 +37,4 @@ public class TestCallSingleLocalManagement {
         }
     }
 }
+*/

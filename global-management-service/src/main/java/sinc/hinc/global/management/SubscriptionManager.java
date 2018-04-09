@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.global.management;
 
 import com.google.common.cache.Cache;
@@ -23,17 +24,21 @@ import java.io.File;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+*/
 /**
  * @author hungld
- */
+ *//*
+
 //TODO Remove Class --> Unused
 public class SubscriptionManager {
 
     static Logger logger = LoggerFactory.getLogger("DELISE");
     MessageClientFactory FACTORY;
-    /**
+    */
+/**
      * TODO: use the default topic to distinguish different client and management scope E.g. each stakeholder will hold an ID, which regarding to the topic
-     */
+     *//*
+
     String prefixTopic = "";
     String groupName;
 
@@ -109,3 +114,4 @@ public class SubscriptionManager {
 
 
 }
+*/

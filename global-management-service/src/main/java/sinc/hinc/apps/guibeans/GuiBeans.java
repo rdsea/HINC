@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.apps.guibeans;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
@@ -47,10 +48,12 @@ import sinc.hinc.model.VirtualComputingResource.IoTUnit;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
+*/
 /**
  *
  * @author hungld
- */
+ *//*
+
 //TODO Check what this class is truly responsible for
 @ManagedBean(name = "GuiBeans")
 @ViewScoped
@@ -393,9 +396,11 @@ public class GuiBeans {
         return ajaxCount;
     }
 
-    /**
+    */
+/**
      * DATA POINT VIEW
-     */
+     *//*
+
     String selectedControlAction; // in the control point panel -> dropdown box of action
     String controlParameter;      // in the control point panel
     String lastControlResult = "unknown result";
@@ -522,3 +527,4 @@ public class GuiBeans {
     }
 
 }
+*/
