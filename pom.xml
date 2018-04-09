@@ -18,11 +18,11 @@
     <url>http://maven.apache.org</url>
 
     <modules>
-        <module>model</module>
         <module>collector</module>
         <module>local-management-service</module>
         <module>repository</module>
         <module>global-management-service</module>
+        <module>global-management-service-spring-boot</module>
         <module>common</module>
     </modules>
     <dependencyManagement>
