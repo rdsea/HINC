@@ -1,5 +1,7 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers;
 
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalMSRepository;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ProviderRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +17,31 @@ import java.util.List;
 @Component
 public class HandleDeliverProviders extends HINCMessageHandler {
     private final ProviderRepository providerRepository;
+    private final LocalMSRepository localMSRepository;
 
     @Autowired
-    public HandleDeliverProviders(ProviderRepository providerRepository) {
+    public HandleDeliverProviders(ProviderRepository providerRepository, LocalMSRepository localMSRepository) {
         super(HINCMessageType.DELIVER_PROVIDERS);
         this.providerRepository = providerRepository;
+        this.localMSRepository = localMSRepository;
     }
 
     @Override
     protected void doHandle(HincMessage msg) {
 
         try {
+            String group = msg.getReply().getExchange();
+            String id = msg.getSenderID();
+
+            LocalMS localMS = new LocalMS();
+            localMS.setId(id);
+            localMS.setGroup(group);
+
+
             List<ResourceProvider> providers = objectMapper.readValue(msg.getPayload(), new TypeReference<List<ResourceProvider>>(){});
+            localMS.setResourceProviders(providers);
             providerRepository.saveAll(providers);
+            localMSRepository.save(localMS);
         } catch (IOException e) {
             e.printStackTrace();
         }
