@@ -7,12 +7,12 @@ import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.PropertiesManager;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AdaptorManager {
 
-    Map<String, Adaptor> adaptors = new HashMap<>();
+    Map<String, Adaptor> adaptors = new ConcurrentHashMap<>();
 
-    public static String DEFAULT_SOURCE_SETTINGS = "./sources.conf";
     private Logger logger = HincConfiguration.getLogger();
     private static AdaptorManager adaptorManager;
 
@@ -23,27 +23,21 @@ public class AdaptorManager {
     public static AdaptorManager getInstance(){
         if(adaptorManager == null){
             adaptorManager = new AdaptorManager();
-            adaptorManager.init();
         }
 
         return adaptorManager;
     }
 
-    // detect enabled adaptors from source config
-    public void init(){
-        String enables = PropertiesManager.getParameter("global.enable", DEFAULT_SOURCE_SETTINGS);
-        String exchange = PropertiesManager.getParameter("global.exchange", DEFAULT_SOURCE_SETTINGS);
-        logger.debug("Enabled adaptors are: " + enables + ". Slit it: " + Arrays.toString(enables.split(",")));
-        for (String s : enables.split(",")) {
-            String adaptorName = s.trim();
-            Adaptor adaptor = new Adaptor();
-            adaptor.setName(adaptorName);
-            adaptor.setExchange(exchange);
-            adaptor.setSettings(PropertiesManager.getSettings(adaptorName, DEFAULT_SOURCE_SETTINGS));
+    public void addAdaptor(String adaptorName){
+        Adaptor adaptor = new Adaptor();
+        adaptor.setName(adaptorName);
+        logger.info("registered new adaptor "+adaptorName);
+        adaptors.put(adaptorName, adaptor);
+    }
 
-            this.addAdaptor(adaptorName, adaptor);
-            logger.debug("Enabled adaptor: " + s);
-        }
+    public void removeAdaptor(String adaptorName){
+        logger.info("removing adaptor "+adaptorName);
+        adaptors.remove(adaptorName);
     }
 
     public void scanAll(){

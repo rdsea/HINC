@@ -25,6 +25,9 @@ public enum HINCMessageType {
     FETCH_PROVIDERS,
     DELIVER_PROVIDERS,
 
+    REGISTER_ADAPTOR,
+    DEREGISTER_ADAPTOR,
+
     //TODO remove unused
     /**
      * TODO remove comment

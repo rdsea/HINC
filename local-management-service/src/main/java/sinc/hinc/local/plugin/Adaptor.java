@@ -15,19 +15,6 @@ public class Adaptor {
 
     private Map<String, String> settings;
     private String name;
-    private String exchange;
-
-    public Adaptor(){
-        this.exchange = AdaptorCommunicationManager.getInstance().getExchange();
-    }
-
-    public String getExchange() {
-        return exchange;
-    }
-
-    public void setExchange(String exchange) {
-        this.exchange = exchange;
-    }
 
     public Map<String, String> getSettings() {
         return settings;
@@ -46,13 +33,12 @@ public class Adaptor {
     }
 
     public void scanResources(){
-        String routingKey = settings.get("routingKey");
         HincMessage message = new HincMessage(
                 HINCMessageType.QUERY_RESOURCES,
                 HincConfiguration.getMyUUID(),
                 "");
 
-        message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), routingKey);
+        message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), this.name);
         message.setReply(AdaptorCommunicationManager.getInstance().getExchange(), AdaptorCommunicationManager.getInstance().getRoutingKey());
 
 
@@ -60,13 +46,12 @@ public class Adaptor {
     }
 
     public void scanResourceProvider(){
-        String routingKey = settings.get("routingKey");
         HincMessage message = new HincMessage(
                 HINCMessageType.QUERY_PROVIDER,
                 HincConfiguration.getMyUUID(),
                 "");
 
-        message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), routingKey);
+        message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), this.name);
         message.setReply(AdaptorCommunicationManager.getInstance().getExchange(), AdaptorCommunicationManager.getInstance().getRoutingKey());
 
 
@@ -74,7 +59,6 @@ public class Adaptor {
     }
 
     public void sendControl(Control control, HincMessage.HincMessageDestination reply){
-        String routingKey = settings.get("routingKey");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
@@ -86,7 +70,7 @@ public class Adaptor {
                     HincConfiguration.getMyUUID(),
                     payload);
 
-            message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), routingKey);
+            message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), this.name);
             message.setReply(reply.getExchange(), reply.getRoutingKey());
             AdaptorCommunicationManager.getInstance().sendMessage(message);
         } catch (JsonProcessingException e) {
