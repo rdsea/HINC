@@ -63,6 +63,13 @@
 		</dependency>
 
 
+		<!-- embedded mongodb -->
+		<!-- todo remove embedded mongodb -->
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+		</dependency>
+
 		<!-- hinc -->
 		<dependency>
 			<groupId>at.ac.tuwien.dsg.hinc</groupId>

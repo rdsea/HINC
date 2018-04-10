@@ -70,7 +70,7 @@ public class HandleSynReply extends HINCMessageHandler {
         Binding groupcast = new Binding(lmsQueue, Binding.DestinationType.QUEUE, outputGroupcast, lmsGroup, null);
         rabbitAdmin.declareBinding(groupcast);
 
-        Binding unicast = new Binding(lmsQueue, Binding.DestinationType.QUEUE, outputUnicast, lmsGroup+"."+lmsID, null);
+        Binding unicast = new Binding(lmsQueue, Binding.DestinationType.QUEUE, outputUnicast, lmsID, null);
         rabbitAdmin.declareBinding(unicast);
     }
 }

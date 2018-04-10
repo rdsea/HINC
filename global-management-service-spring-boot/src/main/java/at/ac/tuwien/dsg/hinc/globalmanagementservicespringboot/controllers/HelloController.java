@@ -1,5 +1,6 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.controllers;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.HincLocalMetaRepository;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ResourceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.metadata.HincLocalMeta;
+import sinc.hinc.common.model.Resource;
 
 @RestController
 @RequestMapping("/test")
@@ -27,13 +29,16 @@ public class HelloController {
     @Autowired
     private HincLocalMetaRepository hincLocalMetaRepository;
 
+    @Autowired
+    private ResourceRepository resourceRepository;
+
     @GetMapping("/")
     public ResponseEntity index() {
         return new ResponseEntity("Greetings from Spring Boot HINC!", HttpStatus.OK);
     }
 
 
-    @GetMapping("/test")
+    @GetMapping("/meta")
     public ResponseEntity test() {
         HincMessage testMessage = new HincMessage();
         testMessage.setMsgType(HINCMessageType.SYN_REPLY);
@@ -60,37 +65,24 @@ public class HelloController {
     }
 
 
-    @GetMapping("/testupdate")
-    public ResponseEntity testupdate() {
-        HincMessage testMessage = new HincMessage();
-        testMessage.setMsgType(HINCMessageType.SYN_REPLY);
-        testMessage.setSenderID("id");
-        testMessage.setDestination("group","group");
+    @GetMapping("/resource")
+    public ResponseEntity<String> testupdate() {
+        Resource resource = new Resource();
+        resource.setUuid("testresource");
+        resource.setName("test-Name");
+        resource.setLocation("test-Location");
+        resource.setPluginName("test-PluginName");
+        resource.setResourceType(Resource.ResourceType.IOT_RESOURCE);
 
-        HincLocalMeta hincLocalMeta = new HincLocalMeta();
-        hincLocalMeta.setBroker("update");
-        hincLocalMeta.setCity("update");
-        hincLocalMeta.setCountry("update");
-        hincLocalMeta.setGroupName("group");
-        hincLocalMeta.setUuid("id");
+        resourceRepository.save(resource);
 
-        testMessage.setPayload(hincLocalMeta.toJson());
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            byte[] message = objectMapper.writeValueAsBytes(testMessage);
-            rabbitTemplate.convertAndSend(globalInputExchange, "", message);
-            return new ResponseEntity("sent \n" + testMessage.toJson(), HttpStatus.OK);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("inserted testresource", HttpStatus.OK);
     }
 
     @GetMapping("/get")
     public ResponseEntity get(){
         HincLocalMeta hincLocalMeta = hincLocalMetaRepository.findById("id").get();
-        return new ResponseEntity(hincLocalMeta.toJson(), HttpStatus.OK);
+        return new ResponseEntity<>(hincLocalMeta.toJson(), HttpStatus.OK);
     }
 
 
@@ -98,7 +90,7 @@ public class HelloController {
     @GetMapping("/greeting")
     public ResponseEntity greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
         model.addAttribute("name", name);
-        return new ResponseEntity("greeting", HttpStatus.OK);
+        return new ResponseEntity<>("greeting", HttpStatus.OK);
     }
 
 

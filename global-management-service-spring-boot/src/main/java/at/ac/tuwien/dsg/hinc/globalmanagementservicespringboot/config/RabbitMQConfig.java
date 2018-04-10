@@ -1,13 +1,15 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.config;
 
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleControlResult;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverProviders;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverResources;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleSynReply;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleUpdateInformationSingleIotUnit;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +31,7 @@ public class RabbitMQConfig {
 
     @Value("${hinc.global.rabbitmq.output.unicast}")
     private String outputUnicast;
+
 
     @Bean
     Queue inputQueue() {
@@ -76,11 +79,12 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(HandleSynReply handleSynReply) {
-        HandleControlResult handleControlResult = new HandleControlResult();
-        HandleUpdateInformationSingleIotUnit handleUpdateInformationSingleIotUnit = new HandleUpdateInformationSingleIotUnit();
-
-        handleControlResult.addMessageHandler(handleUpdateInformationSingleIotUnit);
+    MessageListenerAdapter listenerAdapter(HandleSynReply handleSynReply,
+                                           HandleDeliverProviders handleDeliverProviders,
+                                           HandleDeliverResources handleDeliverResources,
+                                           HandleControlResult handleControlResult) {
+        handleSynReply.addMessageHandler(handleDeliverResources);
+        handleSynReply.addMessageHandler(handleDeliverProviders);
         handleSynReply.addMessageHandler(handleControlResult);
 
         return new MessageListenerAdapter(handleSynReply, "handleMessage");
