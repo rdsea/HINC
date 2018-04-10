@@ -10,9 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.5.2",
+    "cli-table": "^0.3.1",
     "clui": "^0.3.6",
     "figlet": "^1.2.0",
     "inquirer": "^5.2.0",
+    "moment": "^2.22.0",
     "nedb": "^1.8.0",
     "randomstring": "^1.1.5",
     "uuid": "^3.2.1",
