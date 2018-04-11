@@ -1,8 +1,16 @@
 const prompt = require('inquirer').createPromptModule();
+const fs = require('fs');
+const path = require('path');
 
-exports.command = 'create-control'
+exports.command = 'create-control [options]'
 exports.desc = 'creates a control template in JSON, complete this template to use for the control command'
-exports.builder = {}
+exports.builder = {
+    file:{
+        alias: '-f',
+        describe: 'output the finished template into a file',
+        type: 'string'
+    },
+}
 
 let questions = [
     {
@@ -15,7 +23,7 @@ let questions = [
     },
     {
         name: 'controlPointUuid',
-        message: 'control point uuid: '
+        message: 'provider management point uuid: '
     },
     {
         name: 'controlType',
@@ -40,6 +48,12 @@ exports.handler = function (argv) {
 
         console.info('\nTEMPLATE ==========================================\n')
         console.log(JSON.stringify(template, null, 2));
+
+        if(argv.file){
+            let filepath = path.join(process.cwd(), argv.file);
+            fs.writeFileSync(filepath, JSON.stringify(template, null, 2)); 
+            cosole.log(`control template saved in ${filepath}`);
+        }
     })
 
 }
