@@ -84,13 +84,12 @@ public class LocalCommunicationManager {
 
     public void registerAtGlobal(){
         HincMessage registerMessage = new HincMessage();
-        registerMessage.setSenderID(HincConfiguration.getMyUUID());
         registerMessage.setSenderID(id);
-        registerMessage.setDestination(groupName, "");
-        registerMessage.setReply("", "");
+        registerMessage.setDestination(globalExchange, "");
+        registerMessage.setReply(id, groupName);
         registerMessage.setPayload(HincConfiguration.getLocalMeta().toJson());
 
-        registerMessage.setMsgType(HINCMessageType.SYN_REPLY);
+        registerMessage.setMsgType(HINCMessageType.REGISTER);
         this.sendMessage(registerMessage);
     }
 

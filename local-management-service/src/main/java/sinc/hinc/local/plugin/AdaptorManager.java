@@ -58,6 +58,9 @@ public class AdaptorManager {
         for(Adaptor adaptor: adaptors.values()){
             if(adaptor.getName().equals(adaptorName)){
                 logger.info("sending control to adaptor "+adaptor.getName());
+                if(reply.getRoutingKey() == null){
+                    reply.setRoutingKey("");
+                }
                 adaptor.sendControl(control, reply);
                 break;
             }

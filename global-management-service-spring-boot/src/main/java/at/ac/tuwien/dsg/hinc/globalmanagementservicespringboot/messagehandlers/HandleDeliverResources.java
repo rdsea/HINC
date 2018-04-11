@@ -36,18 +36,19 @@ public class HandleDeliverResources extends HINCMessageHandler{
     protected void doHandle(HincMessage msg) {
         try {
 
-            String group = msg.getReply().getExchange();
+            //String group = msg.getReply().getExchange();
             String id = msg.getSenderID();
 
             LocalMS localMS = new LocalMS();
             localMS.setId(id);
-            localMS.setGroup(group);
+            //localMS.setGroup(group);
 
             List<Resource> resources = objectMapper.readValue(msg.getPayload(), new TypeReference<List<Resource>>(){});
             localMS.setResources(resources);
             resourceRepository.saveAll(resources);
 
-            mongoTemplate.upsert(query(where("group").is(group).and("id").is(id)),
+            //"group").is(group).and
+            mongoTemplate.upsert(query(where("id").is(id)),
                     update("resources", resources), LocalMS.class);
 
         } catch (IOException e) {

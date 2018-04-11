@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
-import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.ResourceProvider;
 import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.model.payloads.ControlResult;

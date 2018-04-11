@@ -3,13 +3,12 @@ package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.config;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleControlResult;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverProviders;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverResources;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleSynReply;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleRegister;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -75,19 +74,20 @@ public class RabbitMQConfig {
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(inputQueue);
         container.setMessageListener(listenerAdapter);
+        container.setDefaultRequeueRejected(false);
         return container;
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(HandleSynReply handleSynReply,
+    MessageListenerAdapter listenerAdapter(HandleRegister handleRegister,
                                            HandleDeliverProviders handleDeliverProviders,
                                            HandleDeliverResources handleDeliverResources,
                                            HandleControlResult handleControlResult) {
-        handleSynReply.addMessageHandler(handleDeliverResources);
-        handleSynReply.addMessageHandler(handleDeliverProviders);
-        handleSynReply.addMessageHandler(handleControlResult);
+        handleRegister.addMessageHandler(handleDeliverResources);
+        handleRegister.addMessageHandler(handleDeliverProviders);
+        handleRegister.addMessageHandler(handleControlResult);
 
-        return new MessageListenerAdapter(handleSynReply, "handleMessage");
+        return new MessageListenerAdapter(handleRegister, "handleMessage");
     }
 
     @Bean

@@ -20,6 +20,8 @@ public class Main {
 
     static Logger logger = HincConfiguration.getLogger();
     public static int globalInterval = Integer.parseInt(PropertiesManager.getParameter("global.interval", "./sources.conf"));
+    public static String globalInputExchange = "hinc_global_input";
+
 
     public static void main(String[] args) throws Exception {
         logger.info("Starting HINC Local Management Service...");
@@ -30,7 +32,7 @@ public class Main {
                 HincConfiguration.getBroker(),
                 HincConfiguration.getGroupName(),
                 HincConfiguration.getMyUUID(),
-                HincConfiguration.getGroupName());
+                globalInputExchange);
         logger.info("initialized hinc communication manager");
 
         AdaptorCommunicationManager.initialize(

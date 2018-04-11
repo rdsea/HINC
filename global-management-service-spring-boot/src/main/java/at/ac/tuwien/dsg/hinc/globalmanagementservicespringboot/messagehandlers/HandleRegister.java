@@ -16,7 +16,7 @@ import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.metadata.HincLocalMeta;
 
 @Component
-public class HandleSynReply extends HINCMessageHandler {
+public class HandleRegister extends HINCMessageHandler {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final RabbitAdmin rabbitAdmin;
@@ -34,8 +34,8 @@ public class HandleSynReply extends HINCMessageHandler {
 
 
     @Autowired
-    public HandleSynReply(RabbitAdmin rabbitAdmin, HincLocalMetaRepository hincLocalMetaRepository, LocalMSRepository localMSRepository){
-        super(HINCMessageType.SYN_REPLY);
+    public HandleRegister(RabbitAdmin rabbitAdmin, HincLocalMetaRepository hincLocalMetaRepository, LocalMSRepository localMSRepository){
+        super(HINCMessageType.REGISTER);
 
         this.rabbitAdmin = rabbitAdmin;
         this.hincLocalMetaRepository = hincLocalMetaRepository;
@@ -46,7 +46,7 @@ public class HandleSynReply extends HINCMessageHandler {
     protected void doHandle(HincMessage hincMessage) {
         logger.debug("received " + hincMessage.toString());
 
-        String group = hincMessage.getDestination().getExchange();
+        String group = hincMessage.getReply().getRoutingKey();
         String id = hincMessage.getSenderID();
 
         if(id!=null && group != null) {

@@ -78,6 +78,9 @@ public class AdaptorCommunicationManager {
 
             System.out.println("xxxxxxxxxxx");
             System.out.println(objectMapper.writeValueAsString(hincMessage));
+            if(hincMessage.getDestination().getRoutingKey()==null){
+                hincMessage.getDestination().setRoutingKey("");
+            }
             publishChannel.basicPublish(
                     hincMessage.getDestination().getExchange(),
                     hincMessage.getDestination().getRoutingKey(),
