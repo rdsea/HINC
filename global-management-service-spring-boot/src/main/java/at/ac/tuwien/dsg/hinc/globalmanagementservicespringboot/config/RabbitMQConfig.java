@@ -3,7 +3,7 @@ package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.config;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleControlResult;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverProviders;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverResources;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleRegister;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleRegisterLMS;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -79,15 +79,15 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(HandleRegister handleRegister,
+    MessageListenerAdapter listenerAdapter(HandleRegisterLMS handleRegisterLMS,
                                            HandleDeliverProviders handleDeliverProviders,
                                            HandleDeliverResources handleDeliverResources,
                                            HandleControlResult handleControlResult) {
-        handleRegister.addMessageHandler(handleDeliverResources);
-        handleRegister.addMessageHandler(handleDeliverProviders);
-        handleRegister.addMessageHandler(handleControlResult);
+        handleRegisterLMS.addMessageHandler(handleDeliverResources);
+        handleRegisterLMS.addMessageHandler(handleDeliverProviders);
+        handleRegisterLMS.addMessageHandler(handleControlResult);
 
-        return new MessageListenerAdapter(handleRegister, "handleMessage");
+        return new MessageListenerAdapter(handleRegisterLMS, "handleMessage");
     }
 
     @Bean

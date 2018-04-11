@@ -89,7 +89,7 @@ public class LocalCommunicationManager {
         registerMessage.setReply(id, groupName);
         registerMessage.setPayload(HincConfiguration.getLocalMeta().toJson());
 
-        registerMessage.setMsgType(HINCMessageType.REGISTER);
+        registerMessage.setMsgType(HINCMessageType.REGISTER_LMS);
         this.sendMessage(registerMessage);
     }
 

@@ -16,7 +16,7 @@ import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.metadata.HincLocalMeta;
 
 @Component
-public class HandleRegister extends HINCMessageHandler {
+public class HandleRegisterLMS extends HINCMessageHandler {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final RabbitAdmin rabbitAdmin;
@@ -34,7 +34,7 @@ public class HandleRegister extends HINCMessageHandler {
 
 
     @Autowired
-    public HandleRegister(RabbitAdmin rabbitAdmin, HincLocalMetaRepository hincLocalMetaRepository, LocalMSRepository localMSRepository){
+    public HandleRegisterLMS(RabbitAdmin rabbitAdmin, HincLocalMetaRepository hincLocalMetaRepository, LocalMSRepository localMSRepository){
         super(HINCMessageType.REGISTER_LMS);
 
         this.rabbitAdmin = rabbitAdmin;
