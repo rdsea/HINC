@@ -28,12 +28,14 @@ public class HandleControl extends HINCMessageHandler {
 
             // fetch access point data from selected control point
             ResourceProvider provider = resourceProviderDAO.read(control.getResourceProviderUuid());
-            for(ControlPoint controlPoint: provider.getManagementPoints()){
-                if(controlPoint.getUuid().equals(control.getControlPointUuid()))
-                    control.setAccessPoints(controlPoint.getAccessPoints());
-            }
+            if(provider!=null) {
+                for (ControlPoint controlPoint : provider.getManagementPoints()) {
+                    if (controlPoint.getUuid().equals(control.getControlPointUuid()))
+                        control.setAccessPoints(controlPoint.getAccessPoints());
+                }
 
-            AdaptorManager.getInstance().sendControl(control.getResourceProviderUuid(), control, msg.getReply());
+                AdaptorManager.getInstance().sendControl(control.getResourceProviderUuid(), control, msg.getReply());
+            }
         } catch (IOException e) {
             logger.error("failed to marshall control payload "+msg.getPayload());
             e.printStackTrace();

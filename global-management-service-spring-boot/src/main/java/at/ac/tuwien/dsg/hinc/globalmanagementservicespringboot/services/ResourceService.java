@@ -42,6 +42,9 @@ public class ResourceService {
     @Value("${hinc.global.rabbitmq.output.unicast}")
     private String outputUnicast;
 
+    @Value("${hinc.global.id}")
+    private String globalId;
+
     @Autowired
     public ResourceService(RabbitTemplate rabbitTemplate, ResourceRepository resourceRepository, ObjectMapper objectMapper, LocalMSRepository localMSRepository) {
         this.rabbitTemplate = rabbitTemplate;
@@ -53,10 +56,7 @@ public class ResourceService {
     public List<Resource> queryResources(int timeout, String id, String group, int limit, boolean rescan) throws JsonProcessingException {
         String exchange = getDestinationExchange(id,group);
         String routing_key = getDestinationRoutingKey(id,group);
-        //TODO change ID
-        String globalId = "myID";
 
-        //TODO Broadcast QUERY_IOT_UNIT (SenderID:UUID of Global, ResponseTopic: Temporary)
         HincMessage queryMessage = new HincMessage();
         queryMessage.setMsgType(HINCMessageType.FETCH_RESOURCES);
         queryMessage.setUuid(globalId);
