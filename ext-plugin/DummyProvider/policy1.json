@@ -1,7 +1,0 @@
-{
-	"unitMax": 50,
-	"unitMin": 20,
-	"numberOfChange": 3,
-	"changeType": "METADATA_CHANGE",
-	"frequency": 5
-}

@@ -76,8 +76,6 @@ public class AdaptorCommunicationManager {
             AMQP.BasicProperties basicProperties = null;
             byte[] message = objectMapper.writeValueAsBytes(hincMessage);
 
-            System.out.println("xxxxxxxxxxx");
-            System.out.println(objectMapper.writeValueAsString(hincMessage));
             if(hincMessage.getDestination().getRoutingKey()==null){
                 hincMessage.getDestination().setRoutingKey("");
             }
@@ -124,6 +122,8 @@ public class AdaptorCommunicationManager {
         this.addMessageHandler(new HandleFetchResources());
         this.addMessageHandler(new HandleFetchProviders());
         this.addMessageHandler(new HandleControl());
+        this.addMessageHandler(new HandleRegisterAdaptor());
+        this.addMessageHandler(new HandleDeregisterAdaptor());
     }
 
 

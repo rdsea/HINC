@@ -50,7 +50,7 @@ function _pollMessage(timeout){
     let whileNotTimeout = () => {
         return channel.get(queue, {noAck: true}).then(function(res) {
             let current = (new Date().getTime());
-            if(current-start>timeout) throw new Error(`Timeout of ${timeout} milliseconds exceeded for expected message`);
+            if(current-start>timeout && timeout > 0) throw new Error(`Timeout of ${timeout} milliseconds exceeded for expected message`);
 
             if (res === false) {
                  // run the operation again
@@ -97,7 +97,6 @@ module.exports = {
     buildMessage,
     close,
 };
-
 
 
 

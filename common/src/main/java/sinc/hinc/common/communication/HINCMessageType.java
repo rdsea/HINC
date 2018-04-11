@@ -26,6 +26,9 @@ public enum HINCMessageType {
     DELIVER_PROVIDERS,
     REGISTER,
 
+    REGISTER_ADAPTOR,
+    DEREGISTER_ADAPTOR,
+
     //TODO remove unused
 
     SYN_REQUEST,

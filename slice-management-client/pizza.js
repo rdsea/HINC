@@ -5,6 +5,7 @@ const figlet = require('figlet');
 const yargs = require('yargs');
 const amqpTools = require('./src/amqpTools');
 const logger = require('./src/logger');
+const config = require('./src/config');
 
 let pizza = `
             88                                 
@@ -19,9 +20,14 @@ let pizza = `
 
 `
 
-yargs
+if(config.hasConfig()){
+    yargs
     .commandDir('./src/cmds')
     .demandCommand()
     .help()
     .version(pkg.version)
     .argv;
+}else{
+    config.setConfig();
+}
+

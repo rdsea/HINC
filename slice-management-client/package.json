@@ -6,13 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "pizza": "./pizza.js"
+  },
   "author": "lingfangao@gmail.com",
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.5.2",
+    "cli-table": "^0.3.1",
     "clui": "^0.3.6",
+    "configstore": "^3.1.2",
     "figlet": "^1.2.0",
     "inquirer": "^5.2.0",
+    "moment": "^2.22.0",
     "nedb": "^1.8.0",
     "randomstring": "^1.1.5",
     "uuid": "^3.2.1",
