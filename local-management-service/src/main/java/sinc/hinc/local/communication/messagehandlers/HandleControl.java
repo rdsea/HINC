@@ -7,6 +7,7 @@ import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.ResourceProvider;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 import sinc.hinc.common.model.payloads.Control;
+import sinc.hinc.common.model.payloads.ControlResult;
 import sinc.hinc.local.communication.AdaptorCommunicationManager;
 import sinc.hinc.local.communication.LocalCommunicationManager;
 import sinc.hinc.local.plugin.AdaptorManager;
@@ -35,6 +36,18 @@ public class HandleControl extends HINCMessageHandler {
                 }
 
                 AdaptorManager.getInstance().sendControl(control.getResourceProviderUuid(), control, msg.getReply());
+
+
+                /* to test when no adapter is active
+                HincMessage controlReply = new HincMessage();
+                controlReply.setDestination(msg.getReply().getExchange(), msg.getReply().getRoutingKey());
+                controlReply.setMsgType(HINCMessageType.CONTROL_RESULT);
+                ControlResult controlResult = new ControlResult();
+                controlResult.setRawOutput("control success");
+                controlResult.setOutcome(ControlResult.ControlResultOutcome.SUCCESSFUL);
+                controlReply.setPayload(objectMapper.writeValueAsString(controlResult));
+                LocalCommunicationManager.getInstance().sendMessage(controlReply);
+                */
             }
         } catch (IOException e) {
             logger.error("failed to marshall control payload "+msg.getPayload());

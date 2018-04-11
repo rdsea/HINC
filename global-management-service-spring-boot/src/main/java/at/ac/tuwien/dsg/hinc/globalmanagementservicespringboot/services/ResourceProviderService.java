@@ -116,11 +116,10 @@ public class ResourceProviderService {
             queryMessage.setReceiverID(id);
          */
 
-        //TODO send hinc message
         byte[] byteMessage = objectMapper.writeValueAsBytes(queryMessage);
         rabbitTemplate.convertAndSend(outputBroadcast, "", byteMessage);
 
-        Message replyMessage = rabbitTemplate.receive(replyQueue.getName());
+        Message replyMessage = rabbitTemplate.receive(replyQueue.getName(), 100000);
         byte[] byteReply = replyMessage.getBody();
         HincMessage hincMessageReply = objectMapper.readValue(byteReply, HincMessage.class);
         ControlResult controlResult = objectMapper.readValue(hincMessageReply.getPayload(), ControlResult.class);

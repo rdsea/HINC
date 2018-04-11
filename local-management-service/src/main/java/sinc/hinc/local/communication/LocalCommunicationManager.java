@@ -119,6 +119,7 @@ public class LocalCommunicationManager {
     private void registerMessageHandler(){
         this.addMessageHandler(new HandleFetchResources());
         this.addMessageHandler(new HandleFetchProviders());
+        this.addMessageHandler(new HandleControl());
     }
 
     public String getExchange(){
@@ -126,40 +127,4 @@ public class LocalCommunicationManager {
     }
 
 
-    //TODO remove - for testing purpose only
-    public static void main(String[] args) throws Exception {
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost("localhost");
-        String group = "group";
-        String id = "id";
-
-        LocalCommunicationManager.initialize("localhost", group, id, "global_incoming_direct");
-        LocalCommunicationManager localCommunicationManager = LocalCommunicationManager.getInstance();
-        int i = 0;
-        while(true){
-            i++;
-            HincMessage message = testMessage(i);
-            System.out.println("publish to global");
-            localCommunicationManager.sendMessage(message);
-            i = i%3;
-
-            try {
-                Thread.sleep(2000);
-            }catch (InterruptedException e){
-                System.out.println("interrupted");
-            }
-        }
-
-    }
-    private static HincMessage testMessage(int i){
-        HincMessage message = new HincMessage();
-        message.setPayload("testpayload");
-
-        switch (i%3) {
-            case 0:message.setMsgType(HINCMessageType.CONTROL_RESULT);break;
-            case 1:message.setMsgType(HINCMessageType.SYN_REPLY);break;
-            case 2:message.setMsgType(HINCMessageType.UPDATE_INFORMATION_SINGLEIOTUNIT);break;
-        }
-        return message;
-    }
 }
