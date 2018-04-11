@@ -20,7 +20,7 @@ exports.handler = function (argv) {
     return amqpTools.init().then(() => {
         return amqpTools.sendMessage(controlMsg);
     }).then(() => {
-        return amqpTools.getMessage();
+        return amqpTools.getMessage(-1);
     }).then((msg) => {
         msg = JSON.parse(msg.content.toString());
         if(msg.msgType !== 'CONTROL_RESULT')
