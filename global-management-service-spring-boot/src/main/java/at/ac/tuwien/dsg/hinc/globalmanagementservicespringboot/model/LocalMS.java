@@ -13,8 +13,6 @@ public class LocalMS {
     private String id;
     private String group;
     @DBRef
-    private HincLocalMeta hincLocalMeta;
-    @DBRef
     private List<Resource> resources;
     @DBRef
     private List<ResourceProvider> resourceProviders;
@@ -34,14 +32,6 @@ public class LocalMS {
 
     public void setGroup(String group) {
         this.group = group;
-    }
-
-    public HincLocalMeta getHincLocalMeta() {
-        return hincLocalMeta;
-    }
-
-    public void setHincLocalMeta(HincLocalMeta hincLocalMeta) {
-        this.hincLocalMeta = hincLocalMeta;
     }
 
     public List<Resource> getResources() {

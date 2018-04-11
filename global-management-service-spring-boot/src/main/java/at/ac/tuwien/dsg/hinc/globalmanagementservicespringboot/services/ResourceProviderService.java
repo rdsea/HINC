@@ -2,7 +2,7 @@ package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services;
 
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalMSRepository;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ResourceRepository;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ProviderRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,17 +15,17 @@ import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.Resource;
+import sinc.hinc.common.model.ResourceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Component
-public class ResourceService {
+public class ResourceProviderService {
 
     private final RabbitTemplate rabbitTemplate;
 
-    private final ResourceRepository resourceRepository;
+    private final ProviderRepository providerRepository;
     private final LocalMSRepository localMSRepository;
 
     private final ObjectMapper objectMapper;
@@ -43,22 +43,21 @@ public class ResourceService {
     private String outputUnicast;
 
     @Autowired
-    public ResourceService(RabbitTemplate rabbitTemplate, ResourceRepository resourceRepository, ObjectMapper objectMapper, LocalMSRepository localMSRepository) {
+    public ResourceProviderService(RabbitTemplate rabbitTemplate, ProviderRepository providerRepository, ObjectMapper objectMapper, LocalMSRepository localMSRepository) {
         this.rabbitTemplate = rabbitTemplate;
-        this.resourceRepository = resourceRepository;
+        this.providerRepository = providerRepository;
         this.objectMapper = objectMapper;
         this.localMSRepository = localMSRepository;
     }
 
-    public List<Resource> queryResources(int timeout, String id, String group, int limit, boolean rescan) throws JsonProcessingException {
+    public List<ResourceProvider> queryResourceProviders(int timeout, String id, String group, int limit, boolean rescan) throws JsonProcessingException {
         String exchange = getDestinationExchange(id,group);
         String routing_key = getDestinationRoutingKey(id,group);
         //TODO change ID
         String globalId = "myID";
 
-        //TODO Broadcast QUERY_IOT_UNIT (SenderID:UUID of Global, ResponseTopic: Temporary)
         HincMessage queryMessage = new HincMessage();
-        queryMessage.setMsgType(HINCMessageType.FETCH_RESOURCES);
+        queryMessage.setMsgType(HINCMessageType.FETCH_PROVIDERS);
         queryMessage.setUuid(globalId);
 
         queryMessage.setSenderID(globalId);
@@ -78,31 +77,31 @@ public class ResourceService {
         }
 
         //TODO temporary queue
-        return getResources(id, group, limit);
+        return getProviders(id, group, limit);
     }
 
-    private List<Resource> getResources(String id, String group, int limit){
+    private List<ResourceProvider> getProviders(String id, String group, int limit){
 
-        List<Resource> result = new ArrayList<>();
+        List<ResourceProvider> result = new ArrayList<>();
 
         if(id != null && !id.isEmpty()){
             if (localMSRepository.findById(id).isPresent()) {
                 LocalMS localMS = localMSRepository.findById(id).get();
-                result = localMS.getResources();
+                result = localMS.getResourceProviders();
             }
         }else if (group != null && !group.isEmpty()){
             List<LocalMS> localMSList = new ArrayList<>();
             localMSList = localMSRepository.findByGroup(group);
             for(LocalMS localMS:localMSList){
-                result.addAll(localMS.getResources());
+                result.addAll(localMS.getResourceProviders());
             }
         }else{
             if(limit>0) {
                 Pageable resultLimit = PageRequest.of(0, limit);
-                Page<Resource> resourcePage = resourceRepository.findAll(resultLimit);
+                Page<ResourceProvider> resourcePage = providerRepository.findAll(resultLimit);
                 result = resourcePage.getContent();
             }else{
-                result = resourceRepository.findAll();
+                result = providerRepository.findAll();
             }
         }
 

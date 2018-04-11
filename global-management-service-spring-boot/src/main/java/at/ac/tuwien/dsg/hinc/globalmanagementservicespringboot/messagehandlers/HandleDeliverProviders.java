@@ -5,6 +5,8 @@ import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalM
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ProviderRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HINCMessageHandler;
 import sinc.hinc.common.communication.HINCMessageType;
@@ -14,16 +16,20 @@ import sinc.hinc.common.model.ResourceProvider;
 import java.io.IOException;
 import java.util.List;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Update.update;
+
 @Component
 public class HandleDeliverProviders extends HINCMessageHandler {
     private final ProviderRepository providerRepository;
-    private final LocalMSRepository localMSRepository;
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public HandleDeliverProviders(ProviderRepository providerRepository, LocalMSRepository localMSRepository) {
+    public HandleDeliverProviders(ProviderRepository providerRepository, MongoTemplate mongoTemplate) {
         super(HINCMessageType.DELIVER_PROVIDERS);
         this.providerRepository = providerRepository;
-        this.localMSRepository = localMSRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
@@ -41,7 +47,10 @@ public class HandleDeliverProviders extends HINCMessageHandler {
             List<ResourceProvider> providers = objectMapper.readValue(msg.getPayload(), new TypeReference<List<ResourceProvider>>(){});
             localMS.setResourceProviders(providers);
             providerRepository.saveAll(providers);
-            localMSRepository.save(localMS);
+
+            mongoTemplate.upsert(query(where("group").is(group).and("id").is(id)),
+                    update("resourceProviders", providers), LocalMS.class);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

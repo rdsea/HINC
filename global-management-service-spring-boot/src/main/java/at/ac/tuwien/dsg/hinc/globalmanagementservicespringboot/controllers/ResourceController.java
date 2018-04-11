@@ -2,12 +2,11 @@ package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.controllers;
 
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services.ResourceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.ResourceProvider;
 import sinc.hinc.common.model.capabilities.ControlPoint;
@@ -17,6 +16,7 @@ import sinc.hinc.common.model.payloads.ControlResult;
 import java.util.List;
 
 @RestController
+@RequestMapping("/resources")
 public class ResourceController {
 
     private final ResourceService resourceService;
@@ -27,8 +27,12 @@ public class ResourceController {
     }
 
 
-    @GetMapping("/resources")
-    public ResponseEntity<List<Resource>> queryResources(int timeout, String id, String group, int limit, boolean rescan) {
+    @GetMapping
+    public ResponseEntity<List<Resource>> getResources(@RequestParam(required = false, defaultValue = "0")Integer timeout,
+                                                       @RequestParam(required = false, defaultValue = "")String id,
+                                                       @RequestParam(required = false, defaultValue = "")String group,
+                                                       @RequestParam(required = false, defaultValue = "0")Integer limit,
+                                                       @RequestParam(required = false, defaultValue = "false")Boolean rescan) {
 
         List<Resource> resourceList = null;
         try {
@@ -40,14 +44,42 @@ public class ResourceController {
         return new ResponseEntity<>(resourceList, HttpStatus.OK);
     }
 
-
-    @GetMapping("/resourceproviders")
-    public ResponseEntity<List<ResourceProvider>> queryResourceProviders(int timeout, String id, String group, int limit, boolean forceRescan) {
-        //TODO Broadcast QUERY_IOT_PROVIDERS (SenderID:UUID of Global, ResponseTopic: Temporary)
-        //HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_IOT_PROVIDERS.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
-
+    /*@GetMapping("/{id}/controlpoints")
+    public ResponseEntity<List<ControlPoint>> getControlPointsForResource(@PathVariable String id,
+                                                                          @RequestParam(required = false, defaultValue = "0") Integer timeout,
+                                                                          @RequestParam(required = false, defaultValue = "false") Boolean rescan){
         return null;
     }
+
+
+    @GetMapping("/{id}/datapoints")
+    public ResponseEntity<List<DataPoint>> getDataPointsForResource(@PathVariable String id,
+                                                                    @RequestParam(required = false, defaultValue = "0") Integer timeout,
+                                                                    @RequestParam(required = false, defaultValue = "false") Boolean rescan){
+        return null;
+    }
+
+    @PostMapping("/{resourceId}/controlpoints/{controlPointId}")
+    public ResponseEntity<ControlResult> postToControlPointOfResource(@PathVariable String resourceId,
+                                                                      @PathVariable String controlPointId,
+                                                                      @RequestBody JsonNode jsonString){
+        return null;
+    }*/
+
+    /*
+    GET /resources?type=&group=&id=&limit=&rescan=true&timeout=
+    GET /resources/{id}/datapoints
+    GET /resources/{id}/controlpoints
+    POST /resources/{id}/controlpoints/{id}   Parameter:parameter
+
+
+
+
+    GET /controlpoints
+    POST /controlpoints/{id}   Parameter:parameter
+    GET /datapoints
+     */
+
 
     @PostMapping("/control")
     public ResponseEntity<ControlResult> sendControl(String gatewayid, String resourceid, String actionName, String param) {
