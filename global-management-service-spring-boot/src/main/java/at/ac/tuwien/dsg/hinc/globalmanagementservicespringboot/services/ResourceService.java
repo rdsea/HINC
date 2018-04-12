@@ -1,17 +1,12 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services;
 
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalMSRepository;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ResourceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
@@ -19,7 +14,6 @@ import sinc.hinc.common.model.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class ResourceService {
@@ -54,7 +48,9 @@ public class ResourceService {
         this.localMSRepository = localMSRepository;
     }
 
-    public List<Resource> queryResources(int timeout, String id, String group, int limit, boolean rescan) throws JsonProcessingException {
+    public List<Resource> queryResources(int timeout, int limit) throws JsonProcessingException {
+        String group = null;
+        String id = null;
         String exchange = getDestinationExchange(id,group);
         String routing_key = getDestinationRoutingKey(id,group);
 
@@ -86,6 +82,7 @@ public class ResourceService {
 
         List<Resource> result = new ArrayList<>();
 
+        /* TODO
         if(id != null && !id.isEmpty()){
             if (localMSRepository.findById(id).isPresent()) {
                 LocalMS localMS = localMSRepository.findById(id).get();
@@ -97,20 +94,18 @@ public class ResourceService {
             for(LocalMS localMS:localMSList){
                 result.addAll(localMS.getResources());
             }
-        }else{
+        }else{*/
             if(limit>0) {
-                Pageable resultLimit = PageRequest.of(0, limit);
-                Page<Resource> resourcePage = resourceRepository.findAll(resultLimit);
-                result = resourcePage.getContent();
+
+                result = resourceRepository.readAll(limit);
             }else{
-                result = resourceRepository.findAll();
-
+                result = resourceRepository.readAll();
             }
-        }
+        //}
 
-        if(limit>0) {
+        /*if(limit>0) {
             result = result.subList(0, limit);
-        }
+        }*/
 
         return result;
     }

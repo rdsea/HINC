@@ -29,15 +29,15 @@ public class ResourceProviderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResourceProvider>> getResources(@RequestParam(required = false, defaultValue = "0")Integer timeout,
-                                                       @RequestParam(required = false, defaultValue = "")String id,
-                                                       @RequestParam(required = false, defaultValue = "")String group,
-                                                       @RequestParam(required = false, defaultValue = "0")Integer limit,
-                                                       @RequestParam(required = false, defaultValue = "false")Boolean rescan) {
+    public ResponseEntity<List<ResourceProvider>> getResources(@RequestParam(required = false, defaultValue = "3000")Integer timeout,
+                                                       //@RequestParam(required = false, defaultValue = "")String id,
+                                                       //@RequestParam(required = false, defaultValue = "")String group,
+                                                       @RequestParam(required = false, defaultValue = "0")Integer limit){
+                                                       //@RequestParam(required = false, defaultValue = "false")Boolean rescan) {
 
         List<ResourceProvider> resourceProviderList = new ArrayList<>();
         try {
-            resourceProviderList = resourceProviderService.queryResourceProviders(timeout,id,group,limit,rescan);
+            resourceProviderList = resourceProviderService.queryResourceProviders(timeout,limit);
             return new ResponseEntity<>(resourceProviderList, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             e.printStackTrace();

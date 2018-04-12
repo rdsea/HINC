@@ -1,7 +1,6 @@
 package sinc.hinc.common.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.data.annotation.Id;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 import sinc.hinc.common.model.capabilities.DataPoint;
 
@@ -28,7 +27,7 @@ public class Resource {
     private Collection<ControlPoint> controlPoints = new ArrayList<>();
     private Collection<DataPoint> dataPoints = new ArrayList<>();
     // primary key used in database
-    @Id
+
     private String uuid;
 
     public String getUuid() {

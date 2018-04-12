@@ -1,11 +1,15 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository;
 
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
-import java.util.List;
+@Repository
+public class LocalMSRepository extends AbstractDAO<LocalMS> {
+    public LocalMSRepository() {
+        super(LocalMS.class);
+    }
 
-public interface LocalMSRepository extends MongoRepository<LocalMS, String> {
-    List<LocalMS> findByGroup(String group);
+    // TODO
+    // List<LocalMS> findByGroup(String group);
 }

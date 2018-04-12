@@ -1,6 +1,5 @@
 package sinc.hinc.common.model;
 
-import org.springframework.data.annotation.Id;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 
 import java.util.Collection;
@@ -10,7 +9,6 @@ public class ResourceProvider {
     private String name;
     private Collection<Resource> resources;
     private Collection<ControlPoint> managementPoints;
-    @Id
     private String uuid;
 
     public String getName() {

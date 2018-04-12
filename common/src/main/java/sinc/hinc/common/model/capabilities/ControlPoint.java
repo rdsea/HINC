@@ -1,7 +1,6 @@
 package sinc.hinc.common.model.capabilities;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.data.annotation.Id;
 import sinc.hinc.common.model.accessPoint.AccessPoint;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ public class ControlPoint {
     private JsonNode parameters;
     private ControlType controlType;
     private Collection<AccessPoint> accessPoints = new ArrayList<>();
-    @Id
     private String uuid;
 
     public String getUuid() {

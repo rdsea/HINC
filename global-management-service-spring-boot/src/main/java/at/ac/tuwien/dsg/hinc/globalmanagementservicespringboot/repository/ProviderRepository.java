@@ -1,7 +1,12 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 import sinc.hinc.common.model.ResourceProvider;
+import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
-public interface ProviderRepository extends MongoRepository<ResourceProvider, String> {
+@Repository
+public class ProviderRepository extends AbstractDAO<ResourceProvider> {
+    public ProviderRepository() {
+        super(ResourceProvider.class);
+    }
 }

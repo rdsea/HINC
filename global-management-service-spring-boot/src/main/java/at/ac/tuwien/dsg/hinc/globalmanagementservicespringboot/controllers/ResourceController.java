@@ -2,19 +2,16 @@ package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.controllers;
 
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services.ResourceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Example;
-import io.swagger.annotations.ExampleProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import sinc.hinc.common.model.Resource;
-import sinc.hinc.common.model.ResourceProvider;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 import sinc.hinc.common.model.capabilities.DataPoint;
-import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.model.payloads.ControlResult;
 
 import java.util.List;
@@ -32,15 +29,16 @@ public class ResourceController {
 
 
     @GetMapping
-    public ResponseEntity<List<Resource>> getResources(@RequestParam(required = false, defaultValue = "0")Integer timeout,
-                                                       @RequestParam(required = false, defaultValue = "")String id,
-                                                       @RequestParam(required = false, defaultValue = "")String group,
-                                                       @RequestParam(required = false, defaultValue = "0")Integer limit,
-                                                       @RequestParam(required = false, defaultValue = "false")Boolean rescan) {
+    public ResponseEntity<List<Resource>> getResources(@RequestParam(required = false, defaultValue = "3000")Integer timeout,
+                                                       //@RequestParam(required = false, defaultValue = "")String id,
+                                                       //@RequestParam(required = false, defaultValue = "")String group,
+                                                       @RequestParam(required = false, defaultValue = "0")Integer limit
+                                                       //@RequestParam(required = false, defaultValue = "false")Boolean rescan
+                                                        ) {
 
         List<Resource> resourceList = null;
         try {
-            resourceList = resourceService.queryResources(timeout,id,group,limit,rescan);
+            resourceList = resourceService.queryResources(timeout, limit);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

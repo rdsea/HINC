@@ -1,7 +1,5 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.ResourceProvider;
@@ -9,14 +7,10 @@ import sinc.hinc.common.model.ResourceProvider;
 import java.util.List;
 
 public class LocalMS {
-    @Id
     private String id;
     private String group;
-    @DBRef
     private HincLocalMeta hincLocalMeta;
-    @DBRef
     private List<Resource> resources;
-    @DBRef
     private List<ResourceProvider> resourceProviders;
 
 
