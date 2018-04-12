@@ -81,7 +81,7 @@ public class HincConfiguration {
     }
 
     public static String getBroker() {
-        return getGenericParameter("BROKER", "ampq://localhost");
+        return getGenericParameter("BROKER_HOST", "localhost");
     }
 
     public static String getBrokerType() {
@@ -91,6 +91,8 @@ public class HincConfiguration {
     public static String getGroupName() {
         return getGenericParameter("GROUP", "DEFAULT");
     }
+
+
 
     public static boolean detectLocation() {
         String isDetected = getGenericParameter("AUTO_LOCATION", "false");
@@ -109,6 +111,7 @@ public class HincConfiguration {
         return logger;
     }
 
+    //TODO refactor to Filewatcher
     private static String getGenericParameter(String key, String theDefault) {
         Properties prop = new Properties();
         InputStream input;

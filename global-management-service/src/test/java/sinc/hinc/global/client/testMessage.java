@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.global.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,15 +15,19 @@ import sinc.hinc.model.API.ResourcesManagementAPI;
 
 //import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
+*/
 /**
  * @author hungld
- */
+ *//*
+
 public class testMessage {
 
     public static void main(String[] args) throws Exception {
-        /**
+        */
+/**
          * This part connect the client to the message queue, get the list of DElise
-         */
+         *//*
+
         ResourcesManagementAPI api = new ResourcesManagementAPIImpl();
         HINCManagementAPI mngAPI = new HINCManagementImpl();
         mngAPI.setHINCGlobalMeta(new HINCGlobalMeta("default", "amqp://localhost", "amqp"));
@@ -40,3 +45,4 @@ public class testMessage {
 
     }
 }
+*/

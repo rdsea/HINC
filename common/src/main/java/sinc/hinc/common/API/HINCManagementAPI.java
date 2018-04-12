@@ -38,7 +38,7 @@ import sinc.hinc.common.metadata.HincLocalMeta;
                 description = "This API provides functions to manage the rsiHub services",
                 license = @License(name = "APACHE LICENSE", url = "http://www.apache.org/licenses/LICENSE-2.0")),
         tags = @Tag(name = "Public", description = "This API is for public usage"),
-        schemes = (SwaggerDefinition.Scheme.HTTP),
+        schemes = {SwaggerDefinition.Scheme.HTTP},
         consumes = {"application/json"},
         produces = {"application/json"}
 )

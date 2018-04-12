@@ -1,8 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/**
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
+
 package sinc.hinc.global.API;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -10,7 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import sinc.hinc.common.metadata.HincLocalMeta;
-import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.communication.GlobalCommunicationManager;
+import sinc.hinc.communication.HincMessage;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.communication.processing.HINCMessageSender;
@@ -30,6 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
+
 import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.CloudConnectivity;
 import sinc.hinc.model.VirtualComputingResource.Capabilities.ControlPoint;
@@ -46,35 +50,38 @@ import sinc.hinc.model.slice.AppSlice;
 import sinc.hinc.model.slice.InfrastructureSlice;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
-/**
+*
  * @author hungld
- */
+
+
 @Service
-//@Path("/")
 public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
 
-    static Logger logger = LoggerFactory.getLogger("HINC");
-    HINCMessageSender comMng = getCommunicationManager();
-    List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private GlobalCommunicationManager globalCommunicationManager;
 
-    {
-        // check database, if not exist then create
-        DatabaseUtils.initDB();
-    }
+
+    //private HINCMessageSender comMng = getCommunicationManager();
+    private List<HincLocalMeta> listOfHINCLocal = new ArrayList<>();
+    private List<MicroserviceArtifact> staticArtifact = new ArrayList<>();
+    private List<NetworkFunctionService> networkServiceMock = new ArrayList<>();
+    private List<CloudService> staticcloudService = new ArrayList<>();
+    private List<CloudProvider> staticcloudProvider = new ArrayList<>();
+
 
     public ResourcesManagementAPIImpl() {
-    }
-
-    public HINCMessageSender getCommunicationManager() {
-        if (comMng == null) {
-            this.comMng = new HINCMessageSender(HincConfiguration.getBroker(), HincConfiguration.getBrokerType());
+        // check database, if not exist then create
+        DatabaseUtils.initDB();
+        try {
+            globalCommunicationManager = GlobalCommunicationManager.getInstance();
+        } catch (IOException | TimeoutException e) {
+            e.printStackTrace();
         }
-        return this.comMng;
     }
 
-    /*
     * IoTUnit represents an IoT Virtual Resource, including datapoint, controlpoint, etc.
-     */
+
+
     @Override
     public Set<IoTUnit> queryIoTUnits(int timeout, String hincUUID, String infoBases, int limit, String rescan) {
         logger.debug("Start broadcasting the query for IoT Unit...");
@@ -83,7 +90,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         logger.debug("Data is stored in: " + dir.getAbsolutePath());
 
         if (timeout == 0) {
-            logger.debug("timeout = 0, query in DB of the global service, do not make any request.");
+            logger.debug("timeout = 0, query in DB of the global services, do not make any request.");
             IoTUnitDAO dao = new IoTUnitDAO();
             List<IoTUnit> list = dao.readAll();
 
@@ -102,6 +109,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             payload = "rescan";
         }
 
+        //TODO Broadcast QUERY_IOT_UNIT (SenderID:UUID of Global, ResponseTopic: Temporary)
         HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_IOT_UNIT.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
         if (limit > 0) {
             queryMessage.hasExtra("limit", limit + "");
@@ -112,6 +120,15 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         if (infoBases != null && !infoBases.isEmpty() && !infoBases.trim().equals("null")) {
             queryMessage.hasExtra("infoBases", infoBases);
         }
+
+        try {
+            //TODO async result
+            //TODO check if another messagehandler is necessary (because old code uses a seperate messagehandler)
+            globalCommunicationManager.broadcastMessage(queryMessage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
             long latestTime = 0;
             long quantity = 0;
@@ -163,6 +180,8 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
             ex.printStackTrace();
         }
 
+
+
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(eventFileName, true)))) {
             logger.debug("Now saving events to file: " + eventFileName);
             for (String s : events) {
@@ -183,6 +202,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         }
 
         String feedBackTopic = HincMessageTopic.getTemporaryTopic();
+        //TODO Broadcast QUERY_IOT_PROVIDERS (SenderID:UUID of Global, ResponseTopic: Temporary)
         HincMessage queryMessage = new HincMessage(HINCMessageType.QUERY_IOT_PROVIDERS.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), feedBackTopic, payload);
         if (limit > 0) {
             queryMessage.hasExtra("limit", limit + "");
@@ -195,7 +215,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         }
 
         if (timeout == 0) {
-            logger.debug("timeout = 0, query in DB of the global service, do not make any request.");
+            logger.debug("timeout = 0, query in DB of the global services, do not make any request.");
             AbstractDAO<ResourcesProvider> dao = new AbstractDAO<>(ResourcesProvider.class);
             List<ResourcesProvider> list = dao.readAll();
 
@@ -203,7 +223,14 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         }
 
         final Set<ResourcesProvider> result = new HashSet<>();
-        comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
+        try {
+            //TODO async result
+            //TODO check if another messagehandler is necessary (because old code uses a seperate messagehandler)
+            globalCommunicationManager.broadcastMessage(queryMessage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+comMng.asynCall(timeout, queryMessage, new HINCMessageHander() {
             @Override
             public HincMessage handleMessage(HincMessage message) {
                 WrapperProvider wrapper = new WrapperProvider(message.getPayload());
@@ -222,6 +249,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
+
         return result;
     }
 
@@ -274,11 +302,11 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         return connectivity;
     }
 
-    /*
     * This is just a mockdata. We will change it by loading data from preconfiguration file
     * for well-known network services or through dynamic registration
-     */
-    List<NetworkFunctionService> networkServiceMock;
+
+
+
 
     private void generateNetworkMock() { // create MOCK
         networkServiceMock = new ArrayList<>();
@@ -288,7 +316,7 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         networkServiceMock.add(new NetworkFunctionService(UUID.randomUUID().toString(), "californium.eclipse.org", NetworkFunctionService.NetworkServiceType.BROKER_COAP, new AccessPoint("coap://californium.eclipse.org:5683/")));
     }
 
-    // TODO: really implement network service querying instead of using MOCK info
+    // TODO: really implement network services querying instead of using MOCK info
     @Override
     public Collection<NetworkFunctionService> queryNetworkService(int timeout, String hincUUID) {
         if (networkServiceMock == null) {
@@ -310,27 +338,28 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     public List<VNF> queryVNF(int timeout, String hincUUID) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    /*
      * TODO: query and read from static files about cloud providers
     * also we need to implement registration
-     */
-    List<CloudService> staticcloudService = null;
+
+
+
 
     @Override
+    //TODO mocked call
     public List<CloudService> queryCloudServices(int timeout, String hincUUID) {
         logger.debug("Query cloud services");
         if (staticcloudService == null) {
             logger.debug("load from static information");
             //we assume here two services 
-            //first a big query service provided by google
+            //first a big query services provided by google
             CloudService bigQuery = new CloudService(CloudProvider.ProviderType.IaaS.toString());
             AccessPoint accessPoint = new AccessPoint();
             accessPoint.setEndpoint("https://www.googleapis.com/bigquery/v2");
             bigQuery.setAccessPoint(accessPoint);
             staticcloudService = new ArrayList<>();
             staticcloudService.add(bigQuery);
-            //second assume that a consumer creates a service for storing data
-            //the service gives a bucket name interhincdemo
+            //second assume that a consumer creates a services for storing data
+            //the services gives a bucket name interhincdemo
             CloudService appStorage = new CloudService(CloudProvider.ProviderType.IaaS.toString());
             AccessPoint accessPointApp = new AccessPoint();
             accessPointApp.setEndpoint("https://www.googleapis.com/storage/v1/b/interhincdemo/o");
@@ -343,9 +372,10 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     }
     
     //TODO: query and load static providers from files.
-    List<CloudProvider> staticcloudProvider = null;
+
 
     @Override
+    //TODO mocked call
     public List<CloudProvider> queryCloudProviders(int timeout, String hincUUID) {
         logger.debug("Query cloud providers");
         if (staticcloudProvider == null) {
@@ -363,9 +393,19 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
     @Override
     public String sendControl(String gatewayid, String resourceid, String actionName, String param) {
         String controlPointUUID = gatewayid + "/" + resourceid + "/" + actionName;
+        //TODO Groupcast/Broadcast CONTROL (SenderID:UUID of Global, ResponseTopic: Temporary)
         HincMessage controlPointRequest = new HincMessage(HINCMessageType.CONTROL.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), HincMessageTopic.getTemporaryTopic(), controlPointUUID);
         controlPointRequest.hasExtra("param", param);
-        return comMng.synCall(controlPointRequest);
+        try {
+            //TODO async result
+            //TODO check if another messagehandler is necessary (because old code uses a seperate messagehandler)
+            //TODO change to unicast
+            globalCommunicationManager.broadcastMessage(controlPointRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "todo";
     }
 
     @Override
@@ -427,14 +467,15 @@ public class ResourcesManagementAPIImpl implements ResourcesManagementAPI {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /*
      * TODO: query and read from static files about software artifact
     * also we need to implement registration
     * only mockup for demonstration purpose
-     */
-    List<MicroserviceArtifact> staticArtifact = null;
+
+
+
     
     @Override
+    //TODO mocked call
     public Collection<MicroserviceArtifact> queryMicroserviceArtifact(int timeout, String hincUUID) {
         if (staticArtifact ==null) {
             logger.debug("load from static information about artifacts");

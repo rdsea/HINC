@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.global.management;
 
 import com.google.common.cache.Cache;
@@ -10,29 +11,34 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinc.hinc.communication.processing.HincMessage;
+import sinc.hinc.common.metadata.HINCMessageType;
 import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.communication.factory.MessageClientFactory;
 import sinc.hinc.communication.factory.MessagePublishInterface;
 import sinc.hinc.communication.factory.MessageSubscribeInterface;
 import sinc.hinc.communication.message.payloads.UpdateGatewayStatus;
+import sinc.hinc.communication.processing.HINCMessageHander;
+import sinc.hinc.communication.processing.HincMessage;
 
 import java.io.File;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.communication.processing.HINCMessageHander;
 
+*/
 /**
  * @author hungld
- */
+ *//*
+
+//TODO Remove Class --> Unused
 public class SubscriptionManager {
 
     static Logger logger = LoggerFactory.getLogger("DELISE");
     MessageClientFactory FACTORY;
-    /**
+    */
+/**
      * TODO: use the default topic to distinguish different client and management scope E.g. each stakeholder will hold an ID, which regarding to the topic
-     */
+     *//*
+
     String prefixTopic = "";
     String groupName;
 
@@ -108,3 +114,4 @@ public class SubscriptionManager {
 
 
 }
+*/

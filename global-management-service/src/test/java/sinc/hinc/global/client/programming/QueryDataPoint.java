@@ -5,16 +5,7 @@
  */
 package sinc.hinc.global.client.programming;
 
-import sinc.hinc.common.API.HINCManagementAPI;
-import sinc.hinc.common.metadata.HINCGlobalMeta;
-import sinc.hinc.global.API.HINCManagementImpl;
-import sinc.hinc.global.API.ResourcesManagementAPIImpl;
 //import sinc.hinc.global.management.QueryManager;
-import sinc.hinc.model.API.ResourcesManagementAPI;
-import java.util.List;
-import sinc.hinc.model.Extensible.ExtensibleModel;
-import sinc.hinc.model.Extensible.misc.SensorProps;
-import sinc.hinc.model.VirtualComputingResource.Capabilities.DataPoint;
 
 /**
  * @author hungld

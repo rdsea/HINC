@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.global.client;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
@@ -15,10 +16,12 @@ import sinc.hinc.model.API.ResourcesManagementAPI;
 import sinc.hinc.model.VirtualNetworkResource.AccessPoint;
 import sinc.hinc.model.VirtualNetworkResource.NetworkFunctionService;
 
+*/
 /**
  *
  * @author hungld
- */
+ *//*
+
 public class GeneratePublicBrokerNetworkService {
 
     public static void main(String[] args) {
@@ -39,3 +42,4 @@ public class GeneratePublicBrokerNetworkService {
         return nws;
     }
 }
+*/

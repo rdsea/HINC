@@ -2,7 +2,8 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
+ *//*
+
 package sinc.hinc.global.TESTRUN;
 
 import sinc.hinc.global.API.ResourcesManagementAPIImpl;
@@ -14,9 +15,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+*/
 /**
  * @author hungld
- */
+ *//*
+
 public class Experiment1_Broadcast_ResponseTime {
 
     //     public static void main(String[] args) throws Exception {
@@ -124,3 +127,4 @@ public class Experiment1_Broadcast_ResponseTime {
         }
     }
 }
+*/

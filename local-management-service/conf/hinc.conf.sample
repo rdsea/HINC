@@ -1,3 +1,3 @@
-BROKER=amqp://guest:guest@localhost
+BROKER_HOST=localhost
 BROKER_TYPE=amqp
 GROUP=test

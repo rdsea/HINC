@@ -18,12 +18,11 @@
     <url>http://maven.apache.org</url>
 
     <modules>
-        <module>model</module>
-        <module>communication</module>
         <module>collector</module>
         <module>local-management-service</module>
         <module>repository</module>
         <module>global-management-service</module>
+        <module>global-management-service-spring-boot</module>
         <module>common</module>
     </modules>
     <dependencyManagement>
@@ -44,6 +43,7 @@
                 <version>2.7.4</version>
             </dependency> 
             
+            <!-- TODO remove
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-annotations</artifactId>
@@ -79,9 +79,9 @@
             </dependency> 
             <dependency>
                 <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-rs-service-description</artifactId>
+                <artifactId>cxf-rt-rs-services-description</artifactId>
                 <version>3.1.6</version>
-            </dependency>
+            </dependency>-->
             
             
             <!--            <dependency>

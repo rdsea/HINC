@@ -6,27 +6,12 @@
 package sinc.hinc.local;
 
 import org.slf4j.Logger;
-import java.util.Date;
-
-import sinc.hinc.common.metadata.HINCMessageType;
-import sinc.hinc.common.metadata.HincMessageTopic;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.communication.processing.HINCMessageListener;
-import sinc.hinc.local.messageHandlers.HandleControl;
-import sinc.hinc.local.messageHandlers.HandleQueryIoTUnit;
-import sinc.hinc.local.messageHandlers.HandleQueryVNF;
-import sinc.hinc.local.messageHandlers.HandleSyn;
+import sinc.hinc.local.communication.AdaptorCommunicationManager;
+import sinc.hinc.local.communication.LocalCommunicationManager;
+import sinc.hinc.local.plugin.Adaptor;
+import sinc.hinc.local.plugin.AdaptorManager;
 import sinc.hinc.repository.DAO.orientDB.DatabaseUtils;
-import sinc.hinc.communication.processing.HincMessage;
-import sinc.hinc.local.messageHandlers.HandleQueryProviders;
-import sinc.hinc.local.messageHandlers.HandleQueryService;
-import sinc.hinc.local.messageHandlers.HandleUpdateInfobase;
-import sinc.hinc.local.messageHandlers.HandleUpdateIoTUnit;
-
-import static sinc.hinc.local.LocalManagementService.FACTORY;
-import static sinc.hinc.local.LocalManagementService.LISTENER;
-import static sinc.hinc.local.LocalManagementService.globalInterval;
-
 /**
  *
  * @author hungld, linhsolar
@@ -34,32 +19,28 @@ import static sinc.hinc.local.LocalManagementService.globalInterval;
 public class Main {
 
     static Logger logger = HincConfiguration.getLogger();
+    public static int globalInterval = Integer.parseInt(PropertiesManager.getParameter("global.interval", "./sources.conf"));
+    public static String globalInputExchange = "hinc_global_input";
+
 
     public static void main(String[] args) throws Exception {
         logger.info("Starting HINC Local Management Service...");
-        LocalManagementService localManagementService = new LocalManagementService();
-
-        Long time1 = (new Date()).getTime();
         DatabaseUtils.initDB();
-        Long time2 = (new Date()).getTime();
-        logger.info("Time to bring up DB is: " + (time2 - time1) / 1000);
+        logger.info("DB initialized");
 
-        /**
-         * ************************
-         * HINC listens to some queue channels to answer the query. Because the
-         * limitation of connection to the queue, each HINC local subscribes only
-         * to public topic at the moment. ************************
-         */
-        String groupTopic = HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName());
-        LISTENER.addListener(groupTopic, HINCMessageType.SYN_REQUEST.toString(), new HandleSyn());
-        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_IOT_UNIT.toString(), new HandleQueryIoTUnit());
-        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_IOT_PROVIDERS.toString(), new HandleQueryProviders());
-        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_MICRO_SERVICE_LOCAL.toString(), new HandleQueryService());
-        LISTENER.addListener(groupTopic, HINCMessageType.QUERY_NFV_LOCAL.toString(), new HandleQueryVNF());
-        LISTENER.addListener(groupTopic, HINCMessageType.CONTROL.toString(), new HandleControl());
-        LISTENER.addListener(groupTopic, HINCMessageType.UPDATE_INFO_BASE.toString(), new HandleUpdateInfobase());
-        LISTENER.addListener(groupTopic, HINCMessageType.PROVIDER_UPDATE_IOT_UNIT.toString(), new HandleUpdateIoTUnit());
-        LISTENER.listen();
+        LocalCommunicationManager.initialize(
+                HincConfiguration.getBroker(),
+                HincConfiguration.getGroupName(),
+                HincConfiguration.getMyUUID(),
+                globalInputExchange);
+        logger.info("initialized hinc communication manager");
+
+        AdaptorCommunicationManager.initialize(
+                HincConfiguration.getBroker(),
+                HincConfiguration.getGroupName(),
+                HincConfiguration.getMyUUID()
+        );
+        logger.info("initialized adaptor communication manager");
 
         /**
          * ************************
@@ -68,36 +49,15 @@ public class Main {
          * call the appropriate adaptors, save information to a
          * SoftwareDefinedGateway
          */
-        Long time3 = (new Date()).getTime();
-        logger.info("Local management service startup in " + ((double) time3 - (double) time2) / 1000 + " seconds, uuid: " + HincConfiguration.getMyUUID());
-
         while (true) {
-            
-            LocalManagementService.scanAdaptors();
-
+            AdaptorManager.getInstance().scanAll();
             // Process interval 
-            int interval = globalInterval;
-            // TODO: read local interval setting
-            if (interval == 0) {
-                System.out.println("Interval equals 0, query done!");
-                break;
-            } else if (interval > 0) {
-                try {
-                    System.out.println("Sleeping " + interval + " before next query.");
-                    Thread.sleep(interval * 3000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
+            try {
+                System.out.println("Sleeping " + globalInterval + " before next query.");
+                Thread.sleep(globalInterval * 1000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
         }
-
-        // try to register itself
-        HincMessage synMsg = new HincMessage(HINCMessageType.SYN_REPLY.toString(), HincConfiguration.getMyUUID(), HincMessageTopic.getBroadCastTopic(HincConfiguration.getGroupName()), "", HincConfiguration.getLocalMeta().toJson());
-        FACTORY.getMessagePublisher().pushMessage(synMsg);
     }
-
-    public static HINCMessageListener getListener() {
-        return LISTENER;
-    }
-
 }
