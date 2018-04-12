@@ -4,6 +4,7 @@ import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalMSRepository;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ResourceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +104,7 @@ public class ResourceService {
                 result = resourcePage.getContent();
             }else{
                 result = resourceRepository.findAll();
+
             }
         }
 

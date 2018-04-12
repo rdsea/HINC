@@ -47,6 +47,7 @@ public class HandleDeliverResources extends HINCMessageHandler{
             localMS.setResources(resources);
             resourceRepository.saveAll(resources);
 
+
             //"group").is(group).and
             mongoTemplate.upsert(query(where("id").is(id)),
                     update("resources", resources), LocalMS.class);
