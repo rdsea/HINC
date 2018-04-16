@@ -16,6 +16,9 @@ import sinc.hinc.local.plugin.Adaptor;
 import sinc.hinc.local.plugin.AdaptorManager;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -34,10 +37,10 @@ public class AdaptorCommunicationManager {
 
     private static AdaptorCommunicationManager adaptorCommunicationManager;
 
-    protected AdaptorCommunicationManager(String host, String group, String id) throws IOException, TimeoutException {
+    protected AdaptorCommunicationManager(String uri, String group, String id) throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
         groupName = group;
         this.id = id;
-        initConnection(host);
+        initConnection(uri);
         connect();
     }
 
@@ -90,9 +93,9 @@ public class AdaptorCommunicationManager {
         }
     }
 
-    private void initConnection(String host) throws IOException, TimeoutException{
+    private void initConnection(String uri) throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
         factory = new ConnectionFactory();
-        factory.setHost(host);
+        factory.setUri(uri);
         connection = factory.newConnection();
         publishChannel = connection.createChannel();
         publishChannel.exchangeDeclare(this.getExchange(), "direct");

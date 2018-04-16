@@ -4,10 +4,10 @@ const prompt = require('inquirer').createPromptModule();
 
 const conf = new Configstore(pkg.name, {});
 
-exports.uri = 'amqp://guest:guest@localhost';
-exports.exchange = 'test.adaptors';
-exports.routingKey = 'pizza';
-exports.localRoutingKey = 'test.local';
+exports.uri = conf.get('uri');
+exports.exchange = conf.get('exchange');
+exports.routingKey = conf.get('routingKey');
+exports.localRoutingKey = conf.get('localRoutingKey');
 
 exports.hasConfig = () => {
     let hasUri = conf.get('uri') !== undefined && conf.get('uri') !== null
