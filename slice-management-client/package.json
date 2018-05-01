@@ -13,11 +13,13 @@
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.5.2",
+    "axios": "^0.18.0",
     "cli-table": "^0.3.1",
     "clui": "^0.3.6",
     "configstore": "^3.1.2",
     "figlet": "^1.2.0",
     "inquirer": "^5.2.0",
+    "ip-regex": "^3.0.0",
     "moment": "^2.22.0",
     "nedb": "^1.8.0",
     "randomstring": "^1.1.5",
