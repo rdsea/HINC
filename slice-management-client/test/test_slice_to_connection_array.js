@@ -4,8 +4,8 @@ const datagenerator = require('./testdata/datagenerator');
 const sensor = require('./testdata/sensor_testdata');
 const artefact = require('./testdata/artefact_testdata');
 const ingestion = require('./testdata/ingestion_testdata');
-const sliceToGraph = require('../src/interoperability/slice_to_graph');
-const data = require('./testdata/slice_to_graph_testdata');
+const sliceToConnectionArray = require('../src/interoperability/slice_to_connection_array');
+const data = require('./testdata/slice_to_connection_array_testdata');
 
 
 
@@ -17,7 +17,7 @@ describe('test data-generating-functions to build testslices', function() {
         let r1 = slice.resources.find(resourceById("r1"));
         let r2 = slice.resources.find(resourceById("r2"));
 
-        let connections = sliceToGraph.sliceToConnectionList(slice);
+        let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
         assert.equal(connections.length, 1);
         assert.equal(connections[0].source, r1);
@@ -28,7 +28,7 @@ describe('test data-generating-functions to build testslices', function() {
     it('test twoIndependentResources', function() {
         let slice = data.testdata_twoIndependentResources();
 
-        let connections = sliceToGraph.sliceToConnectionList(slice);
+        let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
         assert.equal(connections.length, 0);
     });
@@ -37,7 +37,7 @@ describe('test data-generating-functions to build testslices', function() {
         let r1 = slice.resources.find(resourceById("r1"));
         let r2 = slice.resources.find(resourceById("r2"));
 
-        let connections = sliceToGraph.sliceToConnectionList(slice);
+        let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
         assert.equal(connections.length, 2);
         testConnectionIsPresent(connections, r1, r2);
@@ -51,7 +51,7 @@ describe('test data-generating-functions to build testslices', function() {
         let r4 = slice.resources.find(resourceById("r4"));
 
 
-        let connections = sliceToGraph.sliceToConnectionList(slice);
+        let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
         assert.equal(connections.length, 4);
         testConnectionIsPresent(connections, r1, r2);
@@ -66,7 +66,7 @@ describe('test data-generating-functions to build testslices', function() {
         let r3 = slice.resources.find(resourceById("r3"));
         let r4 = slice.resources.find(resourceById("r4"));
 
-        let connections = sliceToGraph.sliceToConnectionList(slice);
+        let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
         assert.equal(connections.length, 4);
         testConnectionIsPresent(connections, r1, r2);
@@ -81,7 +81,7 @@ describe('test data-generating-functions to build testslices', function() {
         let r3 = slice.resources.find(resourceById("r3"));
         let r4 = slice.resources.find(resourceById("r4"));
 
-        let connections = sliceToGraph.sliceToConnectionList(slice);
+        let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
         assert.equal(connections.length, 6);
         //diamond

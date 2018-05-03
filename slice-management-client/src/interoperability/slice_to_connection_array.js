@@ -1,4 +1,4 @@
-exports.sliceToConnectionList = function(slice){
+exports.sliceToConnectionArray = function(slice){
     let resources = slice.resources;
     let connections = [];
 
