@@ -1,29 +1,47 @@
-exports.sliceToGraph = function(slice){
-    let unconnectedResources = slice;
-    let pureOutputs = slice.filter(exports.hasNoInputs);
-    let pureInputs = slice.filter(exports.hasNoOutputs);
-    let inOuts = slice.filter(exports.hasBoth);
+exports.sliceToConnectionList = function(slice){
+    let resources = slice.resources;
+    let connections = [];
 
+    resources.forEach(addConnection(resources, connections));
 
-    let graph = {edges:[]};
-
-    return graph;
+    return connections;
 };
 
 
-exports.hasNoInputs = function(resource){
-    return !resource.metadata.hasOwnProperty("input") || (resource.metadata.input.length === 0);
-};
 
-exports.hasNoOutputs = function (resource){
-    return !resource.metadata.hasOwnProperty("output") || (resource.metadata.output.length === 0);
-};
+function resourceBySourceId(connectionId){
+    return function (resource) {
+        if(!resource.source){
+            return false;
+        }
+        for(let i = 0; i<resource.source.length; i++){
+            if(resource.source[i] === connectionId){
+                return true;
+            }
+        }
+        return false;
+    }
+}
 
-exports.hasBoth = function (resource) {
-    return !exports.hasNoOutputs(resource) && !exports.hasNoInputs(resource);
-};
+function addConnection(resources, connections) {
+    return function (item) {
 
+        if(item.target && item.target.length>0) {
 
-function resourceById(id){
-    return function(resource){ return resource.metadata.id === id;};
+            for(let i = 0; i < item.target.length; i++) {
+
+                let targetResources = resources.filter(resourceBySourceId(item.target[i]));
+
+                for(let j = 0; j < targetResources.length; j++){
+
+                    let arrayelement = {source:{}, target:{}, connectionId:{}};
+                    arrayelement.source = item;
+                    arrayelement.connectionId = item.target[i];
+
+                    arrayelement.target = targetResources[j];
+                    connections.push(arrayelement);
+                }
+            }
+        }
+    };
 }
