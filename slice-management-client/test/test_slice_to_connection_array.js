@@ -1,10 +1,10 @@
 const assert = require('assert');
 
 const datagenerator = require('./testdata/datagenerator');
-const sensor = require('./testdata/sensor_testdata');
-const artefact = require('./testdata/artefact_testdata');
-const ingestion = require('./testdata/ingestion_testdata');
-const sliceToConnectionArray = require('../src/interoperability/slice_to_connection_array');
+const sensor = require('./testdata/resources/sensor_testdata');
+const artefact = require('./testdata/resources/artefact_testdata');
+const ingestion = require('./testdata/resources/ingestion_testdata');
+const sliceToConnectionArray = require('../src/interoperability/transform/slice_to_connection_array');
 const data = require('./testdata/slice_to_connection_array_testdata');
 
 

@@ -1,7 +1,7 @@
-const sensor = require('./sensor_testdata');
-const messagebroker = require('./broker_testdata');
-const artefactrunner = require('./artefact_testdata');
-const ingestion = require('./ingestion_testdata');
+const sensor = require('./resources/sensor_testdata');
+const messagebroker = require('./resources/broker_testdata');
+const artefactrunner = require('./resources/artefact_testdata');
+const ingestion = require('./resources/ingestion_testdata');
 
 
 exports.graphTrue = function () {

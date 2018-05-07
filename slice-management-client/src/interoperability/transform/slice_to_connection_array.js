@@ -2,7 +2,9 @@ exports.sliceToConnectionArray = function(slice){
     let resources = slice.resources;
     let connections = [];
 
-    resources.forEach(addConnection(resources, connections));
+    if(resources && resources.length>0) {
+        resources.forEach(addConnection(resources, connections));
+    }
 
     return connections;
 };
