@@ -6,32 +6,35 @@ exports.emptyIoTResource = function(id) {
 };
 
 exports.connectResources = function (source, destination, connectionMetadata){
+    let deepCopy_source = JSON.parse(JSON.stringify(connectionMetadata));
+    let deepCopy_dest = JSON.parse(JSON.stringify(connectionMetadata));
+
     //metadata connection (metadata of source and destination will match)
-    if(!source.metadata.hasOwnProperty("output")){
-        source.metadata.output = [connectionMetadata];
+    if(!source.metadata.hasOwnProperty("outputs")){
+        source.metadata.outputs = [deepCopy_source];
     }else {
-        source.metadata["output"].push(connectionMetadata);
+        source.metadata["outputs"].push(deepCopy_source);
     }
-    if(!destination.metadata.hasOwnProperty("input")){
-        destination.metadata.input = [connectionMetadata];
+    if(!destination.metadata.hasOwnProperty("inputs")){
+        destination.metadata.inputs = [deepCopy_dest];
     }else {
-        destination.metadata["input"].push(connectionMetadata);
+        destination.metadata["inputs"].push(deepCopy_dest);
     }
 };
 
 addInput = function (resource, inputMetadata) {
-    if(!resource.metadata.hasOwnProperty("input")){
-        resource.metadata.input = [inputMetadata];
+    if(!resource.metadata.hasOwnProperty("inputs")){
+        resource.metadata.inputs = [inputMetadata];
     }else {
-        resource.metadata["input"].push(inputMetadata);
+        resource.metadata["inputs"].push(inputMetadata);
     }
 };
 
 addOutput = function (resource, outputMetadata) {
-    if(!resource.metadata.hasOwnProperty("output")){
-        resource.metadata.output = [outputMetadata];
+    if(!resource.metadata.hasOwnProperty("outputs")){
+        resource.metadata.outputs = [outputMetadata];
     }else {
-        resource.metadata["output"].push(outputMetadata);
+        resource.metadata["outputs"].push(outputMetadata);
     }
 };
 
@@ -154,7 +157,7 @@ exports.single_inout_mismatching_protocol = function () {
     connection.target = exports.emptyIoTResource("r2");
 
     exports.connectResources(connection.source, connection.target, exports.inOut_metadata_example());
-    connection.source.metadata.output[0].protocol = {
+    connection.source.metadata.outputs[0].protocol = {
         uri: "amqp:123.456.78.9:5672",
         protocol_name: "amqp",
         version: "0.9.1",
@@ -172,7 +175,7 @@ exports.single_inout_mismatching_protocolQos = function () {
 
     exports.connectResources(connection.source, connection.target, exports.inOut_metadata_example());
 
-    connection.target.metadata.input[0].protocol.qos = 1;
+    connection.target.metadata.inputs[0].protocol.qos = 1;
 
     return connection;
 };
@@ -254,7 +257,7 @@ exports.multiple_inout_mismatching_protocolQos = function () {
 
     exports.connectResources(connection.source, connection.target, exports.inOut_metadata_example());
 
-    connection.target.metadata.input[0].protocol.qos = 1;
+    connection.target.metadata.inputs[0].protocol.qos = 1;
 
 
     addOutput(connection.source, {protocol:{
@@ -284,7 +287,7 @@ exports.multiple_inout_matching_one_mismatching_protocolQos = function () {
 
     exports.connectResources(connection.source, connection.target, exports.inOut_metadata_example());
 
-    connection.target.metadata.input[0].protocol.qos = 1;
+    connection.target.metadata.inputs[0].protocol.qos = 1;
 
     exports.connectResources(connection.source, connection.target, {protocol:{
             uri: "amqp:123.456.78.9:5672",
@@ -292,6 +295,8 @@ exports.multiple_inout_matching_one_mismatching_protocolQos = function () {
             version: "0.9.1",
             exchange: "sensor_output"
         }});
+
+    return connection;
 };
 
 

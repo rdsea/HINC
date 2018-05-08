@@ -7,15 +7,19 @@ exports.emptyResource = function(id) {
 
 exports.sliceConnectResources = function (source, destination, connectionMetadata, connectionId){
     //metadata connection (metadata of source and destination will match)
-    if(!source.metadata.hasOwnProperty("output")){
-        source.metadata.output = [connectionMetadata];
+    let deepCopy_source = JSON.parse(JSON.stringify(connectionMetadata));
+    let deepCopy_dest = JSON.parse(JSON.stringify(connectionMetadata));
+
+    //metadata connection (metadata of source and destination will match)
+    if(!source.metadata.hasOwnProperty("outputs")){
+        source.metadata.outputs = [deepCopy_source];
     }else {
-        source.metadata["output"].push(connectionMetadata);
+        source.metadata["outputs"].push(deepCopy_source);
     }
-    if(!destination.metadata.hasOwnProperty("input")){
-        destination.metadata.input = [connectionMetadata];
+    if(!destination.metadata.hasOwnProperty("inputs")){
+        destination.metadata.inputs = [deepCopy_dest];
     }else {
-        destination.metadata["input"].push(connectionMetadata);
+        destination.metadata["inputs"].push(deepCopy_dest);
     }
 
     //slice connection (connection as defined in the slice)

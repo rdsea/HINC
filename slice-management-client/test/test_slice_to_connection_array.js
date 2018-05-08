@@ -104,8 +104,8 @@ describe('test data-generating-functions to build testslices', function() {
 
         data.sliceConnectResources(r1, r2, {protocol:"mqtt"});
 
-        assert.equal(r1.metadata.hasOwnProperty("output"), true);
-        assert.equal(r2.metadata.hasOwnProperty("input"), true);
+        assert.equal(r1.metadata.hasOwnProperty("outputs"), true);
+        assert.equal(r2.metadata.hasOwnProperty("inputs"), true);
         assert.deepEqual(r1.metadata.output, r2.metadata.input);
     });
 });

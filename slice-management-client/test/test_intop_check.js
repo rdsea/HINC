@@ -34,6 +34,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 0);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 1);
         });
 
         it('mismatching protocol, should return error', function(){
@@ -42,6 +43,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 1);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 0);
         });
 
         it('mismatching protocol.qos, should return warning', function(){
@@ -60,6 +62,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 0);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 1);
         });
 
         it('all mismatching protocol, should create error', function(){
@@ -68,6 +71,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 1);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 0);
         });
 
         it('one mismatching protocol.qos, multiple mismatching protocol, should create warning', function(){
@@ -84,6 +88,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 0);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 1);
         });
     });
 
@@ -94,6 +99,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 0);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 1);
         });
 
         it('mismatching protocol, should create error', function(){
@@ -102,6 +108,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 1);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 0);
         });
     });
 
@@ -112,6 +119,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 0);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 1);
         });
 
         it('mismatching protocol, should create error', function(){
@@ -120,6 +128,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 1);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 0);
         });
     });
 
@@ -130,6 +139,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 1);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 0);
         });
         it('no input, should create error', function(){
             let connection = testdata.no_output();
@@ -137,6 +147,7 @@ describe('intop_check.check', function(){
 
             assert.equal(result.errors.length, 1);
             assert.equal(result.warnings.length, 0);
+            assert.equal(result.matches.length, 0);
         });
     });
 });
