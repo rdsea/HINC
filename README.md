@@ -1,4 +1,4 @@
-Harmonizing IoT, Network Functions and Cloud: Resource Slice Interoperability. 
+# Harmonizing IoT, Network Functions and Cloud: Resource Slice Interoperability. 
 
 The work is initially supported by the U-TEST until 2016. Since 2017 the work is supported 
 by H2020 INTER-IoT  through the INTER-HINC project.
