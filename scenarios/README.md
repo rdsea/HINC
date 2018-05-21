@@ -17,7 +17,7 @@ There is a CameraProvider for the seaport which allows consumers to search and r
 
 - Currently  there is no access to cameras in the real seaport, we will use camera in public street for this.  We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/IoTCameraDataProvider for cameras.
 
-* IoT sensors:
+### IoT sensors:
 In the seaport there are many sensors which provide information about:
 
 * EmissionCabins
