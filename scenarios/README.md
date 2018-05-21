@@ -10,23 +10,39 @@ In the following we describe scenarios, whereas technical setup details will be 
 ## Software assumption in seaport
 
 
-IoT Cameras: In the seaport, there are many cameras which provide real-time data (and historical data). Each camera has metadata about the location, video data, etc.
-Cameras are a service unit, a resource, whose data can be pushed by the camera or a service provider or pulled by consumer.
+### IoT Cameras
+
+In our scenarios, in the seaport, there are many cameras which provide real-time data (and historical data). Each camera has metadata about the location, video data, etc. Cameras are a service unit, a resource, whose data can be pushed by the camera or a service provider or pulled by consumer.
 There is a CameraProvider for the seaport which allows consumers to search and request resources. The provider manages cameras:
 
-- Currently  there is no camera from the real seaport, we will use camera in public street for this.  We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/IoTCameraDataProvider for cameras.
+- Currently  there is no access to cameras in the real seaport, we will use camera in public street for this.  We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/IoTCameraDataProvider for cameras.
 
-IoT sensors: In the seaport there are many sensors which provide information about weather. We will have a provider for sensors. We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/IoTProviders/bts-sensor
+* IoT sensors:
+In the seaport there are many sensors which provide information about:
+
+* EmissionCabins
+* MeteoStations
+* WeatherMeasurements
+* EmissionMeasurements
+* SoundMeasurements
+* SoundMeters
+
+We consider these types of data from various sensors and IoT providers. We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/IoTProviders/bts-sensor
+to emulate real sensors and data providers by taking existing dataset from Valencia ports and replay them. We can also use other datasets to demonstrate other sources of data, e.g., electricity current, alarms. However, they can be only used for the purpose of demonstrating data request as the data cannot be related to the port scenario.
 
 
+### Network Functions
 
-Network Functions: In the seaport there is a Network Function provider which offers firewall functions that can control the traffic in/out the seaport. We will emulate this by assuming that all the seaport infrastructure is running as a google cloud virtual infrastructure. Our network function provider leverages google firewall features. We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/NetworkfunctionsUnits/SimpleFirewallController
+ In the seaport there is a Network Function provider which offers firewall functions that can control the traffic in/out the seaport. We will emulate this by assuming that all the seaport infrastructure is running as a google cloud virtual infrastructure. Our network function provider leverages google firewall features. We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/NetworkfunctionsUnits/SimpleFirewallController
 
-Edge computing brokers: In the seaport there is a provider which can offer brokers on demand. The broker we use in our example is MQTT. If a consumer needs, the provider will provide an instance of the broker for the consumers. We use https://github.com/rdsea/IoTCloudSamples/tree/master/IoTProviders/mosquitt-mqtt-provider for testing.
+### Edge computing brokers
+ In the seaport there is a provider which can offer brokers on demand. The broker we use in our example is MQTT. If a consumer needs, the provider will provide an instance of the broker for the consumers. We use https://github.com/rdsea/IoTCloudSamples/tree/master/IoTProviders/mosquitt-mqtt-provider for testing.
 
-Edge computing workflow: In the seaport there is a provider which can offer a data processing workflow engine that one can use for its work. The data processing workflow we use is NODE-RED. We use the code https://github.com/rdsea/IoTCloudSamples/tree/master/InterOpProviders/nodered-datatransformer-provider for this.
+### Edge computing workflow
+In the seaport there is a provider which can offer a data processing workflow engine that one can use for its work. The data processing workflow we use is NODE-RED. We use the code https://github.com/rdsea/IoTCloudSamples/tree/master/InterOpProviders/nodered-datatransformer-provider for this.
 
-Cloud services: There are many cloud services available outside the port. We use BigQuery, virtual machines, Google Storage, etc. Furthermore the computing brokers and computing workflows (like in the edge situation within the seaport) can also be provided as cloud services.
+### Cloud services:
+There are many cloud services available outside the port. We use BigQuery, virtual machines, Google Storage, etc. Furthermore the computing brokers and computing workflows (like in the edge situation within the seaport) can also be provided as cloud services.
 
 
 ## Accessing Video Data in seaport
