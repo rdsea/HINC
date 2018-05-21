@@ -2,6 +2,7 @@ package sinc.hinc.local.plugin;
 
 import org.slf4j.Logger;
 import sinc.hinc.common.communication.HincMessage;
+import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.PropertiesManager;
@@ -56,6 +57,21 @@ public class AdaptorManager {
                     reply.setRoutingKey("");
                 }
                 adaptor.sendControl(control, reply);
+                break;
+            }
+        }
+    }
+
+    public void provisionResource(String adaptorName, Resource resource, HincMessage.HincMessageDestination reply){
+        logger.debug(""+adaptors.size());
+        for(Adaptor adaptor: adaptors.values()){
+            logger.debug(adaptor.getName());
+            if(adaptor.getName().equals(adaptorName)){
+                logger.info("sending control to adaptor "+adaptor.getName());
+                if(reply.getRoutingKey() == null){
+                    reply.setRoutingKey("");
+                }
+                adaptor.provisionResource(resource, reply);
                 break;
             }
         }

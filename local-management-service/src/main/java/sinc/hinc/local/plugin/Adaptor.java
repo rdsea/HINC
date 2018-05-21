@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import sinc.hinc.common.communication.HincMessage;
 import java.util.Map;
 import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.communication.AdaptorCommunicationManager;
@@ -67,6 +68,27 @@ public class Adaptor {
 
             HincMessage message = new HincMessage(
                     HINCMessageType.CONTROL,
+                    HincConfiguration.getMyUUID(),
+                    payload);
+
+            message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), this.name);
+            message.setReply(reply.getExchange(), reply.getRoutingKey());
+            AdaptorCommunicationManager.getInstance().sendMessage(message);
+        } catch (JsonProcessingException e) {
+            // TODO log
+            e.printStackTrace();
+        }
+    }
+
+    public void provisionResource(Resource resource, HincMessage.HincMessageDestination reply){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        try {
+            String payload = objectMapper.writeValueAsString(resource);
+
+            HincMessage message = new HincMessage(
+                    HINCMessageType.PROVISION,
                     HincConfiguration.getMyUUID(),
                     payload);
 

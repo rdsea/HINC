@@ -26,7 +26,7 @@ function createNameServer(sliceId){
             type: 'NAMESERVER',
             createdAt: moment().unix(),
             sliceId,
-            location: `${location}:4180`,
+            location: `http://${location}:4180`,
         };
         console.debug(`creating mesh`);
         console.debug(JSON.stringify(mesh, null, 2));
@@ -49,24 +49,34 @@ function deleteNameserver(sliceId){
 }
 
 function setName(sliceId, name, host, port){
-    db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
+    return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
         let out = execSync(`kubectl get configmap disco-${nameserver.id} -o json`).toString();
         let configmap = JSON.parse(out);
 
         let data = configmap.data;
         data[name] = `${host} ${port}`;
-        out = execSync(`kubectl patch configmap disco-${nameserver.id} -p '{"data": ${JSON.stringify(data)}}'`);         
+        out = execSync(`kubectl patch configmap disco-${nameserver.id} -p '{"data": ${JSON.stringify(data)}}'`).toString();
+        console.debug(out)
+    })
+}
+
+function flush(sliceId){
+    return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
+        // restart pod
+        let out = execSync(`kubectl get pod --selector=app=${nameserver.id} --template="{{range .items}}{{.metadata.name}}{{end}}"`).toString();
+        console.debug(`stopping pod ${out}`);
+        out = execSync(`kubectl delete pod ${out}`).toString();
         console.debug(out);
     })
 }
 
 function _waitForIp(deployId){
+    console.debug('waiting for nameserver ip to become available')
     let res = "";
     try{
         while(!ipRegex({exact: true}).test(res)){
             let out = execSync(`kubectl get svc ${deployId} --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}"`);    
             res = out.toString();  
-            console.debug(res)
         }
     }catch(err){
         console.debug(err.toString());
@@ -146,7 +156,7 @@ function _createNamerdConfig(config, deployId){
 }
 
 function _createNamerdNames(deployId){
-    let out = execSync(`kubectl create configmap disco-${deployId}`);
+    let out = execSync(`kubectl create configmap disco-${deployId} --from-literal=dummy=dummy`);
     console.debug(out.toString());
 }
 
@@ -154,5 +164,6 @@ function _createNamerdNames(deployId){
 module.exports = {
     createNameServer,
     setName,
-    deleteNameserver
+    deleteNameserver,
+    flush
 }

@@ -10,14 +10,22 @@ import java.util.Collection;
 public class Resource {
 
     // add more as needed
-    public enum ResourceType {
+    public enum ResourceCategory {
         IOT_RESOURCE,
         NETWORK_FUNCTION_SERVICE,
         CLOUD_SERVICE,
     }
 
+    public enum ResourceType{
+        SENSOR,
+        BROKER,
+        SOFTWARE_ARTIFACT,
+        STORAGE,
+    }
+
     private String name;
-    private String pluginName;
+    private String adaptorName;
+    private ResourceCategory resourceCategory;
     private ResourceType resourceType;
     // can be gps or other representation
     // not formalized yet
@@ -29,6 +37,24 @@ public class Resource {
     // primary key used in database
 
     private String uuid;
+
+    private String providerUuid;
+
+    public String getProviderUuid() {
+        return providerUuid;
+    }
+
+    public void setProviderUuid(String providerUuid) {
+        this.providerUuid = providerUuid;
+    }
+
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
+    }
 
     public String getUuid() {
         return uuid;
@@ -46,20 +72,20 @@ public class Resource {
         this.name = name;
     }
 
-    public String getPluginName() {
-        return pluginName;
+    public String getAdaptorName() {
+        return adaptorName;
     }
 
-    public void setPluginName(String pluginName) {
-        this.pluginName = pluginName;
+    public void setAdaptorName(String adaptorName) {
+        this.adaptorName = adaptorName;
     }
 
-    public ResourceType getResourceType() {
-        return resourceType;
+    public ResourceCategory getResourceCategory() {
+        return resourceCategory;
     }
 
-    public void setResourceType(ResourceType resourceType) {
-        this.resourceType = resourceType;
+    public void setResourceCategory(ResourceCategory resourceCategory) {
+        this.resourceCategory = resourceCategory;
     }
 
     public String getLocation() {

@@ -49,6 +49,7 @@ public class Main {
          * call the appropriate adaptors, save information to a
          * SoftwareDefinedGateway
          */
+        /*
         while (true) {
             AdaptorManager.getInstance().scanAll();
             // Process interval 
@@ -58,6 +59,6 @@ public class Main {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-        }
+        }*/
     }
 }

@@ -127,6 +127,7 @@ public class AdaptorCommunicationManager {
         this.addMessageHandler(new HandleControl());
         this.addMessageHandler(new HandleRegisterAdaptor());
         this.addMessageHandler(new HandleDeregisterAdaptor());
+        this.addMessageHandler(new HandleProvision());
     }
 
 

@@ -30,7 +30,7 @@ function _datasetToResource(dataset){
         type: 'SOFTWARE_UNIT',
         location: null,
         metadata: {
-            ...dataset,
+            parameters: {...dataset},
         },
     }
     
