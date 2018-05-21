@@ -1,4 +1,85 @@
 # Interoperability Scenarios
 
-This directory includes a set of scenarios in which one can 
+This directory includes a set of scenarios in which one can
 create resource slices for IoT Interoperability problem.
+
+The overall scenario is about the Interoperability of data and services for a seaport (e.g., in our example, Valencia seaport in the Inter-IoT project).
+
+In the following we describe scenarios, whereas technical setup details will be given in sub-directories.
+
+## Software assumption in seaport
+
+
+IoT Cameras: In the seaport, there are many cameras which provide real-time data (and historical data). Each camera has metadata about the location, video data, etc.
+Cameras are a service unit, a resource, whose data can be pushed by the camera or a service provider or pulled by consumer.
+There is a CameraProvider for the seaport which allows consumers to search and request resources. The provider manages cameras:
+
+- Currently  there is no camera from the real seaport, we will use camera in public street for this.  We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/IoTCameraDataProvider for cameras.
+
+IoT sensors: In the seaport there are many sensors which provide information about weather. We will have a provider for sensors. We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/IoTProviders/bts-sensor
+
+
+
+Network Functions: In the seaport there is a Network Function provider which offers firewall functions that can control the traffic in/out the seaport. We will emulate this by assuming that all the seaport infrastructure is running as a google cloud virtual infrastructure. Our network function provider leverages google firewall features. We use the code in https://github.com/rdsea/IoTCloudSamples/tree/master/NetworkfunctionsUnits/SimpleFirewallController
+
+Edge computing brokers: In the seaport there is a provider which can offer brokers on demand. The broker we use in our example is MQTT. If a consumer needs, the provider will provide an instance of the broker for the consumers. We use https://github.com/rdsea/IoTCloudSamples/tree/master/IoTProviders/mosquitt-mqtt-provider for testing.
+
+Edge computing workflow: In the seaport there is a provider which can offer a data processing workflow engine that one can use for its work. The data processing workflow we use is NODE-RED. We use the code https://github.com/rdsea/IoTCloudSamples/tree/master/InterOpProviders/nodered-datatransformer-provider for this.
+
+Cloud services: There are many cloud services available outside the port. We use BigQuery, virtual machines, Google Storage, etc. Furthermore the computing brokers and computing workflows (like in the edge situation within the seaport) can also be provided as cloud services.
+
+
+## Accessing Video Data in seaport
+
+### Interoperability features
+
+To demonstrate protocol interoperability at runtime with dynamic resource slice provisioning.
+
+### Resource slice:
+
+- A consumer within the seaport requests the Provider some cameras and obtains the video camera data by pulling the data itself. (using HTTP)
+- An other consumer outside the seaport does the same.
+
+Here we have a slice includes cameras as resources and two consumers
+
+### Resource slice reconfiguration
+
+- Now an emergency event happens, the consumer outside the seaport asks the provider to reconfigure resources and push the data to an outside cloud service. For the example, the data has to be pushed into Google Storage. The second option is the data has to be pushed into Kafka.
+
+Here the slice has to be reconfigured with:
+
+- The network function must allow "pushing data" to Google Storage
+- The camera provider must be reconfigured.
+
+
+### Accessing Sensor Data in seaport
+
+### Interoperability
+
+Middleware interoperability, protocol interoperability and data interoperability with different solutions.
+
+### Resource slice
+
+A consumer in the seaport wants to access sensor data in the seaport with the condition of nosharing middleware. The resource slice will be created, including
+
+- sensors: for sensor data. We assume that the data is in the form of CSV (raw)
+- MQTT: for brokers
+
+### Resource Slice reconfiguration
+
+#### First situation:
+
+the consumer wants to process data from the broker using a separate workflow engine within the seaport. The slice is reconfigured with a new Node-RED instance and the consumer adds a workflow into NODE-RED.
+
+#### Second situation:
+Another consumer wants to access the sensor data from the broker but finds that the data is in CSV, thus the consumer wants to deploy a resource to transform CSV data to JSON. Two possible solutions:
+
+- a new component is deployed that takes data from MQTT and transforms the CSV to the JSON. This component is based on (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/csvToJson)
+
+- a new NODE-RED instance is created and a workflow for data transformation is pushed into the instance.
+
+The two cases achieve the same goal but have very different techniques.
+
+#### Third situation
+
+Similar to the second situation but the consumer is outside the seaport. Thus, cloud services are used and Network Function is also enabled.
