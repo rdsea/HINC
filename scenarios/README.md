@@ -67,10 +67,12 @@ A consumer in the seaport wants to access sensor data in the seaport with the co
 
 ### Resource Slice reconfiguration
 
+------------------
 #### First situation:
 
 the consumer wants to process data from the broker using a separate workflow engine within the seaport. The slice is reconfigured with a new Node-RED instance and the consumer adds a workflow into NODE-RED.
 
+------------------
 #### Second situation:
 Another consumer wants to access the sensor data from the broker but finds that the data is in CSV, thus the consumer wants to deploy a resource to transform CSV data to JSON. Two possible solutions:
 
@@ -80,6 +82,42 @@ Another consumer wants to access the sensor data from the broker but finds that 
 
 The two cases achieve the same goal but have very different techniques.
 
+------------------
 #### Third situation
 
 Similar to the second situation but the consumer is outside the seaport. Thus, cloud services are used and Network Function is also enabled.
+
+## Accessing Sensors and Cameras
+
+### Interoperability
+
+Middleware interoperability, protocol interoperability, data interoperability
+
+### Resource Slice
+An accident happens at a terminal, a consumer (e.g., seaport management) needs to access all sensors and cameras centered the terminal. The data will be sent to different consumers
+
+We first create a slice including sensors and cameras.
+
+### Slice reconfiguration
+
+When a new consumer (e.g. emergency) needs a new data (e.g., images) to be pushed into the system of the consumer. We will do:
+- Identify if a broker, etc needed and provisioned.
+- Identify if a data transformation is needed then we do
+- Identify if a protocol is needed to reconfigure then we do
+- Identify if a network firewall operation is needed then we do
+
+Here we make assumption that we have the information about the services that the consumer wants (e.g, JSON/CSV for data, MQTT/Kafka for Broker, Storage, etc)
+
+## Controlling
+
+### Interoperability
+Middleware, protocol, data.
+
+### Resource Slice
+An emergency happens. The consumer within the seaport (e.g., seaport manager) runs a slice (sensors, broker, workflow) and determine to send a command to another consumer (e.g., crane controller or vessels).
+
+Initially the slice is just about sensors, broker, workflow.
+
+### Resource Slice Configuration
+
+The consumer decides to send commands to other consumers (called receivers). The consumer decides to add  a new component that takes the result of an analytics (e.g., from the queue) then ingest the data into a component that produces commands for receivers.
