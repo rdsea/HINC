@@ -3,6 +3,7 @@ package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalMSRepository;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ResourceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,16 @@ public class ResourceService {
 
         //TODO temporary queue
         return getResources(id, group, limit);
+    }
+
+    public Resource putMetadata(String resourceId, JsonNode metadata){
+        Resource resource = resourceRepository.read(resourceId);
+        if(resource != null) {
+            resource.setMetadata(metadata);
+            resourceRepository.save(resource);
+        }
+
+        return resource;
     }
 
     private List<Resource> getResources(String id, String group, int limit){

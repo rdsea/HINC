@@ -10,6 +10,9 @@ import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.communication.messagehandlers.*;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -29,11 +32,11 @@ public class LocalCommunicationManager {
 
     private static LocalCommunicationManager localCommunicationManager;
 
-    protected LocalCommunicationManager(String host, String group, String id, String globalExchange) throws IOException, TimeoutException {
+    protected LocalCommunicationManager(String uri, String group, String id, String globalExchange) throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
         groupName = group;
         this.id = id;
         this.globalExchange = globalExchange;
-        initConnection(host);
+        initConnection(uri);
         connect();
     }
 
@@ -50,9 +53,9 @@ public class LocalCommunicationManager {
         return localCommunicationManager;
     }
 
-    private void initConnection(String host) throws IOException, TimeoutException{
+    private void initConnection(String uri) throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
         factory = new ConnectionFactory();
-        factory.setHost(host);
+        factory.setUri(uri);
         connection = factory.newConnection();
         publishChannel = connection.createChannel();
         publishChannel.exchangeDeclare(this.getExchange(), "fanout");
