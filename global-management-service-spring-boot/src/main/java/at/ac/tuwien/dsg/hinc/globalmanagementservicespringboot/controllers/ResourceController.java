@@ -2,13 +2,12 @@ package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.controllers;
 
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services.ResourceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 import sinc.hinc.common.model.capabilities.DataPoint;
@@ -46,7 +45,16 @@ public class ResourceController {
         return new ResponseEntity<>(resourceList, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}/metadata")
+    public ResponseEntity putMetadata(@PathVariable String id, @RequestBody JsonNode metadata){
+        Resource resource = resourceService.putMetadata(id, metadata);
 
+        if(resource == null){
+            return new ResponseEntity<>("Resource with id " + id + " not found.", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(resource, HttpStatus.OK);
+    }
 
 
     /*
