@@ -1,0 +1,9 @@
+{
+  "prototype":"virtual_machine",
+  "provider":"",
+  "instance_type":"",
+  "cpu_count":"",
+  "memory":"",
+  "gpu_count":"",
+  "os":""
+}

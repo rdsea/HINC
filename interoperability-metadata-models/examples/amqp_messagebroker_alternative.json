@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "resource": {
+      "category": "network_function",
+      "type": {
+        "prototype": "messagebroker",
+        "broker": "RabbitMQ",
+        "broker_version": "3.7.3"
+      },
+      "outputs": [
+        {
+          "push_pull": "push",
+          "protocol": {
+            "uri": "amqp://123.456.78.9:5672",
+            "protocol_name": "amqp",
+            "version": "0.9.1",
+            "queue": "sensor_queue"
+          }
+        }
+      ],
+      "inputs": [
+        {
+          "push_pull": "push",
+          "protocol": {
+            "uri": "amqp://123.456.78.9:5672",
+            "protocol_name": "amqp",
+            "version": "0.9.1",
+            "exchange": "sensor_output"
+          }
+        }
+      ]
+    }
+  }
+}

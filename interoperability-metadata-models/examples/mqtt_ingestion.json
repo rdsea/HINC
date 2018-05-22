@@ -1,0 +1,34 @@
+{
+  "metadata":{
+    "resource":{
+      "category": "cloud",
+      "type": {
+        "prototype":"ingestion",
+        "product_names": ["Bigtable"],
+        "providers": ["Google Cloud Platform"],
+        "database_types": ["column-oriented"]
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "mqtt://123.456.78.9:5672",
+          "protocol_name": "mqtt",
+          "version": "3.1.1",
+          "topic": "temperature_topic"
+        }
+      }],
+    "outputs":[
+      {
+        "push_pull": "push",
+        "protocol": {
+          "protocol_name": "other",
+          "table_name": "my_measurements",
+          "column_family_name": "vienna",
+          "column_name":"temperature"
+        }
+      }
+    ]
+  }
+}

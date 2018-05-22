@@ -1,0 +1,13 @@
+{
+  "prototype":"sensor",
+  "unit":"",
+  "sampling_interval":"",
+  "precision":"",
+  "range_minValue":"",
+  "range_maxValue":"",
+  "location":"",
+  "longitude":"",
+  "latitude":"",
+  "description":"",
+  "semantic_reference":""
+}

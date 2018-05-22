@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type":{
+        "prototype": "sensor",
+        "unit": "°C",
+        "sampling_interval": "1000",
+        "precision": "0.01",
+        "range_minValue": "-50",
+        "range_maxValue": "60",
+        "location": "outside",
+        "latitude": "48.1986582",
+        "longitude": "16.3662739"
+      },
+      "datacontract":{
+        "data_rights":{
+          "derivation": false,
+          "collection": false,
+          "reproduction": false,
+          "commercial_usage": false,
+          "attribution": false
+        },
+        "pricing": {
+          "price": "1",
+          "currency": "EUR",
+          "price_per": "hour"
+        },
+        "regulation":{
+          "jurisdiction": "Austria",
+          "data_regulation_acts": "Regulation (EU) 2016/679"
+        }
+
+      },
+      "qos":{
+        "data_interval": "1000",
+        "reliability_level": "8",
+        "availability": "90",
+        "bit_rate": "0.1",
+        "bit_rate_unit": "Mbit/s",
+        "connection_limit": "10"
+      }
+    },
+    "inputs": [],
+    "outputs": [{
+      "push_pull": "push",
+      "protocol": {
+        "uri": "mqtt://123.456.78.9:1883",
+        "protocol_name": "mqtt",
+        "version": "3.1.1",
+        "topic": "sensor_output",
+        "qos": 0,
+        "keep_alive": 0,
+        "will_required": false,
+        "implementation": "mqtt.js",
+        "implementation_version": "1.4.15"
+      },
+      "dataformat": {
+        "encoding": "UTF-8",
+        "dataformat_name": "csv",
+        "seperator": ";",
+        "newline_seperator": "\n",
+        "headers": "time; value"
+      },
+      "qos": {
+        "data_interval": "2000"
+      }
+    },{
+      "push_pull": "push",
+      "protocol": {
+        "uri": "amqp://123.456.78.9:5672",
+        "protocol_name": "amqp",
+        "version": "0.9.1",
+        "exchange": "sensor_output"
+      },
+      "dataformat": {
+        "encoding": "UTF-8",
+        "dataformat_name": "csv",
+        "seperator": ";",
+        "newline_seperator": "\n",
+        "headers": "time; value"
+      }
+    }]
+  }
+}

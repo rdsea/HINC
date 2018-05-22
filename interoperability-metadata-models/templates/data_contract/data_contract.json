@@ -1,0 +1,18 @@
+{
+  "data_rights":{
+    "derivation" : false,
+    "collection" : false,
+    "reproduction" : false,
+    "commercial_usage" : false,
+    "attribution" : false
+  },
+  "pricing": {
+    "price": "",
+    "currency": "",
+    "price_per": ""
+  },
+  "regulation":{
+    "jurisdiction": "",
+    "data_regulation_acts": ""
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "prototype":"messagebroker"
+  "broker":"",
+  "broker_version":"",
+  "protocols":[],
+  "queues":[],
+  "exchanges":[],
+  "bindings":[],
+  "topics":[],
+  "auto_create":""
+}

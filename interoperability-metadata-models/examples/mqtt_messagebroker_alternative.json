@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "resource": {
+      "category": "network_function",
+      "type": {
+        "prototype": "messagebroker",
+        "broker": "RabbitMQ",
+        "broker_version": "3.7.3"
+      },
+      "outputs": [
+        {
+          "push_pull": "push",
+          "protocol": {
+            "uri": "mqtt://123.456.78.9:5672",
+            "protocol_name": "mqtt",
+            "version": "3.1.1",
+            "topic": "temperature_topic"
+          }
+        },
+        {
+          "push_pull": "push",
+          "protocol": {
+            "uri": "mqtt://123.456.78.9:5672",
+            "protocol_name": "mqtt",
+            "version": "3.1.1",
+            "topic": "humidity_topic"
+          }
+        }
+      ],
+      "inputs": [
+        {
+          "push_pull": "push",
+          "protocol": {
+            "uri": "mqtt://123.456.78.9:5672",
+            "protocol_name": "mqtt",
+            "version": "3.1.1",
+            "topic": "temperature_topic"
+          }
+        },
+        {
+          "push_pull": "push",
+          "protocol": {
+            "uri": "mqtt://123.456.78.9:5672",
+            "protocol_name": "mqtt",
+            "version": "3.1.1",
+            "topic": "humidity_topic"
+          }
+        }
+      ]
+    }
+  }
+}

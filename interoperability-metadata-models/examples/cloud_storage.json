@@ -1,0 +1,24 @@
+{
+  "metadata":{
+    "resource":{
+      "category": "cloud",
+      "type": {
+        "prototype":"storage",
+        "product_name": "Bigtable",
+        "provider": "Google Cloud Platform",
+        "database_type": "column-oriented"
+      }
+    },
+    "inputs":[
+      {
+        "push_pull": "push",
+        "protocol": {
+          "protocol_name": "other",
+          "table_name": "my_measurements",
+          "column_family_name": "vienna",
+          "column_name":"temperature"
+        }
+      }
+    ]
+  }
+}
