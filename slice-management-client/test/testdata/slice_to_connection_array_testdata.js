@@ -39,53 +39,49 @@ exports.sliceConnectResources = function (source, destination, connectionMetadat
 
 
 exports.testdata_twoConnectedResources = function () {
-    let r1 = exports.emptyResource("r1");
-    let r2 = exports.emptyResource("r2");
+    let r1 = exports.emptyResource("id_r1");
+    let r2 = exports.emptyResource("id_r2");
 
     exports.sliceConnectResources(r1, r2, {protocol:"mqtt"}, "connectionID12");
 
-    return {resources:[r1,r2]};
+    return {resources:{"r1":r1,"r2":r2}};
 };
 
 exports.testdata_twoIndependentResources = function () {
-    let r1 = exports.emptyResource("r1");
-    let r2 = exports.emptyResource("r2");
-    return {resources:[r1,r2]};
+    let r1 = exports.emptyResource("id_r1");
+    let r2 = exports.emptyResource("id_r2");
+    return {resources:{"r1":r1,"r2":r2}};
 };
 
 exports.testdata_circle_twoResources = function () {
-    let r1 = exports.emptyResource("r1");
-    let r2 = exports.emptyResource("r2");
+    let r1 = exports.emptyResource("id_r1");
+    let r2 = exports.emptyResource("id_r2");
 
     exports.sliceConnectResources(r1, r2, {protocol:"mqtt"}, "connectionID12");
     exports.sliceConnectResources(r2, r1, {protocol:"mqtt"}, "connectionID21");
 
-    return {resources:[r1,r2]};
+    return {resources:{"r1":r1,"r2":r2}};
 };
 
 exports.testdata_diamond_fourResources = function () {
-    let r1 = exports.emptyResource("r1");
-    let r2 = exports.emptyResource("r2");
-    let r3 = exports.emptyResource("r3");
-    let r4 = exports.emptyResource("r4");
+    let r1 = exports.emptyResource("id_r1");
+    let r2 = exports.emptyResource("id_r2");
+    let r3 = exports.emptyResource("id_r3");
+    let r4 = exports.emptyResource("id_r4");
 
     exports.sliceConnectResources(r1, r2, {protocol:"mqtt"}, "connectionID12");
     exports.sliceConnectResources(r1, r3, {protocol:"mqtt"}, "connectionID13");
     exports.sliceConnectResources(r2, r4, {protocol:"mqtt"}, "connectionID24");
     exports.sliceConnectResources(r3, r4, {protocol:"mqtt"}, "connectionID34");
 
-    return {resources:[r1,r2,r3,r4]};
-};
-
-exports.testdata_diamond_fourResources_shuffled = function () {
-    return shuffle(exports.testdata_diamond_fourResources());
+    return {resources:{"r1":r1,"r2":r2, "r3":r3, "r4":r4}};
 };
 
 exports.testdata_diamondWithCircle_fourResources_oneUnconnectedResource = function () {
-    let r1 = exports.emptyResource("r1");
-    let r2 = exports.emptyResource("r2");
-    let r3 = exports.emptyResource("r3");
-    let r4 = exports.emptyResource("r4");
+    let r1 = exports.emptyResource("id_r1");
+    let r2 = exports.emptyResource("id_r2");
+    let r3 = exports.emptyResource("id_r3");
+    let r4 = exports.emptyResource("id_r4");
 
     exports.sliceConnectResources(r1, r2, {protocol:"mqtt"}, "connectionID12");
     exports.sliceConnectResources(r1, r3, {protocol:"mqtt"}, "connectionID13");
@@ -95,9 +91,9 @@ exports.testdata_diamondWithCircle_fourResources_oneUnconnectedResource = functi
     exports.sliceConnectResources(r2, r3, {protocol:"mqtt"}, "connectionID23");
     exports.sliceConnectResources(r3, r2, {protocol:"mqtt"}, "connectionID32");
 
-    let r5 = exports.emptyResource("r5");
+    let r5 = exports.emptyResource("id_r5");
 
-    return {resources:[r1,r2,r3,r4,r5]};
+    return {resources:{"r1":r1,"r2":r2, "r3":r3, "r4":r4, "r5":r5}};
 };
 
 //TODO testcase with unconnected source/target

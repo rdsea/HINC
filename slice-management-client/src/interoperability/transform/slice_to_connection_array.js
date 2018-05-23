@@ -1,9 +1,9 @@
 exports.sliceToConnectionArray = function(slice){
-    let resources = slice.resources;
+    let resourceArray = Object.keys(slice.resources).map(function (key) { return slice.resources[key]; });
     let connections = [];
 
-    if(resources && resources.length>0) {
-        resources.forEach(addConnection(resources, connections));
+    if(resourceArray && resourceArray.length>0) {
+        resourceArray.forEach(addConnection(resourceArray, connections));
     }
 
     return connections;

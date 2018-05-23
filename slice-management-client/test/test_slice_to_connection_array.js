@@ -14,8 +14,8 @@ const data = require('./testdata/slice_to_connection_array_testdata');
 describe('test data-generating-functions to build testslices', function() {
     it('test twoConnectedResources', function() {
         let slice = data.testdata_twoConnectedResources();
-        let r1 = slice.resources.find(resourceById("r1"));
-        let r2 = slice.resources.find(resourceById("r2"));
+        let r1 = findResourceWithId("id_r1", slice);
+        let r2 = findResourceWithId("id_r2", slice);
 
         let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
@@ -34,8 +34,8 @@ describe('test data-generating-functions to build testslices', function() {
     });
     it('test circle_twoResources', function() {
         let slice = data.testdata_circle_twoResources();
-        let r1 = slice.resources.find(resourceById("r1"));
-        let r2 = slice.resources.find(resourceById("r2"));
+        let r1 = findResourceWithId("id_r1", slice);
+        let r2 = findResourceWithId("id_r2", slice);
 
         let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
@@ -45,26 +45,11 @@ describe('test data-generating-functions to build testslices', function() {
     });
     it('test diamond_fourResources', function() {
         let slice = data.testdata_diamond_fourResources();
-        let r1 = slice.resources.find(resourceById("r1"));
-        let r2 = slice.resources.find(resourceById("r2"));
-        let r3 = slice.resources.find(resourceById("r3"));
-        let r4 = slice.resources.find(resourceById("r4"));
+        let r1 = findResourceWithId("id_r1", slice);
+        let r2 = findResourceWithId("id_r2", slice);
+        let r3 = findResourceWithId("id_r3", slice);
+        let r4 = findResourceWithId("id_r4", slice);
 
-
-        let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
-
-        assert.equal(connections.length, 4);
-        testConnectionIsPresent(connections, r1, r2);
-        testConnectionIsPresent(connections, r1, r3);
-        testConnectionIsPresent(connections, r2, r4);
-        testConnectionIsPresent(connections, r3, r4);
-    });
-    it('test diamond_fourResources_shuffled', function() {
-        let slice = data.testdata_diamond_fourResources_shuffled();
-        let r1 = slice.resources.find(resourceById("r1"));
-        let r2 = slice.resources.find(resourceById("r2"));
-        let r3 = slice.resources.find(resourceById("r3"));
-        let r4 = slice.resources.find(resourceById("r4"));
 
         let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
@@ -76,10 +61,10 @@ describe('test data-generating-functions to build testslices', function() {
     });
     it('test diamondWithCircle_fourResources_oneUnconnectedResource', function() {
         let slice = data.testdata_diamondWithCircle_fourResources_oneUnconnectedResource();
-        let r1 = slice.resources.find(resourceById("r1"));
-        let r2 = slice.resources.find(resourceById("r2"));
-        let r3 = slice.resources.find(resourceById("r3"));
-        let r4 = slice.resources.find(resourceById("r4"));
+        let r1 = findResourceWithId("id_r1", slice);
+        let r2 = findResourceWithId("id_r2", slice);
+        let r3 = findResourceWithId("id_r3", slice);
+        let r4 = findResourceWithId("id_r4", slice);
 
         let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
 
@@ -99,8 +84,8 @@ describe('test data-generating-functions to build testslices', function() {
 
 describe('test data-generating-functions to build testslices', function() {
     it('test #sliceConnectResources', function() {
-        let r1 = data.emptyResource("r1");
-        let r2 = data.emptyResource("r2");
+        let r1 = data.emptyResource("id_r1");
+        let r2 = data.emptyResource("id_r2");
 
         data.sliceConnectResources(r1, r2, {protocol:"mqtt"});
 
@@ -117,6 +102,11 @@ function testConnectionIsPresent(connections, source, target){
 
 function connectionBySourceAndDestination(source, target){
     return function(connection){ return connection.source === source && connection.target === target};
+}
+
+function findResourceWithId(id, slice){
+    let resourceArray = Object.keys(slice.resources).map(function (key) { return slice.resources[key]; });
+    return resourceArray.find(resourceById(id));
 }
 
 function resourceById(id){
