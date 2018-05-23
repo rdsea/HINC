@@ -1,0 +1,13 @@
+{
+  "uri":"",
+  "protocol_name":"",
+  "version":"",
+  "topic":"",
+  "qos":"",
+  "keep_alive":"",
+  "will_required":"",
+  "will_topic":"",
+  "will_qos":"",
+  "implementation":"",
+  "implementation_version":""
+}

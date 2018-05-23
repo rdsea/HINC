@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type":{
+        "prototype": "sensor",
+        "unit": "°C",
+        "sampling_interval": "1000",
+        "precision": "0.01",
+        "range_minValue": "-50",
+        "range_maxValue": "60",
+        "location": "outside",
+        "latitude": "48.1986582",
+        "longitude": "16.3662739"
+      }
+    },
+    "inputs": [],
+    "outputs": [{
+      "push_pull": "pull",
+      "protocol": {
+        "uri":"http://123.456.78.9:80/temperature",
+        "protocol_name":"http",
+        "http_method":"get"
+      },
+      "dataformat": {
+        "encoding": "UTF-8",
+        "dataformat_name": "json"
+      },
+      "qod": {
+        "average_measurement_age": "995"
+      }
+    }]
+  }
+}

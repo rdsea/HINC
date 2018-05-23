@@ -1,0 +1,45 @@
+{
+  "metadata":{
+    "resource":{
+      "category": "iot",
+      "type": {
+        "prototype":"software_artefact",
+        "programming_language":"javascript",
+        "artefact_type":"executable"
+      }
+    },
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "amqp://123.456.78.9:5672",
+          "protocol_name": "amqp",
+          "version": "0.9.1",
+          "exchange": "transformed_sensor"
+        },
+        "dataformat":{
+          "encoding":"utf-8",
+          "dataformat_name":"json"
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "amqp://123.456.78.9:5672",
+          "protocol_name": "amqp",
+          "version": "0.9.1",
+          "queue": "sensor_queue"
+        },
+        "dataformat":{
+          "encoding": "UTF-8",
+          "dataformat_name": "csv",
+          "seperator": ";",
+          "newline_seperator": "\n",
+          "headers": "time; value"
+        }
+      }
+    ]
+  }
+}

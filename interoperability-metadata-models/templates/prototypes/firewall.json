@@ -1,0 +1,6 @@
+{
+  "prototype":"firewall",
+  "rules":[],
+  "default_incoming":"",
+  "default_outgoing":""
+}

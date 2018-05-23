@@ -1,0 +1,15 @@
+{
+  "metadata":{
+      "resource": {
+        "category": "",
+        "type": {},
+        "data_contract": {},
+        "qos": "",
+        "qod": "",
+        "required_qos": "",
+        "required_qod": ""
+      },
+      "inputs": [],
+      "outputs": []
+  }
+}
