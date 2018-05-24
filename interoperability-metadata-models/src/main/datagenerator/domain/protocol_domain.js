@@ -75,7 +75,7 @@ function stomp(){
 
 
 function secured(protocol){
-    let secured = deepcopy(protocol);
+    let secured = util.deepcopy(protocol);
     secured.protocol_name += "s";
     return secured;
 }
