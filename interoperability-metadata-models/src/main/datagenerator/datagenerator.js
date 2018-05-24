@@ -9,3 +9,26 @@ exports.randomResource = function(){
 
     return metadata;
 };
+
+
+exports.randomInteger = function(maxvalue){
+    let random = Math.random();
+
+    return Math.round(random*maxvalue);
+};
+
+exports.randomDecimal = function(maxvalue){
+    let random = Math.random();
+
+    return random*maxvalue;
+};
+
+exports.randomBoolean = function(){
+    let random = Math.random();
+    return random<0.5;
+};
+
+exports.randomString = function(){
+    return Math.random().toString(36).substr(2);
+
+};
