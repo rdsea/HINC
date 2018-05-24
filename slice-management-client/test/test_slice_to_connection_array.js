@@ -1,6 +1,5 @@
 const assert = require('assert');
 
-const datagenerator = require('./testdata/datagenerator');
 const sensor = require('./testdata/resources/sensor_testdata');
 const artefact = require('./testdata/resources/artefact_testdata');
 const ingestion = require('./testdata/resources/ingestion_testdata');

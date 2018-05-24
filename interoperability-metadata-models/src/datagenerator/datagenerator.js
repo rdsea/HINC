@@ -1,7 +1,7 @@
-const sensor = require('./resources/sensor_testdata');
-const messagebroker = require('./resources/broker_testdata');
-const artefactrunner = require('./resources/artefact_testdata');
-const ingestion = require('./resources/ingestion_testdata');
+const sensor = require('../../../slice-management-client/test/testdata/resources/sensor_testdata');
+const messagebroker = require('../../../slice-management-client/test/testdata/resources/broker_testdata');
+const artefactrunner = require('../../../slice-management-client/test/testdata/resources/artefact_testdata');
+const ingestion = require('../../../slice-management-client/test/testdata/resources/ingestion_testdata');
 
 
 exports.graphTrue = function () {
