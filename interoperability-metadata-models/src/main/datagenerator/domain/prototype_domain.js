@@ -7,6 +7,24 @@ exports.a_prototype = util.createValueDomain(
     [container(), firewall(), ingestion(), messagebroker(),
         sensor(), software_artefact(), storage(), virtual_machine(), vpn()]);
 
+let iot = [sensor(), software_artefact()].map(function (element){return element.prototype});
+let network_function = [firewall(), messagebroker(), virtual_machine()].map(function (element){return element.prototype});
+let cloud = [container(), ingestion(), storage(), virtual_machine()].map(function (element){return element.prototype});
+
+exports.prototypeCategory = function(prototypeName){
+    let category = "";
+
+    if(iot.indexOf(prototypeName)>-1){
+        category = "iot";
+    }else if (network_function.indexOf(prototypeName)>-1){
+        category = "network_function";
+    }else if (cloud.indexOf(prototypeName)>-1){
+        category = "cloud";
+    }
+
+    return category;
+};
+
 
 
 //********************************************************************************************************** prototypes

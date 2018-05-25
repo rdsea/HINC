@@ -1,24 +1,16 @@
 const domain = require('./domain/metadata_domain');
 const util = require('./util');
-const basic = require('./domain/basic_types_values')
+const basic = require('./domain/basic_types_values');
+const prototype_d = require('./domain/prototype_domain');
 
 exports.randomResource = function(){
     let metadata = util.deepcopy(domain.metadata);
 
     initialize(metadata);
+    metadata.resource.category = prototype_d.prototypeCategory(metadata.resource.type.prototype);
 
     return metadata;
 };
-
-function getAttributes(object) {
-    return Object.keys(object).map(function (key) {
-        return {
-            containingobject: object,
-            attributename: key,
-            attributevalue: object[key]
-        };
-    });
-}
 
 
 function initialize(object){
@@ -31,38 +23,36 @@ function initialize(object){
 }
 
 
-exports.initAttribute = function(containingobject, attributename, attributevalue){
-    let newvalue = "";
+exports.initAttribute = function(containingObject, attributeName, attributeValue){
+    let newValue = "";
 
-    if(typeof attributevalue === "string") {
-        if(isBasicType(attributevalue)) {
-            newvalue = getRandomBasicValue(attributevalue);
+    if(typeof attributeValue === "string") {
+        if(isBasicType(attributeValue)) {
+            newValue = getRandomBasicValue(attributeValue);
         }else{
-            newvalue = attributevalue;
+            newValue = attributeValue;
         }
-    }else if(typeof attributevalue === "object"){
-        if(Array.isArray(attributevalue)){
-            if(attributevalue.length === 1){
-                if(isBasicType(attributevalue[0])){
-                    newvalue = [getRandomBasicValue(attributevalue[0])];
+    }else if(typeof attributeValue === "object"){
+        if(Array.isArray(attributeValue)){
+            if(attributeValue.length === 1){
+                if(isBasicType(attributeValue[0])){
+                    newValue = [getRandomBasicValue(attributeValue[0])];
                 }else{
-                    initialize(attributevalue[0]);
-                    newvalue = [attributevalue[0]];
+                    initialize(attributeValue[0]);
+                    newValue = [attributeValue[0]];
                 }
             }
         }else{
-            // if domain
-            if(attributevalue[basic.domain_values_identifier]) {
-                attributevalue = getRandomArrayElement(attributevalue[basic.domain_values_identifier]);
-                initialize(attributevalue);
-                newvalue = attributevalue;
-            }else {
-                initialize(attributevalue);
-                newvalue = attributevalue;
+            if(attributeValue[basic.domain_values_identifier]) {
+                attributeValue = getRandomArrayElement(attributeValue[basic.domain_values_identifier]);
             }
+
+            initialize(attributeValue);
+            newValue = attributeValue;
+
         }
     }
-    containingobject[attributename] = newvalue;
+    containingObject[attributeName] = newValue;
 };
 
 function isBasicType(attributeType){
@@ -72,17 +62,17 @@ function isBasicType(attributeType){
 }
 
 function getRandomBasicValue(attributeType){
-    let randomvalue;
+    let randomValue;
 
     switch (attributeType){
-        case basic.stringType: randomvalue = "string" + exports.randomString(); break;
-        case basic.decimalType: randomvalue = exports.randomDecimal(10); break;
-        case basic.integerType: randomvalue = exports.randomInteger(10); break;
-        case basic.booleanType: randomvalue = exports.randomBoolean(); break;
-        case basic.objectType: randomvalue = {}; break;
+        case basic.stringType: randomValue = "string" + exports.randomString(); break;
+        case basic.decimalType: randomValue = exports.randomDecimal(10); break;
+        case basic.integerType: randomValue = exports.randomInteger(10); break;
+        case basic.booleanType: randomValue = exports.randomBoolean(); break;
+        case basic.objectType: randomValue = {}; break;
     }
 
-    return randomvalue;
+    return randomValue;
 }
 
 function getRandomArrayElement(array){
@@ -97,16 +87,16 @@ function getRandomArrayElement(array){
 
 
 
-exports.randomInteger = function(maxvalue){
+exports.randomInteger = function(maxValue){
     let random = Math.random();
 
-    return Math.round(random*maxvalue);
+    return Math.round(random*maxValue);
 };
 
-exports.randomDecimal = function(maxvalue){
+exports.randomDecimal = function(maxValue){
     let random = Math.random();
 
-    return random*maxvalue;
+    return random*maxValue;
 };
 
 exports.randomBoolean = function(){
