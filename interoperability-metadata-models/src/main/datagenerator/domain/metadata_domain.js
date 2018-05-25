@@ -19,7 +19,7 @@ exports.inputs = inputs();
 function resource () {
     return {
         category: basic.categoryValues,
-        type: prototype_d.prototype,
+        type: prototype_d.a_prototype,
         data_contract: data_contract_d.data_contract,
         qos: quality_d.qos,
         qod: quality_d.qod,
@@ -29,6 +29,10 @@ function resource () {
 };
 
 function inputs() {
+    return [inputDefinition()];
+}
+
+function inputDefinition() {
     return {
         push_pull:basic.push_pullValues,
         protocol: protocol_d.protocol,
@@ -39,7 +43,11 @@ function inputs() {
     }
 };
 
-function outputs(){
+function outputs() {
+    return [outputDefinition()];
+}
+
+function outputDefinition(){
     return {
         push_pull:basic.push_pullValues,
         protocol: protocol_d.protocol,
@@ -48,4 +56,4 @@ function outputs(){
         qos: quality_d.qos,
         qod: quality_d.qod
     }
-};
+}

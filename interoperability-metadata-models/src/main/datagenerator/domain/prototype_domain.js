@@ -3,7 +3,9 @@ const util = require('../util');
 
 const protocol_d = require('./protocol_domain');
 
-exports.prototype = [container(), firewall(), ingestion(), messagebroker(), sensor(), software_artefact(), storage(), virtual_machine(), vpn()];
+exports.a_prototype = util.createValueDomain(
+    [container(), firewall(), ingestion(), messagebroker(),
+        sensor(), software_artefact(), storage(), virtual_machine(), vpn()]);
 
 
 

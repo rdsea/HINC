@@ -1,57 +1,80 @@
 const datagenerator = require('../main/datagenerator/datagenerator');
 const assert = require('assert');
 const basic = require('../main/datagenerator/domain/basic_types_values');
+const util = require('../main/datagenerator/util');
 
 
 describe('metadata generator', function(){
+    describe('test generate resource',function () {
+        it('test generate randomResource', function () {
+            let metadata = datagenerator.randomResource();
+
+            assert.equal(Array.isArray(metadata.inputs), true);
+            assert.equal(Array.isArray(metadata.outputs), true);
+
+        });
+    });
     describe('test initAttribute', function(){
         it('init basic.stringType', function(){
-            let object = {stringvalue:basic.stringType};
-            datagenerator.initAttribute(object, "stringvalue", object.stringvalue);
-            assert.equal(typeof object.stringvalue, "string");
-            assert.notEqual(object.stringvalue, basic.stringType);
+            let object = {stringValue:basic.stringType};
+            datagenerator.initAttribute(object, "stringValue", object.stringValue);
+            assert.equal(typeof object.stringValue, "string");
+            assert.notEqual(object.stringValue, basic.stringType);
 
         });
         it('init basic.decimalType', function(){
-            let object = {decimalvalue:basic.decimalType};
-            datagenerator.initAttribute(object, "decimalvalue", object.decimalvalue);
-            assert.equal(typeof object.decimalvalue, "number");
-            assert.equal(object.decimalvalue%1!==0, true);
+            let object = {decimalValue:basic.decimalType};
+            datagenerator.initAttribute(object, "decimalValue", object.decimalValue);
+            assert.equal(typeof object.decimalValue, "number");
+            assert.equal(object.decimalValue%1!==0, true);
 
         });
         it('init basic.integerType', function(){
-            let object = {integervalue:basic.integerType};
-            datagenerator.initAttribute(object, "integervalue", object.integervalue);
-            assert.equal(typeof object.integervalue, "number");
-            assert.equal(object.integervalue%1===0, true);
+            let object = {integerValue:basic.integerType};
+            datagenerator.initAttribute(object, "integerValue", object.integerValue);
+            assert.equal(typeof object.integerValue, "number");
+            assert.equal(object.integerValue%1===0, true);
 
         });
         it('init basic.booleanType', function(){
-            let object = {booleanvalue:basic.booleanType};
-            datagenerator.initAttribute(object, "booleanvalue", object.booleanvalue);
-            assert.equal(typeof object.booleanvalue, "boolean");
+            let object = {booleanValue:basic.booleanType};
+            datagenerator.initAttribute(object, "booleanValue", object.booleanValue);
+            assert.equal(typeof object.booleanValue, "boolean");
 
         });
         it('init list of basic.booleanType', function(){
-            let object = {listvalue:[basic.booleanType]};
-            datagenerator.initAttribute(object, "listvalue", object.listvalue);
+            let object = {listValue:[basic.booleanType]};
+            datagenerator.initAttribute(object, "listValue", object.listValue);
 
-            assert.equal(Array.isArray(object.listvalue), true);
-            assert.equal(object.listvalue.length, 1);
-            assert.equal(typeof object.listvalue[0], "boolean");
+            assert.equal(Array.isArray(object.listValue), true);
+            assert.equal(object.listValue.length, 1);
+            assert.equal(typeof object.listValue[0], "boolean");
+        });
+        it('init list of objectdefinition', function(){
+            let objectdefinition = {booleanValue:basic.booleanType, numberValue:basic.integerType, stringValue:basic.stringType};
+            let object = {listValue:[objectdefinition]};
+            datagenerator.initAttribute(object, "listValue", object.listValue);
+
+            assert.equal(Array.isArray(object.listValue), true);
+            assert.equal(object.listValue.length, 1);
+            assert.equal(typeof object.listValue[0].booleanValue, "boolean");
+            assert.equal(typeof object.listValue[0].stringValue, "string");
+            assert.equal(typeof object.listValue[0].numberValue, "number");
         });
         it('init attribute of valueDomain', function(){
-            let valuedomain = ["value1", "value2"];
+            let values = ["value1", "value2"];
+            let valuedomain = util.createValueDomain(values);
             let object = {value:valuedomain};
             datagenerator.initAttribute(object, "value", object.value);
 
-            assert.equal(valuedomain.indexOf(object.value)>-1, true);
+            assert.equal(values.indexOf(object.value)>-1, true);
         });
         it('init attribute of empty valueDomain', function(){
-            let valuedomain = [];
+            let values = [];
+            let valuedomain = util.createValueDomain(values);
             let object = {value:valuedomain};
             datagenerator.initAttribute(object, "value", object.value);
-            assert.equal(object, null);
+            assert.equal(object.value, null);
         });
         it('init attribute of basic.objectType', function(){
             let object = {value:basic.objectType};
@@ -65,9 +88,8 @@ describe('metadata generator', function(){
             datagenerator.initAttribute(object, "value", object.value);
 
             assert.equal(typeof object.value.booleanValue, "boolean");
-            assert.equal(typeof object.value.stringvalue, "string");
-            assert.equal(typeof object.value.integervalue, "number");
-
+            assert.equal(typeof object.value.stringValue, "string");
+            assert.equal(typeof object.value.numberValue, "number");
         });
         it('init attribute of empty objectdefinition', function(){
             let objectdefinition = {};

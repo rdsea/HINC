@@ -25,26 +25,26 @@ exports.firewallRuleType = {
     direction:exports.firewallRuleDirectionValues
 };
 
-exports.push_pullValues = ["push", "pull"];
-exports.categoryValues = ["iot", "network_function", "cloud"];
-exports.mqttQosValues = [0, 1, 2];
-exports.http_methodValues = [];
-exports.coap_methodValues = ["GET", "POST", "PUT", "DELETE"];
+exports.push_pullValues = {_domain_values:["push", "pull"]};
+exports.categoryValues = {_domain_values:["iot", "network_function", "cloud"]};
+exports.mqttQosValues = {_domain_values:[0, 1, 2]};
+exports.http_methodValues = {_domain_values:[]};
+exports.coap_methodValues = {_domain_values:["GET", "POST", "PUT", "DELETE"]};
+exports.product_nameValues = {_domain_values:[]};
+exports.providerValues = {_domain_values:[]};
+exports.database_typeValues = {_domain_values:[]};
+exports.vm_instance_typeValues = {_domain_values:[]};
+exports.vm_osValues = {_domain_values:[]};
+exports.programming_languageValues = {_domain_values:[]};
+exports.applicationValues = {_domain_values:[]};
+exports.artefact_typeValues = {_domain_values:[]};
+exports.firewallRuleActionValues = {_domain_values:["allow", "deny"]};
+exports.firewallRuleDirectionValues = {_domain_values:["incoming","outgoing"]};
+exports.vpnTypeValues = {_domain_values:["end-to-end", "site-to-site", "site-to-end", "end-to-site"]};
+exports.bindingTypeValues = {_domain_values:["fanout", "topic", "direct", "headers"]};
 
-exports.product_nameValues = [];
-exports.providerValues = [];
-exports.database_typeValues = [];
+exports.domain_values_identifier = "_domain_values";
 
-exports.vm_instance_typeValues = [];
-exports.vm_osValues = [];
-
-exports.programming_languageValues = [];
-exports.applicationValues = [];
-exports.artefact_typeValues = [];
-
-exports.firewallRuleActionValues = ["allow", "deny"];
-exports.firewallRuleDirectionValues = ["incoming","outgoing"];
-
-exports.vpnTypeValues = ["end-to-end", "site-to-site", "site-to-end", "end-to-site"];
-
-exports.bindingTypeValues = ["fanout", "topic", "direct", "headers"];
+exports.createValueDomain = function (valuesArray){
+    return {_domain_values:valuesArray};
+};

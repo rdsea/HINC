@@ -2,7 +2,9 @@ const basic = require('./basic_types_values');
 const util = require('../util');
 
 
-exports.protocol = [amqp(), secured(amqp()), mqtt(), secured(mqtt()), http(), secured(http()), coap(), secured(coap()), stomp()];
+exports.protocol = util.createValueDomain([
+    amqp(), secured(amqp()), mqtt(), secured(mqtt()),
+    http(), secured(http()), coap(), secured(coap()), stomp()]);
 
 
 //********************************************************************************************************** protocols

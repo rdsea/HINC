@@ -1,7 +1,7 @@
 const basic = require('./basic_types_values');
 const util = require('../util');
 
-exports.dataformat = [apache_avro() ,binary() ,cbor() ,csv() ,json() ,plaintext() ,rdf() ,xml()];
+exports.dataformat = util.createValueDomain([apache_avro() ,binary() ,cbor() ,csv() ,json() ,plaintext() ,rdf() ,xml()]);
 
 //********************************************************************************************************** dataformats
 
