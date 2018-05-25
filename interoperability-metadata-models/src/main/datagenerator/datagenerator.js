@@ -34,17 +34,35 @@ function initialize(metadata){
 exports.initAttribute = function(containingobject, attributename, attributevalue){
     //let value = attribute;
     let newvalue = "";
-    switch (attributevalue){
-        case basic.stringType: newvalue = "string" + exports.randomString(); break;
-        case basic.decimalType: newvalue = exports.randomDecimal(10); break;
-        case basic.integerType: newvalue = exports.randomInteger(10); break;
-        case basic.booleanType: newvalue = exports.randomBoolean(); break;
+
+    if(typeof attributevalue === "string") {
+        newvalue = getRandomBasicValue(attributevalue);
+    }else if(typeof attributevalue === "object"){
+        if(Array.isArray(attributevalue)){
+            if(attributevalue.length === 1 && getRandomBasicValue(attributevalue)){
+                newvalue = getRandomBasicValue(attributevalue);
+            }
+
+        }else{
+            //object
+        }
+    }
+    containingobject[attributename] = newvalue;
+};
+
+function getRandomBasicValue(attributeType){
+    let randomvalue;
+
+    switch (attributeType){
+        case basic.stringType: randomvalue = "string" + exports.randomString(); break;
+        case basic.decimalType: randomvalue = exports.randomDecimal(10); break;
+        case basic.integerType: randomvalue = exports.randomInteger(10); break;
+        case basic.booleanType: randomvalue = exports.randomBoolean(); break;
+        case basic.objectType: randomvalue = {}; break;
     }
 
-    containingobject[attributename] = newvalue;
-
+    return randomvalue;
 }
-
 
 
 
