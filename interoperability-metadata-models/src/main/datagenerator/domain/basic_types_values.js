@@ -19,7 +19,7 @@ exports.brokerBindingType = {
 
 exports.firewallRuleType = {
     action:exports.firewallRuleActionValues,
-    protocol:exports. stringType,
+    protocol:exports.stringType,
     port:exports.integerType,
     range:exports.stringType,
     direction:exports.firewallRuleDirectionValues
