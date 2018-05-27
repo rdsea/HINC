@@ -9,22 +9,39 @@ function getProvider(settings){
     return axios.get(`${config.ENDPOINT}/storage/bigquery`).then((res) => {
         let sampleConfig = res.data.sampleConfig;
 
-        let managementPoints = [];
-        managementPoints.push({
-            name: `provision google bigquery dataset`,
-            controlType: 'PROVISION',
-            accessPoints: [{
-                accessPointType: 'HTTP',
-                uri: `${config.ENDPOINT}/storage/bigquery`,
-                httpMethod: 'POST',
-            }],
-            parameters: sampleConfig,   
-        });
+        let availableResources = [];
+        availableResources.push({
+            plugin: 'bigquery',
+            resourceType: 'CLOUD_SERVICE',
+            name: `bigQuery dataset`,
+            controlPoints: [],
+            dataPoints: [],
+            type: 'SOFTWARE_UNIT',
+            location: null,
+            metadata: {
+                parameters:  {
+                    "datasetId": "datasetId",
+                    "tables": [
+                        {
+                            "id": "tableId",
+                            "schema": [
+                                {
+                                    "description": "field description",
+                                    "mode": "REQUIRED/",
+                                    "name": "fieldname",
+                                    "type": "INT64/FLOAT64/STRING/BOOL/BYTES/DATE/DATETIME/TIME/TIMESTAMP"
+                                }
+                            ]
+                        }
+                    ]
+                },
+            },
+        })
 
         let provider = {
             name: config.ADAPTOR_NAME,
             uuid: config.ADAPTOR_NAME,
-            managementPoints: managementPoints,
+            availableResources: availableResources,
         };
 
         return provider;

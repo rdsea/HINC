@@ -11,16 +11,17 @@ public class Resource {
 
     // add more as needed
     public enum ResourceCategory {
-        IOT_RESOURCE,
-        NETWORK_FUNCTION_SERVICE,
-        CLOUD_SERVICE,
-    }
-
-    public enum ResourceType{
         SENSOR,
         BROKER,
         SOFTWARE_ARTIFACT,
         STORAGE,
+    }
+
+
+    public enum ResourceType{
+        IOT_RESOURCE,
+        NETWORK_FUNCTION_SERVICE,
+        CLOUD_SERVICE,
     }
 
     private String name;

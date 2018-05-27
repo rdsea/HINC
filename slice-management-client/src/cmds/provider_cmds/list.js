@@ -1,5 +1,7 @@
 const amqpTools = require('../../amqpTools');
 const db = require('../../data/db');
+const axios = require('axios');
+const config = require('../../config');
 
 exports.command = 'list'
 exports.desc = 'list available resource providers'
@@ -26,22 +28,15 @@ exports.handler = function (argv) {
             _displayProviders(resources);
         });
     }else{
-        return amqpTools.init().then(() => {
-            return amqpTools.sendMessage(query);
-        }).then(() => {
-            return amqpTools.getMessage();
-        }).then((msg) => {
-            msg = JSON.parse(msg.content.toString());
-            if(msg.msgType !== 'DELIVER_PROVIDERS')
-                throw new Error(`unexpected message reply received, expected DELIVER_PROVIDERS but got ${msg.msgType}`);
-            let providers = JSON.parse(msg.payload);
-            return _refreshProviders(providers)
-            console.log(`retrieved ${providers.length} providers`)
+        return axios.get(`${config.uri}/resourceproviders`).then((res) => {
+            let providers = res.data;
+            return _refreshProviders(providers);
         }).then((providers) => {
+            console.log(`retrieved ${providers.length} providers`)
             _displayProviders(providers)
         }).catch((err) => {
             console.err(err);
-        }).finally(() => amqpTools.close());
+        })
     }
 
     

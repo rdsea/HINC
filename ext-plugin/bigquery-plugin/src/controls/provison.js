@@ -13,7 +13,7 @@ function provision(resource){
         resource.uuid = dataset.datasetId;
         controlResult = {
             status: 'SUCCESS',
-            rawOutput: resource,
+            rawOutput: JSON.stringify(resource),
             resourceUuid: dataset.datasetId,
         };
         console.log('successfuly control execution');

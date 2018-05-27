@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
 
 import java.io.IOException;
 
@@ -28,23 +29,29 @@ public abstract class HINCMessageHandler {
         return this.nextHandler;
     }
 
-    public void handleMessage(byte[] message) throws IOException {
-        HincMessage hincMessage = objectMapper.readValue(message, HincMessage.class);
+    public byte[] handleMessage(byte[] bytes) throws IOException {
+        HincMessage hincMessage = objectMapper.readValue(bytes, HincMessage.class);
         logger.debug("received and converted byte message to: " + hincMessage.toString());
-        handleMessage(hincMessage);
+
+        HincMessage reply = handleMessage(hincMessage);
+        if(reply != null){
+            return objectMapper.writeValueAsBytes(reply);
+        }else{
+            return null;
+        }
     }
 
-    public void handleMessage(HincMessage msg){
+
+    public HincMessage handleMessage(HincMessage msg){
         logger.debug(this.messageType.name());
         if(this.messageType == msg.getMsgType()){
-            doHandle(msg);
-            return;
+            return doHandle(msg);
         }
         else if(this.nextHandler != null){
-            nextHandler.handleMessage(msg);
-            return;
+            return nextHandler.handleMessage(msg);
         }
         logger.info("no handler found for message " + msg.getMsgType());
+        return null;
     }
 
     public void addMessageHandler(HINCMessageHandler handler){
@@ -59,5 +66,5 @@ public abstract class HINCMessageHandler {
         }
     }
 
-    abstract protected void doHandle(HincMessage msg);
+    abstract protected HincMessage doHandle(HincMessage msg);
 }

@@ -6,19 +6,13 @@
         <artifactId>hinc-pom</artifactId>
         <version>1.0</version>
     </parent>
+    <groupId>at.ac.tuwien.dsg.hinc</groupId>
     <artifactId>common</artifactId>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>5.2.0</version>
-            <!--<version>3.5.4</version>-->
-            <type>jar</type>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>

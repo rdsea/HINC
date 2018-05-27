@@ -16,8 +16,9 @@ public class HandleControlResult extends HINCMessageHandler {
     }
 
     @Override
-    protected void doHandle(HincMessage msg) {
+    protected HincMessage doHandle(HincMessage msg) {
         logger.debug("received " + msg.toString());
         //TODO implement MessageHandler
+        return null;
     }
 }

@@ -1,0 +1,15 @@
+{
+  "msgType": "REGISTER_ADAPTOR",
+  "senderID": "sensor",
+  "receiverID": null,
+  "payload": "{\"name\":\"sensor humidity\",\"pluginName\":null,\"providerUuid\":\"sensor\",\"resourceCategory\":\"IOT_RESOURCE\",\"resourceType\":\"SENSOR\",\"location\":null,\"metadata\":{\"parameters\":{\"topic\":\"test\"},\"_proxy\":{\"ip\":\"127.0.0.1\",\"port\":\"7474\"}},\"controlPoints\":[],\"dataPoints\":[{\"name\":\"humidity\",\"dataType\":null,\"unit\":\"percent\"}],\"source\":[],\"target\":[\"mqtt_connectivity\"]}",
+  "timeStamp": 0,
+  "uuid": "",
+  "destination": {
+    "exchange": "adaptor_local_input"
+  },
+  "reply": {
+    "exchange": "adaptor_local_input",
+    "routingKey": "sensor"
+  }
+}

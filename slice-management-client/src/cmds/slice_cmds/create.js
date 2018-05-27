@@ -3,18 +3,18 @@ const amqpTools = require('../../amqpTools');
 const db = require('../../data/db');
 const moment = require('moment');
 const path = require('path');
+const axios = require('axios');
+const config = require('../../config');
 
 exports.command = 'create <file>'
 exports.desc = 'creates a slice specified in <file>'
 exports.builder = {}
 exports.handler = function (argv) {
     let slice = require(path.join(process.cwd(), argv.file));
-    return amqpTools.init().then(() => {
-        return _provisionResources(slice)
-    }).then(() => {
-        console.log('slice successfully created!')
-        amqpTools.close();
-    });
+    return _provisionResources(slice).then(() => {
+        slice.createdAt = moment().unix();
+        db.sliceDao().insert(slice);
+    })
 }
 
 
@@ -66,26 +66,21 @@ function _provisionResources(slice){
 }
 
 function _provisionResource(sliceId, resource, label){
-
     return meshService.getProxyInfo(sliceId, label).then((proxy) => {
         // add the tcp ip endpoint into the resource metadata for the plugin
         resource.metadata._proxy = proxy;
-        let msg = amqpTools.buildMessage('PROVISION', JSON.stringify(resource));
-        return amqpTools.sendMessage(msg);
-    }).then(() => {
-        return amqpTools.getMessage(-1);
-    }).then((msg) => {
-        msg = JSON.parse(msg.content.toString());
-        if(msg.msgType !== 'CONTROL_RESULT')
-            throw new Error(`unexpected message reply received, expected CONTROL_RESULT but got ${msg.msgType}`);
-        let provisionedResource = JSON.parse(msg.payload).rawOutput;
+        return axios.post(`${config.uri}/controls/provision`, resource);
+    }).then((res) => {
+        let provisionedResource = res.data
         console.log("resource provisioned: ");
         console.log(JSON.stringify(provisionedResource, null, 2));
         return {
             label,
             provisionedResource,
         };  
-    });
+    }).catch((err) => {
+        console.err(err.response);
+    })
 }
 
 
@@ -100,14 +95,5 @@ function _provisionMesh(slice){
         return Promise.all(proxyCreatePromises);
     });
 }
-
-// const testSlice = require('../../../test/testSlice.json');
-
-// amqpTools.init().then(() => {
-//     _provisionResources(testSlice).then((testSlice) => {
-//         console.log(JSON.stringify(testSlice, null, 2));
-//         amqpTools.close();
-//     })
-// })
 
 

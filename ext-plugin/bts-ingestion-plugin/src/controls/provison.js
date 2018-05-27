@@ -14,7 +14,7 @@ function provision(resource){
         resource.uuid = ingestionClient.ingestionClientId;
         controlResult = {
             status: 'SUCCESS',
-            rawOutput: resource,
+            rawOutput: JSON.stringify(resource),
             resourceUuid: ingestionClient.ingestionClientId,
         };
         console.log('successfuly control execution');
@@ -33,46 +33,6 @@ function provision(resource){
 
 module.exports.provision = provision;
 
-let resource = {
-    "name": "bts ingestion client",
-    "pluginName": "btsingestion",
-    "providerUuid": "ingest",
-    "resourceType": "SOFTWARE_ARTIFACT",
-    "location": null,
-    "metadata": {
-        "_proxy":{
-            "ip": "127.0.0.1",
-            "port": 7474
-        },
-        "parameters":{
-            "data": "bigQuery",
-            "brokers": [
-                    {
-                            "host": "35.205.138.49",
-                            "port": 1883,
-                            "clientId": "testclient1",
-                            "username": "xxx",
-                            "password": "xxx",
-                            "topics": [
-                                    "test"
-                            ]
-                    }
-            ],
-            "bigQuery": {
-                    "dataset": "testDataset",
-                    "tables": [
-                            {
-                                    "id": "testTable",
-                                    "topics": [
-                                            "test"
-                                    ]
-                            }
-                    ]
-            },
-    }
-    
-    }
-}
 
 
 //provision(resource).catch((err) => console.log(err));

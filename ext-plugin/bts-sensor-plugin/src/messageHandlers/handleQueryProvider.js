@@ -7,15 +7,7 @@ function handleQueryResources(msg){
         receiverID: null,
         payload: '',
         timeStamp: Math.floor((new Date()).getMilliseconds()/1000),
-        uuid: '732330',
-        destination: { 
-            exchange: 'test.adaptors', 
-            routingKey: 'testy' 
-        },
-        reply: { 
-            exchange: 'test.adaptors', 
-            routingKey: 'test.local' 
-        },
+        uuid: '732330'
     }
 
     return providerAdaptor.getProvider().then((provider) => {

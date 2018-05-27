@@ -3,19 +3,20 @@ const config = require('../../config');
 
 function provision(resource){ 
     let controlResult = null;
-
+    let broker = null;
     return axios.post(`${config.ENDPOINT}/mosquittobroker`).then((res) => {
-        let broker = res.data;
+        broker = res.data;
         console.log('successful control execution');
         // location of broker might not set, await it
         return _waitForLocation(broker.brokerId, `${config.ENDPOINT}/mosquittobroker`);
     }).then((brokerIp) => {
         resource.metadata.host = brokerIp;
         resource.metadata.port = 1883;
+        resource.Uuid = broker.brokerId;
 
         let controlResult = {
             status: 'SUCCESS',
-            rawOutput: resource,
+            rawOutput: JSON.stringify(resource),
             resourceUuid: resource.uuid,
         };
         return controlResult

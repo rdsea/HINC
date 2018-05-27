@@ -4,6 +4,8 @@ import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalM
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ResourceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +42,9 @@ public class ResourceService {
     @Value("${hinc.global.id}")
     private String globalId;
 
+    @Value("${hinc.global.rabbitmq.input}")
+    private String inputQueue;
+
     @Autowired
     public ResourceService(RabbitTemplate rabbitTemplate, ResourceRepository resourceRepository, ObjectMapper objectMapper, LocalMSRepository localMSRepository) {
         this.rabbitTemplate = rabbitTemplate;
@@ -59,12 +64,13 @@ public class ResourceService {
         queryMessage.setUuid(globalId);
 
         queryMessage.setSenderID(globalId);
-        queryMessage.setReply(globalInputExchange, "");
         queryMessage.setReceiverID(id);
-        queryMessage.setDestination(exchange,routing_key);
 
         byte[] byteMessage = objectMapper.writeValueAsBytes(queryMessage);
-        rabbitTemplate.convertAndSend(exchange, routing_key, byteMessage);
+        MessageProperties properties = new MessageProperties();
+        properties.setReplyTo(inputQueue);
+        Message msg = new Message(byteMessage, properties);
+        rabbitTemplate.send(exchange, routing_key, msg);
 
         if(timeout>0){
             try {

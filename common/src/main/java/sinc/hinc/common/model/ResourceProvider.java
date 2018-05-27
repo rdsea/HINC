@@ -8,20 +8,9 @@ import java.util.Collection;
 public class ResourceProvider {
 
     private String name;
-    private Collection<Resource> resources;
-    private Collection<ControlPoint> managementPoints;
+    private Collection<Resource> availableResources; // aka catalogue
     // set of resources available from the provider
-    private Collection<Resource> catalogue;
     private String uuid;
-
-
-    public Collection<Resource> getCatalogue() {
-        return catalogue;
-    }
-
-    public void setCatalogue(Collection<Resource> catalogue) {
-        this.catalogue = catalogue;
-    }
 
     public String getName() {
         return name;
@@ -31,20 +20,12 @@ public class ResourceProvider {
         this.name = name;
     }
 
-    public Collection<Resource> getResources() {
-        return resources;
+    public Collection<Resource> getAvailableResources() {
+        return availableResources;
     }
 
-    public void setResources(Collection<Resource> resources) {
-        this.resources = resources;
-    }
-
-    public Collection<ControlPoint> getManagementPoints() {
-        return managementPoints;
-    }
-
-    public void setManagementPoints(Collection<ControlPoint> managementPoints) {
-        this.managementPoints = managementPoints;
+    public void setAvailableResources(Collection<Resource> resources) {
+        this.availableResources = resources;
     }
 
     public String getUuid() {

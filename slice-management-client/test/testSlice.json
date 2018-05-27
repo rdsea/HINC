@@ -5,8 +5,7 @@
             "name": "sensor humidity",
             "pluginName": null,
             "providerUuid": "sensor",
-            "resourceCategory": "IOT_RESOURCE",
-            "resourceType": "SENSOR",
+            "resourceType": "IOT_RESOURCE",
             "location": null,
             "metadata": {
                 "parameters":{
@@ -30,7 +29,7 @@
             "name": "mosquitto broker",
             "pluginName": "mosquittobroker",
             "providerUuid": "mosquitto",
-            "resourceType": "BROKER",
+            "resourceType": "NETWORK_FUNCTION_SERVICE",
             "location": null,
             "metadata": {
 
@@ -46,7 +45,7 @@
             "name": "bigQuery dataset",
             "pluginName": "bigquery",
             "providerUuid": "bigquery",
-            "resourceType": "STORAGE",
+            "resourceType": "CLOUD_SERVICE",
             "location": null,
             "metadata": {
                 "parameters":{
@@ -97,7 +96,7 @@
             "name": "bts ingestion client",
             "pluginName": "btsingestion",
             "providerUuid": "ingest",
-            "resourceType": "SOFTWARE_ARTIFACT",
+            "resourceType": "CLOUD_SERVICE",
             "location": null,
             "metadata": {
                 "parameters":{

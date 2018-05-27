@@ -14,7 +14,7 @@ function provision(resource){
         resource.uuid = sensor.clientId;
         controlResult = {
             status: 'SUCCESS',
-            rawOutput: resource,
+            rawOutput: JSON.stringify(resource),
             resourceUuid: sensor.clientId,
         };
         console.log('successfuly control execution');

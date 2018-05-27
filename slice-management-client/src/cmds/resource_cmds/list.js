@@ -1,5 +1,8 @@
 const amqpTools = require('../../amqpTools');
 const db = require('../../data/db');
+const axios = require('axios');
+const config = require('../../config');
+
 
 exports.command = 'list [options]'
 exports.desc = 'list available resources'
@@ -27,22 +30,15 @@ exports.handler = function (argv) {
             _displayResources(resources);
         });
     }else{
-        return amqpTools.init().then(() => {
-            return amqpTools.sendMessage(query);
-        }).then(() => {
-            return amqpTools.getMessage();
-        }).then((msg) => {
-            msg = JSON.parse(msg.content.toString());
-            if(msg.msgType !== 'DELIVER_RESOURCES')
-                throw new Error(`unexpected message reply received, expected DELIVER_RESOURCES but got ${msg.msgType}`);
-    
-            let resources = JSON.parse(msg.payload);
-            return _refreshResources(resources);            
+        return axios.get(`${config.uri}/resources`).then((res) => {
+            let resources = res.data;
+            return _refreshResources(resources);
         }).then((resources) => {
-            _displayResources(resources);
+            console.log(`retrieved ${resources.length} resources`)
+            _displayResources(resources)
         }).catch((err) => {
             console.err(err);
-        }).finally(() => amqpTools.close());
+        })
     }
 }
 

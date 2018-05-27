@@ -4,31 +4,41 @@ const moment = require('moment');
 
 exports.command = 'get <sliceId>'
 exports.desc = 'get details about slice <sliceId>'
-exports.builder = {}
+exports.builder = {
+    detailed:{
+        alias: 'd',
+        describe: 'display detailed JSON slice specification',
+        type: 'boolean',
+        demandOption: false
+    }
+}
 
 exports.handler = function (argv) {
     let slice = null;
     db.sliceDao().findOne({sliceId: argv.sliceId}).then((s) => {
         if(!(s)) throw new Error(`could not find slice ${argv.sliceId}, please try again`);
 
-        slice = s;
-        let resourceQueries = []
-        slice.resources.forEach((uuid) => {
-            resourceQueries.push(db.resourceDao().findOne({uuid}));
-        });
-        return Promise.all(resourceQueries);
-    }).then((resources) => {
-        let table = new Table({
-            head: ['resource uuid', 'resource type', 'resource name'],
-        });
-
-        resources.forEach((resource) => {
-            table.push([resource.uuid, resource.resourceType, resource.name]);
-        });
-
-        console.info(`slice ${argv.sliceId} created ${moment.unix(slice.createdAt).fromNow()}`);
-        console.log(table.toString());
+        if(argv.detailed){
+            console.log(JSON.stringify(s, null, 2));
+        }else{
+            _displayOverview(s);
+        }
+        console.info(`slice ${argv.sliceId} created ${moment.unix(s.createdAt).fromNow()}`);
+        
     }).catch((err) => {
         console.err(err);
     })
+}
+
+function _displayOverview(slice){
+    let table = new Table({
+        head: ['resource uuid', 'resource type', 'resource name'],
+    });
+
+    for(label in slice.resources){
+        let resource = slice.resources[label];
+        table.push([resource.uuid || "", resource.resourceType || "", resource.name || ""]);
+    }
+
+    console.log(table.toString());
 }

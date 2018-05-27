@@ -1,3 +1,4 @@
+/*
 package sinc.hinc.common.communication;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -48,7 +49,8 @@ public class MessageDistributingConsumer extends DefaultConsumer {
     }
 
     public void start() throws IOException {
-        getChannel().basicConsume(queue, true, this);
+        getChannel().basicConsume(queue, , this);
     }
 
 }
+*/

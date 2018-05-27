@@ -1,36 +1,40 @@
 package sinc.hinc.local.plugin;
 
 import org.slf4j.Logger;
-import sinc.hinc.common.communication.HincMessage;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.local.PropertiesManager;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
+@Scope(value = "singleton")
 public class AdaptorManager {
 
+    @Value("${adaptor.amqp.input}")
+    private String adaptorInputQueue;
+    @Value("${adaptor.amqp.output.unicast}")
+    private String adaptorOutputUnicastExchange;
+    @Value("${hinc.local.group}")
+    private String group;
+    @Value("${hinc.local.id}")
+    private String id;
+
     Map<String, Adaptor> adaptors = new ConcurrentHashMap<>();
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     private Logger logger = HincConfiguration.getLogger();
-    private static AdaptorManager adaptorManager;
-
-    protected AdaptorManager(){
-        //adaptorManager.init();
-    }
-
-    public static AdaptorManager getInstance(){
-        if(adaptorManager == null){
-            adaptorManager = new AdaptorManager();
-        }
-
-        return adaptorManager;
-    }
 
     public void addAdaptor(String adaptorName){
-        Adaptor adaptor = new Adaptor();
+        Adaptor adaptor = new Adaptor(rabbitTemplate, adaptorOutputUnicastExchange, adaptorInputQueue, group, id);
         adaptor.setName(adaptorName);
         logger.info("registered new adaptor "+adaptorName);
         adaptors.put(adaptorName, adaptor);
@@ -49,32 +53,20 @@ public class AdaptorManager {
         }
     }
 
-    public void sendControl(String adaptorName, Control control, HincMessage.HincMessageDestination reply){
-        for(Adaptor adaptor: adaptors.values()){
-            if(adaptor.getName().equals(adaptorName)){
-                logger.info("sending control to adaptor "+adaptor.getName());
-                if(reply.getRoutingKey() == null){
-                    reply.setRoutingKey("");
-                }
-                adaptor.sendControl(control, reply);
-                break;
-            }
-        }
+    public void sendControl(String adaptorName, Control control){
+
     }
 
-    public void provisionResource(String adaptorName, Resource resource, HincMessage.HincMessageDestination reply){
+    public Resource provisionResource(String adaptorName, Resource resource) throws IOException {
         logger.debug(""+adaptors.size());
         for(Adaptor adaptor: adaptors.values()){
             logger.debug(adaptor.getName());
             if(adaptor.getName().equals(adaptorName)){
                 logger.info("sending control to adaptor "+adaptor.getName());
-                if(reply.getRoutingKey() == null){
-                    reply.setRoutingKey("");
-                }
-                adaptor.provisionResource(resource, reply);
-                break;
+                return adaptor.provisionResource(resource);
             }
         }
+        return null;
     }
 
     public Map<String, Adaptor> getAdaptors() {

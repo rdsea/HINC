@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -49,6 +50,9 @@ public class ResourceProviderService {
     @Value("${hinc.global.id}")
     private String globalId;
 
+    @Value("${hinc.global.rabbitmq.input}")
+    private String inputQueue;
+
     @Autowired
     public ResourceProviderService(RabbitTemplate rabbitTemplate, ProviderRepository providerRepository, ObjectMapper objectMapper, LocalMSRepository localMSRepository, RabbitAdmin rabbitAdmin) {
         this.rabbitTemplate = rabbitTemplate;
@@ -71,12 +75,14 @@ public class ResourceProviderService {
         queryMessage.setUuid(globalId);
 
         queryMessage.setSenderID(globalId);
-        queryMessage.setReply(globalInputExchange, "");
         queryMessage.setReceiverID(id);
-        queryMessage.setDestination(exchange,routing_key);
 
         byte[] byteMessage = objectMapper.writeValueAsBytes(queryMessage);
-        rabbitTemplate.convertAndSend(exchange, routing_key, byteMessage);
+
+        MessageProperties properties = new MessageProperties();
+        properties.setReplyTo(inputQueue);
+        Message msg = new Message(byteMessage, properties);
+        rabbitTemplate.send(exchange, routing_key, msg);
 
         if(timeout>0){
             try {
@@ -93,39 +99,7 @@ public class ResourceProviderService {
 
     public ControlResult sendControl(Control control) throws IOException {
 
-        /*
-        rabbitTemplate.sendAnd*/
-        Queue replyQueue = rabbitAdmin.declareQueue();
-        rabbitAdmin.declareBinding(new Binding(replyQueue.getName(), Binding.DestinationType.QUEUE, globalInputExchange, "", null));
-
-        HincMessage queryMessage = new HincMessage();
-        queryMessage.setMsgType(HINCMessageType.CONTROL);
-        queryMessage.setUuid(globalId);
-
-        queryMessage.setSenderID(globalId);
-        queryMessage.setReply(globalInputExchange, "");
-        queryMessage.setDestination(outputBroadcast, "");
-
-        queryMessage.setPayload(objectMapper.writeValueAsString(control));
-
-
-        //TODO get LMS by resourceProviderID and unicast control
-        /*localMSRepository.findById(control.getResourceProviderUuid());
-
-            queryMessage.setReceiverID(id);
-         */
-
-        byte[] byteMessage = objectMapper.writeValueAsBytes(queryMessage);
-        rabbitTemplate.convertAndSend(outputBroadcast, "", byteMessage);
-
-        Message replyMessage = rabbitTemplate.receive(replyQueue.getName(), 100000);
-        byte[] byteReply = replyMessage.getBody();
-        HincMessage hincMessageReply = objectMapper.readValue(byteReply, HincMessage.class);
-        ControlResult controlResult = objectMapper.readValue(hincMessageReply.getPayload(), ControlResult.class);
-
-        rabbitAdmin.deleteQueue(replyQueue.getName());
-
-        return controlResult;
+        return null;
     }
 
     public ControlResult sendControl(String providerId, String controlPointId, JsonNode parameters) throws IOException {
@@ -139,32 +113,15 @@ public class ResourceProviderService {
 
 
     private List<ResourceProvider> getProviders(String id, String group, int limit){
-
+        // TODO groupcast + unicast
         List<ResourceProvider> result = new ArrayList<>();
 
-        /*TODO
-        if(id != null && !id.isEmpty()){
-            if (localMSRepository.findById(id).isPresent()) {
-                LocalMS localMS = localMSRepository.findById(id).get();
-                result = localMS.getResourceProviders();
-            }
-        }else if (group != null && !group.isEmpty()){
-            List<LocalMS> localMSList = new ArrayList<>();
-            localMSList = localMSRepository.findByGroup(group);
-            for(LocalMS localMS:localMSList){
-                result.addAll(localMS.getResourceProviders());
-            }
-        }else{*/
-            if(limit>0) {
-                result = providerRepository.readAll(limit);
-            }else{
-                result = providerRepository.readAll();
-            }
-        /*}
 
         if(limit>0) {
-            result = result.subList(0, limit);
-        }*/
+            result = providerRepository.readAll(limit);
+        }else{
+            result = providerRepository.readAll();
+        }
 
         return result;
     }
