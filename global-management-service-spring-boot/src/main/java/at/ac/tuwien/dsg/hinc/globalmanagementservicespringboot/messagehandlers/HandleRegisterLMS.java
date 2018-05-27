@@ -43,40 +43,37 @@ public class HandleRegisterLMS extends HINCMessageHandler {
     }
 
     @Override
-    protected void doHandle(HincMessage hincMessage) {
-        logger.debug("received " + hincMessage.toString());
+    protected HincMessage doHandle(HincMessage hincMessage) {
+        logger.info("received " + hincMessage.toString());
+        if(hincMessage.getPayload() == null) return null;
 
-        String group = hincMessage.getReply().getRoutingKey();
-        String id = hincMessage.getSenderID();
+        LocalMS localMS = new LocalMS();
 
-        if(id!=null && group != null) {
-            String queue = group + "." + id;
+        HincLocalMeta meta = HincLocalMeta.fromJson(hincMessage.getPayload());
+        localMS.setHincLocalMeta(meta);
+        logger.info("  --> Meta: " + meta.toJson());
+        hincLocalMetaRepository.save(meta);
 
-            this.declareBindings(queue, group, id);
+        localMS.setGroup(meta.getGroupName());
+        localMS.setId(meta.getUuid());
 
-            LocalMS localMS = new LocalMS();
-            localMS.setGroup(group);
-            localMS.setId(id);
+        String queue = localMS.getGroup() + "." + localMS.getId();
+        this.declareBindings(queue, localMS.getGroup(), localMS.getId());
 
-
-            if(hincMessage.getPayload() != null) {
-                HincLocalMeta meta = HincLocalMeta.fromJson(hincMessage.getPayload());
-                localMS.setHincLocalMeta(meta);
-                logger.debug("  --> Meta: " + meta.toJson());
-                hincLocalMetaRepository.save(meta);
-            }
-            localMSRepository.save(localMS);
-        }
+        return null;
     }
 
 
     private void declareBindings(String lmsQueue, String lmsGroup, String lmsID) {
+        logger.info("binding broadcast exchange to "+lmsQueue);
         Binding broadcast = new Binding(lmsQueue, Binding.DestinationType.QUEUE, outputBroadcast, "", null);
         rabbitAdmin.declareBinding(broadcast);
 
+        logger.info("binding groupcast exchange to "+lmsQueue);
         Binding groupcast = new Binding(lmsQueue, Binding.DestinationType.QUEUE, outputGroupcast, lmsGroup, null);
         rabbitAdmin.declareBinding(groupcast);
 
+        logger.info("binding unicast exchange to "+lmsQueue);
         Binding unicast = new Binding(lmsQueue, Binding.DestinationType.QUEUE, outputUnicast, lmsID, null);
         rabbitAdmin.declareBinding(unicast);
     }

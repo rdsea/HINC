@@ -3,25 +3,46 @@ package sinc.hinc.local.plugin;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HincMessage;
+
+import java.io.IOException;
 import java.util.Map;
 import sinc.hinc.common.communication.HINCMessageType;
+import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.payloads.Control;
+import sinc.hinc.common.model.payloads.ControlResult;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.local.communication.AdaptorCommunicationManager;
-import sinc.hinc.common.model.capabilities.ControlPoint;
 
 public class Adaptor {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private Map<String, String> settings;
     private String name;
 
-    public Map<String, String> getSettings() {
-        return settings;
-    }
+    private String adaptorInputQueue;
+    private String adaptorOutputUnicastExchange;
+    private String group;
+    private String id;
 
-    public void setSettings(Map<String, String> settings) {
-        this.settings = settings;
+    private final RabbitTemplate rabbitTemplate;
+    private final ObjectMapper objectMapper;
+
+    public Adaptor(RabbitTemplate rabbitTemplate, String adaptorOutputUnicastExchange, String adaptorInputQueue, String group, String id){
+        this.rabbitTemplate = rabbitTemplate;
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        this.adaptorInputQueue = adaptorInputQueue;
+        this.adaptorOutputUnicastExchange = adaptorOutputUnicastExchange;
+        this.group = group;
+        this.id = id;
     }
 
     public String getName() {
@@ -38,11 +59,12 @@ public class Adaptor {
                 HincConfiguration.getMyUUID(),
                 "");
 
-        message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), this.name);
-        message.setReply(AdaptorCommunicationManager.getInstance().getExchange(), AdaptorCommunicationManager.getInstance().getRoutingKey());
+        MessageProperties properties = new MessageProperties();
+        System.out.println(adaptorInputQueue);
+        properties.setReplyTo(adaptorInputQueue);
+        Message msg = new Message(message.toJson().getBytes(), properties);
+        rabbitTemplate.send(adaptorOutputUnicastExchange, name, msg);
 
-
-        AdaptorCommunicationManager.getInstance().sendMessage(message);
     }
 
     public void scanResourceProvider(){
@@ -51,31 +73,43 @@ public class Adaptor {
                 HincConfiguration.getMyUUID(),
                 "");
 
-        message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), this.name);
-        message.setReply(AdaptorCommunicationManager.getInstance().getExchange(), AdaptorCommunicationManager.getInstance().getRoutingKey());
+        MessageProperties properties = new MessageProperties();
+        properties.setReplyTo(adaptorInputQueue);
+        Message msg = new Message(message.toJson().getBytes(), properties);
+        rabbitTemplate.send(adaptorOutputUnicastExchange, name, msg);
 
-
-        AdaptorCommunicationManager.getInstance().sendMessage(message);
     }
 
-    public void sendControl(Control control, HincMessage.HincMessageDestination reply){
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    public void sendControl(Control control){
 
-        try {
-            String payload = objectMapper.writeValueAsString(control);
+    }
 
-            HincMessage message = new HincMessage(
-                    HINCMessageType.CONTROL,
-                    HincConfiguration.getMyUUID(),
-                    payload);
+    public Resource provisionResource(Resource resource) throws IOException {
+        HincMessage provisionMessage = new HincMessage();
 
-            message.setDestination(AdaptorCommunicationManager.getInstance().getExchange(), this.name);
-            message.setReply(reply.getExchange(), reply.getRoutingKey());
-            AdaptorCommunicationManager.getInstance().sendMessage(message);
-        } catch (JsonProcessingException e) {
-            // TODO log
-            e.printStackTrace();
-        }
+        provisionMessage.setMsgType(HINCMessageType.PROVISION);
+        provisionMessage.setUuid(group + "." + id);
+
+        provisionMessage.setSenderID(group + "." + id);
+        provisionMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        logger.info("sending provision message");
+        logger.info(provisionMessage.toJson());
+
+        Object rawReply = rabbitTemplate.convertSendAndReceive(
+                adaptorOutputUnicastExchange,
+                resource.getProviderUuid(),
+                provisionMessage.toJson().getBytes()
+        );
+
+        HincMessage reply = null;
+        String stringReply = new String(((byte[]) rawReply));
+
+        reply = objectMapper.readValue(stringReply, HincMessage.class);
+
+        ControlResult result = objectMapper.readValue(reply.getPayload(), ControlResult.class);
+        Resource provisionedResource = objectMapper.readValue(result.getRawOutput(), Resource.class);
+
+        return provisionedResource;
     }
 }

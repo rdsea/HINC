@@ -9,14 +9,6 @@ function handleQueryResources(msg){
         payload: '',
         timeStamp: Math.floor((new Date()).getTime()/1000),
         uuid: uuid(),
-        destination: { 
-            exchange: 'test.adaptors', 
-            routingKey: 'testy' 
-        },
-        reply: { 
-            exchange: 'test.adaptors', 
-            routingKey: 'test.local' 
-        },
     }
 
     return resourcesAdaptor.getItems().then((resources) => {

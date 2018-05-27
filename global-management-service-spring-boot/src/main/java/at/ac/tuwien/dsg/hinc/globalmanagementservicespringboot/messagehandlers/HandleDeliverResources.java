@@ -1,7 +1,6 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers;
 
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalMSRepository;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ResourceRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class HandleDeliverResources extends HINCMessageHandler{
     }
 
     @Override
-    protected void doHandle(HincMessage msg) {
+    protected HincMessage doHandle(HincMessage msg) {
         try {
 
             //String group = msg.getReply().getExchange();
@@ -46,5 +45,6 @@ public class HandleDeliverResources extends HINCMessageHandler{
             e.printStackTrace();
         }
 
+        return null;
     }
 }

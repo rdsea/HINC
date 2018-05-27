@@ -19,19 +19,49 @@ public class AccessPoint {
 
     // add more as needed
     public enum AccessPointType{
-        HTTP,
+        REST,
         MQTT,
     }
 
-    private AccessPointType accessPointType;
-    private String uri;
-
-    public AccessPointType getAccessPointType() {
-        return accessPointType;
+    public enum NetworkProtocol{
+        IP,
+        LoRaWAN,
+        NB_IOT
     }
 
-    public void setAccessPointType(AccessPointType accessPointType) {
-        this.accessPointType = accessPointType;
+    public enum AccessPattern{
+        PUBSUB,
+        QUEUE,
+        REQUEST_RESPONSE
+    }
+
+    private AccessPointType applicationProtocol;
+    private String uri;
+    private NetworkProtocol networkProtocol;
+    private AccessPattern accessPattern;
+
+    public NetworkProtocol getNetworkProtocol() {
+        return networkProtocol;
+    }
+
+    public void setNetworkProtocol(NetworkProtocol networkProtocol) {
+        this.networkProtocol = networkProtocol;
+    }
+
+    public AccessPattern getAccessPattern() {
+        return accessPattern;
+    }
+
+    public void setAccessPattern(AccessPattern accessPattern) {
+        this.accessPattern = accessPattern;
+    }
+
+    public AccessPointType getApplicationProtocol() {
+        return applicationProtocol;
+    }
+
+    public void setApplicationProtocol(AccessPointType accessPointType) {
+        this.applicationProtocol = accessPointType;
     }
 
     public String getUri() {

@@ -1,21 +1,19 @@
 const axios = require('axios');
+const config = require('../../config');
 
-function sendControl(controlPoint){
+
+function provision(resource){
     let controlResult = null;
-    let config = {
-        method: controlPoint.accessPoints[0].httpMethod,
-        url: controlPoint.accessPoints[0].uri,
-        data: controlPoint.parameters,
-    }
 
     console.log(`making http call with config: `);
-    console.log(JSON.stringify(config, null, '\t'));
+    console.log(JSON.stringify(resource.metadata.parameters, null, '\t'));
 
-    return axios(config).then((res) => {
+    return axios.post(`${config.ENDPOINT}/storage/bigquery`, resource.metadata.parameters).then((res) => {
         let dataset = res.data;
+        resource.uuid = dataset.datasetId;
         controlResult = {
             status: 'SUCCESS',
-            rawOutput: dataset,
+            rawOutput: JSON.stringify(resource),
             resourceUuid: dataset.datasetId,
         };
         console.log('successfuly control execution');
@@ -32,5 +30,5 @@ function sendControl(controlPoint){
     });
 }
 
-module.exports.sendControl = sendControl;
+module.exports.provision = provision;
 

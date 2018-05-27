@@ -5,23 +5,24 @@ const config = require('../../config');
  * gets the available resources provider information
  */
 function getProvider(settings){
-    let managementPoints = [];
+    let availableResources = [];
 
-    managementPoints.push({
-        name: `provision mosquitto broker`,
-        controlType: 'PROVISION',
-        accessPoints: [{
-            accessPointType: 'HTTP',
-            uri: `${config.ENDPOINT}/mosquittobroker/`,
-            httpMethod: 'POST',
-        }],
-        parameters: {},   
+    availableResources.push({
+        resourceType: 'NETWORK_FUNCTION_SERVICE',
+        name: `mosquitto broker`,
+        controlPoints: [],
+        dataPoints: [],
+        type: 'BROKER',
+        location: null,
+        metadata: {
+           
+        },
     });
 
     provider = {
         name: config.ADAPTOR_NAME,
         uuid: config.ADAPTOR_NAME,
-        managementPoints: managementPoints,
+        availableResources: availableResources,
     };
     return new Promise((resolve, reject) => resolve(provider));
 }

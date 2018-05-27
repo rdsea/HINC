@@ -1,20 +1,20 @@
 const axios = require('axios');
+const config = require('../../config')
 
-function sendControl(controlPoint){ 
-    let controlResult = null;
-    let config = {
-        method: controlPoint.accessPoints[0].httpMethod,
-        url: controlPoint.accessPoints[0].uri,
-        data: controlPoint.parameters,
+function provision(resource){
+    let data = {
+        uri: `tcp://${resource.metadata._proxy.ip}:${resource.metadata._proxy.port}`,
+        topic: resource.metadata.parameters.topic,
     }
 
     console.log(`making http call with config: `);
-    console.log(JSON.stringify(config, null, '\t'));
-    return axios(config).then((res) => {
+    console.log(JSON.stringify(data, null, '\t'));
+    return axios.post(`${config.ENDPOINT}/sensor/bts/humidity`, data).then((res) => {
         let sensor = res.data;
+        resource.uuid = sensor.clientId;
         controlResult = {
             status: 'SUCCESS',
-            rawOutput: sensor,
+            rawOutput: JSON.stringify(resource),
             resourceUuid: sensor.clientId,
         };
         console.log('successfuly control execution');
@@ -22,13 +22,13 @@ function sendControl(controlPoint){
         return controlResult;
     }).catch((err) => {
         console.log('control execution failed');
-        console.error(err.response)
+        console.error(err)
         controlResult = {
             status: 'FAILED',
-            rawOutput: err.response,
+            rawOutput: err,
         };
         return controlResult;
     });
 }
 
-module.exports.sendControl = sendControl;
+module.exports.provision = provision;

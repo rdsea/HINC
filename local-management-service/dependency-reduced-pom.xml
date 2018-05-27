@@ -35,7 +35,7 @@
               </filters>
               <transformers>
                 <transformer>
-                  <mainClass>sinc.hinc.local.Main</mainClass>
+                  <mainClass>sinc.hinc.local.LocalManagementService</mainClass>
                 </transformer>
               </transformers>
             </configuration>

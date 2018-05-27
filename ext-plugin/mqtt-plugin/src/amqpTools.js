@@ -5,7 +5,7 @@ const config = require('../config');
 
 let connection = null;
 let channel = null;
-let queue = `bts.sensor.plugin.${randomstring.generate()}`
+let queue = config.ADAPTOR_NAME
 let exchange = config.EXCHANGE;
 let routingKey = config.ADAPTOR_NAME;
 let localRoutingKey = config.LOCAL_ROUTING_KEY;
@@ -31,7 +31,7 @@ function init(){
         channel = ch;
         let setup = [
             channel.assertQueue(queue),
-            channel.assertExchange(exchange, 'direct', {durable: false}),
+            channel.assertExchange(exchange, 'fanout'),
             channel.bindQueue(queue, exchange, routingKey),
             channel.consume(queue, _handleMessage),
         ];
@@ -72,12 +72,21 @@ function publish(msg){
     channel.publish(msg.destination.exchange, msg.destination.routingKey, new Buffer(JSON.stringify(msg)));
 }
 
+function sendToQueue(msg, queue, correlation){
+    console.log(`sending msg to queue ${queue} with correlation ${correlation}`);
+    console.log(msg);
+    channel.sendToQueue(queue, new Buffer(JSON.stringify(msg)), {correlationId: correlation});
+}
+
 function _handleMessage(msg){
+    console.log(JSON.stringify(msg.properties, null, 2));
     if(msg === null) return;
     let message = JSON.parse(msg.content.toString());
-    console.log(message);
+    console.log(JSON.stringify(message, null, 2));
     messageHandler.handle(message).then((reply) => {
-        if(reply) publish(reply);
+        if(msg.properties.replyTo){
+            sendToQueue(reply, msg.properties.replyTo, msg.properties.correlationId);
+        }
         channel.ack(msg);    
     });
 }

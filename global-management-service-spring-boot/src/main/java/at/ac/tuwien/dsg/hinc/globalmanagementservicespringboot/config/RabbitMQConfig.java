@@ -4,9 +4,12 @@ import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.H
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverProviders;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverResources;
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleRegisterLMS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,5 +96,12 @@ public class RabbitMQConfig {
     @Bean
     RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory){
         return new RabbitAdmin(connectionFactory);
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setReplyTimeout(600000);
+        return template;
     }
 }
