@@ -1,7 +1,0 @@
-FROM openjdk:8-jdk-alpine
-
-COPY . /HINC
-WORKDIR HINC
-
-
-WORKDIR /HINC
