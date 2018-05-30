@@ -65,7 +65,7 @@ function getRandomBasicValue(attributeType){
     let randomValue;
 
     switch (attributeType){
-        case basic.stringType: randomValue = "string" + exports.randomString(); break;
+        case basic.stringType: randomValue = "string_" + exports.randomString(); break;
         case basic.decimalType: randomValue = exports.randomDecimal(10); break;
         case basic.integerType: randomValue = exports.randomInteger(10); break;
         case basic.booleanType: randomValue = exports.randomBoolean(); break;
