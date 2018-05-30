@@ -58,12 +58,22 @@ public class AdaptorManager {
     }
 
     public Resource provisionResource(String adaptorName, Resource resource) throws IOException {
-        logger.debug(""+adaptors.size());
         for(Adaptor adaptor: adaptors.values()){
             logger.debug(adaptor.getName());
             if(adaptor.getName().equals(adaptorName)){
                 logger.info("sending control to adaptor "+adaptor.getName());
                 return adaptor.provisionResource(resource);
+            }
+        }
+        return null;
+    }
+
+    public Resource deleteResource(String adaptorName, Resource resource) throws IOException {
+        for(Adaptor adaptor: adaptors.values()){
+            logger.debug(adaptor.getName());
+            if(adaptor.getName().equals(adaptorName)){
+                logger.info("sending control to adaptor "+adaptor.getName());
+                return adaptor.deleteResource(resource);
             }
         }
         return null;

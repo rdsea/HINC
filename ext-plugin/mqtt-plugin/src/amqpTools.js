@@ -11,15 +11,6 @@ let routingKey = config.ADAPTOR_NAME;
 let localRoutingKey = config.LOCAL_ROUTING_KEY;
 let uri = config.URI;
 
-const messageTypes = {
-    QUERY_RESOURCES: 'QUERY_RESOURCES',
-    QUERY_PROVIDER: 'QUERY_PROVIDER',
-    QUERY_RESOURCES_REPLY: 'QUERY_RESOURCES_REPLY',
-    QUERY_PROVIDER_REPLY: 'QUERY_PROVIDER_REPLY',
-    SEND_CONTROL: 'SEND_CONTROL',
-    CONTROL_RESULT: 'CONTROL_RESULT',
-}
-
 function init(){
     console.log(`connecting to amqp broker at ${uri}`);
     return amqp.connect(uri).then((conn) => {

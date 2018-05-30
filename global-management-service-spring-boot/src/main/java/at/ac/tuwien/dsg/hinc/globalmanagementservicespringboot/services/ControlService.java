@@ -58,4 +58,27 @@ public class ControlService {
         return objectMapper.readValue(reply.getPayload(), Resource.class);
     }
 
+    public Resource delete(Resource resource) throws IOException{
+        HincMessage deleteMessage = new HincMessage();
+        deleteMessage.setMsgType(HINCMessageType.DELETE);
+        deleteMessage.setUuid(globalId);
+        deleteMessage.setSenderID(globalId);
+        deleteMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        logger.info("sending delete message to "+broadcastExchange.getName());
+        Object rawReply = rabbitTemplate.convertSendAndReceive(
+                broadcastExchange.getName(),
+                "",
+                deleteMessage.toJson().getBytes()
+        );
+
+        HincMessage reply = null;
+        String stringReply = new String(((byte[]) rawReply));
+        System.out.println(stringReply);
+        reply = objectMapper.readValue(stringReply, HincMessage.class);
+
+        return objectMapper.readValue(reply.getPayload(), Resource.class);
+
+    }
+
 }

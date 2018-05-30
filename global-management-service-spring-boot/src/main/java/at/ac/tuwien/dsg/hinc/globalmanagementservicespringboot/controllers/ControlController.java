@@ -17,12 +17,23 @@ public class ControlController {
     private ControlService controlService;
 
     @PostMapping("/provision")
-    public ResponseEntity<Object> proisionResource(@RequestBody Resource resource){
+    public ResponseEntity<Object> provisionResource(@RequestBody Resource resource){
 
         try {
             Resource provisionedResource = controlService.provision(resource);
             return new ResponseEntity<>(provisionedResource, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> deleteResource(@RequestBody Resource resource){
+        try{
+            Resource deletedResource = controlService.delete(resource);
+            return new ResponseEntity<Object>(deletedResource, HttpStatus.OK);
+        }catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }

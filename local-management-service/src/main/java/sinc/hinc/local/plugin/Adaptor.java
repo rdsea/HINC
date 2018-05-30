@@ -96,20 +96,40 @@ public class Adaptor {
         logger.info("sending provision message");
         logger.info(provisionMessage.toJson());
 
+        ControlResult result = sendControl(resource.getProviderUuid(), provisionMessage);
+
+        Resource provisionedResource = objectMapper.readValue(result.getRawOutput(), Resource.class);
+
+        return provisionedResource;
+    }
+
+    public Resource deleteResource(Resource resource) throws IOException {
+        HincMessage deleteMessage = new HincMessage();
+        deleteMessage.setMsgType(HINCMessageType.DELETE);
+        deleteMessage.setSenderID(group+"."+id);
+        deleteMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        ControlResult result = sendControl(resource.getProviderUuid(), deleteMessage);
+        Resource deletedResource = objectMapper.readValue(result.getRawOutput(), Resource.class);
+
+        return deletedResource;
+    }
+
+    public ControlResult sendControl(String providerUuid, HincMessage message) throws IOException {
+        logger.info("sending "+message.getMsgType()+" message");
+        logger.info(message.toJson());
+
         Object rawReply = rabbitTemplate.convertSendAndReceive(
                 adaptorOutputUnicastExchange,
-                resource.getProviderUuid(),
-                provisionMessage.toJson().getBytes()
+                providerUuid,
+                message.toJson().getBytes()
         );
 
         HincMessage reply = null;
         String stringReply = new String(((byte[]) rawReply));
-
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
         ControlResult result = objectMapper.readValue(reply.getPayload(), ControlResult.class);
-        Resource provisionedResource = objectMapper.readValue(result.getRawOutput(), Resource.class);
-
-        return provisionedResource;
+        return result;
     }
 }
