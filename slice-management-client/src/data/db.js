@@ -4,6 +4,7 @@ const path = require('path');
 let resourceDb = new Datastore({filename: path.resolve(__dirname, './.resources.db'), autoload: true});
 let providerDb = new Datastore({filename: path.resolve(__dirname, './.providers.db'), autoload: true});
 let sliceDb = new Datastore({filename: path.resolve(__dirname, './.slices.db'), autoload: true});
+let meshDb = new Datastore({filename: path.resolve(__dirname, './.mesh.db'), autoload: true});
 
 
 function insert(database){
@@ -167,9 +168,21 @@ function sliceDao(){
     }
 }
 
+function meshDao(){
+    return {
+        insert: insert(meshDb),
+        find: find(meshDb),
+        findOne: findOne(meshDb),
+        update: update(meshDb),
+        remove: remove(meshDb),
+        findOrUpdate: findOrUpdate(meshDb),
+    } 
+}
+
 module.exports = {
     resourceDao,
     sliceDao,
     providerDao,
+    meshDao
 }
 

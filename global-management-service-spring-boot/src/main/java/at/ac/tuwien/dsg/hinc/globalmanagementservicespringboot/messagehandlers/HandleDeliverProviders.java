@@ -24,7 +24,7 @@ public class HandleDeliverProviders extends HINCMessageHandler {
     }
 
     @Override
-    protected void doHandle(HincMessage msg) {
+    protected HincMessage doHandle(HincMessage msg) {
 
         try {
             //String group = msg.getReply().getExchange();
@@ -44,5 +44,6 @@ public class HandleDeliverProviders extends HINCMessageHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 }

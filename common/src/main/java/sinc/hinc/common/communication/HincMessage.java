@@ -17,6 +17,7 @@
  */
 package sinc.hinc.common.communication;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -38,8 +39,6 @@ public class HincMessage {
     private String payload;
     private long timeStamp;
     private String uuid;
-    private HincMessageDestination destination;
-    private HincMessageDestination reply;
 
     public HincMessage() {}
 
@@ -85,6 +84,7 @@ public class HincMessage {
 
     public static HincMessage fromJson(String s) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         try {
             return mapper.readValue(s, HincMessage.class);
         } catch (IOException ex) {
@@ -145,51 +145,5 @@ public class HincMessage {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    public void setDestination(String exchange, String routingKey){
-        this.destination = new HincMessageDestination(exchange, routingKey);
-    }
-
-    public void setReply(String exchange, String routingKey){
-        this.reply = new HincMessageDestination(exchange, routingKey);
-    }
-
-    public HincMessageDestination getDestination(){
-        return this.destination;
-    }
-
-    public HincMessageDestination getReply(){
-        return this.reply;
-    }
-
-
-
-    public class HincMessageDestination{
-        private String exchange;
-        private String routingKey;
-
-        public HincMessageDestination() {};
-
-        public HincMessageDestination(String exchange, String routingKey){
-            this.exchange = exchange;
-            this.routingKey = routingKey;
-        }
-
-        public String getExchange() {
-            return exchange;
-        }
-
-        public void setExchange(String exchange) {
-            this.exchange = exchange;
-        }
-
-        public String getRoutingKey() {
-            return routingKey;
-        }
-
-        public void setRoutingKey(String routingKey) {
-            this.routingKey = routingKey;
-        }
     }
 }

@@ -221,3 +221,5 @@ DEBUG 12:28:30,965 [pool-1-thread-4] (AbstractDAO.java:121) - Ok, now saving ite
 DEBUG 12:28:30,967 [pool-1-thread-4] (AbstractDAO.java:127) - Query: SELECT * FROM Resource WHERE uuid = 'sensor1521546609442'. Result: 0
 DEBUG 12:28:30,970 [pool-1-thread-4] (AbstractDAO.java:160) - Save done: 4 ODocument(s) in 29 milisecs -- fb9f4b26-d74c-4965-9535-453d4a8b46e1
  INFO 12:28:30,970 [pool-1-thread-4] (HandleResourcesUpdate.java:32) - successfully saved 4 resources
+DEBUG 23:27:10,015 [main] (DatabaseUtils.java:25) - Initilizing the database... any data will be cleaned!
+DEBUG 23:27:11,422 [main] (DatabaseUtils.java:51) - Initilizing the database complete!

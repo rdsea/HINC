@@ -72,6 +72,8 @@ public class ResourceProviderController {
         return new ResponseEntity<>(errorResult, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
+
     /*GET /resourceproviders?type=&group=&id=&limit=&rescan=true&timeout=
     GET /resourceproviders/{id}/managementpoints
     POST /resourceproviders/{id}/managementpoints/{id}   Parameter:parameter

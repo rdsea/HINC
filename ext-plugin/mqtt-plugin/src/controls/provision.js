@@ -1,26 +1,25 @@
 const axios = require('axios');
+const config = require('../../config');
 
-function sendControl(controlPoint){ 
+function provision(resource){ 
     let controlResult = null;
-    let config = {
-        method: controlPoint.accessPoints[0].httpMethod,
-        url: controlPoint.accessPoints[0].uri,
-        data: controlPoint.parameters,
-    }
-
-    console.log(`making http call with config: `);
-    console.log(JSON.stringify(config, null, '\t'));
-    return axios(config).then((res) => {
-        let broker = res.data;
-        controlResult = {
-            status: 'SUCCESS',
-            rawOutput: broker,
-            resourceUuid: broker.brokerId,
-        };
-        console.log('successfuly control execution');
-        
+    let broker = null;
+    return axios.post(`${config.ENDPOINT}/mosquittobroker`).then((res) => {
+        broker = res.data;
+        console.log('successful control execution');
         // location of broker might not set, await it
-        return _waitForLocation(broker.brokerId, config.url);
+        return _waitForLocation(broker.brokerId, `${config.ENDPOINT}/mosquittobroker`);
+    }).then((brokerIp) => {
+        resource.metadata.host = brokerIp;
+        resource.metadata.port = 1883;
+        resource.Uuid = broker.brokerId;
+
+        let controlResult = {
+            status: 'SUCCESS',
+            rawOutput: JSON.stringify(resource),
+            resourceUuid: resource.uuid,
+        };
+        return controlResult
     }).catch((err) => {
         console.log('control execution failed');
         console.error(err.response)
@@ -29,24 +28,20 @@ function sendControl(controlPoint){
             rawOutput: err.response,
         };
         return controlResult;
+        throw err;
     });
 }
 
 function _waitForLocation(brokerId, uri){
     return axios.get(`${uri}/${brokerId}`).then((res) => {
         let broker = res.data[0];
-        let controlResult = {
-            status: 'SUCCESS',
-            rawOutput: broker,
-            resourceUuid: broker.brokerId,
-        };
 
         console.log(broker.location)
         let locationExists = broker.location.indexOf("<pending>") === -1 &&
                                 broker.location.indexOf("creating") === -1 ? true : false
         if(locationExists){
-            console.log(JSON.stringify(controlResult, null, '\t'));
-            return controlResult;
+            console.log(JSON.stringify(broker, null, '\t'));
+            return broker.location;
         }else{
             console.log('broker location not set, check again in 3 secs..')
             return new Promise((resolve, reject) => {
@@ -56,5 +51,6 @@ function _waitForLocation(brokerId, uri){
     })
 }
 
-module.exports.sendControl = sendControl;
+
+module.exports.provision = provision;
 
