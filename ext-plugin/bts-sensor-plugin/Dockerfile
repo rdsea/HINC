@@ -4,4 +4,4 @@ COPY . /sensor
 WORKDIR /sensor
 RUN npm install
 
-CMD ['npm', 'start']
+CMD ["npm", "start"]

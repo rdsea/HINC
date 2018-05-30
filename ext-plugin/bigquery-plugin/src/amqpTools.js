@@ -5,7 +5,7 @@ const config = require('../config');
 
 let connection = null;
 let channel = null;
-let queue = `bigquery`
+let queue = config.ADAPTOR_NAME;
 let exchange = config.EXCHANGE;
 let routingKey = config.ADAPTOR_NAME;
 let localRoutingKey = config.LOCAL_ROUTING_KEY;

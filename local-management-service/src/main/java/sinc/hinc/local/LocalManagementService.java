@@ -29,6 +29,7 @@ import sinc.hinc.common.utils.HincConfiguration;
  */
 
 @SpringBootApplication
+@EnableScheduling
 @Configuration
 public class LocalManagementService implements CommandLineRunner {
 

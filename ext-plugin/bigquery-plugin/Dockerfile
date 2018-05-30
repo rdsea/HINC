@@ -4,4 +4,4 @@ COPY . /bigquery
 WORKDIR /bigquery
 RUN npm install
 
-CMD ['npm', 'start']
+CMD ["npm", "start"]

@@ -4,4 +4,4 @@ COPY . /mqtt
 WORKDIR /mqtt
 RUN npm install
 
-CMD ['npm', 'start']
+CMD ["npm", "start"]

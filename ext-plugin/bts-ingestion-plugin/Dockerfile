@@ -4,4 +4,4 @@ COPY . /ingestion
 WORKDIR /ingestion
 RUN npm install
 
-CMD ['npm', 'start']
+CMD ["npm", "start"]
