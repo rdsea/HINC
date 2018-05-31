@@ -88,7 +88,7 @@ public class ResourceService {
     public Resource putMetadata(String resourceId, JsonNode metadata){
         Resource resource = resourceRepository.read(resourceId);
         if(resource != null) {
-            resource.setMetadata(metadata);
+            //resource.setMetadata(metadata);
             resourceRepository.save(resource);
         }
 
