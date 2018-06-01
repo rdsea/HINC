@@ -30,4 +30,20 @@ describe('test slice_util', function() {
         let contains = util.contains(testslice, resource);
         assert.equal(contains, false);
     });
+    it('test slice_util#sliceConnect should connect resources in slice', function() {
+        let source = {name:"source", source:[], target:[]};
+        let dest = {name:"dest", source:[], target:[]};
+
+        let slice = {resources:{source:source, dest:dest}, connectivities:{}};
+        let isConnected = util.isConnected(slice,source,dest);
+        assert.equal(isConnected, false);
+
+        util.sliceConnect(slice,source,dest,"connectionname");
+        isConnected = util.isConnected(slice,source,dest);
+        assert.equal(isConnected, true);
+
+        let wrongDirectionConnected = util.isConnected(slice,dest,source);
+        assert.equal(wrongDirectionConnected, false);
+
+    });
 });

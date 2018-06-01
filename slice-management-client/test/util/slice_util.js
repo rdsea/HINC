@@ -33,3 +33,15 @@ exports.isConnected = function(slice, source, destination){
 exports.contains = function(slice, resource){
     return Object.keys(slice.resources).map(function(r){return slice.resources[r].name}).indexOf(resource.name)>-1;
 };
+
+exports.deepcopy = function(obj){
+    return JSON.parse(JSON.stringify(obj));
+};
+
+
+
+exports.sliceConnect = function(slice, source, dest, connectivityname){
+    slice.connectivities[connectivityname]={in:source.name, out:dest.name};
+    source.target.push(connectivityname);
+    dest.source.push(connectivityname);
+};
