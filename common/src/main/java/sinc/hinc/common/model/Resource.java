@@ -1,6 +1,7 @@
 package sinc.hinc.common.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import sinc.hinc.common.model.accessPoint.AccessPoint;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 import sinc.hinc.common.model.capabilities.DataPoint;
 
@@ -32,6 +33,9 @@ public class Resource {
     // not formalized yet
     private String location;
     private JsonNode metadata;
+    //configurable resource parameters
+    private JsonNode parameters;
+
 
     private Collection<ControlPoint> controlPoints = new ArrayList<>();
     private Collection<DataPoint> dataPoints = new ArrayList<>();
@@ -55,6 +59,14 @@ public class Resource {
 
     public void setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
+    }
+
+    public JsonNode getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(JsonNode parameters) {
+        this.parameters = parameters;
     }
 
     public String getUuid() {

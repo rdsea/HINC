@@ -48,7 +48,7 @@ public class HandleDelete extends HINCMessageHandler {
         try{
             Resource deletedResource = adaptorManager.deleteResource(resource.getProviderUuid(), resource);
             HincMessage replyMessage = new HincMessage();
-            replyMessage.setMsgType(HINCMessageType.DELETE_REULT);
+            replyMessage.setMsgType(HINCMessageType.DELETE_RESULT);
             replyMessage.setUuid(group + "." + id);
 
             replyMessage.setSenderID(id);
