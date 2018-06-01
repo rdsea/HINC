@@ -1,0 +1,159 @@
+{
+  "sliceId": "testslice",
+  "resources": {
+    "sensor": {
+      "name": "sensor humidity",
+      "pluginName": null,
+      "providerUuid": "sensor",
+      "resourceType": "IOT_RESOURCE",
+      "location": null,
+      "metadata": {
+        "todo":"todo: add mqtt output with dataformat",
+
+        "resource": {
+          "category": "network_function",
+          "type": {
+            "prototype": "sensor",
+            "unit": "string_3rro8m2qwm8",
+            "sampling_interval": 0.15890642394980503,
+            "precision": 1.0971709886847125,
+            "range_minValue": 6.497733824385829,
+            "range_maxValue": 7.518254479588653,
+            "location": "string_6v9e0ckbh3o",
+            "longitude": 1.3522007232670363,
+            "latitude": 0.13950816382205522,
+            "description": "string_pqrrincwxs",
+            "semantic_reference": {}
+          }
+        },
+        "inputs": [],
+        "outputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri":"",
+              "protocol_name":"mqtt",
+              "topic":"",
+              "qos":0
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            }
+          }
+        ]
+      },
+      "controlPoints": [],
+      "dataPoints": [
+        {
+          "name": "humidity",
+          "dataType": null,
+          "unit": "percent"
+        }
+      ],
+
+      "source": [],
+      "target": ["mqtt_connectivity"]
+    },
+
+    "broker": {
+      "name": "mosquitto broker",
+      "pluginName": "mosquittobroker",
+      "providerUuid": "mosquitto",
+      "resourceType": "NETWORK_FUNCTION_SERVICE",
+      "location": null,
+      "metadata": {
+        "todo":"todo: broker-prototype with mqtt"
+      },
+      "controlPoints": [],
+      "dataPoints": [],
+
+      "source": ["mqtt_connectivity"],
+      "target": []
+    },
+
+    "bigquery":{
+      "name": "bigQuery dataset",
+      "pluginName": "bigquery",
+      "providerUuid": "bigquery",
+      "resourceType": "CLOUD_SERVICE",
+      "location": null,
+      "metadata": {
+        "todo": "storage bigquery prototype and input mqtt json"
+      },
+      "controlPoints": [],
+      "dataPoints": [],
+
+      "source": ["mqtt_connectivity"],
+      "target": []
+    },
+    "ingest": {
+      "name": "bts ingestion client",
+      "pluginName": "btsingestion",
+      "providerUuid": "ingest",
+      "resourceType": "CLOUD_SERVICE",
+      "location": null,
+      "metadata": {
+        "todo": "ingestion with bigquery",
+        "parameters":{
+          "data": "bigQuery",
+          "brokers": [
+            {
+              "host": "35.205.138.49",
+              "port": 1883,
+              "clientId": "testclient1",
+              "username": "xxx",
+              "password": "xxx",
+              "topics": [
+                "test"
+              ]
+            }
+          ],
+          "bigQuery": {
+            "dataset": "testDataset",
+            "tables": [
+              {
+                "id": "testTable",
+                "topics": [
+                  "test"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "controlPoints": [],
+      "dataPoints": [],
+
+      "source": ["ingest_connectivity"],
+      "target": []
+    }
+
+  },
+
+  "connectivities": {
+    "mqtt_connectivity": {
+      "accessPoint": {
+        "applicationProtocol": "MQTT",
+        "networkProtocol": "IP",
+        "qos": 0,
+        "topics":[]
+      },
+      "dataFormat": "JSON",
+      "in": "sensor",
+      "out": "broker"
+    },
+
+    "ingest_connectivity":{
+      "accessPoint": {
+        "applicationProtocol": "MQTT",
+        "networkProtocol": "IP",
+        "qos": 0,
+        "topics":[]
+      },
+      "dataFormat": "JSON",
+      "in": "ingest",
+      "out": "broker"
+    }
+  }
+}
