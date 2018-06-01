@@ -18,23 +18,26 @@ function getProvider(settings){
             dataPoints: [],
             type: 'SOFTWARE_UNIT',
             location: null,
+            parameters:  {
+                ingressAccessPoints:[],
+                egressAccessPoints: [],
+                "datasetId": "datasetId",
+                "tables": [
+                    {
+                        "id": "tableId",
+                        "schema": [
+                            {
+                                "description": "field description",
+                                "mode": "REQUIRED/",
+                                "name": "fieldname",
+                                "type": "INT64/FLOAT64/STRING/BOOL/BYTES/DATE/DATETIME/TIME/TIMESTAMP"
+                            }
+                        ]
+                    }
+                ]
+            },
             metadata: {
-                parameters:  {
-                    "datasetId": "datasetId",
-                    "tables": [
-                        {
-                            "id": "tableId",
-                            "schema": [
-                                {
-                                    "description": "field description",
-                                    "mode": "REQUIRED/",
-                                    "name": "fieldname",
-                                    "type": "INT64/FLOAT64/STRING/BOOL/BYTES/DATE/DATETIME/TIME/TIMESTAMP"
-                                }
-                            ]
-                        }
-                    ]
-                },
+                
             },
         })
 

@@ -1,4 +1,4 @@
-FROM node:8-alpine
+FROM node:8.11-alpine
 
 COPY . /sensor
 WORKDIR /sensor

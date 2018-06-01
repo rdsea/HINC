@@ -29,11 +29,14 @@ function _datasetToResource(dataset){
         dataPoints: [],
         type: 'SOFTWARE_UNIT',
         location: null,
-        metadata: {
-            parameters: {...dataset},
+        parameters: {
+            ingressAccessPoints:[],
+            egressAccessPoints: [],
         },
+        metadata: {},
     }
-    
+
+    resource.parameters = Object.apply(resource.parameters, dataset);
     return resource;
 }
 

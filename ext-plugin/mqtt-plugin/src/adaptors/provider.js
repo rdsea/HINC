@@ -10,10 +10,15 @@ function getProvider(settings){
     availableResources.push({
         resourceType: 'NETWORK_FUNCTION_SERVICE',
         name: `mosquitto broker`,
+        providerUuid: config.ADAPTOR_NAME,
         controlPoints: [],
         dataPoints: [],
         type: 'BROKER',
         location: null,
+        parameters:{
+            ingressAccessPoints:[],
+            egressAccessPoints: [],
+        },
         metadata: {
            
         },

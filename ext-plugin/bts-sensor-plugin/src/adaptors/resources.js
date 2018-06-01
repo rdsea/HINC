@@ -38,6 +38,16 @@ function _sensorItemToResources(item){
             unit: item.description.unit,
         }
     
+        let egressAccessPoint = {
+            applicationProtocol: "MQTT",
+            host: sensor.uri.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0],
+            port: parseInt(sensor.uri.match(/(?<=:)\d{1,4}/)[0]),
+            accessPattern: "PUBSUB",
+            networkProtocol: "IP",
+            qos: 0,
+            topics: [sensor.topic]
+        };
+
         let resource = {
             uuid: sensor.clientId,
             plugin: 'btssensor',
@@ -47,10 +57,12 @@ function _sensorItemToResources(item){
             dataPoints: [datapoint],
             type: 'SENSOR',
             location: null,
+            parameters:{
+                ingressAccessPoints:[],
+                egressAccessPoints: [egressAccessPoint],
+            },
             metadata: {
-                uri: sensor.uri,
-                topic: sensor.topic,
-                createAt: sensor.createdAt,
+                createdAt: sensor.createdAt,
             },
         }    
         resources.push(resource);

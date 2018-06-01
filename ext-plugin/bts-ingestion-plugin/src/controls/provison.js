@@ -1,15 +1,33 @@
 const axios = require('axios');
 const config = require('../../config');
+const randomString = require('randomstring');
 
 function provision(resource){
     let controlResult = null;
 
-    console.log(`making http call with config: `);
-    resource.metadata.parameters.brokers[0].host = resource.metadata._proxy.ip;
-    resource.metadata.parameters.brokers[0].port = resource.metadata._proxy.port;
-    console.log(JSON.stringify(resource.metadata.parameters, null, 2));
+    
 
-    return axios.post(`${config.ENDPOINT}/ingestionClient`, resource.metadata.parameters).then((res) => {
+    let provisionParameters = {
+        data: resource.parameters.data,
+        brokers:[],
+        bigquery: resource.parameters[resource.parameters.data],
+    };
+
+    resource.parameters.egressAccessPoints.forEach((accessPoint, index) => {
+        provisionParameters.brokers.push({
+            host: accessPoint.host,
+            port: accessPoint.port,
+            topics: accessPoint.topics,
+            clientId: `${randomString.generate(5)}`,
+            username: "xxx",
+            password: "xxx"
+        });
+    })
+
+    console.log(`making http call with config: `);
+    console.log(JSON.stringify(provisionParameters, null, 2));
+
+    return axios.post(`${config.ENDPOINT}/ingestionClient`, provisionParameters).then((res) => {
         let ingestionClient = res.data;
         resource.uuid = ingestionClient.ingestionClientId;
         controlResult = {

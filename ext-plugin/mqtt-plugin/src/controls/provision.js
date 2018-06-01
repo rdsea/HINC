@@ -10,9 +10,17 @@ function provision(resource){
         // location of broker might not set, await it
         return _waitForLocation(broker.brokerId, `${config.ENDPOINT}/mosquittobroker`);
     }).then((brokerIp) => {
-        resource.metadata.host = brokerIp;
-        resource.metadata.port = 1883;
+        let ingressAccessPoint = {
+            applicationProtocol: "MQTT",
+            host: brokerIp,
+            port: 1883,
+            accessPattern: "PUBSUB",
+            networkProtocol: "IP",
+            qos: 0,
+            topics: []
+        };
         resource.Uuid = broker.brokerId;
+        resource.parameters.ingressAccessPoints.push(ingressAccessPoint);
 
         let controlResult = {
             status: 'SUCCESS',

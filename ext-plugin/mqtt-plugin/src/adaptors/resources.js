@@ -19,6 +19,16 @@ function getItems(settings){
 
 function _brokerToResource(broker){
 
+    let ingressAccessPoint = {
+        applicationProtocol: "MQTT",
+        host: broker.location,
+        port: 1883,
+        accessPattern: "PUBSUB",
+        networkProtocol: "IP",
+        qos: 0,
+        topics: []
+    };
+
     let resource = {
         uuid: broker.brokerId,
         plugin: 'mosquittobroker',
@@ -28,9 +38,11 @@ function _brokerToResource(broker){
         dataPoints: [],
         type: 'BROKER',
         location: null,
+        parameters:{
+            ingressAccessPoints:[ingressAccessPoint],
+            egressAccessPoints: [],
+        },
         metadata: {
-            brokerId: broker.brokerId,
-            uri: broker.location,
             createdAt: broker.createdAt,
         },
     }

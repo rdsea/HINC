@@ -83,7 +83,6 @@ function _handleMessage(msg){
 }
 
 module.exports = {
-    messageTypes,
     init,
     publish,
 };

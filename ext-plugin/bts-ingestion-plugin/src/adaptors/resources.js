@@ -20,6 +20,19 @@ function getItems(settings){
 }
 
 function _ingestionClientToResource(ingestionClient){
+    let egressAccessPoints = [];
+    ingestionClient.brokers.forEach((broker) => {
+        egressAccessPoints.push({
+            applicationProtocol: "MQTT",
+            host: broker.host,
+            port: broker.port,
+            accessPattern: "PUBSUB",
+            networkProtocol: "IP",
+            qos: 0,
+            topics: broker.topics
+        })
+    })
+
     let resource = {
         uuid: ingestionClient.ingestionClientId,
         plugin: 'btsingestion',
@@ -29,10 +42,17 @@ function _ingestionClientToResource(ingestionClient){
         dataPoints: [],
         type: 'SOFTWARE_UNIT',
         location: null,
+        parameters:{
+            egressAccessPoints: egressAccessPoints,
+            ingressAccessPoints: [],
+        },
         metadata: {
-            ...ingestionClient,
+            createdAt: ingestionClient.createdAt
         },
     }
+
+    delete ingestionClient.brokers;
+    resource.parameters = Object.assign(resource.parameters, ingestionClient)
     
     return resource;
 }

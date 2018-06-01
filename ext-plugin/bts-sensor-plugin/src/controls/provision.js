@@ -2,9 +2,10 @@ const axios = require('axios');
 const config = require('../../config')
 
 function provision(resource){
+
     let data = {
-        uri: `tcp://${resource.metadata._proxy.ip}:${resource.metadata._proxy.port}`,
-        topic: resource.metadata.parameters.topic,
+        uri: `tcp://${resource.parameters.egressAccessPoints[0].host}:${resource.parameters.egressAccessPoints[0].port}`,
+        topic: resource.parameters.egressAccessPoints[0].topics[0],
     }
 
     console.log(`making http call with config: `);
@@ -12,6 +13,9 @@ function provision(resource){
     return axios.post(`${config.ENDPOINT}/sensor/bts/humidity`, data).then((res) => {
         let sensor = res.data;
         resource.uuid = sensor.clientId;
+        resource.parameters.egressAccessPoints[0].host = sensor.uri.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0];
+        resource.parameters.egressAccessPoints[0].port = parseInt(sensor.uri.match(/(?<=:)\d{1,4}/)[0])
+
         controlResult = {
             status: 'SUCCESS',
             rawOutput: JSON.stringify(resource),

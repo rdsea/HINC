@@ -26,7 +26,7 @@ handler.use('QUERY_RESOURCES', require('./handleQueryResources'));
 handler.use('QUERY_PROVIDER', require('./handleQueryProvider'));
 handler.use('CONTROL', require('./handleSendControl'));
 handler.use('PROVISION', require('./handleProvision'));
-handle.use('DELETE', require('./handleDelete'));
+handler.use('DELETE', require('./handleDelete'));
 
 module.exports = handler
 

@@ -6,9 +6,9 @@ function provision(resource){
     let controlResult = null;
 
     console.log(`making http call with config: `);
-    console.log(JSON.stringify(resource.metadata.parameters, null, '\t'));
+    console.log(JSON.stringify(resource.parameters, null, '\t'));
 
-    return axios.post(`${config.ENDPOINT}/storage/bigquery`, resource.metadata.parameters).then((res) => {
+    return axios.post(`${config.ENDPOINT}/storage/bigquery`, resource.parameters).then((res) => {
         let dataset = res.data;
         resource.uuid = dataset.datasetId;
         controlResult = {
