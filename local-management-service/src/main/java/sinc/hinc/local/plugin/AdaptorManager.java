@@ -79,6 +79,18 @@ public class AdaptorManager {
         return null;
     }
 
+    public Resource configureResource(String adaptorName, Resource resource) throws IOException{
+        for(Adaptor adaptor: adaptors.values()){
+            logger.debug(adaptor.getName());
+            if(adaptor.getName().equals(adaptorName)){
+                logger.info("sending control to adaptor "+adaptor.getName());
+                return adaptor.configureResource(resource);
+            }
+        }
+
+        return null;
+    }
+
     public Map<String, Adaptor> getAdaptors() {
         return adaptors;
     }

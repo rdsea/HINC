@@ -81,4 +81,25 @@ public class ControlService {
 
     }
 
+    public Resource configure(Resource resource) throws IOException{
+        HincMessage configureMessage = new HincMessage();
+        configureMessage.setMsgType(HINCMessageType.CONFIGURE);
+        configureMessage.setUuid(globalId);
+        configureMessage.setSenderID(globalId);
+        configureMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        logger.info("sending delete message to "+broadcastExchange.getName());
+        Object rawReply = rabbitTemplate.convertSendAndReceive(
+                broadcastExchange.getName(),
+                "",
+                configureMessage.toJson().getBytes()
+        );
+
+        HincMessage reply = null;
+        String stringReply = new String(((byte[]) rawReply));
+        System.out.println(stringReply);
+        reply = objectMapper.readValue(stringReply, HincMessage.class);
+
+        return objectMapper.readValue(reply.getPayload(), Resource.class);
+    }
 }

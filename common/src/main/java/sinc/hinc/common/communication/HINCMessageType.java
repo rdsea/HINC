@@ -35,4 +35,7 @@ public enum HINCMessageType {
     DELETE,
     DELETE_RESULT,
 
+    CONFIGURE,
+    CONFIGURE_RESULT,
+
 }

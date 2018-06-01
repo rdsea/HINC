@@ -38,4 +38,15 @@ public class ControlController {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/configure")
+    public ResponseEntity<Object> configureResource(@RequestBody Resource resource){
+        try{
+            Resource configuredResource = controlService.configure(resource);
+            return new ResponseEntity<Object>(controlService, HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

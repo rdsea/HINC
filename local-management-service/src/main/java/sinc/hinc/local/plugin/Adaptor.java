@@ -115,6 +115,18 @@ public class Adaptor {
         return deletedResource;
     }
 
+    public Resource configureResource(Resource resource) throws IOException{
+        HincMessage configureMessage = new HincMessage();
+        configureMessage.setMsgType(HINCMessageType.CONFIGURE);
+        configureMessage.setSenderID(group+"."+id);
+        configureMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        ControlResult result = sendControl(resource.getProviderUuid(), configureMessage);
+        Resource configuredResource = objectMapper.readValue(result.getRawOutput(), Resource.class);
+
+        return configuredResource;
+    }
+
     public ControlResult sendControl(String providerUuid, HincMessage message) throws IOException {
         logger.info("sending "+message.getMsgType()+" message");
         logger.info(message.toJson());
