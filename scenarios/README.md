@@ -137,3 +137,34 @@ Initially the slice is just about sensors, broker, workflow.
 ### Resource Slice Configuration
 
 The consumer decides to send commands to other consumers (called receivers). The consumer decides to add  a new component that takes the result of an analytics (e.g., from the queue) then ingest the data into a component that produces commands for receivers.
+
+## Data Exchange and Control in Emergency situation
+
+In this scenario, we assume there are alarms occurring in a seaport. The alarms are propagated through an MQTT broker. Usually, there are some analytics applications listening the alarms queues to react to the alarms.
+
+One of such alarms analytics programs finds alarms related to terminals in the port. It queries a PortControlService (PCS) to obtain the list of vessels approaching the port. Based on the information about the vessels and the service providers of the vessels, the alarms analytics program creates new brokers as resources or connects to existing communication means of the vessel providers to share the information about the situations. The program can also send requests to ask vessels to stop or change the plan to arrive terminals.
+
+Similarly, another analytics program can also inform other relevant objects around the terminals (e.g., by using geohash to query cranes and trucks) and requests them to stop or change the plan.
+
+Another analytics program can request camera providers (for cameras close to the terminal, using geohash)  to provide videos to separate channels that can be accessed by polices and other relevant third parties.
+
+We have:
+
+* alarmgenerator to generate samples of alarms
+* mqtt broker for alarms
+* python/nodejs analytics programs
+* A PCS emulating the port control. the PCS has APIs for querying vessels and for updating vessels positions. PCS has the back-end database as mongodb.
+* A set of vessel emulators (python/nodejs) emulate  the movement of vessels. An vessels emulator subscribes information from its providers via a queue.
+* A set of vessel service providers. Each providers accept a different format of data (JSON/CSV with different structures) and use different protocols (MQTT, AMQP and Webservice).
+* Cranes and trucks are similar vessels with cranes/trucks  and their providers
+* Vessels/trucks/cranes/cameras have their GPS positions so that geohash can be used to query them.
+
+Note that to demonstrate the diversity of providers: we have at different providers for each category: vessel, truck and crane. 
+
+### Resource slices
+
+Various resource slices can be created during the emergency situations. Network functions can also be controlled.
+
+### Interoperability
+
+Since vessel/truck/crane providers accept different forms of data and protocols, we need to search suitable interoperability bridge and instantiate them accordingly.
