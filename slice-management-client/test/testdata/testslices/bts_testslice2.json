@@ -1,13 +1,36 @@
 {
-  "sliceId": "testslice",
+  "sliceId": "bts_testslice1",
   "resources": {
-    "sensor": {
-      "name": "sensor humidity",
+    "sensorcsv": {
+      "name": "sensor humidity csv",
       "pluginName": null,
       "providerUuid": "sensor",
       "resourceType": "IOT_RESOURCE",
       "location": null,
       "metadata": {
+        "resource":{
+          "category": "iot",
+          "type": {
+            "prototype":"sensor"
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"csv",
+            "seperator":",",
+            "newline_seperator":"\n",
+            "headers":[]
+          }
+        }],
         "parameters":{
           "topic": "test"
         }
@@ -24,6 +47,49 @@
       "source": [],
       "target": ["mqtt_connectivity"]
     },
+    "sensorjson": {
+      "name": "sensor humidity json",
+      "pluginName": null,
+      "providerUuid": "sensor",
+      "resourceType": "IOT_RESOURCE",
+      "location": null,
+      "metadata": {
+        "resource":{
+          "category": "iot",
+          "type": {
+            "prototype":"sensor"
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "parameters":{
+          "topic": "test"
+        }
+      },
+      "controlPoints": [],
+      "dataPoints": [
+        {
+          "name": "humidity",
+          "dataType": null,
+          "unit": "percent"
+        }
+      ],
+
+      "source": [],
+      "target": ["mqtt_connectivity2"]
+    },
 
     "broker": {
       "name": "mosquitto broker",
@@ -32,12 +98,24 @@
       "resourceType": "NETWORK_FUNCTION_SERVICE",
       "location": null,
       "metadata": {
-
+        "resource":{
+          "category":"",
+          "type":{
+            "prototype":"messagebroker",
+            "protocols":[{
+              "protocol_name":"mqtt",
+              "qos":0
+            }],
+            "topics":["test"]
+          }
+        },
+        "inputs":[],
+        "outputs":[]
       },
       "controlPoints": [],
       "dataPoints": [],
 
-      "source": ["mqtt_connectivity"],
+      "source": ["mqtt_connectivity", "mqtt_connectivity2"],
       "target": []
     },
 
@@ -48,6 +126,22 @@
       "resourceType": "CLOUD_SERVICE",
       "location": null,
       "metadata": {
+        "resource":{
+          "category":"cloud",
+          "type":{
+            "prototype":"storage",
+            "product_name":"bigQuery",
+            "provider":"Google Cloud Platform"
+          }
+        },
+        "inputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "protocol_name": "other",
+            "table_name": "testTable",
+            "dataset":"testDataset"
+          }}],
+        "outputs":[],
         "parameters":{
           "datasetId": "testDataset",
           "tables": [
@@ -99,6 +193,35 @@
       "resourceType": "CLOUD_SERVICE",
       "location": null,
       "metadata": {
+        "resource":{
+          "category":"cloud",
+          "type": {
+            "prototype": "ingestion",
+            "product_names": ["bigquery"],
+            "providers": ["Google Cloud Platform"]
+          }
+        },
+        "inputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "protocol_name": "other",
+            "table_name": "testTable",
+            "dataset":"testDataset"
+          }
+        }],
         "parameters":{
           "data": "bigQuery",
           "brokers": [
@@ -143,8 +266,19 @@
         "qos": 0,
         "topics":[]
       },
+      "dataFormat": "CSV",
+      "in": "sensorcsv",
+      "out": "broker"
+    },
+    "mqtt_connectivity2": {
+      "accessPoint": {
+        "applicationProtocol": "MQTT",
+        "networkProtocol": "IP",
+        "qos": 0,
+        "topics":[]
+      },
       "dataFormat": "JSON",
-      "in": "sensor",
+      "in": "sensorjson",
       "out": "broker"
     },
 

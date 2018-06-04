@@ -3,7 +3,14 @@ const assert = require('assert');
 const util = require('./util/slice_util');
 const check = require('../src/interoperability/check/intop_check');
 const recommendation = require('../src/interoperability/recommendation/intop_recommendation');
+
+const solutionResources = require('./testdata/intop_recommendation_testdata');
+
 const basic_data = require('./testdata/testslices/basic_testslices');
+
+const bts_testslice_0 = require('./testdata/testslices/bts_testslice0');
+const bts_testslice_1 = require('./testdata/testslices/bts_testslice1');
+const bts_testslice_2 = require('./testdata/testslices/bts_testslice2');
 
 
 describe('intop_recommendation', function(){
@@ -12,11 +19,13 @@ describe('intop_recommendation', function(){
             let slice = basic_data.test_0_working_slice();
             let old_slice = util.deepcopy(slice);
             //intopcheck returns no errors (and warnings)
-            let errors = check.check(slice).errors;
+            let checkresults = check.check(slice);
+            let errors = checkresults.errors;
             assert.equal(errors.length, 0);
             //slice after recommendation equals before recommendation
 
-            //TODO recommendation
+            let resources = solutionResources.solutionResources_test_0_0();
+            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
 
             assert.deepEqual(slice, old_slice, "");
 
@@ -29,9 +38,12 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
-            let errors = check.check(slice).errors;
+            let checkresults = check.check(slice);
+            let errors = checkresults.errors;
             assert.equal(errors.length, 1);
-            //TODO recommendation
+
+            let resources = solutionResources.solutionResources_test_0_1();
+            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
 
             /* recommendation:
                 - +1 resource (broker)
@@ -54,9 +66,12 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
-            let errors = check.check(slice).errors;
+            let checkresults = check.check(slice);
+            let errors = checkresults.errors;
             assert.equal(errors.length, 1);
-            //TODO recommendation
+
+            let resources = solutionResources.solutionResources_test_0_2();
+            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
                 - +2 resource (broker, transformer)
@@ -91,9 +106,12 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns >=1 error
-            let errors = check.check(slice).errors;
+            let checkresults = check.check(slice);
+            let errors = checkresults.errors;
             assert.equal(errors.length>=1, true);
-            //TODO recommendation
+
+            let resources = solutionResources.solutionResources_test_0_3();
+            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
 
             /* recommendation:
                 - resourcecount equal
@@ -117,6 +135,12 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
+            let checkresults = check.check(slice);
+            let errors = checkresults.errors;
+            assert.equal(errors.length, 1);
+
+            let resources = solutionResources.solutionResources_test_0_4();
+            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
 
             /* recommendation:
                 - -1 resource (broker)
@@ -136,9 +160,12 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
-            let errors = check.check(slice).errors;
+            let checkresults = check.check(slice);
+            let errors = checkresults.errors;
             assert.equal(errors.length, 1);
-            //TODO recommendation
+
+            let resources = solutionResources.solutionResources_test_0_5();
+            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
 
             /* recommendation:
                 - +2 resources (poller, buffer)
@@ -168,14 +195,16 @@ describe('intop_recommendation', function(){
 
     describe('1 - bts scenario (actual testslices)', function(){
         it('1_0_testslice0: working slice, should not change', function(){
-            let slice = {};
+            let slice = bts_testslice_0;
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns no errors (and warnings)
-            let checkresult = check.check(slice);
-            assert.equal(checkresult.errors.length, 0);
-            assert.equal(checkresult.warnings.length, 0);
-            //TODO recommendation
+            let checkresults = check.check(slice);
+            assert.equal(checkresults.errors.length, 0);
+            assert.equal(checkresults.warnings.length, 0);
+
+            let resources = solutionResources.solutionResources_test_1_0();
+            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
             //slice after recommendation equals before recommendation
             assert.deepEqual(slice, old_slice);
 
@@ -184,13 +213,16 @@ describe('intop_recommendation', function(){
             assert.equal(errors.length, 0);
         });
         it('1_1_testslice1: csv to json, should add resources', function(){
-            let slice = {};
+            let slice = bts_testslice_1;
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
-            let errors = check.check(slice).errors;
+            let checkresults = check.check(slice);
+            let errors = checkresults.errors;
             assert.equal(errors.length, 1);
-            //TODO recommendation
+
+            let resources = solutionResources.solutionResources_test_1_1();
+            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
 
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
@@ -223,13 +255,16 @@ describe('intop_recommendation', function(){
             assert.equal(errors.length, 0);
         });
         it('1_2_testslice2: csv to json with multiple sensors, should add resources', function(){
-            let slice = {};
+            let slice = bts_testslice_2;
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
-            let errors = check.check(slice).errors;
+            let checkresults = check.check(slice);
+            let errors = checkresults.errors;
             assert.equal(errors.length, 1);
-            //TODO recommendation
+
+            let resources = solutionResources.solutionResources_test_1_2();
+            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
 
 
             /* recommendation - Solution A (and new broker between sensor and transformer):

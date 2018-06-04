@@ -1,5 +1,5 @@
 {
-  "sliceId": "testslice",
+  "sliceId": "bts_testslice1",
   "resources": {
     "sensor": {
       "name": "sensor humidity",
@@ -8,40 +8,32 @@
       "resourceType": "IOT_RESOURCE",
       "location": null,
       "metadata": {
-        "todo":"todo: add mqtt output with dataformat",
-
-        "resource": {
-          "category": "network_function",
+        "resource":{
+          "category": "iot",
           "type": {
-            "prototype": "sensor",
-            "unit": "string_3rro8m2qwm8",
-            "sampling_interval": 0.15890642394980503,
-            "precision": 1.0971709886847125,
-            "range_minValue": 6.497733824385829,
-            "range_maxValue": 7.518254479588653,
-            "location": "string_6v9e0ckbh3o",
-            "longitude": 1.3522007232670363,
-            "latitude": 0.13950816382205522,
-            "description": "string_pqrrincwxs",
-            "semantic_reference": {}
+            "prototype":"sensor"
           }
         },
-        "inputs": [],
-        "outputs": [
-          {
-            "push_pull": "push",
-            "protocol": {
-              "uri":"",
-              "protocol_name":"mqtt",
-              "topic":"",
-              "qos":0
-            },
-            "dataformat": {
-              "encoding": "utf-8",
-              "dataformat_name": "json"
-            }
+        "inputs":[],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"csv",
+            "seperator":",",
+            "newline_seperator":"\n",
+            "headers":[]
           }
-        ]
+        }],
+        "parameters":{
+          "topic": "test"
+        }
       },
       "controlPoints": [],
       "dataPoints": [
@@ -63,7 +55,19 @@
       "resourceType": "NETWORK_FUNCTION_SERVICE",
       "location": null,
       "metadata": {
-        "todo":"todo: broker-prototype with mqtt"
+        "resource":{
+          "category":"",
+          "type":{
+            "prototype":"messagebroker",
+            "protocols":[{
+              "protocol_name":"mqtt",
+              "qos":0
+            }],
+            "topics":["test"]
+          }
+        },
+        "inputs":[],
+        "outputs":[]
       },
       "controlPoints": [],
       "dataPoints": [],
@@ -79,7 +83,59 @@
       "resourceType": "CLOUD_SERVICE",
       "location": null,
       "metadata": {
-        "todo": "storage bigquery prototype and input mqtt json"
+        "resource":{
+          "category":"cloud",
+          "type":{
+            "prototype":"storage",
+            "product_name":"bigQuery",
+            "provider":"Google Cloud Platform"
+          }
+        },
+        "inputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "protocol_name": "other",
+            "table_name": "testTable",
+            "dataset":"testDataset"
+          }}],
+        "outputs":[],
+        "parameters":{
+          "datasetId": "testDataset",
+          "tables": [
+            {
+              "id": "testTable",
+              "schema": [
+                {
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "id",
+                  "type": "STRING"
+                },
+                {
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "value",
+                  "type": "FLOAT64"
+                },{
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "reading_time",
+                  "type": "TIMESTAMP"
+                },{
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "station_id",
+                  "type": "INT64"
+                },{
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "parameter_id",
+                  "type": "INT64"
+                }
+              ]
+            }
+          ]
+        }
       },
       "controlPoints": [],
       "dataPoints": [],
@@ -94,7 +150,35 @@
       "resourceType": "CLOUD_SERVICE",
       "location": null,
       "metadata": {
-        "todo": "ingestion with bigquery",
+        "resource":{
+          "category":"cloud",
+          "type": {
+            "prototype": "ingestion",
+            "product_names": ["bigquery"],
+            "providers": ["Google Cloud Platform"]
+          }
+        },
+        "inputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "protocol_name": "other",
+            "table_name": "testTable",
+            "dataset":"testDataset"
+          }
+        }],
         "parameters":{
           "data": "bigQuery",
           "brokers": [

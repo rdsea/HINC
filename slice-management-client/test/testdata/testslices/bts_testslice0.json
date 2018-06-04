@@ -1,5 +1,5 @@
 {
-  "sliceId": "testslice",
+  "sliceId": "bts_testslice0",
   "resources": {
     "sensor": {
       "name": "sensor humidity",
@@ -8,6 +8,26 @@
       "resourceType": "IOT_RESOURCE",
       "location": null,
       "metadata": {
+        "resource":{
+          "category": "iot",
+          "type": {
+            "prototype":"sensor"
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
         "parameters":{
           "topic": "test"
         }
@@ -32,7 +52,19 @@
       "resourceType": "NETWORK_FUNCTION_SERVICE",
       "location": null,
       "metadata": {
-
+        "resource":{
+          "category":"",
+          "type":{
+            "prototype":"messagebroker",
+            "protocols":[{
+              "protocol_name":"mqtt",
+              "qos":0
+            }],
+            "topics":["test"]
+          }
+        },
+        "inputs":[],
+        "outputs":[]
       },
       "controlPoints": [],
       "dataPoints": [],
@@ -48,6 +80,22 @@
       "resourceType": "CLOUD_SERVICE",
       "location": null,
       "metadata": {
+        "resource":{
+          "category":"cloud",
+          "type":{
+            "prototype":"storage",
+            "product_name":"bigQuery",
+            "provider":"Google Cloud Platform"
+          }
+        },
+        "inputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "protocol_name": "other",
+            "table_name": "testTable",
+            "dataset":"testDataset"
+          }}],
+        "outputs":[],
         "parameters":{
           "datasetId": "testDataset",
           "tables": [
@@ -99,6 +147,35 @@
       "resourceType": "CLOUD_SERVICE",
       "location": null,
       "metadata": {
+        "resource":{
+          "category":"cloud",
+          "type": {
+            "prototype": "ingestion",
+            "product_names": ["bigquery"],
+            "providers": ["Google Cloud Platform"]
+          }
+        },
+        "inputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "protocol_name": "other",
+            "table_name": "testTable",
+            "dataset":"testDataset"
+          }
+        }],
         "parameters":{
           "data": "bigQuery",
           "brokers": [

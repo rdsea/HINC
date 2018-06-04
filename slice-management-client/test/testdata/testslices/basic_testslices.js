@@ -67,6 +67,7 @@ function source(name, push_pull, protocol, format){
         target: [],
         metadata:{
             resource:{category:"iot"},
+            inputs: [],
             outputs:[
                 {
                     push_pull:push_pull,
@@ -91,7 +92,8 @@ function dest(name, push_pull, protocol, format){
                     protocol:protocol,
                     dataformat:format
                 }
-            ]
+            ],
+            outputs:[]
         }
     };
 }
