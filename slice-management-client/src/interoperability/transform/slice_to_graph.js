@@ -42,3 +42,31 @@ exports.nextNodes = function (graph, node){
 
     return nextnodes;
 };
+
+
+
+exports.previousNodes = function (graph, node){
+    let previousNodes = [];
+
+    if(typeof node.resource.source === 'undefined'){
+        return [];
+    }
+
+    for(let i = 0; i< node.resource.source.length; i++){
+        let targetNode = graph.edges[node.resource.source[i]].in;
+        previousNodes.push(graph.nodes[targetNode]);
+    }
+
+
+    return previousNodes;
+};
+
+exports.getUnmarkedNodes = function (graph) {
+    let unmarkedNodes = [];
+    Object.keys(graph.nodes).forEach(function (key) {
+        if (graph.nodes[key].marked === false) {
+            unmarkedNodes.push(graph.nodes[key]);
+        }
+    });
+    return unmarkedNodes;
+};

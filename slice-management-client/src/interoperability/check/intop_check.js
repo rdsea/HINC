@@ -1,6 +1,5 @@
 const sliceToConnectionArray = require('../transform/slice_to_connection_array');
-const events = require('events');
-const eventEmitter = new events.EventEmitter();
+const graph_util = require('../transform/slice_to_graph');
 const check_protocol = require('../check/check_protocol');
 const check_dataformat = require('../check/check_dataformat');
 
@@ -27,6 +26,64 @@ exports.checkSingleConnection = function(connection){
 
     return {errors:errors, warnings:warnings, matches: matches};
 };
+
+exports.checkSlice = function(slice){
+    let graph = graph_util.sliceToGraph(slice);
+    let errors = [];
+    let warnings = [];
+    let matches = [];
+
+    checkGraph(graph, errors, warnings, matches);
+
+    return {errors:errors, warnings:warnings, matches: matches};
+};
+
+function checkGraph(graph, errors, warnings, matches){
+    graph.startNodes.forEach(function (startNode){traverseGraph(startNode, graph, errors, warnings, matches)});
+    let unmarkedNodes = graph_util.getUnmarkedNodes(graph);
+    unmarkedNodes.forEach(function (node){traverseGraph(node, graph, errors, warnings, matches)});
+}
+
+
+function traverseGraph(node, graph, errors, warnings, matches) {
+    node.marked = true;
+    checkConnectedNodes(node, node, true, graph, errors, warnings, matches);
+
+    let nextNodes = graph_util.nextNodes(graph, node);
+    for(let i = 0; i<nextNodes.length;i++){
+        if(nextNodes[i].marked===false){
+            traverseGraph(nextNodes[i], graph, errors, warnings, matches);
+        }
+    }
+}
+
+function checkConnectedNodes(startNode, currentNode, directConnection, graph, errors, warnings, matches) {
+    let nextNodes = graph_util.nextNodes(graph,currentNode);
+
+    for(let i = 0; i<nextNodes.length; i++){
+        if(nextNodes[i] === startNode){
+            return;
+        }
+        if(nextNodes[i].resource.metadata.resource.category === "network_function"){
+            checkConnectedNodes(startNode, nextNodes[i], false, graph, errors, warnings, matches);
+        }
+
+        if(directConnection){
+            checkDirectConnection(startNode, nextNodes[i], graph, errors, warnings, matches);
+        }else{
+            indirectConnectionCheck(startNode, nextNodes[i], graph, errors, warnings, matches);
+        }
+    }
+}
+
+function checkDirectConnection(sourceNode, targetNode, graph, errors, warnings, matches){
+    console.log("check direct " + sourceNode.nodename + " "+  targetNode.nodename);
+}
+
+function indirectConnectionCheck(sourceNode, targetNode, graph, errors, warnings, matches){
+    console.log("indirect check " + sourceNode.nodename + " "+  targetNode.nodename);
+}
+
 
 function checkConnection(errors, warnings, matches) {
     return function (connection) {

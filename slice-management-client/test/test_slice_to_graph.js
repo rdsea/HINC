@@ -1,13 +1,7 @@
 const assert = require('assert');
 
-const sensor = require('./testdata/resources/sensor_testdata');
-const artefact = require('./testdata/resources/artefact_testdata');
-const ingestion = require('./testdata/resources/ingestion_testdata');
 const sliceToGraph = require('../src/interoperability/transform/slice_to_graph');
 const data = require('./testdata/slice_to_connection_array_testdata');
-
-
-
 
 
 describe('test data-generating-functions to build testslices', function() {
@@ -74,6 +68,8 @@ describe('test data-generating-functions to build testslices', function() {
         assert.equal(nextnodes.length , 2);
         assert.equal(nextnextnodes.length , 1);
         assert.equal(lastnodes.length , 0);
+        assert.equal(sliceToGraph.previousNodes(graph, nextnextnodes[0]).length , 2);
+        assert.equal(sliceToGraph.previousNodes(graph, nextnodes[0]).length , 1);
 
     });
     it('test diamondWithCircle_fourResources_oneUnconnectedResource', function() {
@@ -110,21 +106,3 @@ describe('test data-generating-functions to build testslices', function() {
         assert.deepEqual(r1.metadata.output, r2.metadata.input);
     });
 });
-
-
-function testConnectionIsPresent(connections, source, target){
-    assert.notEqual(connections.find(connectionBySourceAndDestination(source,target), undefined));
-}
-
-function connectionBySourceAndDestination(source, target){
-    return function(connection){ return connection.source === source && connection.target === target};
-}
-
-function findResourceWithId(id, slice){
-    let resourceArray = Object.keys(slice.resources).map(function (key) { return slice.resources[key]; });
-    return resourceArray.find(resourceById(id));
-}
-
-function resourceById(id){
-    return function(resource){ return resource.metadata.id === id;};
-}
