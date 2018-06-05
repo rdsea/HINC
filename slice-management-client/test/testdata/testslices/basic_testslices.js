@@ -29,9 +29,9 @@ exports.test_3_substitution = function(){
     let slice = empty_slice();
     slice.resources["source"] = source("source", "push", mqttProtocol(), jsonFormat());
     slice.resources["dest"] = dest("dest", "push", mqttProtocol(), jsonFormat());
-    slice.resources["broker"] = amqpBroker("broker",amqpProtocol());
-    util.sliceConnect(slice, slice.resources.source, slice.resources.broker);
-    util.sliceConnect(slice, slice.resources.broker, slice.resources.dest);
+    slice.resources["oldbroker"] = amqpBroker("oldbroker",amqpProtocol());
+    util.sliceConnect(slice, slice.resources.source, slice.resources.oldbroker);
+    util.sliceConnect(slice, slice.resources.oldbroker, slice.resources.dest);
     return slice;
 };
 exports.test_4_reduction = function(){
@@ -105,10 +105,12 @@ function mqttBroker(name, mqttprotocol){
         target:[],
         metadata: {
             resource: {
-                category:"network_funciton",
+                category:"network_function",
+                type:{
                 prototype: "messagebroker",
                 protocols: [mqttprotocol],
                 topics: [mqttprotocol.topic]
+                }
             }
         }
     }
@@ -123,11 +125,13 @@ function amqpBroker(name, amqpprotocol){
         target:[],
         metadata: {
             resource: {
-                category:"network_funciton",
-                prototype: "messagebroker",
-                protocols: [amqpprotocol],
-                queues:[amqpprotocol.queue],
-                exchanges:[amqpprotocol.exchange]
+                category:"network_function",
+                type: {
+                    prototype: "messagebroker",
+                    protocols: [amqpprotocol],
+                    queues: [amqpprotocol.queue],
+                    exchanges: [amqpprotocol.exchange]
+                }
             }
         }
     }

@@ -1,11 +1,9 @@
-exports.checkProtocols = function (connection, problems) {
-    source = connection.source;
-    target = connection.target;
+exports.checkDataFormat = function (sourceOutput, targetInput, errors, warnings) {
 
-    console.log("check " + connection.connectionId);
-    console.log("source.metadata.output[0].protocol " + source.metadata.output[0].protocol);
-    console.log("target.metadata.input[0].protocol " + target.metadata.input[0].protocol);
-    if (source.metadata.output[0].protocol !== target.metadata.input[0].protocol) {
-        problems.push(source.metadata.id + " </> " + target.metadata.id );
+
+    if(sourceOutput.dataformat.dataformat_name !== targetInput.dataformat.dataformat_name ){
+        //TODO warning object
+        errors.push({});
     }
+
 };

@@ -21,12 +21,12 @@ describe('test slice_util', function() {
         assert.equal(isConnected, false);
     });
     it('test slice_util#contains should return true', function() {
-        let resource = testslice.resources.ingest;
+        let resource = testslice.resources.ingest.name;
         let contains = util.contains(testslice, resource);
         assert.equal(contains, true);
     });
     it('test slice_util#contains should return false', function() {
-        let resource = {name:"new resource not in testslice"};
+        let resource = "new resource not in testslice";
         let contains = util.contains(testslice, resource);
         assert.equal(contains, false);
     });

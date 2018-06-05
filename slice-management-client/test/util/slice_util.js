@@ -5,6 +5,7 @@ exports.resourceCount = function(slice){
 exports.isConnected = function(slice, source, destination){
     let connectivityName = null;
 
+
     //one element in source.target == one element dest.target
     for(let i = 0; i < source.target.length; i++){
         if(destination.source.indexOf(source.target[i])>-1){
@@ -30,8 +31,8 @@ exports.isConnected = function(slice, source, destination){
 
 };
 
-exports.contains = function(slice, resource){
-    return Object.keys(slice.resources).map(function(r){return slice.resources[r].name}).indexOf(resource.name)>-1;
+exports.contains = function(slice, resourceName){
+    return Object.keys(slice.resources).map(function(r){return slice.resources[r].name}).indexOf(resourceName)>-1;
 };
 
 exports.deepcopy = function(obj){

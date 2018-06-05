@@ -2,6 +2,7 @@ const sliceToConnectionArray = require('../transform/slice_to_connection_array')
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const check_protocol = require('../check/check_protocol');
+const check_dataformat = require('../check/check_dataformat');
 
 
 exports.check = function (slice) {
@@ -46,6 +47,9 @@ function checkConnection(errors, warnings, matches) {
 
             check_protocol.checkProtocols(matchingInOutputs[i].output, matchingInOutputs[i].input, matchingInOutputs[i].errors ,
                 matchingInOutputs[i].warnings);
+            check_dataformat.checkDataFormat(matchingInOutputs[i].output, matchingInOutputs[i].input, matchingInOutputs[i].errors ,
+                matchingInOutputs[i].warnings);
+
 
             if(matchingInOutputs[i].errors.length <= 0 &&
                 matchingInOutputs[i].warnings.length <= 0 ){
@@ -112,11 +116,11 @@ function addBrokerOutinputs(outinputs, resource, type){
                 //mqtt || amqp
                 if(resource.metadata.resource.type.protocols[i].protocol_name === "mqtt" ||
                     resource.metadata.resource.type.protocols[i].protocol_name === "mqtts"){
-                    for(let m = 0; m< resource.metadata.resource.type.protocols[i].topics.length; m++){
+                    for(let m = 0; m< resource.metadata.resource.type.topics.length; m++){
                         let outinput = {};
                         outinput.push_pull = "push";
                         outinput.protocol = resource.metadata.resource.type.protocols[i];
-                        outinput.topic = resource.metadata.resource.type.protocols[i].topics[m];
+                        outinput.topic = resource.metadata.resource.type.topics[m];
                         outinputs.push(outinput);
                     }
                 }
