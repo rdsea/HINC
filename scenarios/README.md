@@ -1,4 +1,4 @@
-# Interoperability Scenarios
+# Interoperability Resource Slice Scenarios
 
 This directory includes a set of scenarios in which one can
 create resource slices for IoT Interoperability problem.
@@ -44,6 +44,9 @@ In the seaport there is a provider which can offer a data processing workflow en
 ### Cloud services:
 There are many cloud services available outside the port. We use BigQuery, virtual machines, Google Storage, etc. Furthermore the computing brokers and computing workflows (like in the edge situation within the seaport) can also be provided as cloud services.
 
+### Application Domains
+
+We will emulate various application domain objects, such as vessels, vessel providers, truck providers, cranes providers, port authority, etc. based on existing information we have.
 
 ## Accessing Video Data in seaport
 
@@ -159,7 +162,7 @@ We have:
 * Cranes and trucks are similar vessels with cranes/trucks  and their providers
 * Vessels/trucks/cranes/cameras have their GPS positions so that geohash can be used to query them.
 
-Note that to demonstrate the diversity of providers: we have at different providers for each category: vessel, truck and crane. 
+Note that to demonstrate the diversity of providers: we have at different providers for each category: vessel, truck and crane.
 
 ### Resource slices
 
@@ -168,3 +171,29 @@ Various resource slices can be created during the emergency situations. Network 
 ### Interoperability
 
 Since vessel/truck/crane providers accept different forms of data and protocols, we need to search suitable interoperability bridge and instantiate them accordingly.
+
+## Intelligent Resource Slice Responding to Weather Situations.
+
+In this scenario, we test the situation of creating interoperability resource slice due to weather situations.
+
+An analytics program listens weather information from the port and detects weather situations in the port that require other stakeholders to react/replan.
+The analytics program will:
++ perform stream analytics with weather data through a message broker
+* create suitable resource slice if a weather condition meets a pre-defined constraints (e.g. bad weather)
+
+the resoure slice creation will be:
+
+* find cranes/trucks/vessels providers (assume that they are running)
+* create a broker for sharing data to these providers
+* ask these providers to subscribe the alarms/weather information sent via the broker
+
+this is a test to reflect the if a slice can be created based on events.
+
+we will use Valencia port weather data as one example. The information about truck/vessel/crane providers are based on the previous scenario.
+
+### Interoperability
+
+Some possibility w.r.t interoperability:
+
+* possible to deploy components to transform warning/weather information to the format that the provider needs.
+* control providers
