@@ -50,6 +50,7 @@ function _sensorItemToResources(item){
 
         let resource = {
             uuid: sensor.clientId,
+            providerUuid: config.ADAPTOR_NAME,
             plugin: 'btssensor',
             resourceType: 'IOT_RESOURCE',
             name: `sensor ${item.description.name}`,
