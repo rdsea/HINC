@@ -1,0 +1,16 @@
+{
+  "name": "vessel",
+  "version": "1.0.0",
+  "description": "configuration settings are located in `config.js`",
+  "main": "config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "axios": "^0.18.0",
+    "uuid": "^3.2.1"
+  }
+}
