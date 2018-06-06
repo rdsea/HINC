@@ -26,5 +26,3 @@ function deleteResource(resource){
 }
 
 module.exports.deleteResource = deleteResource;
-
-deleteResource({uuid: "maerskadriatic"})
