@@ -1,4 +1,4 @@
-const provisionAdaptor = require('../controls/provison');
+const provisionAdaptor = require('../controls/provision');
 const deleteAdaptor = require('../controls/delete');
 const config = require('../../config');
 
