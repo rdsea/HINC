@@ -13,6 +13,7 @@ function getItems(settings){
         let resources = [];
         alarmClients.forEach((alarmClient) => {
             resources.push({
+                uuid: alarmClient.alarmclientId,
                 providerUuid: config.ADAPTOR_NAME,
                 resourceType: 'CLOUD_SERVICE',
                 name: `alarmclient`,
@@ -47,6 +48,7 @@ function getItems(settings){
                 },
             })
         })
+        return resources;
     })
 }
 

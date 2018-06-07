@@ -1,9 +1,10 @@
 const prompt = require('inquirer').createPromptModule();
-const questions = require('./src/questions');
+const questions = require('../questions');
 const properties = require('properties');
 const fs = require('fs');
 const yml = require('js-yaml');
-const setupBroker = require('./src/amqpTools');
+const setupBroker = require('../amqpTools');
+const path = require("path");
 
 
 let dockerComposeHinc = {
@@ -25,7 +26,7 @@ prompt(questions).then((ans) => {
     create(ans);
 
     setupBroker(exchanges, ans.broker_uri);
-    fs.writeFileSync("result/docker-compose.yml", yml.safeDump(dockerComposeHinc));
+    fs.writeFileSync(path.join(__dirname, "../../result/docker-compose.yml"), yml.safeDump(dockerComposeHinc));
     
 });
 
@@ -39,10 +40,10 @@ function create(config){
 }
 
 function createGlobal(config){
-    let globalConfig = require("./src/configTempates/global.json");
+    let globalConfig = require("../configTempates/global.json");
     globalConfig['spring.rabbitmq.addresses'] = config.broker_uri
 
-    fs.writeFileSync("result/config/global.properties", properties.stringify(globalConfig));
+    fs.writeFileSync(path.join(__dirname, "../../result/config/global.properties"), properties.stringify(globalConfig));
 
     let service = {
         image: "rdsea/global",
@@ -71,13 +72,13 @@ function createAllLocals(config){
 }
 
 function createLocal(localId, config){
-    let localConfig = require("./src/configTempates/local.json");
+    let localConfig = require("../configTempates/local.json");
     localConfig["spring.rabbitmq.addresses"] = config.broker_uri;
     localConfig["hinc.local.id"] = localId;
     localConfig["adaptor.amqp.input"] = `adaptor_${localId}_input`;
     localConfig["adaptor.amqp.output.broadcast"] = `adaptor_${localId}_broadcast`;
     localConfig["adaptor.amqp.output.unicast"] = `adaptor_${localId}_unicast`
-    fs.writeFileSync(`result/config/local.${localId}.properties`, properties.stringify(localConfig));
+    fs.writeFileSync(path.join(__dirname, `../../result/config/local.${localId}.properties`), properties.stringify(localConfig));
 
     let service = {
         image: "rdsea/local",
@@ -108,7 +109,7 @@ function createAllAdaptorsAndProviders(config){
 }
 
 function createAdaptorsAndProviders(config, localConfig){
-    let adaptorConfigBase = require('./src/configTempates/adaptor.json');
+    let adaptorConfigBase = require('../configTempates/adaptor.json');
     adaptorConfigBase.URI = config.broker_uri;
     adaptorConfigBase.EXCHANGE =  localConfig["adaptor.amqp.input"];
     
@@ -196,7 +197,7 @@ function writeAdaptorConfig(adaptorConfig){
         ENDPOINT: '${adaptorConfig.ENDPOINT}'
     }`
 
-    fs.writeFileSync(`result/config/${adaptorConfig.ADAPTOR_NAME}.js`, config);
+    fs.writeFileSync(path.join(__dirname, `../../result/config/${adaptorConfig.ADAPTOR_NAME}.js`), config);
 }
 
 function clearResult(){

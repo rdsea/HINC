@@ -41,8 +41,8 @@ function setupBroker(exchanges, uri){
         console.log("successfully setup broker");
         connection.close();
     }).catch((err) => {
-        console.err("failed to setup broker");
-        console.err(err);
+        console.error("failed to setup broker");
+        console.error(err);
     })
 }
 
