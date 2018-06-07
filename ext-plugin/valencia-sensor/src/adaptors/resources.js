@@ -1,16 +1,16 @@
 const axios = require('axios');
-const config = require('../../config')
+const config = require('../../config');
 
 /**
  * gets the available resources from the provider
  */
 function getItems(){
     console.log('fetching sensor descriptions');
-    return axios.get(`${config.ENDPOINT}/sensor/bts`).then((res) => {
+    return axios.get(`${config.ENDPOINT}/sensor/valencia`).then((res) => {
         let sensorDescriptions = res.data;
         console.log(`${sensorDescriptions.length} sensor descriptions found`);
-
         let getSensors = [];
+
         sensorDescriptions.forEach((description) => {
             getSensors.push(axios.get(`${config.ENDPOINT}${description.url}`).then((res) => {
                 console.log(`fetching sensors from ${description.url}`);
@@ -51,9 +51,8 @@ function _sensorItemToResources(item){
         let resource = {
             uuid: sensor.clientId,
             providerUuid: config.ADAPTOR_NAME,
-            plugin: 'btssensor',
             resourceType: 'IOT_RESOURCE',
-            name: `sensor ${item.description.name}`,
+            name: `${item.description.name}`,
             controlPoints: [],
             dataPoints: [datapoint],
             type: 'SENSOR',
