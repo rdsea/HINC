@@ -1,9 +1,9 @@
 # Interoperability Resource Slice Scenarios
 
 This directory includes a set of scenarios in which one can
-create resource slices for IoT Interoperability problem.
+create resource slices for dealing with IoT Interoperability problems.
 
-The overall scenario is about the Interoperability of data and services for a seaport (e.g., in our example, Valencia seaport in the Inter-IoT project).
+The overall setting is about the Interoperability of data and services for a seaport (e.g., in our example, Valencia seaport in the Inter-IoT project).
 
 In the following we describe scenarios, whereas technical setup details will be given in sub-directories.
 
@@ -197,3 +197,39 @@ Some possibility w.r.t interoperability:
 
 * possible to deploy components to transform warning/weather information to the format that the provider needs.
 * control providers
+
+## Sharing cranes information
+
+Cranes are nowadays being monitored using IoT sensors. The monitoring information is sent to the cranes owner/management services. Furthermore, part of the crane monitoring information, such as position, can be shared to authority where the cranes are deployed, such as the seaport.
+
+Furthermore, depending on situations, on-demand data can be shared to other parties, such as cranes maintenance and manufacturer.
+
+### Resource slice
+
+The resource slice includes:
+
+* Crane sensors which can be turned on/off
+* Message queue/IoT data hub through which sensor data is sent to crane management service of the crane owner/operator
+* Crane management service
+
+For sharing data to the authority, further resources are included:
+
+* An extracter program which extracts only relevant data sent to the authority
+* the message queue of the authority through which the authority receives the crane information
+
+The part of the resource slice for the authority can be reconfigured/changed on-demand.
+
+For sharing data to other partners:
+
+* A set of data extraction programs used to extract data
+* Message queues or storage through which the extracted data will be sent.
+
+Similar, they will be established on demand.
+
+### Interoperability problem
+
+Several interoperability issues will be solved:
+
+* Format of data of the receivers (authority, third parties)
+* On-demand configuration for middleware through which data will be sent.
+* Quality of data and contract.
