@@ -12,6 +12,7 @@ const config = require('../../config');
          let vessels = res.data;
          vessels.forEach((vessel) => {
             resources.push({
+                uuid: vessel.boatId,
                 providerUuid: config.ADAPTOR_NAME,
                 resourceType: 'IOT_RESOURCE',
                 name: `vessel`,

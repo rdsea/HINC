@@ -45,39 +45,4 @@ function provision(resource){
     });
 }
 
-module.exports = provision;
-
-provision({
-    "providerUuid": "sensor",
-    "resourceType": "IOT_RESOURCE",
-    "name": "vessel",
-    "controlPoints": [],
-    "dataPoints": [],
-    "type": "SOFTWARE_UNIT",
-    "location": null,
-    "parameters": {
-      "egressAccessPoints": [
-        {
-          "applicationProtocol": "MQTT",
-          "host": "localhost",
-          "port": 1883,
-          "accessPattern": "PUBSUB",
-          "networkProtocol": "IP",
-          "qos": 0,
-          "topics": [
-            "maerskadriatic"
-          ]
-        }
-      ],
-      "ingressAccessPoints": [],
-      "boat": "MAERSK ADRIATIC",
-      "status": "Expected",
-      "arrival": "6/5/2018",
-      "departure": "6/6/2018",
-      "destination": "VLC",
-      "terminal": "TCV STEVEDORING COMPANY S.A."
-    },
-    "metadata": {
-      "boatId": "maerskadriatic"
-    }
-  })
+module.exports.provision = provision;
