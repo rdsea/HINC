@@ -10,26 +10,33 @@ const ipRegex = require('ip-regex');
 const moment = require('moment');
 const nameserverService = require('./nameserver');
 
-const execSync = child_process.execSync;
-const writeFileSync = fs.writeFileSync;
+const exec = promisify(child_process.exec);
+const writeFile = promisify(fs.writeFile);
 
-function createProxy(sliceId, resourceId){
+function createProxy(sliceId, resourceId, accessPointNb){
     let deployId = `linkerd-${sliceId}-${resourceId}`;
     return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
-        _createConfigMap(resourceId, deployId, nameserver.location);
-        _provisionProxy(deployId);
-
-        let location = _waitForIp(deployId);
-        return db.meshDao().insert({
+        return _createConfigMap(resourceId, deployId, nameserver.location, accessPointNb);
+    }).then(() => {
+        return _provisionProxy(deployId, accessPointNb);
+    }).then(() => {
+        let proxy = {
             id: deployId,
             type: 'PROXY',
             createdAt: moment().unix(),
             sliceId,
             resourceId,
-            location: `http://${location}:7474`,
-            ip: location,
-            port: 7474
-        })
+            location: `http://${deployId}:7474`,
+            ip: deployId,
+        }
+
+        let ports = [];
+        for(let i=0;i<accessPointNb;i++){
+            ports.push(7474+i);
+        }
+
+        proxy.ports = ports;
+        return db.meshDao().insert(proxy);
     });
 }
 
@@ -41,7 +48,7 @@ function getProxyInfo(sliceId, resourceId){
     });
 }
 
-function _provisionProxy(deployId){
+function _provisionProxy(deployId, accessPointNb){
     let deployTemplate = JSON.parse(JSON.stringify(linkerdDeployTemplate));
     deployTemplate.metadata.name = deployId;
     deployTemplate.spec.template.metadata.labels.app = deployId;
@@ -55,59 +62,86 @@ function _provisionProxy(deployId){
         name: deployId,
         mountPath: `/io.buoyant/linkerd-tcp/config/`,
     });
-
-    writeFileSync(`/tmp/deploy-${deployId}.json`, JSON.stringify(deployTemplate), 'utf8')
-    let out = execSync(`kubectl create -f /tmp/deploy-${deployId}.json`).toString();
-    console.debug(out);
-    _exposeProxy(deployId);
+    
+    return writeFile(`/tmp/deploy-${deployId}.json`, JSON.stringify(deployTemplate), 'utf8').then(() => {
+        return exec(`kubectl create -f /tmp/deploy-${deployId}.json`)
+    }).then((res) => {
+        if(res.stderr) {
+            console.error(res.stderr);
+            throw new Error('error occurred creating linkerd proxy deployment');
+        }
+        console.debug(res.stdout);
+        return _exposeProxy(deployId, accessPointNb);
+    })
 }
 
-function _exposeProxy(deployId){
+function _exposeProxy(deployId, accessPointNb){
     let serviceTemplate = JSON.parse(JSON.stringify(linkerdServiceTemplate));;
     serviceTemplate.metadata.labels.app = deployId;
     serviceTemplate.metadata.name = deployId;
     serviceTemplate.spec.selector.app = deployId;
 
-    writeFileSync(`/tmp/service-${deployId}.json`, JSON.stringify(serviceTemplate), 'utf8');
-    let out = execSync(`kubectl create -f /tmp/service-${deployId}.json`).toString();
-    console.debug(out);
-    return deployId;    
+    for(let i=0;i<accessPointNb;i++){
+        serviceTemplate.spec.ports.push({
+            port: 7474+i,
+            targetPort: 7474+i,
+            name: `accesspoint${i}`
+        })
+    }
+
+    return writeFile(`/tmp/service-${deployId}.json`, JSON.stringify(serviceTemplate), 'utf8').then(() => {
+        return exec(`kubectl create -f /tmp/service-${deployId}.json`);
+    }).then((res) => {
+        if(res.stderr) {
+            console.error(res.stderr);
+            throw new Error('error occurred creating linkerd proxy service');
+        }
+        console.debug(res.stdout);
+        return deployId
+    })
 }
 
-function _createConfigMap(resourceId, deployId, nameserverUri){
+function _createConfigMap(resourceId, deployId, nameserverUri, accessPointNb){
     let config = JSON.parse(JSON.stringify(linkerdConfigTemplate));
-    config.routers[0].servers[0].dstName = `/cluster/${resourceId}`;
+    for(let i=0;i<accessPointNb;i++){
+        config.routers[0].servers.push( {
+            ip: "0.0.0.0",
+            port: 7474+i,
+            dstName: `/${resourceId}${i}`,
+            connectTimeoutMs: 10000
+        });
+    }
     config.routers[0].interpreter.baseUrl = nameserverUri;
 
-    let out = execSync(`kubectl create configmap ${deployId} --from-literal=dummy=dummy`);
-    console.debug(out.toString());
-    out = execSync(`kubectl get configmap ${deployId} -o json`).toString();
-    console.debug(out)
-    let configmap = JSON.parse(out);
-
-    let data = configmap.data;
-    data['linkerd-tcp.yml'] = JSON.stringify(config);
-    out = execSync(`kubectl patch configmap ${deployId} -p '{"data": ${JSON.stringify(data)}}'`).toString();         
-    console.debug(out);
-}
-
-function _waitForIp(deployId){
-    console.debug('waiting for proxy ip to become available')
-    let res = "";
-    try{
-        while(!ipRegex({exact: true}).test(res)){
-            let out = execSync(`kubectl get svc ${deployId} --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}"`);    
-            res = out.toString();  
+    return exec(`kubectl create configmap ${deployId} --from-literal=dummy=dummy`).then((res) => {
+        if(res.stderr) {
+            console.error(res.stderr);
+            throw new Error('error occurred creating linkerd proxy config map');
         }
-    }catch(err){
-        console.debug(err.toString());
-        throw new Error('failed to fetch ip from kubectl');
-    }
-    console.debug(`IP for ${deployId} is ${res}`);
-    return res;
+        console.debug(res.stdout);
+        return exec(`kubectl get configmap ${deployId} -o json`);
+    }).then((res) => {
+        if(res.stderr) {
+            console.error(res.stderr);
+            throw new Error('error occurred creating linkerd proxy config map');
+        }
+        console.debug(res.stdout);
+        let configmap = JSON.parse(res.stdout);
+
+        let data = configmap.data;
+        data['linkerd-tcp.yml'] = JSON.stringify(config);
+        return exec(`kubectl patch configmap ${deployId} -p '{"data": ${JSON.stringify(data)}}'`)
+    }).then((res) => {
+        if(res.stderr) {
+            console.error(res.stderr);
+            throw new Error('error occurred creating linkerd proxy config map');
+        }
+        console.debug(res.stdout);
+    });
 }
 
 module.exports = {
     createProxy,
     getProxyInfo
 }
+
