@@ -48,6 +48,34 @@ function getProxyInfo(sliceId, resourceId){
     });
 }
 
+function deleteProxy(sliceId, resourceId){
+    return getProxyInfo(sliceId, resourceId).then((proxy) => {
+        let deleteProxyp = exec(`kubectl delete deployment ${proxy.id}`)
+        let deleteService = exec(`kubectl delete service ${proxy.id}`)
+        let deleteConfigmap = exec(`kubectl delete configmap ${proxy.id}`)
+
+        return Promise.all([deleteProxyp, deleteService, deleteConfigmap]);
+    }).then(() => {
+        return db.meshDao().remove({sliceId, resourceId, type: 'PROXY'}, {});
+    })
+};
+
+function deleteAllProxies(sliceId){
+    return db.meshDao().find({sliceId, type: 'PROXY'}).then((proxies) => {
+        let deletePromises = [];
+        proxies.forEach((proxy) => {
+            let deleteProxyp = exec(`kubectl delete deployment ${proxy.id}`)
+            let deleteService = exec(`kubectl delete service ${proxy.id}`)
+            let deleteConfigmap = exec(`kubectl delete configmap ${proxy.id}`)
+            deletePromises.push(deleteProxyp, deleteService, deleteConfigmap)
+        });
+
+        return Promise.all(deletePromises);
+    }).then(() => {
+        return db.meshDao().remove({sliceId, type: 'PROXY'},  {multi:true});
+    });
+}
+
 function _provisionProxy(deployId, accessPointNb){
     let deployTemplate = JSON.parse(JSON.stringify(linkerdDeployTemplate));
     deployTemplate.metadata.name = deployId;
@@ -142,6 +170,8 @@ function _createConfigMap(resourceId, deployId, nameserverUri, accessPointNb){
 
 module.exports = {
     createProxy,
-    getProxyInfo
+    getProxyInfo,
+    deleteProxy,
+    deleteAllProxies
 }
 

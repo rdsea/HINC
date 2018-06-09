@@ -1,6 +1,13 @@
 const nameserverService = require('./nameserver');
 const proxyService = require('./proxy');
 
+
+function deleteMesh(sliceId){
+    nameserverService.deleteNameserver(sliceId).then(() => {
+        return proxyService.deleteAllProxies(sliceId);     
+    });
+}
+
 module.exports = {
     createNameServer: nameserverService.createNameServer,
     setName: nameserverService.setName,
@@ -8,5 +15,8 @@ module.exports = {
     createProxy: proxyService.createProxy,
     flush: nameserverService.flush,
     getProxyInfo: proxyService.getProxyInfo,
+    setNames: nameserverService.setNames,
+    deleteMesh: deleteMesh
 }
+
 
