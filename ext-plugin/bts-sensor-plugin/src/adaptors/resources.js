@@ -1,5 +1,6 @@
 const axios = require('axios');
 const config = require('../../config')
+const url = require("url");
 
 /**
  * gets the available resources from the provider
@@ -38,10 +39,11 @@ function _sensorItemToResources(item){
             unit: item.description.unit,
         }
     
+        let uri = url.parse(sensor.uri);
         let egressAccessPoint = {
             applicationProtocol: "MQTT",
-            host: sensor.uri.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0],
-            port: parseInt(sensor.uri.match(/(?<=:)\d{1,4}/)[0]),
+            host: uri.hostname,
+            port: parseInt(uri.port),
             accessPattern: "PUBSUB",
             networkProtocol: "IP",
             qos: 0,

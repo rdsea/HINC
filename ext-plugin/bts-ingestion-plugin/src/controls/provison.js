@@ -10,7 +10,7 @@ function provision(resource){
     let provisionParameters = {
         data: resource.parameters.data,
         brokers:[],
-        bigquery: resource.parameters[resource.parameters.data],
+        bigQuery: resource.parameters[resource.parameters.data],
     };
 
     resource.parameters.egressAccessPoints.forEach((accessPoint, index) => {

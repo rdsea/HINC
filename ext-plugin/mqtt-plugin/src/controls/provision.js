@@ -6,6 +6,7 @@ function provision(resource){
     let broker = null;
     return axios.post(`${config.ENDPOINT}/mosquittobroker`).then((res) => {
         broker = res.data;
+        resource.uuid = broker.brokerId;
         console.log('successful control execution');
         // location of broker might not set, await it
         return _waitForLocation(broker.brokerId, `${config.ENDPOINT}/mosquittobroker`);
@@ -19,7 +20,6 @@ function provision(resource){
             qos: 0,
             topics: []
         };
-        resource.Uuid = broker.brokerId;
         resource.parameters.ingressAccessPoints.push(ingressAccessPoint);
 
         let controlResult = {

@@ -24,3 +24,5 @@ function deleteResource(resource){
         return controlResult;
     });
 }
+
+module.exports.deleteResource = deleteResource;

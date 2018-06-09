@@ -1,5 +1,6 @@
 const axios = require('axios');
 const config = require('../../config')
+const url = require("url");
 
 function provision(resource){
 
@@ -13,8 +14,9 @@ function provision(resource){
     return axios.post(`${config.ENDPOINT}/sensor/bts/humidity`, data).then((res) => {
         let sensor = res.data;
         resource.uuid = sensor.clientId;
-        resource.parameters.egressAccessPoints[0].host = sensor.uri.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0];
-        resource.parameters.egressAccessPoints[0].port = parseInt(sensor.uri.match(/(?<=:)\d{1,4}/)[0])
+        let uri = url.parse(sensor.uri)
+        resource.parameters.egressAccessPoints[0].host = uri.hostname;
+        resource.parameters.egressAccessPoints[0].port = parseInt(uri.port)
 
         controlResult = {
             status: 'SUCCESS',
