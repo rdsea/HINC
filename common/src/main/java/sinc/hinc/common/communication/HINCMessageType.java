@@ -38,4 +38,7 @@ public enum HINCMessageType {
     CONFIGURE,
     CONFIGURE_RESULT,
 
+    GET_LOGS,
+    GET_LOGS_RESULT,
+
 }

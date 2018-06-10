@@ -92,11 +92,15 @@ public class AMQPConfig {
     MessageListenerAdapter hincListenerAdapter(HandleFetchResources handleFetchResources,
                                                HandleFetchProviders handleFetchProviders,
                                                HandleProvision handleProvision,
-                                               HandleDelete handleDelete) {
+                                               HandleDelete handleDelete,
+                                               HandleConfigure handleConfigure,
+                                               HandleGetLogs handleGetLogs) {
 
         handleFetchProviders.addMessageHandler(handleFetchResources);
         handleFetchProviders.addMessageHandler(handleProvision);
         handleFetchProviders.addMessageHandler(handleDelete);
+        handleFetchProviders.addMessageHandler(handleConfigure);
+        handleFetchProviders.addMessageHandler(handleGetLogs);
 
         return new MessageListenerAdapter(handleFetchProviders, "handleMessage");
     }

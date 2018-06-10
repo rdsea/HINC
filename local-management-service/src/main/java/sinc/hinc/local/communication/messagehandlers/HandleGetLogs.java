@@ -1,5 +1,6 @@
 package sinc.hinc.local.communication.messagehandlers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 @Component
 @Configuration
-public class HandleConfigure extends HINCMessageHandler {
+public class HandleGetLogs extends HINCMessageHandler {
     @Value("${hinc.local.group}")
     private String group;
     @Value("${hinc.local.id}")
@@ -31,8 +32,8 @@ public class HandleConfigure extends HINCMessageHandler {
     @Autowired
     private AdaptorManager adaptorManager;
 
-    public HandleConfigure() {
-        super(HINCMessageType.CONFIGURE);
+    public HandleGetLogs() {
+        super(HINCMessageType.GET_LOGS);
     }
 
     @Override
@@ -47,14 +48,14 @@ public class HandleConfigure extends HINCMessageHandler {
         }
 
         try {
-            Resource configuredResource = adaptorManager.configureResource(resource.getProviderUuid(), resource);
+            String logOutput = adaptorManager.getResourceLogs(resource.getProviderUuid(), resource);
             HincMessage replyMessage = new HincMessage();
 
-            replyMessage.setMsgType(HINCMessageType.CONFIGURE_RESULT);
+            replyMessage.setMsgType(HINCMessageType.GET_LOGS_RESULT);
             replyMessage.setUuid(group + "." + id);
 
             replyMessage.setSenderID(id);
-            replyMessage.setPayload(objectMapper.writeValueAsString(configuredResource));
+            replyMessage.setPayload(logOutput);
 
             return replyMessage;
         } catch (IOException e) {

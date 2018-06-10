@@ -1,6 +1,8 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.regexp.internal.RE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.FanoutExchange;
@@ -88,7 +90,7 @@ public class ControlService {
         configureMessage.setSenderID(globalId);
         configureMessage.setPayload(objectMapper.writeValueAsString(resource));
 
-        logger.info("sending delete message to "+broadcastExchange.getName());
+        logger.info("sending configure message to "+broadcastExchange.getName());
         Object rawReply = rabbitTemplate.convertSendAndReceive(
                 broadcastExchange.getName(),
                 "",
@@ -101,5 +103,27 @@ public class ControlService {
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
         return objectMapper.readValue(reply.getPayload(), Resource.class);
+    }
+
+    public JsonNode getLogs(Resource resource) throws IOException{
+        HincMessage getLogsMessage = new HincMessage();
+        getLogsMessage.setMsgType(HINCMessageType.GET_LOGS);
+        getLogsMessage.setUuid(globalId);
+        getLogsMessage.setSenderID(globalId);
+        getLogsMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        logger.info("sending log message to "+broadcastExchange.getName());
+        Object rawReply = rabbitTemplate.convertSendAndReceive(
+                broadcastExchange.getName(),
+                "",
+                getLogsMessage.toJson().getBytes()
+        );
+
+        HincMessage reply = null;
+        String stringReply = new String(((byte[]) rawReply));
+        System.out.println(stringReply);
+        reply = objectMapper.readValue(stringReply, HincMessage.class);
+
+        return objectMapper.readTree(reply.getPayload());
     }
 }

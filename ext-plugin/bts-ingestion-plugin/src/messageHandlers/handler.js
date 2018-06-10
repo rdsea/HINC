@@ -28,6 +28,7 @@ handler.use('CONTROL', require('./handleSendControl'));
 handler.use('PROVISION', require('./handleProvision'));
 handler.use('DELETE', require('./handleDelete'));
 handler.use('CONFIGURE', require('./handleConfigure'));
+handler.use('GET_LOGS', require('./handleGetLogs'));
 
 module.exports = handler
 

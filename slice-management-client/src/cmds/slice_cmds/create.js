@@ -5,21 +5,27 @@ const moment = require('moment');
 const path = require('path');
 const axios = require('axios');
 const config = require('../../config');
+const fs = require("fs");
 
 exports.command = 'create <file>'
 exports.desc = 'creates a slice specified in <file>'
 exports.builder = {}
 exports.handler = function (argv) {
-    let slice = require(path.join(process.cwd(), argv.file));
+    let filepath = path.resolve(argv.file);
+    let slice = require(filepath);
     return _provisionResources(slice).then(() => {
         slice.createdAt = moment().unix();
-        db.sliceDao().insert(slice);
+        return db.sliceDao().insert(slice);
+    }).then((slice) => {
+        console.log(`writing slice deployment to ${filepath}`);
+        fs.writeFileSync(filepath, JSON.stringify(slice, null, 4));
     })
 }
 
 
 function _provisionResources(slice){
     return _provisionMesh(slice).then(() => {
+        console.log("provisioned service mesh");
         let provisionResourcePromises = [];
         let provisionResourceItems = [];
 

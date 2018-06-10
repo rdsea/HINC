@@ -2,6 +2,7 @@ package sinc.hinc.local.plugin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,5 +144,15 @@ public class Adaptor {
 
         ControlResult result = objectMapper.readValue(reply.getPayload(), ControlResult.class);
         return result;
+    }
+
+    public String getResourceLogs(Resource resource) throws IOException {
+        HincMessage getLogsMessage = new HincMessage();
+        getLogsMessage.setMsgType(HINCMessageType.GET_LOGS);
+        getLogsMessage.setSenderID(group+"."+id);
+        getLogsMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        ControlResult result = sendControl(resource.getProviderUuid(), getLogsMessage);
+        return result.getRawOutput();
     }
 }

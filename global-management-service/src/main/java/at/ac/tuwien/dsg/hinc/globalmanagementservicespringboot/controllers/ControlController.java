@@ -1,6 +1,7 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.controllers;
 
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services.ControlService;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,18 @@ public class ControlController {
     public ResponseEntity<Object> configureResource(@RequestBody Resource resource){
         try{
             Resource configuredResource = controlService.configure(resource);
-            return new ResponseEntity<Object>(controlService, HttpStatus.OK);
+            return new ResponseEntity<Object>(configuredResource, HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/logs")
+    public ResponseEntity<Object> getLogs(@RequestBody Resource resource){
+        try{
+            JsonNode logs = controlService.getLogs(resource);
+            return new ResponseEntity<Object>(logs, HttpStatus.OK);
         }catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
