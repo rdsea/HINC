@@ -9,11 +9,25 @@ If you use the software, pls. cite the following papers:
 
 - Duc-Hung Le, Nanjangud Narendra, Hong-Linh Truong HINC - Harmonizing Diverse Resource Information Across IoT, Network Functions and Clouds [Submitted PDF](http://bit.ly/1Y36tIY), The IEEE 4th International Conference on Future Internet of Things and Cloud (FiCloud2016), 22-24 Aug, 2016, Vienna, Austria.
 
-# Contact
+## Compilation
+
+Compile the common module
+
+$cd common
+$mvn install
+
+Compile the repository module
+
+$cd repository
+$mvn install
+
+then compile other modules
+
+## Contact
 Hong-Linh Truong <hong-linh.truong@tuwien.ac.at>
 
 
-# Example 
+## Example 
 To execute a simple test bed and see the entire HINC in action, please refer to the folder `examples/testbed` and follow the README instructions
 
 ------------------------
