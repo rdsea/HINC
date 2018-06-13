@@ -1,0 +1,243 @@
+{
+  "sliceId": "bts_testslice1",
+  "resources": {
+    "sensor": {
+      "name": "sensor humidity",
+      "pluginName": null,
+      "providerUuid": "sensor",
+      "resourceType": "IOT_RESOURCE",
+      "location": null,
+      "metadata": {
+        "resource":{
+          "category": "iot",
+          "type": {
+            "prototype":"sensor"
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"csv",
+            "seperator":",",
+            "newline_seperator":"\n",
+            "headers":[]
+          }
+        }],
+        "parameters":{
+          "topic": "test"
+        }
+      },
+      "controlPoints": [],
+      "dataPoints": [
+        {
+          "name": "humidity",
+          "dataType": null,
+          "unit": "percent"
+        }
+      ],
+
+      "source": [],
+      "target": ["mqtt_connectivity"]
+    },
+
+    "broker": {
+      "name": "mosquitto broker",
+      "pluginName": "mosquittobroker",
+      "providerUuid": "mosquitto",
+      "resourceType": "NETWORK_FUNCTION_SERVICE",
+      "location": null,
+      "metadata": {
+        "resource":{
+          "category":"",
+          "type":{
+            "prototype":"messagebroker",
+            "protocols":[{
+              "protocol_name":"mqtt",
+              "qos":0
+            }],
+            "topics":["test"]
+          }
+        },
+        "inputs":[],
+        "outputs":[]
+      },
+      "controlPoints": [],
+      "dataPoints": [],
+
+      "source": ["mqtt_connectivity"],
+      "target": []
+    },
+
+    "bigquery":{
+      "name": "bigQuery dataset",
+      "pluginName": "bigquery",
+      "providerUuid": "bigquery",
+      "resourceType": "CLOUD_SERVICE",
+      "location": null,
+      "metadata": {
+        "resource":{
+          "category":"cloud",
+          "type":{
+            "prototype":"storage",
+            "product_name":"bigQuery",
+            "provider":"Google Cloud Platform"
+          }
+        },
+        "inputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "protocol_name": "other",
+            "table_name": "testTable",
+            "dataset":"testDataset"
+          }}],
+        "outputs":[],
+        "parameters":{
+          "datasetId": "testDataset",
+          "tables": [
+            {
+              "id": "testTable",
+              "schema": [
+                {
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "id",
+                  "type": "STRING"
+                },
+                {
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "value",
+                  "type": "FLOAT64"
+                },{
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "reading_time",
+                  "type": "TIMESTAMP"
+                },{
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "station_id",
+                  "type": "INT64"
+                },{
+                  "description": "field description",
+                  "mode": "REQUIRED",
+                  "name": "parameter_id",
+                  "type": "INT64"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "controlPoints": [],
+      "dataPoints": [],
+
+      "source": ["mqtt_connectivity"],
+      "target": []
+    },
+    "ingest": {
+      "name": "bts ingestion client",
+      "pluginName": "btsingestion",
+      "providerUuid": "ingest",
+      "resourceType": "CLOUD_SERVICE",
+      "location": null,
+      "metadata": {
+        "resource":{
+          "category":"cloud",
+          "type": {
+            "prototype": "ingestion",
+            "product_names": ["bigquery"],
+            "providers": ["Google Cloud Platform"]
+          }
+        },
+        "inputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "protocol_name": "other",
+            "table_name": "testTable",
+            "dataset":"testDataset"
+          }
+        }],
+        "parameters":{
+          "data": "bigQuery",
+          "brokers": [
+            {
+              "host": "35.205.138.49",
+              "port": 1883,
+              "clientId": "testclient1",
+              "username": "xxx",
+              "password": "xxx",
+              "topics": [
+                "test"
+              ]
+            }
+          ],
+          "bigQuery": {
+            "dataset": "testDataset",
+            "tables": [
+              {
+                "id": "testTable",
+                "topics": [
+                  "test"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "controlPoints": [],
+      "dataPoints": [],
+
+      "source": ["ingest_connectivity"],
+      "target": []
+    }
+
+  },
+
+  "connectivities": {
+    "mqtt_connectivity": {
+      "accessPoint": {
+        "applicationProtocol": "MQTT",
+        "networkProtocol": "IP",
+        "qos": 0,
+        "topics":[]
+      },
+      "dataFormat": "JSON",
+      "in": "sensor",
+      "out": "broker"
+    },
+
+    "ingest_connectivity":{
+      "accessPoint": {
+        "applicationProtocol": "MQTT",
+        "networkProtocol": "IP",
+        "qos": 0,
+        "topics":[]
+      },
+      "dataFormat": "JSON",
+      "in": "ingest",
+      "out": "broker"
+    }
+  }
+}
