@@ -1,7 +1,7 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.messagehandlers;
 
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ProviderRepository;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.model.LocalMS;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.repository.ProviderRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

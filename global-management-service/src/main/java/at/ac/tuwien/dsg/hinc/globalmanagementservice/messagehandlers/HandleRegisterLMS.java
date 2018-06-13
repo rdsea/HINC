@@ -1,8 +1,8 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.messagehandlers;
 
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.HincLocalMetaRepository;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalMSRepository;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.model.LocalMS;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.repository.HincLocalMetaRepository;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.repository.LocalMSRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;

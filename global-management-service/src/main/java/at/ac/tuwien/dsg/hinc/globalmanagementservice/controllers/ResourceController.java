@@ -1,9 +1,8 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.controllers;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.controllers;
 
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services.ResourceService;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.services.ResourceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

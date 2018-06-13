@@ -1,4 +1,4 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.config;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.config;
 
 
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     @Bean
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .select()                 .apis(RequestHandlerSelectors.basePackage("at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.controllers"))
+                .select()                 .apis(RequestHandlerSelectors.basePackage("at.ac.tuwien.dsg.hinc.globalmanagementservice.controllers"))
                 .paths(regex("/.*"))
                 .build();
 

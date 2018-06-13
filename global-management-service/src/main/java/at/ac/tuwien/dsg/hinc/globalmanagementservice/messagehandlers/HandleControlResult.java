@@ -1,4 +1,4 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.messagehandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

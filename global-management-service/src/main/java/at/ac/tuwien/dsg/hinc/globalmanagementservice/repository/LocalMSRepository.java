@@ -1,6 +1,6 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.repository;
 
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.model.LocalMS;
 import org.springframework.stereotype.Repository;
 import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 

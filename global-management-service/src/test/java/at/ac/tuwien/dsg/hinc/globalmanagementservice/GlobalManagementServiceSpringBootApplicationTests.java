@@ -1,4 +1,4 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,11 +1,9 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.config;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.config;
 
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleControlResult;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverProviders;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleDeliverResources;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.messagehandlers.HandleRegisterLMS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.messagehandlers.HandleControlResult;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.messagehandlers.HandleDeliverProviders;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.messagehandlers.HandleDeliverResources;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.messagehandlers.HandleRegisterLMS;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;

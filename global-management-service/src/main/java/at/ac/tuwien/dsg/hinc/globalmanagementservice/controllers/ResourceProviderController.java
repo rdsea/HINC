@@ -1,14 +1,13 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.controllers;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.controllers;
 
 
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services.ResourceProviderService;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.services.ResourceProviderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.ResourceProvider;
 import sinc.hinc.common.model.payloads.Control;
 import sinc.hinc.common.model.payloads.ControlResult;

@@ -1,8 +1,7 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.regexp.internal.RE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.FanoutExchange;

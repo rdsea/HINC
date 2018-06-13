@@ -1,4 +1,4 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.repository;
 
 import org.springframework.stereotype.Repository;
 import sinc.hinc.common.metadata.HincLocalMeta;

@@ -1,4 +1,4 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.model;
 
 import sinc.hinc.common.metadata.HincLocalMeta;
 import sinc.hinc.common.model.Resource;

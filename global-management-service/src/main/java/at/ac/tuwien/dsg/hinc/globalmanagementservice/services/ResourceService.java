@@ -1,36 +1,29 @@
-package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services;
+package at.ac.tuwien.dsg.hinc.globalmanagementservice.services;
 
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.LocalMSRepository;
-import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ProviderRepository;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.repository.LocalMSRepository;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.repository.ResourceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
-import sinc.hinc.common.model.ResourceProvider;
-import sinc.hinc.common.model.payloads.Control;
-import sinc.hinc.common.model.payloads.ControlResult;
+import sinc.hinc.common.model.Resource;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ResourceProviderService {
+public class ResourceService {
 
     private final RabbitTemplate rabbitTemplate;
-    private final RabbitAdmin rabbitAdmin;
 
-    private final ProviderRepository providerRepository;
+    private final ResourceRepository resourceRepository;
     private final LocalMSRepository localMSRepository;
 
     private final ObjectMapper objectMapper;
@@ -54,31 +47,27 @@ public class ResourceProviderService {
     private String inputQueue;
 
     @Autowired
-    public ResourceProviderService(RabbitTemplate rabbitTemplate, ProviderRepository providerRepository, ObjectMapper objectMapper, LocalMSRepository localMSRepository, RabbitAdmin rabbitAdmin) {
+    public ResourceService(RabbitTemplate rabbitTemplate, ResourceRepository resourceRepository, ObjectMapper objectMapper, LocalMSRepository localMSRepository) {
         this.rabbitTemplate = rabbitTemplate;
-        this.providerRepository = providerRepository;
+        this.resourceRepository = resourceRepository;
         this.objectMapper = objectMapper;
         this.localMSRepository = localMSRepository;
-        this.rabbitAdmin = rabbitAdmin;
     }
 
-    public List<ResourceProvider> queryResourceProviders(int timeout, int limit) throws JsonProcessingException {
-        String id = null;
+    public List<Resource> queryResources(int timeout, int limit) throws JsonProcessingException {
         String group = null;
-
+        String id = null;
         String exchange = getDestinationExchange(id,group);
         String routing_key = getDestinationRoutingKey(id,group);
 
-
         HincMessage queryMessage = new HincMessage();
-        queryMessage.setMsgType(HINCMessageType.FETCH_PROVIDERS);
+        queryMessage.setMsgType(HINCMessageType.FETCH_RESOURCES);
         queryMessage.setUuid(globalId);
 
         queryMessage.setSenderID(globalId);
         queryMessage.setReceiverID(id);
 
         byte[] byteMessage = objectMapper.writeValueAsBytes(queryMessage);
-
         MessageProperties properties = new MessageProperties();
         properties.setReplyTo(inputQueue);
         Message msg = new Message(byteMessage, properties);
@@ -93,35 +82,47 @@ public class ResourceProviderService {
         }
 
         //TODO temporary queue
-        return getProviders(id, group, limit);
+        return getResources(id, group, limit);
     }
 
-
-    public ControlResult sendControl(Control control) throws IOException {
-
-        return null;
-    }
-
-    public ControlResult sendControl(String providerId, String controlPointId, JsonNode parameters) throws IOException {
-        Control control = new Control();
-        control.setResourceProviderUuid(providerId);
-        control.setControlPointUuid(controlPointId);
-        control.setParameters(parameters);
-
-        return sendControl(control);
-    }
-
-
-    private List<ResourceProvider> getProviders(String id, String group, int limit){
-        // TODO groupcast + unicast
-        List<ResourceProvider> result = new ArrayList<>();
-
-
-        if(limit>0) {
-            result = providerRepository.readAll(limit);
-        }else{
-            result = providerRepository.readAll();
+    public Resource putMetadata(String resourceId, JsonNode metadata){
+        Resource resource = resourceRepository.read(resourceId);
+        if(resource != null) {
+            resource.setMetadata(metadata);
+            resourceRepository.save(resource);
         }
+
+        return resource;
+    }
+
+    private List<Resource> getResources(String id, String group, int limit){
+
+        List<Resource> result = new ArrayList<>();
+
+        /* TODO
+        if(id != null && !id.isEmpty()){
+            if (localMSRepository.findById(id).isPresent()) {
+                LocalMS localMS = localMSRepository.findById(id).get();
+                result = localMS.getResources();
+            }
+        }else if (group != null && !group.isEmpty()){
+            List<LocalMS> localMSList = new ArrayList<>();
+            localMSList = localMSRepository.findByGroup(group);
+            for(LocalMS localMS:localMSList){
+                result.addAll(localMS.getResources());
+            }
+        }else{*/
+            if(limit>0) {
+
+                result = resourceRepository.readAll(limit);
+            }else{
+                result = resourceRepository.readAll();
+            }
+        //}
+
+        /*if(limit>0) {
+            result = result.subList(0, limit);
+        }*/
 
         return result;
     }
