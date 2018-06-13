@@ -48,7 +48,6 @@ public class AbstractDAO<T> {
 
     @Autowired
     private MongoTemplate mongoTemplate;
-    private T object;
 
     public AbstractDAO(){
         mapper = new ObjectMapper();
@@ -100,6 +99,20 @@ public class AbstractDAO<T> {
         return object;
     }
 
+    public T delete(String uuid) {
+        Document d = mongoTemplate.findById(uuid, Document.class, clazz.getSimpleName());
+        if(d==null){
+            return null;
+        }
+        DeleteResult deleteResult = mongoTemplate.remove(d, clazz.getSimpleName());
+
+        if(deleteResult.getDeletedCount()==0){
+            return null;
+        }
+
+        return deserializeDocument(d);
+    }
+
     public void deleteAll(){
         mongoTemplate.dropCollection(clazz.getSimpleName());
     }
@@ -132,6 +145,9 @@ public class AbstractDAO<T> {
     }
 
     private T deserializeDocument(Document d){
+        if(d==null){
+            return null;
+        }
         try {
             T object = mapper.readValue(d.toJson(),clazz);
             setIdField(object,d);

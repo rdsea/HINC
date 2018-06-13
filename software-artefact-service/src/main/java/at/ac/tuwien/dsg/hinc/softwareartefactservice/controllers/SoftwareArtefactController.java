@@ -33,7 +33,7 @@ public class SoftwareArtefactController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SoftwareArtefact>> getSoftwareArtefact(@RequestParam(required = false, defaultValue = "0")Integer limit) {
+    public ResponseEntity<List<SoftwareArtefact>> getSoftwareArtefacts(@RequestParam(required = false, defaultValue = "0")Integer limit) {
 
         List<SoftwareArtefact> softwareArtefactList = new ArrayList<>();
         try {
@@ -43,6 +43,29 @@ public class SoftwareArtefactController {
         }
 
         return new ResponseEntity<>(softwareArtefactList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/")
+    public ResponseEntity getSoftwareArtefact(@PathVariable String id){
+        SoftwareArtefact softwareArtefact = softwareArtefactService.getSoftwareArtefact(id);
+
+        if(softwareArtefact == null){
+            return new ResponseEntity<>("SoftwareArtefact with id " + id + " not found", HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<>(softwareArtefact, HttpStatus.OK);
+        }
+
+    }
+
+    @DeleteMapping("/{id}/")
+    public ResponseEntity deleteSoftwareArtefact(@PathVariable String id){
+        SoftwareArtefact softwareArtefact = softwareArtefactService.deleteSoftwareArtefact(id);
+
+        if(softwareArtefact == null){
+            return new ResponseEntity<>("SoftwareArtefact with id " + id + " not found", HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<>(softwareArtefact, HttpStatus.OK);
+        }
     }
 
     @PutMapping("/{id}/metadata")

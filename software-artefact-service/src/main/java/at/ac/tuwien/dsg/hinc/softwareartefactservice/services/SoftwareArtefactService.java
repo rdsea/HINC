@@ -3,7 +3,6 @@ package at.ac.tuwien.dsg.hinc.softwareartefactservice.services;
 import at.ac.tuwien.dsg.hinc.softwareartefactservice.repository.SoftwareArtefactRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sinc.hinc.common.model.SoftwareArtefact;
@@ -15,20 +14,23 @@ public class SoftwareArtefactService {
 
     private final SoftwareArtefactRepository softwareArtefactRepository;
 
-    private final ObjectMapper objectMapper;
-
 
     @Autowired
-    public SoftwareArtefactService(SoftwareArtefactRepository softwareArtefactRepository, ObjectMapper objectMapper) {
+    public SoftwareArtefactService(SoftwareArtefactRepository softwareArtefactRepository) {
         this.softwareArtefactRepository = softwareArtefactRepository;
-        this.objectMapper = objectMapper;
     }
 
     public SoftwareArtefact createSoftwareArtefact(SoftwareArtefact toCreate){
-        SoftwareArtefact softwareArtefact = softwareArtefactRepository.save(toCreate);
-        return softwareArtefact;
+        return softwareArtefactRepository.save(toCreate);
     }
 
+    public SoftwareArtefact getSoftwareArtefact(String uuid){
+        return softwareArtefactRepository.read(uuid);
+    }
+
+    public SoftwareArtefact deleteSoftwareArtefact(String uuid){
+        return softwareArtefactRepository.delete(uuid);
+    }
 
     public List<SoftwareArtefact> querySoftwareArtefact(int limit) throws JsonProcessingException {
         return softwareArtefactRepository.readAll(limit);
