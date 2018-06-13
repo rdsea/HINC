@@ -3,6 +3,8 @@ const graph_util = require('../transform/slice_to_graph');
 const check_protocol = require('../check/check_protocol');
 const check_dataformat = require('../check/check_dataformat');
 
+const errorGenerator = require('../transform/error_generator_graph');
+
 
 exports.check = function (slice) {
 
@@ -47,7 +49,7 @@ function checkGraph(graph, errors, warnings, matches){
 
 function traverseGraph(node, graph, errors, warnings, matches) {
     node.marked = true;
-    checkConnectedNodes(node, node, true, graph, errors, warnings, matches);
+    checkConnectedNodes(node, node, true, null, graph, errors, warnings, matches);
 
     let nextNodes = graph_util.nextNodes(graph, node);
     for(let i = 0; i<nextNodes.length;i++){
@@ -57,31 +59,103 @@ function traverseGraph(node, graph, errors, warnings, matches) {
     }
 }
 
-function checkConnectedNodes(startNode, currentNode, directConnection, graph, errors, warnings, matches) {
+function checkConnectedNodes(startNode, currentNode, directConnection, startOutput, graph, errors, warnings, matches) {
     let nextNodes = graph_util.nextNodes(graph,currentNode);
+
 
     for(let i = 0; i<nextNodes.length; i++){
         if(nextNodes[i] === startNode){
             return;
         }
-        if(nextNodes[i].resource.metadata.resource.category === "network_function"){
-            checkConnectedNodes(startNode, nextNodes[i], false, graph, errors, warnings, matches);
-        }
+
 
         if(directConnection){
-            checkDirectConnection(startNode, nextNodes[i], graph, errors, warnings, matches);
+            startOutput = checkDirectConnection(startNode, nextNodes[i], graph, errors, warnings, matches);
         }else{
-            indirectConnectionCheck(startNode, nextNodes[i], graph, errors, warnings, matches);
+            indirectConnectionCheck(startNode, nextNodes[i], currentNode, startOutput, graph, errors, warnings, matches);
+        }
+
+        if(nextNodes[i].resource.metadata.resource.category === "network_function"){
+            checkConnectedNodes(startNode, nextNodes[i], false, startOutput, graph, errors, warnings, matches);
         }
     }
 }
 
 function checkDirectConnection(sourceNode, targetNode, graph, errors, warnings, matches){
     console.log("check direct " + sourceNode.nodename + " "+  targetNode.nodename);
+
+    let metadataConnectionChecks = [check_protocol.checkProtocols];
+    let connection = getBestMetadataConnection(sourceNode, targetNode, metadataConnectionChecks);
+    return connection.output;
 }
 
-function indirectConnectionCheck(sourceNode, targetNode, graph, errors, warnings, matches){
+function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutput, graph, errors, warnings, matches){
     console.log("indirect check " + sourceNode.nodename + " "+  targetNode.nodename);
+    let metadataConnectionChecks = [check_protocol.checkProtocols];
+    //TODO ignore errors and warnings
+    let networkToTarget = getBestMetadataConnection(currentNode, targetNode, metadataConnectionChecks);
+
+    //TODO check sourceOutput, networkToTarget.input
+}
+
+function checkMetadataConnection(sourceNode, sourceOutput, targetNode, targetInput, checkFunctionArray){
+    let errors = [];
+    let warnings =[];
+
+
+    for(let f = 0; f < checkFunctionArray.length; f++){
+        let checkfunction = checkFunctionArray[f];
+        checkfunction(sourceNode.resource.metadata, sourceOutput,
+                        targetNode.resource.metadata, targetInput,
+                        errors, warnings);
+    }
+}
+
+function getBestMetadataConnection(sourceNode, targetNode, checkFunctionArray){
+    let matchingInOutputs = protocolMatchingOutInputs(sourceNode.resource, targetNode.resource);
+
+    if(matchingInOutputs.length === 0){
+        return {input:null, output:null};
+    }
+
+    let bestConnection = matchingInOutputs[0];
+
+    //TODO for now it is assumed that max. one connection is optimal
+
+    for(let i = 0; i < matchingInOutputs.length; i++){
+        matchingInOutputs[i].errors = [];
+        matchingInOutputs[i].warnings = [];
+
+
+        for(let f = 0; f < checkFunctionArray.length; f++){
+            let checkfunction = checkFunctionArray[f];
+            checkfunction(sourceNode.resource, matchingInOutputs[i].output, targetNode.resource, matchingInOutputs[i].input,
+                matchingInOutputs[i].errors , matchingInOutputs[i].warnings);
+        }
+        /*check_protocol.checkProtocols(matchingInOutputs[i].output, matchingInOutputs[i].input, matchingInOutputs[i].errors ,
+            matchingInOutputs[i].warnings);
+
+        if(sourceNode.resource.metadata.resource.category !== "network_function" &&
+            targetNode.resource.metadata.resource.category === "network_function") {
+            check_dataformat.checkDataFormat(matchingInOutputs[i].output, matchingInOutputs[i].input, matchingInOutputs[i].errors,
+                matchingInOutputs[i].warnings);
+        }*/
+
+
+        if(matchingInOutputs[i].errors.length <= 0 &&
+            matchingInOutputs[i].warnings.length <= 0 ){
+            bestConnection = matchingInOutputs[i];
+            break;
+        }
+
+        // save connection with lowest number of errors and warnings
+        if(matchingInOutputs[i].errors.length<bestConnection.errors.length
+            || (matchingInOutputs[i].errors.length===bestConnection.errors.length &&
+                matchingInOutputs[i].warnings.length<bestConnection.warnings.length)){
+            bestConnection = matchingInOutputs[i];
+        }
+    }
+    return bestConnection;
 }
 
 

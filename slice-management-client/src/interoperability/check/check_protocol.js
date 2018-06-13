@@ -1,4 +1,7 @@
-exports.checkProtocols = function (sourceOutput, targetInput, errors, warnings) {
+const errorGenerator = require('../transform/error_generator_graph');
+
+
+exports.checkProtocols = function (sourceMetadata, sourceOutput, targetMetadata, targetInput, errors, warnings) {
     /*source = connection.source;
     target = connection.target;
 
