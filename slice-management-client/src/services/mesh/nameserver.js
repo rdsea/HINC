@@ -49,14 +49,55 @@ function deleteNameserver(sliceId){
 }
 
 function setName(sliceId, name, host, port){
+    let url = '';
     return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
-        let out = execSync(`kubectl get configmap disco-${nameserver.id} -o json`).toString();
-        let configmap = JSON.parse(out);
+        url = nameserver.location;
+        return axios.get(`${url}/api/1/dtabs/default`);
+    }).then((res) => {
+        let pairs = res.data;
+        let update = ``;
+        // check if exsiting
+        let existing = false
+        pairs.forEach((pair) => {
+            if(pair.prefix === `/${name}`){
+                pair.dst = `/$/inet/${host}/${port}`;
+                existing = true;
+            }
+        });
+        if(!existing) pairs.push({prefix: `/${name}`, dst: `/$/inet/${host}/${port}`})
 
-        let data = configmap.data;
-        data[name] = `${host} ${port}`;
-        out = execSync(`kubectl patch configmap disco-${nameserver.id} -p '{"data": ${JSON.stringify(data)}}'`).toString();
-        console.debug(out)
+
+        pairs.forEach((pair) => {
+            update += `${pair.prefix}=>${pair.dst};`;
+        });
+        console.debug(update)
+        return axios.put(`${url}/api/1/dtabs/default`, update, {headers: {"Content-Type": "application/dtab"}})
+    });
+}
+
+function setNames(sliceId, nameObjs){
+    let url = '';
+    return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
+        url = nameserver.location;
+        return axios.get(`${url}/api/1/dtabs/default`);
+    }).then((res) => {
+        let pairs = {};
+        res.data.forEach((item) => {
+            pairs[item.prefix] = item;
+        });
+
+        nameObjs.forEach((nameObj) => {
+            pairs[nameObj.name] = {
+                prefix: `/${nameObj.name}`,
+                dst: `/$/inet/${nameObj.host}/${nameObj.port}`
+            }
+        });
+        let update = ``;
+        Object.values(pairs).forEach((pair) => {
+            update += `${pair.prefix}=>${pair.dst};`;
+        });
+        console.debug(update)
+        return axios.put(`${url}/api/1/dtabs/default`, update, {headers: {"Content-Type": "application/dtab"}})
     })
 }
 
@@ -68,6 +109,17 @@ function flush(sliceId){
         out = execSync(`kubectl delete pod ${out}`).toString();
         console.debug(out);
     })
+}
+
+function deleteNameserver(sliceId){
+    return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
+        execSync(`kubectl delete deployment ${nameserver.id}`);
+        execSync(`kubectl delete service ${nameserver.id}`);
+        execSync(`kubectl delete configmap ${nameserver.id}`);
+        execSync(`kubectl delete configmap disco-${nameserver.id}`);
+    }).then(() => {
+        return db.meshDao().remove({sliceId, type: 'NAMESERVER'}, {})
+    });
 }
 
 function _waitForIp(deployId){
@@ -164,6 +216,8 @@ function _createNamerdNames(deployId){
 module.exports = {
     createNameServer,
     setName,
+    setNames,
     deleteNameserver,
-    flush
+    flush,
+    deleteNameserver
 }

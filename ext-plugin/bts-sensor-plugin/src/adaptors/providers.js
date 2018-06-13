@@ -9,22 +9,11 @@ function getProvider(settings){
     let provider = null;
     return axios.get(`${config.ENDPOINT}/sensor/bts`).then((res) => {
         let sensorDescriptions = res.data;
-        let managementPoints = [];
         let availableResources = [];
         sensorDescriptions.forEach((description) => {
-            managementPoints.push({
-                name: `provision bts ${description.name} sensor`,
-                controlType: 'PROVISION',
-                accessPoints: [{
-                    accessPointType: 'HTTP',
-                    uri: `${config.ENDPOINT}${description.url}`,
-                    httpMethod: 'POST',
-                }],
-                parameters: description.sampleConfiguration,   
-            });
-
             availableResources.push({
                 plugin: 'btssensor',
+                providerUuid: config.ADAPTOR_NAME,
                 resourceType: 'IOT_RESOURCE',
                 name: `sensor ${description.name}`,
                 controlPoints: [],
@@ -35,12 +24,20 @@ function getProvider(settings){
                 }],
                 type: 'SENSOR',
                 location: null,
+
+                parameters:{
+                    ingressAccessPoints:[],
+                    egressAccessPoints: [{
+                        applicationProtocol: "MQTT",
+                        host: "target host",
+                        port: "targetport",
+                        accessPattern: "PUBSUB",
+                        networkProtocol: "IP",
+                        qos: 0,
+                        topics: ["topic1", "topic2"]
+                    }],
+                },
                 metadata: {
-                    communication: description.communication,
-                    format: description.format,
-                    parameters:{
-                        topic: description.topic,
-                    }
                 },
             }    )
         });
@@ -49,7 +46,6 @@ function getProvider(settings){
             name: config.ADAPTOR_NAME,
             uuid: config.ADAPTOR_NAME,
             availableResources: availableResources,
-            managementPoints: managementPoints,
         };
         return provider;       
     });

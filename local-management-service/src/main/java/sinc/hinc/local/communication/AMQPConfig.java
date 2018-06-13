@@ -91,10 +91,16 @@ public class AMQPConfig {
     @Bean
     MessageListenerAdapter hincListenerAdapter(HandleFetchResources handleFetchResources,
                                                HandleFetchProviders handleFetchProviders,
-                                               HandleProvision handleProvision) {
+                                               HandleProvision handleProvision,
+                                               HandleDelete handleDelete,
+                                               HandleConfigure handleConfigure,
+                                               HandleGetLogs handleGetLogs) {
 
         handleFetchProviders.addMessageHandler(handleFetchResources);
         handleFetchProviders.addMessageHandler(handleProvision);
+        handleFetchProviders.addMessageHandler(handleDelete);
+        handleFetchProviders.addMessageHandler(handleConfigure);
+        handleFetchProviders.addMessageHandler(handleGetLogs);
 
         return new MessageListenerAdapter(handleFetchProviders, "handleMessage");
     }

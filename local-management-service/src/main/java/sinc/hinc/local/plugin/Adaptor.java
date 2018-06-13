@@ -2,6 +2,7 @@ package sinc.hinc.local.plugin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,20 +97,62 @@ public class Adaptor {
         logger.info("sending provision message");
         logger.info(provisionMessage.toJson());
 
+        ControlResult result = sendControl(resource.getProviderUuid(), provisionMessage);
+
+        Resource provisionedResource = objectMapper.readValue(result.getRawOutput(), Resource.class);
+
+        return provisionedResource;
+    }
+
+    public Resource deleteResource(Resource resource) throws IOException {
+        HincMessage deleteMessage = new HincMessage();
+        deleteMessage.setMsgType(HINCMessageType.DELETE);
+        deleteMessage.setSenderID(group+"."+id);
+        deleteMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        ControlResult result = sendControl(resource.getProviderUuid(), deleteMessage);
+        Resource deletedResource = objectMapper.readValue(result.getRawOutput(), Resource.class);
+
+        return deletedResource;
+    }
+
+    public Resource configureResource(Resource resource) throws IOException{
+        HincMessage configureMessage = new HincMessage();
+        configureMessage.setMsgType(HINCMessageType.CONFIGURE);
+        configureMessage.setSenderID(group+"."+id);
+        configureMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        ControlResult result = sendControl(resource.getProviderUuid(), configureMessage);
+        Resource configuredResource = objectMapper.readValue(result.getRawOutput(), Resource.class);
+
+        return configuredResource;
+    }
+
+    public ControlResult sendControl(String providerUuid, HincMessage message) throws IOException {
+        logger.info("sending "+message.getMsgType()+" message");
+        logger.info(message.toJson());
+
         Object rawReply = rabbitTemplate.convertSendAndReceive(
                 adaptorOutputUnicastExchange,
-                resource.getProviderUuid(),
-                provisionMessage.toJson().getBytes()
+                providerUuid,
+                message.toJson().getBytes()
         );
 
         HincMessage reply = null;
         String stringReply = new String(((byte[]) rawReply));
-
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
         ControlResult result = objectMapper.readValue(reply.getPayload(), ControlResult.class);
-        Resource provisionedResource = objectMapper.readValue(result.getRawOutput(), Resource.class);
+        return result;
+    }
 
-        return provisionedResource;
+    public String getResourceLogs(Resource resource) throws IOException {
+        HincMessage getLogsMessage = new HincMessage();
+        getLogsMessage.setMsgType(HINCMessageType.GET_LOGS);
+        getLogsMessage.setSenderID(group+"."+id);
+        getLogsMessage.setPayload(objectMapper.writeValueAsString(resource));
+
+        ControlResult result = sendControl(resource.getProviderUuid(), getLogsMessage);
+        return result.getRawOutput();
     }
 }

@@ -1,5 +1,6 @@
 package sinc.hinc.local.plugin;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,6 @@ public class AdaptorManager {
     }
 
     public Resource provisionResource(String adaptorName, Resource resource) throws IOException {
-        logger.debug(""+adaptors.size());
         for(Adaptor adaptor: adaptors.values()){
             logger.debug(adaptor.getName());
             if(adaptor.getName().equals(adaptorName)){
@@ -66,6 +66,41 @@ public class AdaptorManager {
                 return adaptor.provisionResource(resource);
             }
         }
+        return null;
+    }
+
+    public Resource deleteResource(String adaptorName, Resource resource) throws IOException {
+        for(Adaptor adaptor: adaptors.values()){
+            logger.debug(adaptor.getName());
+            if(adaptor.getName().equals(adaptorName)){
+                logger.info("sending control to adaptor "+adaptor.getName());
+                return adaptor.deleteResource(resource);
+            }
+        }
+        return null;
+    }
+
+    public Resource configureResource(String adaptorName, Resource resource) throws IOException{
+        for(Adaptor adaptor: adaptors.values()){
+            logger.debug(adaptor.getName());
+            if(adaptor.getName().equals(adaptorName)){
+                logger.info("sending control to adaptor "+adaptor.getName());
+                return adaptor.configureResource(resource);
+            }
+        }
+
+        return null;
+    }
+
+    public String getResourceLogs(String adaptorName, Resource resource) throws IOException{
+        for(Adaptor adaptor: adaptors.values()){
+            logger.debug(adaptor.getName());
+            if(adaptor.getName().equals(adaptorName)){
+                logger.info("sending control to adaptor "+adaptor.getName());
+                return adaptor.getResourceLogs(resource);
+            }
+        }
+
         return null;
     }
 

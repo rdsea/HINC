@@ -12,53 +12,40 @@ function getProvider(settings){
         let availableResources = [];
         availableResources.push({
             plugin: 'btsingestion',
+            providerUuid: config.ADAPTOR_NAME,
             resourceType: 'CLOUD_SERVICE',
             name: `bts ingestion client`,
             controlPoints: [],
             dataPoints: [],
             type: 'SOFTWARE_UNIT',
             location: null,
-            metadata: {
-                paramters:{
-                    "url": "/ingestionClient/",
-                    "sampleConfiguration": {
-                        "data": "bigQuery",
-                        "brokers": [
-                            {
-                                "host": "localhost",
-                                "port": 1883,
-                                "clientId": "testclient1",
-                                "username": "xxx",
-                                "password": "xxx",
-                                "topics": [
-                                    "test1",
-                                    "test2"
-                                ]
-                            },
-                            {
-                                "host": "localhost",
-                                "port": 1883,
-                                "clientId": "testclient2",
-                                "topics": [
-                                    "test3",
-                                    "test4"
-                                ]
-                            }
-                        ],
-                        "bigQuery": {
-                            "dataset": "datasetId",
-                            "tables": [
-                                {
-                                    "id": "tableId",
-                                    "topics": [
-                                        "topic1",
-                                        "topic2"
-                                    ]
-                                }
+            parameters:{
+                egressAccessPoints: [{
+                    applicationProtocol: "MQTT",
+                    host: "broker host",
+                    port: "broker port",
+                    accessPattern: "PUBSUB",
+                    networkProtocol: "IP",
+                    qos: 0,
+                    topics: ["topic1", "topic2"]
+                }],
+                ingressAccessPoints: [],
+                "data": "bigQuery",
+                "bigQuery": {
+                    "dataset": "datasetId",
+                    "tables": [
+                        {
+                            "id": "tableId",
+                            "topics": [
+                                "topic1",
+                                "topic2"
                             ]
                         }
-                    }
-                },
+                    ]
+                }
+            },
+            metadata: {
+                
             },
         });
 

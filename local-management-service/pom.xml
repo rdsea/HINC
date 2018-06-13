@@ -6,6 +6,7 @@
         <artifactId>hinc-pom</artifactId>
         <version>1.0</version>
     </parent>
+
     <artifactId>local-management-service</artifactId>
     <packaging>jar</packaging>    
     

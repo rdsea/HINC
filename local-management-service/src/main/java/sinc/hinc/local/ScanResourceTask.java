@@ -11,7 +11,7 @@ public class ScanResourceTask {
     @Autowired
     AdaptorManager adaptorManager;
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedDelayString = "${hinc.local.refresh}")
     public void scanAll() {
         adaptorManager.scanAll();
     }

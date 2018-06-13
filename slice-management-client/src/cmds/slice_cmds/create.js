@@ -5,70 +5,74 @@ const moment = require('moment');
 const path = require('path');
 const axios = require('axios');
 const config = require('../../config');
+const fs = require("fs");
 
 exports.command = 'create <file>'
 exports.desc = 'creates a slice specified in <file>'
 exports.builder = {}
 exports.handler = function (argv) {
-    let slice = require(path.join(process.cwd(), argv.file));
+    let filepath = path.resolve(argv.file);
+    let slice = require(filepath);
     return _provisionResources(slice).then(() => {
         slice.createdAt = moment().unix();
-        db.sliceDao().insert(slice);
+        return db.sliceDao().insert(slice);
+    }).then((slice) => {
+        console.log(`writing slice deployment to ${filepath}`);
+        fs.writeFileSync(filepath, JSON.stringify(slice, null, 4));
     })
 }
 
 
 function _provisionResources(slice){
     return _provisionMesh(slice).then(() => {
+        console.log("provisioned service mesh");
         let provisionResourcePromises = [];
         let provisionResourceItems = [];
 
         Object.keys(slice.resources).forEach((label) => {
-            //provisionResourcePromises.push(_provisionResource(slice.sliceId, slice.resources[label], label));
-            provisionResourceItems.push({
-                sliceId: slice.sliceId,
-                resource: slice.resources[label],
-                label,
-            });
+            provisionResourcePromises.push(_provisionResource(slice.sliceId, slice.resources[label], label));
         })
-
-        return provisionResourceItems.reduce((promise, item) => {
-            return promise.then((res) => {
-                return _provisionResource(item.sliceId, item.resource, item.label).then((r) => res.concat(r));
-            })
-        }, Promise.resolve([]));
-
-        //return Promise.all(provisionResourcePromises);
+        return Promise.all(provisionResourcePromises);
     }).then((provisionedResourceResults) => {
-        // each resource is connected to the proxy as an egress endpoint
-        let setNamePromises = [];
-
         // update slice resources with metadata afer provisioning
         provisionedResourceResults.forEach((provisionedResourceResult) => {
             Object.assign(slice.resources[provisionedResourceResult.label], provisionedResourceResult.provisionedResource);
         })
 
-        for(let label in slice.connectivities){
-            let inResource = slice.resources[slice.connectivities[label].in];
-            let outResource = slice.resources[slice.connectivities[label].out];
+        // each resource is connected to the proxy as an egress endpoint
+        let nameObjs = [];
 
-            if(outResource.metadata.host && outResource.metadata.port)
-                setNamePromises.push(meshService.setName(slice.sliceId, slice.connectivities[label].in, outResource.metadata.host, outResource.metadata.port));
+        for(let label in slice.connectivities){
+            let inResource = slice.resources[slice.connectivities[label].in.label];
+            let outResource = slice.resources[slice.connectivities[label].out.label];
+            nameObjs.push(_connectResources(slice.sliceId, slice.connectivities[label], inResource, outResource));
         }
 
-        return Promise.all(setNamePromises);
-    }).then(() => {
-        return meshService.flush(slice.sliceId);
+        return meshService.setNames(slice.sliceId, nameObjs);
     }).then(() => {
         return slice;
     })
 
 }
 
+function _connectResources(sliceId, connectivity, inResource, outResource){
+    let outAccessPoint = outResource.parameters.ingressAccessPoints[connectivity.out.accessPoint];
+    let name = `${connectivity.in.label}${connectivity.in.accessPoint}`
+    return {
+        name: `${connectivity.in.label}${connectivity.in.accessPoint}`,
+        host: outAccessPoint.host,
+        port: outAccessPoint.port,
+    }
+}
+
 function _provisionResource(sliceId, resource, label){
     return meshService.getProxyInfo(sliceId, label).then((proxy) => {
         // add the tcp ip endpoint into the resource metadata for the plugin
-        resource.metadata._proxy = proxy;
+        for(let i=0;i<resource.parameters.egressAccessPoints.length;i++){
+            resource.parameters.egressAccessPoints[i].host = proxy.ip;
+            resource.parameters.egressAccessPoints[i].port = proxy.ports[i];
+        }
+        console.debug(`provisioning ${label}`);
         return axios.post(`${config.uri}/controls/provision`, resource);
     }).then((res) => {
         let provisionedResource = res.data
@@ -88,7 +92,7 @@ function _provisionMesh(slice){
     return meshService.createNameServer(slice.sliceId).then(() => {
         let proxyCreatePromises = [];
         for(let label in slice.resources){
-            let proxyCreatePromise = meshService.createProxy(slice.sliceId, label);
+            let proxyCreatePromise = meshService.createProxy(slice.sliceId, label, slice.resources[label].parameters.egressAccessPoints.length);
             proxyCreatePromises.push(proxyCreatePromise);
         }
         

@@ -1,9 +1,9 @@
-# Interoperability Scenarios
+# Interoperability Resource Slice Scenarios
 
 This directory includes a set of scenarios in which one can
-create resource slices for IoT Interoperability problem.
+create resource slices for dealing with IoT Interoperability problems.
 
-The overall scenario is about the Interoperability of data and services for a seaport (e.g., in our example, Valencia seaport in the Inter-IoT project).
+The overall setting is about the Interoperability of data and services for a seaport (e.g., in our example, Valencia seaport in the Inter-IoT project).
 
 In the following we describe scenarios, whereas technical setup details will be given in sub-directories.
 
@@ -44,6 +44,9 @@ In the seaport there is a provider which can offer a data processing workflow en
 ### Cloud services:
 There are many cloud services available outside the port. We use BigQuery, virtual machines, Google Storage, etc. Furthermore the computing brokers and computing workflows (like in the edge situation within the seaport) can also be provided as cloud services.
 
+### Application Domains
+
+We will emulate various application domain objects, such as vessels, vessel providers, truck providers, cranes providers, port authority, etc. based on existing information we have.
 
 ## Accessing Video Data in seaport
 
@@ -137,3 +140,96 @@ Initially the slice is just about sensors, broker, workflow.
 ### Resource Slice Configuration
 
 The consumer decides to send commands to other consumers (called receivers). The consumer decides to add  a new component that takes the result of an analytics (e.g., from the queue) then ingest the data into a component that produces commands for receivers.
+
+## Data Exchange and Control in Emergency situation
+
+In this scenario, we assume there are alarms occurring in a seaport. The alarms are propagated through an MQTT broker. Usually, there are some analytics applications listening the alarms queues to react to the alarms.
+
+One of such alarms analytics programs finds alarms related to terminals in the port. It queries a PortControlService (PCS) to obtain the list of vessels approaching the port. Based on the information about the vessels and the service providers of the vessels, the alarms analytics program creates new brokers as resources or connects to existing communication means of the vessel providers to share the information about the situations. The program can also send requests to ask vessels to stop or change the plan to arrive terminals.
+
+Similarly, another analytics program can also inform other relevant objects around the terminals (e.g., by using geohash to query cranes and trucks) and requests them to stop or change the plan.
+
+Another analytics program can request camera providers (for cameras close to the terminal, using geohash)  to provide videos to separate channels that can be accessed by polices and other relevant third parties.
+
+We have:
+
+* alarmgenerator to generate samples of alarms
+* mqtt broker for alarms
+* python/nodejs analytics programs
+* A PCS emulating the port control. the PCS has APIs for querying vessels and for updating vessels positions. PCS has the back-end database as mongodb.
+* A set of vessel emulators (python/nodejs) emulate  the movement of vessels. An vessels emulator subscribes information from its providers via a queue.
+* A set of vessel service providers. Each providers accept a different format of data (JSON/CSV with different structures) and use different protocols (MQTT, AMQP and Webservice).
+* Cranes and trucks are similar vessels with cranes/trucks  and their providers
+* Vessels/trucks/cranes/cameras have their GPS positions so that geohash can be used to query them.
+
+Note that to demonstrate the diversity of providers: we have at different providers for each category: vessel, truck and crane.
+
+### Resource slices
+
+Various resource slices can be created during the emergency situations. Network functions can also be controlled.
+
+### Interoperability
+
+Since vessel/truck/crane providers accept different forms of data and protocols, we need to search suitable interoperability bridge and instantiate them accordingly.
+
+## Intelligent Resource Slice Responding to Weather Situations.
+
+In this scenario, we test the situation of creating interoperability resource slice due to weather situations.
+
+An analytics program listens weather information from the port and detects weather situations in the port that require other stakeholders to react/replan.
+The analytics program will:
++ perform stream analytics with weather data through a message broker
+* create suitable resource slice if a weather condition meets a pre-defined constraints (e.g. bad weather)
+
+the resoure slice creation will be:
+
+* find cranes/trucks/vessels providers (assume that they are running)
+* create a broker for sharing data to these providers
+* ask these providers to subscribe the alarms/weather information sent via the broker
+
+this is a test to reflect the if a slice can be created based on events.
+
+we will use Valencia port weather data as one example. The information about truck/vessel/crane providers are based on the previous scenario.
+
+### Interoperability
+
+Some possibility w.r.t interoperability:
+
+* possible to deploy components to transform warning/weather information to the format that the provider needs.
+* control providers
+
+## Sharing cranes information
+
+Cranes are nowadays being monitored using IoT sensors. The monitoring information is sent to the cranes owner/management services. Furthermore, part of the crane monitoring information, such as position, can be shared to authority where the cranes are deployed, such as the seaport.
+
+Furthermore, depending on situations, on-demand data can be shared to other parties, such as cranes maintenance and manufacturer.
+
+### Resource slice
+
+The resource slice includes:
+
+* Crane sensors which can be turned on/off
+* Message queue/IoT data hub through which sensor data is sent to crane management service of the crane owner/operator
+* Crane management service
+
+For sharing data to the authority, further resources are included:
+
+* An extracter program which extracts only relevant data sent to the authority
+* the message queue of the authority through which the authority receives the crane information
+
+The part of the resource slice for the authority can be reconfigured/changed on-demand.
+
+For sharing data to other partners:
+
+* A set of data extraction programs used to extract data
+* Message queues or storage through which the extracted data will be sent.
+
+Similar, they will be established on demand.
+
+### Interoperability problem
+
+Several interoperability issues will be solved:
+
+* Format of data of the receivers (authority, third parties)
+* On-demand configuration for middleware through which data will be sent.
+* Quality of data and contract.

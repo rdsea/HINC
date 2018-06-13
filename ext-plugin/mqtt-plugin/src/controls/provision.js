@@ -6,13 +6,21 @@ function provision(resource){
     let broker = null;
     return axios.post(`${config.ENDPOINT}/mosquittobroker`).then((res) => {
         broker = res.data;
+        resource.uuid = broker.brokerId;
         console.log('successful control execution');
         // location of broker might not set, await it
         return _waitForLocation(broker.brokerId, `${config.ENDPOINT}/mosquittobroker`);
     }).then((brokerIp) => {
-        resource.metadata.host = brokerIp;
-        resource.metadata.port = 1883;
-        resource.Uuid = broker.brokerId;
+        let ingressAccessPoint = {
+            applicationProtocol: "MQTT",
+            host: brokerIp,
+            port: 1883,
+            accessPattern: "PUBSUB",
+            networkProtocol: "IP",
+            qos: 0,
+            topics: []
+        };
+        resource.parameters.ingressAccessPoints.push(ingressAccessPoint);
 
         let controlResult = {
             status: 'SUCCESS',

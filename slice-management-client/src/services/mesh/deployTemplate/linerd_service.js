@@ -14,13 +14,8 @@ var template = {
       }
     },
     "spec": {
-      "type": "LoadBalancer",
+      // "type": "LoadBalancer",
       "ports": [
-        {
-          "port": 7474,
-          "targetPort": 7474,
-          "name": "main",
-        },
         {
           "port": 9992,
           "targetPort": 9992,

@@ -23,7 +23,6 @@ exports.handler = function (argv) {
         }else{
             _displayOverview(s);
         }
-        console.info(`slice ${argv.sliceId} created ${moment.unix(s.createdAt).fromNow()}`);
         
     }).catch((err) => {
         console.err(err);

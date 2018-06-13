@@ -1,10 +1,14 @@
-## Central service to connect HINC entities
+# HINC global service
 
-This is an example of how to communicate with HINC to get information and control. This package has following features:
+## Overview
+This package contain core functions of HINC global service.
+The global service will integrate various other local services
 
-1. Communicate with HINC local to query information:
-  * Resource metadata 
-  * Gateway metadata
-2. Using metadata of sensors to subscribe the data and show in graph.
-3. GUI to view the resources.
-4. Expose REST API.
+## Running Local
+java -jar global-management-service-spring-boot-0.0.1-SNAPSHOT.jar
+
+## Configuration
+You will need to provide an application.properties file in the same directory. A sample can be found in src/main/resources 
+
+## Limitation
+- Secure HTTPS

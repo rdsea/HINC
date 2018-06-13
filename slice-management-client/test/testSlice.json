@@ -4,14 +4,26 @@
         "sensor": {
             "name": "sensor humidity",
             "pluginName": null,
-            "providerUuid": "sensor",
+            "providerUuid": "sensorlocal1",
             "resourceType": "IOT_RESOURCE",
             "location": null,
-            "metadata": {
-                "parameters":{
-                    "topic": "test"
-                }
+            "parameters": {
+                "ingressAccessPoints": [],
+                "egressAccessPoints": [
+                    {
+                        "applicationProtocol": "MQTT",
+                        "host": "linkerd-testslice-sensor",
+                        "port": 7474,
+                        "accessPattern": "PUBSUB",
+                        "networkProtocol": "IP",
+                        "qos": 0,
+                        "topics": [
+                            "topic"
+                        ]
+                    }
+                ]
             },
+            "metadata": {},
             "controlPoints": [],
             "dataPoints": [
                 {
@@ -20,144 +32,203 @@
                     "unit": "percent"
                 }
             ],
-
             "source": [],
-            "target": ["mqtt_connectivity"]
+            "target": [
+                "mqtt_connectivity"
+            ],
+            "adaptorName": null,
+            "resourceCategory": null,
+            "uuid": "sensor1528671664454"
         },
-    
         "broker": {
             "name": "mosquitto broker",
             "pluginName": "mosquittobroker",
-            "providerUuid": "mosquitto",
+            "providerUuid": "mqttlocal1",
             "resourceType": "NETWORK_FUNCTION_SERVICE",
             "location": null,
-            "metadata": {
-
+            "parameters": {
+                "ingressAccessPoints": [
+                    {
+                        "applicationProtocol": "MQTT",
+                        "host": "35.195.240.154",
+                        "port": 1883,
+                        "accessPattern": "PUBSUB",
+                        "networkProtocol": "IP",
+                        "qos": 0,
+                        "topics": []
+                    },
+                    {
+                        "applicationProtocol": "MQTT",
+                        "host": "35.195.240.154",
+                        "port": 1883,
+                        "accessPattern": "PUBSUB",
+                        "networkProtocol": "IP",
+                        "qos": 0,
+                        "topics": []
+                    },
+                    {
+                        "applicationProtocol": "MQTT",
+                        "host": "35.187.126.57",
+                        "port": 1883,
+                        "accessPattern": "PUBSUB",
+                        "networkProtocol": "IP",
+                        "qos": 0,
+                        "topics": []
+                    }
+                ],
+                "egressAccessPoints": []
             },
+            "metadata": {},
             "controlPoints": [],
             "dataPoints": [],
-        
-            "source": ["mqtt_connectivity"],
-            "target": []
+            "source": [
+                "mqtt_connectivity"
+            ],
+            "target": [],
+            "adaptorName": null,
+            "resourceCategory": null,
+            "uuid": "broker1528671666321"
         },
-
-        "bigquery":{
+        "bigquery": {
             "name": "bigQuery dataset",
             "pluginName": "bigquery",
-            "providerUuid": "bigquery",
+            "providerUuid": "bigquerylocal1",
             "resourceType": "CLOUD_SERVICE",
             "location": null,
-            "metadata": {
-                "parameters":{
-                    "datasetId": "testDataset",
+            "parameters": {
+                "ingressAccessPoints": [],
+                "egressAccessPoints": [],
+                "datasetId": "testDataset",
+                "tables": [
+                    {
+                        "id": "testTable",
+                        "schema": [
+                            {
+                                "description": "field description",
+                                "mode": "REQUIRED",
+                                "name": "id",
+                                "type": "STRING"
+                            },
+                            {
+                                "description": "field description",
+                                "mode": "REQUIRED",
+                                "name": "value",
+                                "type": "FLOAT64"
+                            },
+                            {
+                                "description": "field description",
+                                "mode": "REQUIRED",
+                                "name": "reading_time",
+                                "type": "TIMESTAMP"
+                            },
+                            {
+                                "description": "field description",
+                                "mode": "REQUIRED",
+                                "name": "station_id",
+                                "type": "INT64"
+                            },
+                            {
+                                "description": "field description",
+                                "mode": "REQUIRED",
+                                "name": "parameter_id",
+                                "type": "INT64"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "metadata": {},
+            "controlPoints": [],
+            "dataPoints": [],
+            "source": [
+                "mqtt_connectivity"
+            ],
+            "target": [],
+            "adaptorName": null,
+            "resourceCategory": null,
+            "uuid": "testDataset"
+        },
+        "ingest": {
+            "name": "bts ingestion client",
+            "pluginName": "btsingestion",
+            "providerUuid": "ingestionlocal1",
+            "resourceType": "CLOUD_SERVICE",
+            "location": null,
+            "parameters": {
+                "ingressAccessPoints": [],
+                "egressAccessPoints": [
+                    {
+                        "applicationProtocol": "MQTT",
+                        "host": "linkerd-testslice-ingest",
+                        "port": 7474,
+                        "accessPattern": "PUBSUB",
+                        "networkProtocol": "IP",
+                        "qos": 0,
+                        "topics": [
+                            "topic"
+                        ]
+                    }
+                ],
+                "data": "bigQuery",
+                "bigQuery": {
+                    "dataset": "testDataset",
                     "tables": [
                         {
                             "id": "testTable",
-                            "schema": [
-                                {
-                                    "description": "field description",
-                                    "mode": "REQUIRED",
-                                    "name": "id",
-                                    "type": "STRING"
-                                },
-                                {
-                                    "description": "field description",
-                                    "mode": "REQUIRED",
-                                    "name": "value",
-                                    "type": "FLOAT64"
-                                },{
-                                    "description": "field description",
-                                    "mode": "REQUIRED",
-                                    "name": "reading_time",
-                                    "type": "TIMESTAMP"
-                                },{
-                                    "description": "field description",
-                                    "mode": "REQUIRED",
-                                    "name": "station_id",
-                                    "type": "INT64"
-                                },{
-                                    "description": "field description",
-                                    "mode": "REQUIRED",
-                                    "name": "parameter_id",
-                                    "type": "INT64"
-                                }
+                            "topics": [
+                                "topic"
                             ]
                         }
                     ]
                 }
             },
+            "metadata": {},
             "controlPoints": [],
             "dataPoints": [],
-        
-            "source": ["mqtt_connectivity"],
-            "target": []
-        },
-        "ingest": {
-            "name": "bts ingestion client",
-            "pluginName": "btsingestion",
-            "providerUuid": "ingest",
-            "resourceType": "CLOUD_SERVICE",
-            "location": null,
-            "metadata": {
-                "parameters":{
-                    "data": "bigQuery",
-                    "brokers": [
-                        {
-                            "host": "35.205.138.49",
-                            "port": 1883,
-                            "clientId": "testclient1",
-                            "username": "xxx",
-                            "password": "xxx",
-                            "topics": [
-                                "test"
-                            ]
-                        }
-                    ],
-                    "bigQuery": {
-                        "dataset": "testDataset",
-                        "tables": [
-                            {
-                                "id": "testTable",
-                                "topics": [
-                                    "test"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            },
-            "controlPoints": [],
-            "dataPoints": [],
-        
-            "source": ["ingest_connectivity"],
-            "target": []
+            "source": [
+                "ingest_connectivity"
+            ],
+            "target": [],
+            "adaptorName": null,
+            "resourceCategory": null,
+            "uuid": "ingestionclient1528671663831"
         }
-        
     },
-
     "connectivities": {
         "mqtt_connectivity": {
             "accessPoint": {
                 "applicationProtocol": "MQTT",
                 "networkProtocol": "IP",
                 "qos": 0,
-                "topics":[]
+                "topics": []
             },
             "dataFormat": "JSON",
-            "in": "sensor",
-            "out": "broker"
+            "in": {
+                "label": "sensor",
+                "accessPoint": 0
+            },
+            "out": {
+                "label": "broker",
+                "accessPoint": 0
+            }
         },
-
-        "ingest_connectivity":{
+        "ingest_connectivity": {
             "accessPoint": {
                 "applicationProtocol": "MQTT",
                 "networkProtocol": "IP",
                 "qos": 0,
-                "topics":[]
+                "topics": []
             },
             "dataFormat": "JSON",
-            "in": "ingest",
-            "out": "broker"
+            "in": {
+                "label": "ingest",
+                "accessPoint": 0
+            },
+            "out": {
+                "label": "broker",
+                "accessPoint": 0
+            }
         }
-    }
+    },
+    "createdAt": 1528671706
 }

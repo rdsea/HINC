@@ -1,5 +1,6 @@
 const axios = require('axios');
 const config = require('../../config')
+const url = require("url");
 
 /**
  * gets the available resources from the provider
@@ -38,8 +39,20 @@ function _sensorItemToResources(item){
             unit: item.description.unit,
         }
     
+        let uri = url.parse(sensor.uri);
+        let egressAccessPoint = {
+            applicationProtocol: "MQTT",
+            host: uri.hostname,
+            port: parseInt(uri.port),
+            accessPattern: "PUBSUB",
+            networkProtocol: "IP",
+            qos: 0,
+            topics: [sensor.topic]
+        };
+
         let resource = {
             uuid: sensor.clientId,
+            providerUuid: config.ADAPTOR_NAME,
             plugin: 'btssensor',
             resourceType: 'IOT_RESOURCE',
             name: `sensor ${item.description.name}`,
@@ -47,10 +60,12 @@ function _sensorItemToResources(item){
             dataPoints: [datapoint],
             type: 'SENSOR',
             location: null,
+            parameters:{
+                ingressAccessPoints:[],
+                egressAccessPoints: [egressAccessPoint],
+            },
             metadata: {
-                uri: sensor.uri,
-                topic: sensor.topic,
-                createAt: sensor.createdAt,
+                createdAt: sensor.createdAt,
             },
         }    
         resources.push(resource);

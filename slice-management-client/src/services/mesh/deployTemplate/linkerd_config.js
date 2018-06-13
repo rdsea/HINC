@@ -8,12 +8,7 @@ var template = {
       {
         "label": "resource",
         "servers": [
-          {
-            "ip": "0.0.0.0",
-            "port": 7474,
-            "dstName": "/cluster/resource",
-            "connectTimeoutMs": 500
-          }
+
         ],
         "interpreter": {
           "kind": "io.l5d.namerd.http",
