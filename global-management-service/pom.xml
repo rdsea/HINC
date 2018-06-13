@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>at.ac.tuwien.dsg.hinc</groupId>
-	<artifactId>global-management-service-spring-boot</artifactId>
+	<artifactId>global-management-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>global-management-service-spring-boot</name>
+	<name>global-management-service</name>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
