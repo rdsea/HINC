@@ -12,6 +12,7 @@ import sinc.hinc.common.model.capabilities.ControlPoint;
 import sinc.hinc.common.model.capabilities.DataPoint;
 import sinc.hinc.common.model.payloads.ControlResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,7 @@ public class ResourceController {
                                                        //@RequestParam(required = false, defaultValue = "false")Boolean rescan
                                                         ) {
 
-        List<Resource> resourceList = null;
+        List<Resource> resourceList = new ArrayList<>();
         try {
             resourceList = resourceService.queryResources(timeout, limit);
         } catch (JsonProcessingException e) {
