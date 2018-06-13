@@ -1,6 +1,7 @@
 package sinc.hinc.common.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.data.annotation.Id;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 
 import java.util.Collection;
@@ -10,6 +11,7 @@ public class ResourceProvider {
     private String name;
     private Collection<Resource> availableResources; // aka catalogue
     // set of resources available from the provider
+    @Id
     private String uuid;
 
     public String getName() {
