@@ -29,6 +29,7 @@
 		<module>common</module>
 		<module>collector</module>
 		<module>repository</module>
+		<module>software-artefact-service</module>
 	</modules>
     
     
