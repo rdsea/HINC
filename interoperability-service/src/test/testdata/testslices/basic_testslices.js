@@ -1,4 +1,4 @@
-const util = require('../../util/slice_util');
+const util = require('../../../main/util/slice_util');
 
 
 exports.test_0_working_slice = function(){

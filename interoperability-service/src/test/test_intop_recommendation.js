@@ -1,8 +1,8 @@
 const assert = require('assert');
 
-const util = require('./util/slice_util');
-const check = require('../src/interoperability/check/intop_check');
-const recommendation = require('../src/interoperability/recommendation/intop_recommendation');
+const util = require('../main/util/slice_util');
+const check = require('../main/check/intop_check');
+const recommendation = require('../main/recommendation/intop_recommendation');
 
 const solutionResources = require('./testdata/intop_recommendation_testdata');
 

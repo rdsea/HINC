@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const util = require('./slice_util');
+const util = require('../../main/util/slice_util');
 const testslice = require('../testSlice');
 
 describe('test slice_util', function() {

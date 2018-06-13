@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const sliceToGraph = require('../src/interoperability/transform/slice_to_graph');
+const sliceToGraph = require('../main/transform/slice_to_graph');
 const data = require('./testdata/slice_to_connection_array_testdata');
 
 

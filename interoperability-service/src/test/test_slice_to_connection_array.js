@@ -3,7 +3,7 @@ const assert = require('assert');
 const sensor = require('./testdata/resources/sensor_testdata');
 const artefact = require('./testdata/resources/artefact_testdata');
 const ingestion = require('./testdata/resources/ingestion_testdata');
-const sliceToConnectionArray = require('../src/interoperability/transform/slice_to_connection_array');
+const sliceToConnectionArray = require('../main/transform/slice_to_connection_array');
 const data = require('./testdata/slice_to_connection_array_testdata');
 
 

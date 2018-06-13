@@ -1,4 +1,4 @@
-const intop_check = require('../src/interoperability/check/intop_check');
+const intop_check = require('../main/check/intop_check');
 const assert = require('assert');
 
 const testdata = require('./testdata/intop_check_testdata');
