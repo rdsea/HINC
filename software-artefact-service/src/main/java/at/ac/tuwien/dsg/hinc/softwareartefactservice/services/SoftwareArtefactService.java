@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.SoftwareArtefact;
 
 import java.util.List;
@@ -25,9 +24,14 @@ public class SoftwareArtefactService {
         this.objectMapper = objectMapper;
     }
 
+    public SoftwareArtefact createSoftwareArtefact(SoftwareArtefact toCreate){
+        SoftwareArtefact softwareArtefact = softwareArtefactRepository.save(toCreate);
+        return softwareArtefact;
+    }
+
+
     public List<SoftwareArtefact> querySoftwareArtefact(int limit) throws JsonProcessingException {
-        //TODO temporary queue
-        return null;
+        return softwareArtefactRepository.readAll(limit);
     }
 
     public SoftwareArtefact putMetadata(String softwareArtefactId, JsonNode metadata){

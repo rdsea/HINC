@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.SoftwareArtefact;
 
 import java.util.ArrayList;
@@ -24,6 +23,14 @@ public class SoftwareArtefactController {
         this.softwareArtefactService = softwareArtefactService;
     }
 
+
+    @PutMapping
+    public ResponseEntity<SoftwareArtefact> createSoftwareArtefact(@RequestBody SoftwareArtefact softwareArtefact) {
+
+        SoftwareArtefact result = softwareArtefactService.createSoftwareArtefact(softwareArtefact);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
     @GetMapping
     public ResponseEntity<List<SoftwareArtefact>> getSoftwareArtefact(@RequestParam(required = false, defaultValue = "0")Integer limit) {
