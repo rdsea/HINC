@@ -2,8 +2,8 @@ const intop_check = require('../check/intop_check');
 const util = require('../util/slice_util');
 
 
-exports.getRecommendations = function(slice, checkresults){
-
+exports.getRecommendationsWithoutCheck = function(slice, checkresults){
+    return "recommendation";
 };
 
 exports.getRecommendations = function(slice){
