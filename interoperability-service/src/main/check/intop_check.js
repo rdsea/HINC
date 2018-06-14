@@ -1,4 +1,3 @@
-const sliceToConnectionArray = require('../transform/slice_to_connection_array');
 const graph_util = require('../transform/slice_to_graph');
 const check_protocol = require('../check/check_protocol');
 const check_dataformat = require('../check/check_dataformat');
@@ -7,29 +6,6 @@ const check_qos = require('../check/check_qos');
 
 const errorGenerator = require('../transform/error_generator_graph');
 
-/* TODO remove - old algorithm
-exports.check = function (slice) {
-
-    let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
-    let errors = [];
-    let warnings = [];
-    let matches = [];
-
-    connections.forEach(checkConnection(errors, warnings, matches));
-
-    return {errors:errors, warnings:warnings, matches: matches};
-};
-
-exports.checkSingleConnection = function(connection){
-    let errors = [];
-    let warnings = [];
-    let matches = [];
-
-    let connections = [connection];
-    connections.forEach(checkConnection(errors, warnings, matches));
-
-    return {errors:errors, warnings:warnings, matches: matches};
-};*/
 
 exports.checkSlice = function(slice){
     let graph = graph_util.sliceToGraph(slice);
@@ -96,7 +72,7 @@ function checkDirectConnection(sourceNode, targetNode, graph, errors, warnings, 
         matches.push({});
     }else{
         //generate structured error object
-        let errorObject = errorGenerator.generateErrorObject();
+        let errorObject = errorGenerator.generateErrorObject(sourceNode, targetNode, checkErrors, true, graph);
         //TODO maybe map errors to responsible source- or targetnode
         errors.push(errorObject);
     }
@@ -122,7 +98,7 @@ function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutp
         matches.push({});
     }else{
         //generate structured error object
-        let errorObject = errorGenerator.generateErrorObject();
+        let errorObject = errorGenerator.generateErrorObject(sourceNode, targetNode, checkErrors, false, graph);
         //TODO maybe map errors to responsible source- or targetnode
         errors.push(errorObject);
     }
@@ -181,59 +157,6 @@ function getBestMetadataConnection(sourceNode, targetNode, checkFunctionArray){
     }
     return bestConnection;
 }
-
-/* TODO - old algorithm
-function checkConnection(errors, warnings, matches) {
-    return function (connection) {
-        let matchingInOutputs = protocolMatchingOutInputs(connection.source, connection.target);
-        let matchAvailable = false;
-
-        if(matchingInOutputs.length === 0){
-            //TODO add more useful error object
-            errors.push("error");
-            return;
-        }
-
-        let bestConnection = matchingInOutputs[0];
-
-        for(let i = 0; i < matchingInOutputs.length; i++){
-            matchingInOutputs[i].errors = [];
-            matchingInOutputs[i].warnings = [];
-
-            check_protocol.checkProtocols(matchingInOutputs[i].output, matchingInOutputs[i].input, matchingInOutputs[i].errors ,
-                matchingInOutputs[i].warnings);
-            check_dataformat.checkDataFormat(matchingInOutputs[i].output, matchingInOutputs[i].input, matchingInOutputs[i].errors ,
-                matchingInOutputs[i].warnings);
-
-
-            if(matchingInOutputs[i].errors.length <= 0 &&
-                matchingInOutputs[i].warnings.length <= 0 ){
-                //TODO add more useful match object
-                matches.push(matchingInOutputs[i].output.protocol.protocol_name);
-                matchAvailable = true;
-                break;
-            }
-
-            // save connection with lowest number of errors and warnings
-            if(matchingInOutputs[i].errors.length<bestConnection.errors.length
-                || (matchingInOutputs[i].errors.length===bestConnection.errors.length &&
-                    matchingInOutputs[i].warnings.length<bestConnection.warnings.length)){
-                bestConnection = matchingInOutputs[i];
-            }
-        }
-
-        if(!matchAvailable){
-            if(bestConnection.errors.length>0){
-                //TODO add more useful error object
-                errors.push("error");
-            }else if (bestConnection.warnings.length>0){
-                //TODO add more useful warning object
-                warnings.push("warning");
-            }
-        }
-    }
-}*/
-
 
 function protocolMatchingOutInputs(source, target){
     let protocolmatches = [];
