@@ -2,10 +2,12 @@ const sliceToConnectionArray = require('../transform/slice_to_connection_array')
 const graph_util = require('../transform/slice_to_graph');
 const check_protocol = require('../check/check_protocol');
 const check_dataformat = require('../check/check_dataformat');
+const check_qod = require('../check/check_qod');
+const check_qos = require('../check/check_qos');
 
 const errorGenerator = require('../transform/error_generator_graph');
 
-
+/* TODO remove - old algorithm
 exports.check = function (slice) {
 
     let connections = sliceToConnectionArray.sliceToConnectionArray(slice);
@@ -27,7 +29,7 @@ exports.checkSingleConnection = function(connection){
     connections.forEach(checkConnection(errors, warnings, matches));
 
     return {errors:errors, warnings:warnings, matches: matches};
-};
+};*/
 
 exports.checkSlice = function(slice){
     let graph = graph_util.sliceToGraph(slice);
@@ -61,13 +63,10 @@ function traverseGraph(node, graph, errors, warnings, matches) {
 
 function checkConnectedNodes(startNode, currentNode, directConnection, startOutput, graph, errors, warnings, matches) {
     let nextNodes = graph_util.nextNodes(graph,currentNode);
-
-
     for(let i = 0; i<nextNodes.length; i++){
         if(nextNodes[i] === startNode){
             return;
         }
-
 
         if(directConnection){
             startOutput = checkDirectConnection(startNode, nextNodes[i], graph, errors, warnings, matches);
@@ -86,16 +85,47 @@ function checkDirectConnection(sourceNode, targetNode, graph, errors, warnings, 
 
     let metadataConnectionChecks = [check_protocol.checkProtocols];
     let connection = getBestMetadataConnection(sourceNode, targetNode, metadataConnectionChecks);
+
+    metadataConnectionChecks.push(check_dataformat.checkDataFormat);
+    metadataConnectionChecks.push(check_qod.checkQoD);
+    metadataConnectionChecks.push(check_qos.checkQoS);
+
+    let checkErrors = checkMetadataConnection(sourceNode, connection.output, targetNode, connection.input, metadataConnectionChecks);
+
+    if(checkErrors.errors.length===0){
+        matches.push({});
+    }else{
+        //generate structured error object
+        let errorObject = errorGenerator.generateErrorObject();
+        //TODO maybe map errors to responsible source- or targetnode
+        errors.push(errorObject);
+    }
+
     return connection.output;
 }
 
 function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutput, graph, errors, warnings, matches){
     console.log("indirect check " + sourceNode.nodename + " "+  targetNode.nodename);
-    let metadataConnectionChecks = [check_protocol.checkProtocols];
+    let networkToTargetChecks = [check_protocol.checkProtocols];
     //TODO ignore errors and warnings
-    let networkToTarget = getBestMetadataConnection(currentNode, targetNode, metadataConnectionChecks);
+    let networkToTarget = getBestMetadataConnection(currentNode, targetNode, networkToTargetChecks);
 
-    //TODO check sourceOutput, networkToTarget.input
+
+    let metadataConnectionChecks = [];
+    metadataConnectionChecks.push(check_dataformat.checkDataFormat);
+    metadataConnectionChecks.push(check_qod.checkQoD);
+    metadataConnectionChecks.push(check_qos.checkQoS);
+
+    let checkErrors = checkMetadataConnection(sourceNode, sourceOutput, targetNode, networkToTarget.input, metadataConnectionChecks);
+
+    if(checkErrors.errors.length===0){
+        matches.push({});
+    }else{
+        //generate structured error object
+        let errorObject = errorGenerator.generateErrorObject();
+        //TODO maybe map errors to responsible source- or targetnode
+        errors.push(errorObject);
+    }
 }
 
 function checkMetadataConnection(sourceNode, sourceOutput, targetNode, targetInput, checkFunctionArray){
@@ -109,13 +139,15 @@ function checkMetadataConnection(sourceNode, sourceOutput, targetNode, targetInp
                         targetNode.resource.metadata, targetInput,
                         errors, warnings);
     }
+
+    return {errors: errors, warnings:warnings}
 }
 
 function getBestMetadataConnection(sourceNode, targetNode, checkFunctionArray){
     let matchingInOutputs = protocolMatchingOutInputs(sourceNode.resource, targetNode.resource);
 
     if(matchingInOutputs.length === 0){
-        return {input:null, output:null};
+        return {output:null, input:null};
     }
 
     let bestConnection = matchingInOutputs[0];
@@ -130,16 +162,8 @@ function getBestMetadataConnection(sourceNode, targetNode, checkFunctionArray){
         for(let f = 0; f < checkFunctionArray.length; f++){
             let checkfunction = checkFunctionArray[f];
             checkfunction(sourceNode.resource, matchingInOutputs[i].output, targetNode.resource, matchingInOutputs[i].input,
-                matchingInOutputs[i].errors , matchingInOutputs[i].warnings);
+                matchingInOutputs[i].errors, matchingInOutputs[i].warnings);
         }
-        /*check_protocol.checkProtocols(matchingInOutputs[i].output, matchingInOutputs[i].input, matchingInOutputs[i].errors ,
-            matchingInOutputs[i].warnings);
-
-        if(sourceNode.resource.metadata.resource.category !== "network_function" &&
-            targetNode.resource.metadata.resource.category === "network_function") {
-            check_dataformat.checkDataFormat(matchingInOutputs[i].output, matchingInOutputs[i].input, matchingInOutputs[i].errors,
-                matchingInOutputs[i].warnings);
-        }*/
 
 
         if(matchingInOutputs[i].errors.length <= 0 &&
@@ -158,7 +182,7 @@ function getBestMetadataConnection(sourceNode, targetNode, checkFunctionArray){
     return bestConnection;
 }
 
-
+/* TODO - old algorithm
 function checkConnection(errors, warnings, matches) {
     return function (connection) {
         let matchingInOutputs = protocolMatchingOutInputs(connection.source, connection.target);
@@ -208,7 +232,7 @@ function checkConnection(errors, warnings, matches) {
             }
         }
     }
-}
+}*/
 
 
 function protocolMatchingOutInputs(source, target){

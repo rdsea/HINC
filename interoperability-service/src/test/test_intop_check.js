@@ -9,7 +9,7 @@ const bts_testslice_0 = require('./testdata/testslices/bts_testslice0');
 const bts_testslice_1 = require('./testdata/testslices/bts_testslice1');
 const bts_testslice_2 = require('./testdata/testslices/bts_testslice2');
 
-
+/* TODO remove or adjust
 describe('intop_check.check', function(){
     describe('single output/input', function(){
         it('matching output/input, should not return error or warning', function(){
@@ -134,34 +134,46 @@ describe('intop_check.check', function(){
             assert.equal(result.matches.length, 0);
         });
     });
-});
+});*/
 
 
 describe('intop_check.checkSlice', function(){
     describe('0 - basic testcases on minimalistic slices', function(){
         it('0_0_working: working slice, should not change', function () {
             let slice = basic_testslices.test_0_working_slice();
-            intop_check.checkSlice(slice);
+            let result = intop_check.checkSlice(slice);
+            assert.equal(result.errors.length, 0);
+            assert.equal(result.matches.length, 1);
         });
         it('0_1_addition: direct mismatch, should add mediator', function(){
             let slice = basic_testslices.test_1_direct_mismatch();
-            intop_check.checkSlice(slice);
+            let result = intop_check.checkSlice(slice);
+            assert.equal(result.errors.length, 1);
+            assert.equal(result.matches.length, 0);
         });
         it('0_2_addition: indirect mismatch, should add mediator', function(){
             let slice = basic_testslices.test_2_indirect_mismatch();
-            intop_check.checkSlice(slice);
+            let result = intop_check.checkSlice(slice);
+            assert.equal(result.errors.length, 1);
+            assert.equal(result.matches.length, 2);
         });
         it('0_3_substitution: wrong broker, should substitute broker', function () {
             let slice = basic_testslices.test_3_substitution();
-            intop_check.checkSlice(slice);
+            let result = intop_check.checkSlice(slice);
+            assert.equal(result.errors.length, 2);
+            assert.equal(result.matches.length, 1);
         });
         it('0_4_reduction: broker not needed, should remove broker', function () {
             let slice = basic_testslices.test_4_reduction();
-            intop_check.checkSlice(slice);
+            let result = intop_check.checkSlice(slice);
+            assert.equal(result.errors.length, 2);
+            assert.equal(result.matches.length, 1);
         });
         it('0_5_addition: multiple push-pull problem with needed broker, should add poller and buffer', function () {
             let slice = basic_testslices.test_5_push_pull();
-            intop_check.checkSlice(slice);
+            let result = intop_check.checkSlice(slice);
+            assert.equal(result.errors.length, 2);
+            assert.equal(result.matches.length, 3);
         });
     });
 
