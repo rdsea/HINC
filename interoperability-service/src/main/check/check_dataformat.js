@@ -8,9 +8,9 @@ exports.checkDataFormat = function (sourceMetadata, sourceOutput, targetMetadata
         return;
     }
 
-    if(sourceOutput.dataformat.dataformat_name !== targetInput.dataformat.dataformat_name ){
+    if(sourceOutput.dataformat.dataformat_name !== targetInput.dataformat.dataformat_name){
         //TODO warning object
-        errors.push({});
+        errors.push("dataformat.dataformat_name");
     }
 
 };

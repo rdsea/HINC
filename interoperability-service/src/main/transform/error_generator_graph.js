@@ -5,7 +5,7 @@ exports.generateErrorObject = function(sourceNode, targetNode, checkErrors, isDi
     let error = {};
     let cause = {source:sourceNode, target: targetNode, isDirect:isDirectConnection};
 
-    cause.metadataInvolved = checkErrors;
+    cause.metadataInvolved = checkErrors.errors;
     error.cause = cause;
     let dependentNodes = [];
     getDependentNodes(sourceNode, sourceNode, targetNode, graph, dependentNodes, true);

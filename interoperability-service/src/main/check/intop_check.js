@@ -5,6 +5,7 @@ const check_qod = require('../check/check_qod');
 const check_qos = require('../check/check_qos');
 
 const errorGenerator = require('../transform/error_generator_graph');
+const matchGenerator = require('../transform/match_generator_graph');
 
 
 exports.checkSlice = function(slice){
@@ -69,7 +70,7 @@ function checkDirectConnection(sourceNode, targetNode, graph, errors, warnings, 
     let checkErrors = checkMetadataConnection(sourceNode, connection.output, targetNode, connection.input, metadataConnectionChecks);
 
     if(checkErrors.errors.length===0){
-        matches.push({});
+        matches.push(matchGenerator.generateMatchObject(sourceNode, targetNode, true));
     }else{
         //generate structured error object
         let errorObject = errorGenerator.generateErrorObject(sourceNode, targetNode, checkErrors, true, graph);
@@ -95,7 +96,7 @@ function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutp
     let checkErrors = checkMetadataConnection(sourceNode, sourceOutput, targetNode, networkToTarget.input, metadataConnectionChecks);
 
     if(checkErrors.errors.length===0){
-        matches.push({});
+        matches.push(matchGenerator.generateMatchObject(sourceNode, targetNode, false));
     }else{
         //generate structured error object
         let errorObject = errorGenerator.generateErrorObject(sourceNode, targetNode, checkErrors, false, graph);
