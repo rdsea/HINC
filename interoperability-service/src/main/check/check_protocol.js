@@ -12,6 +12,10 @@ exports.checkProtocols = function (sourceMetadata, sourceOutput, targetMetadata,
         problems.push(source.metadata.id + " </> " + target.metadata.id );
     }*/
 
+    if(sourceOutput.protocol.protocol_name !== targetInput.protocol.protocol_name){
+        errors.push({});
+    }
+
     if(sourceOutput.push_pull !== targetInput.push_pull){
         //TODO warning object
         errors.push({});

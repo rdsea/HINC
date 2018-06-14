@@ -123,7 +123,7 @@ function getBestMetadataConnection(sourceNode, targetNode, checkFunctionArray){
     let matchingInOutputs = protocolMatchingOutInputs(sourceNode.resource, targetNode.resource);
 
     if(matchingInOutputs.length === 0){
-        return {output:null, input:null};
+        return firstOutInputPair(sourceNode.resource, targetNode.resource);
     }
 
     let bestConnection = matchingInOutputs[0];
@@ -183,6 +183,26 @@ function protocolMatchingOutInputs(source, target){
     }
 
     return protocolmatches;
+}
+
+
+
+function firstOutInputPair(source, target){
+    let outputs = [];
+    let inputs = [];
+
+    if(source.metadata.outputs){
+        outputs = source.metadata.outputs;
+    }
+    if(target.metadata.inputs){
+        inputs = target.metadata.inputs;
+    }
+
+    addBrokerOutinputs(inputs, target, "input");
+    addBrokerOutinputs(outputs, source, "output");
+
+
+    return {output: outputs[0], input:inputs[0]};
 }
 
 
