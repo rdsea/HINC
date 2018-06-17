@@ -1,0 +1,27 @@
+    {
+        "name": "rabbitmq broker",
+        "adaptorName": null,
+        "resourceCategory": null,
+        "resourceType": "NETWORK_FUNCTION_SERVICE",
+        "location": null,
+        "metadata": {},
+        "parameters": {
+            "ingressAccessPoints": [
+                {
+                    "applicationProtocol": "AMQP",
+                    "host": null,
+                    "port": null,
+                    "accessPattern": "PUBSUB",
+                    "networkProtocol": "IP",
+                    "qos": 0,
+                    "topics": []
+                }
+            ],
+            "egressAccessPoints": [],
+            "name": "testy"
+        },
+        "controlPoints": [],
+        "dataPoints": [],
+        "uuid": null,
+        "providerUuid": "amqplocal1"
+    }
