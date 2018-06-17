@@ -12,7 +12,13 @@ in the `deployment` folder you will find the docker-compose.yml file and relevan
 
 simple in the target directory run `$ docker-compose up -d` to launch this rsiHub instace. Make sure to run on a relatively powerful machine due to the overhead of so many components
 
-# Pizza.js slice management client:
+# Resource discovery
+
+The slice description `sensor2bigquery.json` contains resouces that can all be discovered through the global from the following http GET endpoint `http//<global_uri>/resourceproviders`. This http endpoint returns a list of available providers and the resources that can be provisioned/managed by those providers. 
+
+We assume that the user knows semantics of the parameters of each resource provider (to provision a resource).
+
+# Deployin a slice with pizza.js slice management client:
 
 in the repository's `slice-management-client` directory simply run `$ node pizza.js` for the autodocumented CLI.
 
@@ -66,6 +72,8 @@ node pizza.js query-intop input-data-format=JSON \
 to simulate an interperability query, the return will contain `available_artifact` which is a software artifact that reads data from http in JSON format and publishes the data in CSV format to and amqp queue. The configuration includes the broker url and amqp_queue in the parameters section.
 
 In reality you will need to have this artifact running somewhere with the correct configuration (amqp url and queue). 
+
+A sample of this software artifact(used in the demo) can be found under https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/httpAmqpclient
 
 # Final Update
 
