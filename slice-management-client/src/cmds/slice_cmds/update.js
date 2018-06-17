@@ -65,8 +65,8 @@ exports.handler = function (argv){
         return db.sliceDao().update({sliceId: newSlice.sliceId}, newSlice, {});
     }).then(() => {
         console.log(`slice ${newSlice.sliceId} successfully updated`)
-        console.log(`writing slice deployment to ${filepath}`);
-        fs.writeFileSync(filepath, JSON.stringify(newSlice, null, 4));
+        console.log(`writing slice deployment to ${filepath}.updated`);
+        fs.writeFileSync(`${filepath}.updated`, JSON.stringify(newSlice, null, 4));
     });
 }
 

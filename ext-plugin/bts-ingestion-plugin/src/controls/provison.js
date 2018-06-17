@@ -11,6 +11,7 @@ function provision(resource){
         data: resource.parameters.data,
         brokers:[],
         bigQuery: resource.parameters[resource.parameters.data],
+        remoteDataLocation: resource.parameters.remoteDataLocation
     };
 
     resource.parameters.egressAccessPoints.forEach((accessPoint, index) => {

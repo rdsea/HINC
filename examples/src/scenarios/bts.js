@@ -117,21 +117,30 @@ function createAdaptorsAndProviders(config, localConfig){
     let mqttAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
     let bigqueryAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
     let ingestionAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+    let amqpAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+    let firewallAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
 
     sensorAdaptorConfig.ADAPTOR_NAME = `sensor${localConfig["hinc.local.id"]}`;
     mqttAdaptorConfig.ADAPTOR_NAME = `mqtt${localConfig["hinc.local.id"]}`;
     bigqueryAdaptorConfig.ADAPTOR_NAME = `bigquery${localConfig["hinc.local.id"]}`;
     ingestionAdaptorConfig.ADAPTOR_NAME = `ingestion${localConfig["hinc.local.id"]}`;
+    amqpAdaptorConfig.ADAPTOR_NAME = `amqp${localConfig["hinc.local.id"]}`;
+    firewallAdaptorConfig.ADAPTOR_NAME = `firewall${localConfig["hinc.local.id"]}`
 
     sensorAdaptorConfig.ENDPOINT = `http://sensorprovider${localConfig["hinc.local.id"]}:3001`;
     mqttAdaptorConfig.ENDPOINT = `http://mqttprovider${localConfig["hinc.local.id"]}:3002`
     bigqueryAdaptorConfig.ENDPOINT = `http://bigqueryprovider${localConfig["hinc.local.id"]}:3000`
     ingestionAdaptorConfig.ENDPOINT = `http://ingestionprovider${localConfig["hinc.local.id"]}:3003`
+    amqpAdaptorConfig.ENDPOINT = `https://customer.cloudamqp.com/api/instances`;
+    firewallAdaptorConfig.ENDPOINT = `http://firewallprovider${localConfig["hinc.local.id"]}:3008`
+    
 
     writeAdaptorConfig(sensorAdaptorConfig);
     writeAdaptorConfig(mqttAdaptorConfig);
     writeAdaptorConfig(bigqueryAdaptorConfig);
     writeAdaptorConfig(ingestionAdaptorConfig);
+    writeAdaptorConfig(amqpAdaptorConfig);
+    writeAdaptorConfig(firewallAdaptorConfig);
 
     let sensorProviderService = {
         image: "rdsea/sensor-provider",
@@ -147,6 +156,10 @@ function createAdaptorsAndProviders(config, localConfig){
 
     let ingestionProviderService = {
         image: "rdsea/ingestion-provider",
+    }
+
+    let firewallProviderService = {
+        image: "rdsea/kube-firewall-provider",
     }
 
     let sensorAdaptorServce = {
@@ -177,15 +190,33 @@ function createAdaptorsAndProviders(config, localConfig){
         ],
     }
 
+    let amqpAdaptorServce = {
+        image: "rdsea/amqp-adaptor",
+        volumes: [
+            `./config/${amqpAdaptorConfig.ADAPTOR_NAME}.js:/adaptor/config.js`
+        ],
+    }
+
+    let firewallAdaptorServce = {
+        image: "rdsea/firewall-adaptor",
+        volumes: [
+            `./config/${firewallAdaptorConfig.ADAPTOR_NAME}.js:/adaptor/config.js`
+        ],
+    }
+
     dockerComposeHinc.services[`sensorprovider${localConfig["hinc.local.id"]}`] = sensorProviderService;
     dockerComposeHinc.services[`mqttprovider${localConfig["hinc.local.id"]}`] = mqttProviderService;
     dockerComposeHinc.services[`bigqueryprovider${localConfig["hinc.local.id"]}`] = bigqueryProviderService;
     dockerComposeHinc.services[`ingestionprovider${localConfig["hinc.local.id"]}`] = ingestionProviderService;
+    dockerComposeHinc.services[`firewallprovider${localConfig["hinc.local.id"]}`] = firewallProviderService;
+    // the amqp provider is in the cloud
 
     dockerComposeHinc.services[sensorAdaptorConfig.ADAPTOR_NAME] = sensorAdaptorServce;
     dockerComposeHinc.services[mqttAdaptorConfig.ADAPTOR_NAME] = mqttAdaptorServce;
     dockerComposeHinc.services[bigqueryAdaptorConfig.ADAPTOR_NAME] = bigqueryAdaptorServce;
     dockerComposeHinc.services[ingestionAdaptorConfig.ADAPTOR_NAME] = ingestionAdaptorServce;
+    dockerComposeHinc.services[amqpAdaptorConfig.ADAPTOR_NAME] = amqpAdaptorServce;
+    dockerComposeHinc.services[firewallAdaptorConfig.ADAPTOR_NAME] = firewallAdaptorServce;
 
 }
 

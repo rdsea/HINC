@@ -17,15 +17,17 @@ exports.handler = function (argv) {
         slice.createdAt = moment().unix();
         return db.sliceDao().insert(slice);
     }).then((slice) => {
-        console.log(`writing slice deployment to ${filepath}`);
-        fs.writeFileSync(filepath, JSON.stringify(slice, null, 4));
+        console.log(`writing slice deployment to ${filepath}.provisioned`);
+        fs.writeFileSync(`${filepath}.provisioned`, JSON.stringify(slice, null, 4));
     })
 }
 
 
 function _provisionResources(slice){
+    console.log("provisioning service mesh");
     return _provisionMesh(slice).then(() => {
         console.log("provisioned service mesh");
+        console.log("provisioning resources");
         let provisionResourcePromises = [];
         let provisionResourceItems = [];
 
@@ -47,7 +49,7 @@ function _provisionResources(slice){
             let outResource = slice.resources[slice.connectivities[label].out.label];
             nameObjs.push(_connectResources(slice.sliceId, slice.connectivities[label], inResource, outResource));
         }
-
+        console.log("connecting resources")
         return meshService.setNames(slice.sliceId, nameObjs);
     }).then(() => {
         return slice;

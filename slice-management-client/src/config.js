@@ -33,4 +33,4 @@ exports.getConfig = () => {
     return conf.all
 }
 
-//exports.production = true;
+exports.production = true;
