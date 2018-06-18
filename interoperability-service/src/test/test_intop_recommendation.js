@@ -19,18 +19,19 @@ describe('intop_recommendation', function(){
             let slice = basic_data.test_0_working_slice();
             let old_slice = util.deepcopy(slice);
             //intopcheck returns no errors (and warnings)
-            let checkresults = check.check(slice);
+            let checkresults = check.checkSlice(slice);
             let errors = checkresults.errors;
             assert.equal(errors.length, 0);
             //slice after recommendation equals before recommendation
 
             let resources = solutionResources.solutionResources_test_0_0();
-            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
+            recommendation.setTestMode(true,resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
 
             assert.deepEqual(slice, old_slice, "");
 
             //intopcheck returns 0 error
-            errors = check.check(slice).errors;
+            errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
         it('0_1_addition: direct mismatch, should add mediator', function(){
@@ -38,12 +39,13 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
-            let checkresults = check.check(slice);
+            let checkresults = check.checkSlice(slice);
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
             let resources = solutionResources.solutionResources_test_0_1();
-            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
 
             /* recommendation:
                 - +1 resource (broker)
@@ -52,13 +54,13 @@ describe('intop_recommendation', function(){
              */
             let count = util.resourceCount(slice);
             assert.equal(count, old_count+1);
-            assert.equal(util.contains(slice, "broker"), true);
+            assert.equal(util.contains(slice, "transformer"), true);
             assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.broker), true);
-            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest), true);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_transformer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.dest), true);
 
             //intopcheck returns 0 error
-            errors = check.check(slice).errors;
+            errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
         it('0_2_addition: indirect mismatch, should add mediator', function(){
@@ -66,12 +68,13 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
-            let checkresults = check.check(slice);
+            let checkresults = check.checkSlice(slice);
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
             let resources = solutionResources.solutionResources_test_0_2();
-            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
                 - +2 resource (broker, transformer)
@@ -98,7 +101,7 @@ describe('intop_recommendation', function(){
              */
 
             //intopcheck returns 0 error
-            errors = check.check(slice).errors;
+            errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
         it('0_3_substitution: wrong broker, should substitute broker', function () {
@@ -106,12 +109,13 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns >=1 error
-            let checkresults = check.check(slice);
+            let checkresults = check.checkSlice(slice);
             let errors = checkresults.errors;
             assert.equal(errors.length>=1, true);
 
             let resources = solutionResources.solutionResources_test_0_3();
-            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
 
             /* recommendation:
                 - resourcecount equal
@@ -127,20 +131,21 @@ describe('intop_recommendation', function(){
             //TODO assert brokerprotocol
 
             //intopcheck returns 0 error
-            errors = check.check(slice).errors;
+            errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
         it('0_4_reduction: broker not needed, should remove broker', function () {
             let slice = basic_data.test_4_reduction();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
-            //intopcheck returns 1 error
-            let checkresults = check.check(slice);
+            //intopcheck returns 2 errors
+            let checkresults = check.checkSlice(slice);
             let errors = checkresults.errors;
-            assert.equal(errors.length, 1);
+            assert.equal(errors.length, 2);
 
             let resources = solutionResources.solutionResources_test_0_4();
-            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
 
             /* recommendation:
                 - -1 resource (broker)
@@ -152,20 +157,21 @@ describe('intop_recommendation', function(){
             assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), true);
 
             //intopcheck returns 0 error
-            errors = check.check(slice).errors;
+            errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
         it('0_5_addition: multiple push-pull problem with needed broker, should add poller and buffer', function () {
             let slice = basic_data.test_5_push_pull();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
-            //intopcheck returns 1 error
-            let checkresults = check.check(slice);
+            //intopcheck returns 2 errors
+            let checkresults = check.checkSlice(slice);
             let errors = checkresults.errors;
-            assert.equal(errors.length, 1);
+            assert.equal(errors.length, 2);
 
             let resources = solutionResources.solutionResources_test_0_5();
-            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
 
             /* recommendation:
                 - +2 resources (poller, buffer)
@@ -189,7 +195,7 @@ describe('intop_recommendation', function(){
             assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.mqtt_dest), true);
 
             //intopcheck returns 0 error
-            errors = check.check(slice).errors;
+            errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
     });
@@ -200,17 +206,18 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns no errors (and warnings)
-            let checkresults = check.check(slice);
+            let checkresults = check.checkSlice(slice);
             assert.equal(checkresults.errors.length, 0);
             assert.equal(checkresults.warnings.length, 0);
 
             let resources = solutionResources.solutionResources_test_1_0();
-            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
             //slice after recommendation equals before recommendation
             assert.deepEqual(slice, old_slice);
 
             //intopcheck returns 0 error
-            errors = check.check(slice).errors;
+            errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
         it('1_1_testslice1: csv to json, should add resources', function(){
@@ -218,12 +225,13 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
-            let checkresults = check.check(slice);
+            let checkresults = check.checkSlice(slice);
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
             let resources = solutionResources.solutionResources_test_1_1();
-            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
 
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
@@ -252,7 +260,7 @@ describe('intop_recommendation', function(){
              */
 
             //intopcheck returns 0 error
-            errors = check.check(slice).errors;
+            errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
         it('1_2_testslice2: csv to json with multiple sensors, should add resources', function(){
@@ -260,12 +268,13 @@ describe('intop_recommendation', function(){
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
-            let checkresults = check.check(slice);
+            let checkresults = check.checkSlice(slice);
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
             let resources = solutionResources.solutionResources_test_1_2();
-            slice = recommendation.testApplyWithFixedResources(old_slice, checkresults, resources);
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
 
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
@@ -295,7 +304,7 @@ describe('intop_recommendation', function(){
              */
 
             //intopcheck returns 0 error
-            errors = check.check(slice).errors;
+            errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
     });

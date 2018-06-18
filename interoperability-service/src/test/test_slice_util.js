@@ -1,7 +1,7 @@
 const assert = require('assert');
 
-const util = require('../../main/util/slice_util');
-const testslice = require('../testSlice');
+const util = require('../main/util/slice_util');
+const testslice = require('./testSlice');
 
 describe('test slice_util', function() {
     it('test slice_util#resourceCount', function() {
@@ -15,6 +15,7 @@ describe('test slice_util', function() {
         assert.equal(isConnected, true);
     });
     it('test slice_util#isConnected should return false', function() {
+        //TODO fix testslice
         let source = testslice.resources.broker;
         let destination = testslice.resources.sensor;
         let isConnected = util.isConnected(testslice, source, destination);
@@ -34,7 +35,7 @@ describe('test slice_util', function() {
         let source = {name:"source", source:[], target:[]};
         let dest = {name:"dest", source:[], target:[]};
 
-        let slice = {resources:{source:source, dest:dest}, connectivities:{}};
+        let slice = {resources:{sourceId:source, dest:dest}, connectivities:{}};
         let isConnected = util.isConnected(slice,source,dest);
         assert.equal(isConnected, false);
 
@@ -46,4 +47,40 @@ describe('test slice_util', function() {
         assert.equal(wrongDirectionConnected, false);
 
     });
+    it('test slice_util#sliceDisConnect should connect resources in slice', function() {
+        let source = {name:"source", source:[], target:[]};
+        let dest = {name:"dest", source:[], target:[]};
+
+        let slice = {resources:{source:source, dest:dest}, connectivities:{}};
+        let isConnected = util.isConnected(slice,source,dest);
+        assert.equal(isConnected, false);
+
+        util.sliceConnect(slice,source,dest,"connectionname");
+        isConnected = util.isConnected(slice,source,dest);
+        assert.equal(isConnected, true);
+
+        let wrongDirectionConnected = util.isConnected(slice,dest,source);
+        assert.equal(wrongDirectionConnected, false);
+
+
+        util.sliceDisConnect(slice,source,dest);
+        isConnected = util.isConnected(slice,source,dest);
+        assert.equal(isConnected, false);
+        assert.equal(slice.connectivities["connectionname"], undefined);
+        assert.equal(slice.resources.source.target.indexOf("connectionname")>-1, false);
+        assert.equal(slice.resources.dest.source.indexOf("connectionname")>-1, false);
+    });
+    it('test slice_util#sliceAddResource should add resources with new name', function() {
+        let source = {name: "source", source: [], target: []};
+        let dest = {name: "dest", source: [], target: []};
+
+        let slice = {resources: {source: source, dest: dest}, connectivities: {}};
+
+        let extraSource = {name: "extraSource", source: [], target: []};
+
+        let resourceId = util.sliceAddResource(slice, extraSource, "source");
+        assert.equal(resourceId, "source_1");
+        assert.equal(slice.resources["source_1"], extraSource);
+    });
+
 });
