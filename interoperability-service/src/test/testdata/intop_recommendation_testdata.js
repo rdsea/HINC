@@ -50,7 +50,6 @@ exports.solutionResources_test_0_6 = function (){
     return resources;
 };
 
-
 exports.solutionResources_test_0_7 = function (){
     let resources = [];
     //csv to json
@@ -58,6 +57,34 @@ exports.solutionResources_test_0_7 = function (){
     resources.push(mqttBroker("broker", mqttProtocol()));
     return resources;
 };
+
+exports.solutionResources_test_0_8 = function (){
+    //csv to json
+    //broker
+    let resources = [];
+    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
+    resources.push(mqttBroker("newbroker", mqttProtocol()));
+    return resources;
+};
+
+exports.solutionResources_test_0_9 = function (){
+    //csv to json
+    //broker
+    let resources = [];
+    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
+    resources.push(mqttBroker("newbroker", mqttProtocol()));
+    return resources;
+};
+
+exports.solutionResources_test_0_10 = function (){
+    //csv to json
+    //broker
+    let resources = [];
+    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
+    resources.push(mqttBroker("newbroker", mqttProtocol()));
+    return resources;
+};
+
 
 exports.solutionResources_test_1_0 = function (){
     let resources = [];

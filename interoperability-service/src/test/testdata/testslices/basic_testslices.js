@@ -70,7 +70,41 @@ exports.test_7_missing_broker_and_dataformat_mismatch = function(){
     util.sliceConnect(slice, slice.resources.source, slice.resources.dest, "connectionId1");
     return slice;
 };
-
+exports.test_8_indirect_mismatch_m1 = function(){
+    let slice = empty_slice();
+    slice.resources["source1"] = source("source1", "push", mqttProtocol(), jsonFormat());
+    slice.resources["source2"] = source("source2", "push", mqttProtocol(), csvFormat());
+    slice.resources["dest"] = dest("dest", "push", mqttProtocol(), jsonFormat());
+    slice.resources["broker"] = mqttBroker("broker",mqttProtocol());
+    util.sliceConnect(slice, slice.resources.source1, slice.resources.broker, "connectionId1");
+    util.sliceConnect(slice, slice.resources.source2, slice.resources.broker, "connectionId2");
+    util.sliceConnect(slice, slice.resources.broker, slice.resources.dest, "connectionId3");
+    return slice;
+};
+exports.test_9_indirect_mismatch_1n = function(){
+    let slice = empty_slice();
+    slice.resources["source"] = source("source", "push", mqttProtocol(), jsonFormat());
+    slice.resources["dest1"] = dest("dest1", "push", mqttProtocol(), jsonFormat());
+    slice.resources["dest2"] = dest("dest2", "push", mqttProtocol(), csvFormat());
+    slice.resources["broker"] = mqttBroker("broker",mqttProtocol());
+    util.sliceConnect(slice, slice.resources.source, slice.resources.broker, "connectionId1");
+    util.sliceConnect(slice, slice.resources.broker, slice.resources.dest1, "connectionId2");
+    util.sliceConnect(slice, slice.resources.broker, slice.resources.dest2, "connectionId3");
+    return slice;
+};
+exports.test_10_indirect_mismatch_mn = function(){
+    let slice = empty_slice();
+    slice.resources["source1"] = source("source1", "push", mqttProtocol(), jsonFormat());
+    slice.resources["source2"] = source("source2", "push", mqttProtocol(), csvFormat());
+    slice.resources["dest1"] = dest("dest1", "push", mqttProtocol(), jsonFormat());
+    slice.resources["dest2"] = dest("dest2", "push", mqttProtocol(), csvFormat());
+    slice.resources["broker"] = mqttBroker("broker",mqttProtocol());
+    util.sliceConnect(slice, slice.resources.source1, slice.resources.broker, "connectionId1");
+    util.sliceConnect(slice, slice.resources.source2, slice.resources.broker, "connectionId2");
+    util.sliceConnect(slice, slice.resources.broker, slice.resources.dest1, "connectionId3");
+    util.sliceConnect(slice, slice.resources.broker, slice.resources.dest2, "connectionId4");
+    return slice;
+};
 
 function empty_slice(){
     return {resources:{},connectivities:{}};

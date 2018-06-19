@@ -26,7 +26,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_0();
             recommendation.setTestMode(true,resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
 
             assert.deepEqual(slice, old_slice, "");
 
@@ -45,7 +45,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_1();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
 
             /* recommendation:
                 - +1 resource (broker)
@@ -74,7 +74,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_2();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
                 - +2 resource (broker, transformer)
@@ -115,7 +115,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_3();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
 
             /* recommendation:
                 - resourcecount equal
@@ -145,7 +145,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_4();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
 
             /* recommendation:
                 - -1 resource (broker)
@@ -171,7 +171,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_5();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
 
             /* recommendation:
                 - +2 resources (poller, buffer)
@@ -199,7 +199,6 @@ describe('intop_recommendation', function(){
             assert.equal(errors.length, 0);
         });
         it('0_6_addition: missing message_broker, should add broker', function(){
-            //TODO check test
             let slice = basic_data.test_6_missing_broker();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -210,7 +209,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_6();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
 
             /* recommendation:
                 - +1 resource (broker)
@@ -240,19 +239,135 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_7();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
 
             /* recommendation:
-                - +1 resource (broker)
+                - +3 resource (broker, transformer, broker)
                 - no connection between source and dest
-                - connection between: source->broker, broker->dest
+                - connection between: source->broker1->transformer->broker2->dest
              */
             let count = util.resourceCount(slice);
-            assert.equal(count, old_count+1);
+            assert.equal(count, old_count+3);
             assert.equal(util.contains(slice, "transformer"), true);
+            assert.equal(util.contains(slice, "broker1"), true);
+            assert.equal(util.contains(slice, "broker2"), true);
             assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_transformer), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.dest), true);
+
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_broker, slice.resources.intop_transformer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.intop_broker_1), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_broker_1, slice.resources.dest), true);
+
+            //intopcheck returns 0 error
+            errors = check.checkSlice(slice).errors;
+            assert.equal(errors.length, 0);
+        });
+        it('0_8_addition: indirect mismatch M:1, should add mediator at problematic source', function(){
+            let slice = basic_data.test_8_indirect_mismatch_m1();
+            let old_slice = util.deepcopy(slice);
+            let old_count = util.resourceCount(old_slice);
+            //intopcheck returns 1 error
+            let checkresults = check.checkSlice(slice);
+            let errors = checkresults.errors;
+            assert.equal(errors.length, 1);
+
+            let resources = solutionResources.solutionResources_test_0_8();
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+
+            /* recommendation - Solution A (and new broker between sensor and transformer):
+                - +2 resource (broker, transformer)
+                - no connection between source and original broker
+                - connection between: source->newbroker, newbroker->transformer, transformer->orig.broker
+             */
+            let countA = util.resourceCount(slice);
+            assert.equal(countA, old_count+2);
+            assert.equal(util.contains(slice, "newbroker"), true);
+            assert.equal(util.contains(slice, "transformer"), true);
+            assert.equal(util.isConnected(slice, slice.resources.source2, slice.resources.broker), false);
+
+            assert.equal(util.isConnected(slice, slice.resources.source1, slice.resources.broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.source2, slice.resources.intop_newbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_newbroker, slice.resources.intop_transformer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest), true);
+
+            //intopcheck returns 0 error
+            errors = check.checkSlice(slice).errors;
+            assert.equal(errors.length, 0);
+        });
+        it('0_9_addition: indirect mismatch 1:N, should add mediator at problematic dest', function(){
+            let slice = basic_data.test_9_indirect_mismatch_1n();
+            let old_slice = util.deepcopy(slice);
+            let old_count = util.resourceCount(old_slice);
+            //intopcheck returns 1 error
+            let checkresults = check.checkSlice(slice);
+            let errors = checkresults.errors;
+            assert.equal(errors.length, 1);
+
+            let resources = solutionResources.solutionResources_test_0_9();
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+
+            /* recommendation - Solution A (and new broker between sensor and transformer):
+                - +2 resource (broker, transformer)
+                - no connection between source and original broker
+                - connection between: source->newbroker, newbroker->transformer, transformer->orig.broker
+             */
+            let countA = util.resourceCount(slice);
+            assert.equal(countA, old_count+2);
+            assert.equal(util.contains(slice, "newbroker"), true);
+            assert.equal(util.contains(slice, "transformer"), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest2), false);
+
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.broker), true);
+
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest1), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.intop_transformer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.intop_newbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_newbroker, slice.resources.dest2), true);
+
+            //intopcheck returns 0 error
+            errors = check.checkSlice(slice).errors;
+            assert.equal(errors.length, 0);
+        });
+        it('0_10_addition: indirect mismatch M:N, should add mediators for only one dataformat', function(){
+            let slice = basic_data.test_10_indirect_mismatch_mn();
+            let old_slice = util.deepcopy(slice);
+            let old_count = util.resourceCount(old_slice);
+            //intopcheck returns 1 error
+            let checkresults = check.checkSlice(slice);
+            let errors = checkresults.errors;
+            assert.equal(errors.length, 2);
+
+            let resources = solutionResources.solutionResources_test_0_10();
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+
+            /* recommendation - Solution A (and new broker between sensor and transformer):
+                - +2 resource (broker, transformer)
+                - no connection between source and original broker
+                - connection between: source->newbroker, newbroker->transformer, transformer->orig.broker
+             */
+            let countA = util.resourceCount(slice);
+            assert.equal(countA, old_count+4);
+            assert.equal(util.contains(slice, "newbroker"), true);
+            assert.equal(util.contains(slice, "transformer"), true);
+
+            //JSON is selected as dataformat
+            assert.equal(util.isConnected(slice, slice.resources.source2, slice.resources.broker), false);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest2), false);
+
+            assert.equal(util.isConnected(slice, slice.resources.source1, slice.resources.broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest1), true);
+
+            assert.equal(util.isConnected(slice, slice.resources.source2, slice.resources.intop_newbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_newbroker, slice.resources.intop_transformer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.broker), true);
+
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.intop_transformer_1), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_transformer_1, slice.resources.intop_newbroker_1), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_newbroker_1, slice.resources.dest2), true);
 
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
