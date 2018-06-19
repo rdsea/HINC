@@ -1,111 +1,112 @@
 
 exports.solutionResources_test_0_0 = function (){
-    let resources = [];
+    let resources = {};
     return resources;
 };
 
 exports.solutionResources_test_0_1 = function (){
-    let resources = [];
+    let resources = {};
     //csv to json
-    resources.push(csvToJsonArtefact("transformer", httpProtocol()));
+    resources["query1"] = csvToJsonArtefact("transformer", httpProtocol());
     return resources;
 };
 
 exports.solutionResources_test_0_2 = function (){
     //csv to json
     //broker
-    let resources = [];
-    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
-    resources.push(mqttBroker("newbroker", mqttProtocol()));
+    let resources = {};
+    resources["query1"]=csvToJsonArtefact("transformer", mqttProtocol());
+    resources["broker"]=mqttBroker("newbroker", mqttProtocol());
     return resources;
 };
 
 exports.solutionResources_test_0_3 = function (){
     //mqtt broker
-    let resources = [];
-    resources.push(mqttBroker("newbroker", mqttProtocol()));
+    let resources = {};
+    resources["query1"] = mqttBroker("newbroker", mqttProtocol());
     return resources;
 };
 
 exports.solutionResources_test_0_4 = function (){
     //reduction test case --> nothing needed
-    let resources = [];
+    let resources = {};
     return resources;
 };
 
 exports.solutionResources_test_0_5 = function (){
     //http poller
     //http buffer
-    let resources = [];
-    resources.push(httpPoller("poller", jsonFormat()));
-    resources.push(httpBuffer("buffer", jsonFormat()));
+    let resources = {};
+    resources["query1"]=httpPoller("poller", jsonFormat());
+    resources["query2"]=httpBuffer("buffer", jsonFormat());
     return resources;
 };
 
 
 exports.solutionResources_test_0_6 = function (){
-    let resources = [];
+    let resources = {};
     //broker
-    resources.push(mqttBroker("broker", mqttProtocol()));
+    resources["query1"] = mqttBroker("broker", mqttProtocol());
     return resources;
 };
 
 exports.solutionResources_test_0_7 = function (){
-    let resources = [];
+    let resources = {};
     //csv to json
-    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
-    resources.push(mqttBroker("broker", mqttProtocol()));
+    resources["query1"] = csvToJsonArtefact("transformer", mqttProtocol());
+    resources["broker"] = mqttBroker("broker", mqttProtocol());
     return resources;
 };
 
 exports.solutionResources_test_0_8 = function (){
     //csv to json
     //broker
-    let resources = [];
-    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
-    resources.push(mqttBroker("newbroker", mqttProtocol()));
+    let resources = {};
+    resources["query1"]=csvToJsonArtefact("transformer", mqttProtocol());
+    resources["broker"]=mqttBroker("newbroker", mqttProtocol());
     return resources;
 };
 
 exports.solutionResources_test_0_9 = function (){
     //csv to json
     //broker
-    let resources = [];
-    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
-    resources.push(mqttBroker("newbroker", mqttProtocol()));
+    let resources = {};
+    resources["query1"]=csvToJsonArtefact("transformer", mqttProtocol());
+    resources["broker"]=mqttBroker("newbroker", mqttProtocol());
     return resources;
 };
 
 exports.solutionResources_test_0_10 = function (){
     //csv to json
     //broker
-    let resources = [];
-    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
-    resources.push(mqttBroker("newbroker", mqttProtocol()));
+    let resources = {};
+    resources["query1"]=csvToJsonArtefact("transformer", mqttProtocol());
+    resources["query2"]=resources["query1"];
+    resources["broker"]=mqttBroker("newbroker", mqttProtocol());
     return resources;
 };
 
 
 exports.solutionResources_test_1_0 = function (){
-    let resources = [];
+    let resources = {};
     return resources;
 };
 
 exports.solutionResources_test_1_1 = function (){
     //broker
     //csv to json
-    let resources = [];
-    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
-    resources.push(mqttBroker("broker", mqttProtocol()));
+    let resources = {};
+    resources["transformer"]=csvToJsonArtefact("transformer", mqttProtocol());
+    resources["broker"]=mqttBroker("broker", mqttProtocol());
     return resources;
 };
 
 exports.solutionResources_test_1_2 = function (){
     //broker
     //csv to json
-    let resources = [];
-    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
-    resources.push(mqttBroker("broker", mqttProtocol()));
+    let resources = {};
+    resources["transformer"]=csvToJsonArtefact("transformer", mqttProtocol());
+    resources["broker"]=mqttBroker("broker", mqttProtocol());
     return resources;
 };
 

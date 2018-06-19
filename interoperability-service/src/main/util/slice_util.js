@@ -3,18 +3,9 @@ exports.resourceCount = function(slice){
 };
 
 exports.sliceAddResource = function(slice, resource, name){
-    let i = 1;
-    let newName = name;
-    if(slice.resources.hasOwnProperty(name)){
-        while(slice.resources.hasOwnProperty(name+"_"+i)){
-            i++;
-        }
-        newName = name+"_"+i;
-        slice.resources[newName] = resource;
-    }else{
-        slice.resources[name] = resource;
-    }
-    return newName;
+    let id = getResourceId(slice, name);
+    slice.resources[id]=resource;
+    return id;
 };
 
 exports.isConnected = function(slice, source, destination){
@@ -57,12 +48,14 @@ exports.deepcopy = function(obj){
 
 
 exports.sliceConnect = function(slice, source, dest, connectivityname){
+    let connectivityId = getConnectivityId(slice, connectivityname);
+
     let sourceId = exports.getResourceIdByName(slice, source.name);
     let destId = exports.getResourceIdByName(slice, dest.name);
 
-    slice.connectivities[connectivityname]={in:sourceId, out:destId};
-    source.target.push(connectivityname);
-    dest.source.push(connectivityname);
+    slice.connectivities[connectivityId]={in:sourceId, out:destId};
+    source.target.push(connectivityId);
+    dest.source.push(connectivityId);
 };
 
 exports.sliceConnectById = function(slice, sourceId, destId, connectivityname){
@@ -103,6 +96,30 @@ exports.getResourceIdByName = function(slice, resourceName){
         return slice.resources[key].name === resourceName
     }).pop();
 };
+
+function getResourceId(slice, baseId){
+    if(slice.resources.hasOwnProperty(baseId)){
+        let i = 1;
+        while(slice.resources.hasOwnProperty(baseId+"_"+i)){
+            i++;
+        }
+        return baseId+"_"+i;
+    }else{
+        return baseId
+    }
+}
+
+function getConnectivityId(slice, baseId){
+    if(slice.connectivities.hasOwnProperty(baseId)){
+        let i = 1;
+        while(slice.connectivities.hasOwnProperty(baseId+"_"+i)){
+            i++;
+        }
+        return baseId+"_"+i;
+    }else{
+        return baseId
+    }
+}
 
 
 function arrayRemove(array, object){

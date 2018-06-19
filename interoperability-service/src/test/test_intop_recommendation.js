@@ -186,13 +186,13 @@ describe('intop_recommendation', function(){
 
             //TODO
             assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.broker), false);
-            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.http_dest), false);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.httpdest), false);
 
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.poller), true);
-            assert.equal(util.isConnected(slice, slice.resources.poller, slice.resources.broker), true);
-            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.buffer), true);
-            assert.equal(util.isConnected(slice, slice.resources.buffer, slice.resources.http_dest), true);
-            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.mqtt_dest), true);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_poller), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_poller, slice.resources.broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.intop_buffer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_buffer, slice.resources.httpdest), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.mqttdest), true);
 
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;

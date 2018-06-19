@@ -60,7 +60,7 @@ function checkConnectedNodes(startNode, currentNode, directConnection, path, sta
 }
 
 function checkDirectConnection(sourceNode, targetNode, path, graph, errors, warnings, matches){
-    console.log("check direct " + sourceNode.nodename + " "+  targetNode.nodename);
+    //console.log("check direct " + sourceNode.nodename + " "+  targetNode.nodename);
 
     let metadataConnectionChecks = [check_protocol.checkProtocols];
     let connection = getBestMetadataConnection(sourceNode, targetNode, metadataConnectionChecks);
@@ -84,7 +84,7 @@ function checkDirectConnection(sourceNode, targetNode, path, graph, errors, warn
 }
 
 function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutput, path, graph, errors, warnings, matches){
-    console.log("indirect check " + sourceNode.nodename + " "+  targetNode.nodename);
+    //console.log("indirect check " + sourceNode.nodename + " "+  targetNode.nodename);
     let networkToTargetChecks = [check_protocol.checkProtocols];
     //TODO ignore errors and warnings
     let networkToTarget = getBestMetadataConnection(currentNode, targetNode, networkToTargetChecks);

@@ -24,14 +24,21 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
     if(checkresults.errors.length === 0){
         return slice;
     }
-
-    for(let i = 0; i < checkresults.errors.length; i++) {
+    let queryMockIndex = 0;
+    //for(let i = 0; i < checkresults.errors.length; i++) {
+    while(checkresults.errors.length>0){
+        queryMockIndex ++;
         //TODO search
-        let resources = searchResources(checkresults.errors[i]);
-        if(resources.length>0) {
-            let solution_resource = resources[0];
-            let broker = resources[1];
-            solveByAddition(checkresults.errors[i], slice, solution_resource, broker);
+        let solution_resource = searchResources("query" + queryMockIndex);
+        let errorcount = checkresults.errors.length;
+        if(solution_resource != null) {
+            let broker = searchResources("broker");
+            solveByAddition(checkresults.errors[0], slice, solution_resource, broker);
+            checkresults = intop_check.checkSlice(slice);
+        }
+
+        if(checkresults.errors.length>=errorcount){
+            break;
         }
         /* TODO: solution categorisation (Addition, Reduction, Substitution)
         if (checkresults.errors[i].impact.length > 0) {
@@ -50,6 +57,9 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
 
 function solveByAddition(error, slice, solution_resource, broker){
     if(error.cause.isDirect) {
+        //if its a structural problem or protocol issue, add broker
+        //otherwise there should not be a broker involved --> add transformer
+        //TODO direct add broker
         let source = slice.resources[error.cause.source.nodename];
         let dest = slice.resources[error.cause.target.nodename];
         util.sliceDisConnect(slice, source, dest);
@@ -61,6 +71,8 @@ function solveByAddition(error, slice, solution_resource, broker){
         util.sliceConnectById(slice, error.cause.source.nodename, intopName, intopName + "1");
         util.sliceConnectById(slice, intopName, error.cause.target.nodename, intopName + "2");
     }else{
+        //if direct, check for M:N dependencies and add broker to the correct side of the transformer
+
         let source = slice.resources[error.cause.source.nodename];
         let origbroker = slice.resources[error.cause.path[1].nodename];
         let target = slice.resources[error.cause.target.nodename];
@@ -103,8 +115,8 @@ exports.setTestMode = function (testMode, testResources) {
 
 function searchResources(error){
     if(test_mode){
-        return test_resources;
+        return test_resources[error];
     }
     //TODO
-    return [];
+    return null;
 }
