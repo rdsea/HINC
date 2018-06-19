@@ -16,14 +16,14 @@ exports.solutionResources_test_0_2 = function (){
     //broker
     let resources = [];
     resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
-    resources.push(mqttBroker("broker", mqttProtocol()));
+    resources.push(mqttBroker("newbroker", mqttProtocol()));
     return resources;
 };
 
 exports.solutionResources_test_0_3 = function (){
     //mqtt broker
     let resources = [];
-    resources.push(mqttBroker("broker", mqttProtocol()));
+    resources.push(mqttBroker("newbroker", mqttProtocol()));
     return resources;
 };
 

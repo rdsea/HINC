@@ -1,9 +1,9 @@
 const graph_util = require('./slice_to_graph');
 
 
-exports.generateErrorObject = function(sourceNode, targetNode, checkErrors, isDirectConnection, graph){
+exports.generateErrorObject = function(sourceNode, targetNode, checkErrors, isDirectConnection, path, graph){
     let error = {};
-    let cause = {source:sourceNode, target: targetNode, isDirect:isDirectConnection};
+    let cause = {source:sourceNode, target: targetNode, isDirect:isDirectConnection, path:path};
 
     cause.metadataInvolved = checkErrors.errors;
     error.cause = cause;

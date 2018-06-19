@@ -85,11 +85,11 @@ describe('intop_recommendation', function(){
             assert.equal(countA, old_count+2);
             assert.equal(util.contains(slice, "newbroker"), true);
             assert.equal(util.contains(slice, "transformer"), true);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.origbroker), false);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.newbroker), true);
-            assert.equal(util.isConnected(slice, slice.resources.newbroker, slice.resources.transformer), true);
-            assert.equal(util.isConnected(slice, slice.resources.transformer, slice.resources.origbroker), true);
-            assert.equal(util.isConnected(slice, slice.resources.origbroker, slice.resources.dest), true);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.broker), false);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_newbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_newbroker, slice.resources.intop_transformer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest), true);
 
             // Alternative solution <-- not implemented
             /* recommendation - Solution B:

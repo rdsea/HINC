@@ -27,9 +27,11 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
 
     for(let i = 0; i < checkresults.errors.length; i++) {
         //TODO search
-        let resources = searchResources("");
+        let resources = searchResources(checkresults.errors[i]);
         if(resources.length>0) {
-            solveByAddition(checkresults.errors[i], slice, resources[0]);
+            let solution_resource = resources[0];
+            let broker = resources[1];
+            solveByAddition(checkresults.errors[i], slice, solution_resource, broker);
         }
         /* TODO: solution categorisation (Addition, Reduction, Substitution)
         if (checkresults.errors[i].impact.length > 0) {
@@ -46,26 +48,48 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
     return slice;
 };
 
-function solveByAddition(error, slice, solution_resource){
-    let source = slice.resources[error.cause.source.nodename];
-    let dest = slice.resources[error.cause.target.nodename];
-    util.sliceDisConnect(slice, source, dest);
+function solveByAddition(error, slice, solution_resource, broker){
+    if(error.cause.isDirect) {
+        let source = slice.resources[error.cause.source.nodename];
+        let dest = slice.resources[error.cause.target.nodename];
+        util.sliceDisConnect(slice, source, dest);
 
-    let intopName = "intop_" + solution_resource.name;
+        let intopName = "intop_" + solution_resource.name;
 
-    intopName = util.sliceAddResource(slice, solution_resource, intopName);
+        intopName = util.sliceAddResource(slice, solution_resource, intopName);
 
-    util.sliceConnectById(slice, error.cause.source.nodename, intopName, intopName + "1");
-    util.sliceConnectById(slice, intopName, error.cause.target.nodename, intopName + "2");
+        util.sliceConnectById(slice, error.cause.source.nodename, intopName, intopName + "1");
+        util.sliceConnectById(slice, intopName, error.cause.target.nodename, intopName + "2");
+    }else{
+        let source = slice.resources[error.cause.source.nodename];
+        let origbroker = slice.resources[error.cause.path[1].nodename];
+        let target = slice.resources[error.cause.target.nodename];
+        //TODO check where transformation should be injected (between source/broker or broker/target)
+        //TODO source/broker if: 1:N or M:N (coordinated)
+        //TODO broker/target if: M:1 or M:N (coordinated)
+
+        util.sliceDisConnect(slice, source, origbroker);
+
+        let intopBroker = "intop_" + broker.name;
+        intopBroker = util.sliceAddResource(slice, broker, intopBroker);
+
+        let intopName = "intop_" + solution_resource.name;
+        intopName = util.sliceAddResource(slice, solution_resource, intopName);
+
+
+        util.sliceConnectById(slice, error.cause.source.nodename, intopBroker, intopName + "1");
+        util.sliceConnectById(slice, intopBroker, intopName, intopName + "2");
+        util.sliceConnectById(slice, intopName, error.cause.path[1].nodename, intopName + "3");
+    }
 }
 
 
-function solveBySubstitution(error, slice, solution_resource){
+function solveBySubstitution(error, slice, solution_resource, broker){
 
 }
 
 
-function solveByReduction(error, slice, solution_resource){
+function solveByReduction(error, slice, solution_resource, broker){
 
 }
 
@@ -77,7 +101,7 @@ exports.setTestMode = function (testMode, testResources) {
 };
 
 
-function searchResources(searchParameters){
+function searchResources(error){
     if(test_mode){
         return test_resources;
     }

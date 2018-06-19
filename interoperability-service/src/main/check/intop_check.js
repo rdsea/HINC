@@ -27,8 +27,9 @@ function checkGraph(graph, errors, warnings, matches){
 
 
 function traverseGraph(node, graph, errors, warnings, matches) {
+    let path = [];
     node.marked = true;
-    checkConnectedNodes(node, node, true, null, graph, errors, warnings, matches);
+    checkConnectedNodes(node, node, true, path, null, graph, errors, warnings, matches);
 
     let nextNodes = graph_util.nextNodes(graph, node);
     for(let i = 0; i<nextNodes.length;i++){
@@ -38,7 +39,8 @@ function traverseGraph(node, graph, errors, warnings, matches) {
     }
 }
 
-function checkConnectedNodes(startNode, currentNode, directConnection, startOutput, graph, errors, warnings, matches) {
+function checkConnectedNodes(startNode, currentNode, directConnection, path, startOutput, graph, errors, warnings, matches) {
+    path.push(currentNode);
     let nextNodes = graph_util.nextNodes(graph,currentNode);
     for(let i = 0; i<nextNodes.length; i++){
         if(nextNodes[i] === startNode){
@@ -46,18 +48,18 @@ function checkConnectedNodes(startNode, currentNode, directConnection, startOutp
         }
 
         if(directConnection){
-            startOutput = checkDirectConnection(startNode, nextNodes[i], graph, errors, warnings, matches);
+            startOutput = checkDirectConnection(startNode, nextNodes[i], path, graph, errors, warnings, matches);
         }else{
-            indirectConnectionCheck(startNode, nextNodes[i], currentNode, startOutput, graph, errors, warnings, matches);
+            indirectConnectionCheck(startNode, nextNodes[i], currentNode, startOutput, path, graph, errors, warnings, matches);
         }
 
         if(nextNodes[i].resource.metadata.resource.category === "network_function"){
-            checkConnectedNodes(startNode, nextNodes[i], false, startOutput, graph, errors, warnings, matches);
+            checkConnectedNodes(startNode, nextNodes[i], false, path, startOutput, graph, errors, warnings, matches);
         }
     }
 }
 
-function checkDirectConnection(sourceNode, targetNode, graph, errors, warnings, matches){
+function checkDirectConnection(sourceNode, targetNode, path, graph, errors, warnings, matches){
     console.log("check direct " + sourceNode.nodename + " "+  targetNode.nodename);
 
     let metadataConnectionChecks = [check_protocol.checkProtocols];
@@ -73,7 +75,7 @@ function checkDirectConnection(sourceNode, targetNode, graph, errors, warnings, 
         matches.push(matchGenerator.generateMatchObject(sourceNode, targetNode, true));
     }else{
         //generate structured error object
-        let errorObject = errorGenerator.generateErrorObject(sourceNode, targetNode, checkErrors, true, graph);
+        let errorObject = errorGenerator.generateErrorObject(sourceNode, targetNode, checkErrors, true, path, graph);
         //TODO maybe map errors to responsible source- or targetnode
         errors.push(errorObject);
     }
@@ -81,7 +83,7 @@ function checkDirectConnection(sourceNode, targetNode, graph, errors, warnings, 
     return connection.output;
 }
 
-function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutput, graph, errors, warnings, matches){
+function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutput, path, graph, errors, warnings, matches){
     console.log("indirect check " + sourceNode.nodename + " "+  targetNode.nodename);
     let networkToTargetChecks = [check_protocol.checkProtocols];
     //TODO ignore errors and warnings
@@ -99,7 +101,7 @@ function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutp
         matches.push(matchGenerator.generateMatchObject(sourceNode, targetNode, false));
     }else{
         //generate structured error object
-        let errorObject = errorGenerator.generateErrorObject(sourceNode, targetNode, checkErrors, false, graph);
+        let errorObject = errorGenerator.generateErrorObject(sourceNode, targetNode, checkErrors, false, path, graph);
         //TODO maybe map errors to responsible source- or targetnode
         errors.push(errorObject);
     }
