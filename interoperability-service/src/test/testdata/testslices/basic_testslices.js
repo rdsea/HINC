@@ -3,16 +3,16 @@ const util = require('../../../main/util/slice_util');
 
 exports.test_0_working_slice = function(){
     let slice = empty_slice();
-    slice.resources["source"] = source("source", "push", mqttProtocol(), jsonFormat());
-    slice.resources["dest"] = dest("dest", "push", mqttProtocol(), jsonFormat());
+    slice.resources["source"] = source("source", "push", httpProtocol(), jsonFormat());
+    slice.resources["dest"] = dest("dest", "push", httpProtocol(), jsonFormat());
     util.sliceConnect(slice, slice.resources.source, slice.resources.dest, "connectionId1");
     return slice;
 };
 exports.test_1_direct_mismatch = function(){
     let slice = empty_slice();
     //sidenote: mqtt requires broker but that is not part of the check as of now
-    slice.resources["source"] = source("source", "push", mqttProtocol(), csvFormat());
-    slice.resources["dest"] = dest("dest", "push", mqttProtocol(), jsonFormat());
+    slice.resources["source"] = source("source", "push", httpProtocol(), csvFormat());
+    slice.resources["dest"] = dest("dest", "push", httpProtocol(), jsonFormat());
     util.sliceConnect(slice, slice.resources.source, slice.resources.dest, "connectionId1");
     return slice;
 };
@@ -54,6 +54,22 @@ exports.test_5_push_pull = function(){
     util.sliceConnect(slice, slice.resources.broker, slice.resources.mqttdest, "connectionId3");
     return slice;
 };
+exports.test_6_missing_broker = function(){
+    let slice = empty_slice();
+    //sidenote: mqtt requires broker but that is not part of the check as of now
+    slice.resources["source"] = source("source", "push", mqttProtocol(), jsonFormat());
+    slice.resources["dest"] = dest("dest", "push", mqttProtocol(), jsonFormat());
+    util.sliceConnect(slice, slice.resources.source, slice.resources.dest, "connectionId1");
+    return slice;
+};
+exports.test_7_missing_broker_and_dataformat_mismatch = function(){
+    let slice = empty_slice();
+    //sidenote: mqtt requires broker but that is not part of the check as of now
+    slice.resources["source"] = source("source", "push", mqttProtocol(), csvFormat());
+    slice.resources["dest"] = dest("dest", "push", mqttProtocol(), jsonFormat());
+    util.sliceConnect(slice, slice.resources.source, slice.resources.dest, "connectionId1");
+    return slice;
+};
 
 
 function empty_slice(){
@@ -66,7 +82,7 @@ function source(name, push_pull, protocol, format){
         source: [],
         target: [],
         metadata:{
-            resource:{category:"iot"},
+            resource:{category:"iot", type:{prototype:"sensor"}},
             inputs: [],
             outputs:[
                 {
@@ -85,7 +101,7 @@ function dest(name, push_pull, protocol, format){
         source: [],
         target: [],
         metadata:{
-            resource:{category:"iot"},
+            resource:{category:"iot", type:{prototype:"storage"}},
             inputs:[
                 {
                     push_pull:push_pull,

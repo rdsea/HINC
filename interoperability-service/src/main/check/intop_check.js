@@ -138,7 +138,7 @@ function getBestMetadataConnection(sourceNode, targetNode, checkFunctionArray){
 
         for(let f = 0; f < checkFunctionArray.length; f++){
             let checkfunction = checkFunctionArray[f];
-            checkfunction(sourceNode.resource, matchingInOutputs[i].output, targetNode.resource, matchingInOutputs[i].input,
+            checkfunction(sourceNode.resource.metadata, matchingInOutputs[i].output, targetNode.resource.metadata, matchingInOutputs[i].input,
                 matchingInOutputs[i].errors, matchingInOutputs[i].warnings);
         }
 

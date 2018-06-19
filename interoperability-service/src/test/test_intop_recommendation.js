@@ -34,7 +34,7 @@ describe('intop_recommendation', function(){
             errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
         });
-        it('0_1_addition: direct mismatch, should add mediator', function(){
+        it('0_1_addition: direct dataformat mismatch, should add mediator', function(){
             let slice = basic_data.test_1_direct_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -82,7 +82,7 @@ describe('intop_recommendation', function(){
                 - connection between: source->newbroker, newbroker->transformer, transformer->orig.broker
              */
             let countA = util.resourceCount(slice);
-            //assert.equal(countA, old_count+2);
+            assert.equal(countA, old_count+2);
             assert.equal(util.contains(slice, "newbroker"), true);
             assert.equal(util.contains(slice, "transformer"), true);
             assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.origbroker), false);
@@ -193,6 +193,66 @@ describe('intop_recommendation', function(){
             assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.buffer), true);
             assert.equal(util.isConnected(slice, slice.resources.buffer, slice.resources.http_dest), true);
             assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.mqtt_dest), true);
+
+            //intopcheck returns 0 error
+            errors = check.checkSlice(slice).errors;
+            assert.equal(errors.length, 0);
+        });
+        it('0_6_addition: missing message_broker, should add broker', function(){
+            //TODO check test
+            let slice = basic_data.test_6_missing_broker();
+            let old_slice = util.deepcopy(slice);
+            let old_count = util.resourceCount(old_slice);
+            //intopcheck returns 1 error
+            let checkresults = check.checkSlice(slice);
+            let errors = checkresults.errors;
+            assert.equal(errors.length, 1);
+
+            let resources = solutionResources.solutionResources_test_0_6();
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+
+            /* recommendation:
+                - +1 resource (broker)
+                - no connection between source and dest
+                - connection between: source->broker, broker->dest
+             */
+            let count = util.resourceCount(slice);
+            assert.equal(count, old_count+1);
+            assert.equal(util.contains(slice, "broker"), true);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_broker, slice.resources.dest), true);
+
+            //intopcheck returns 0 error
+            errors = check.checkSlice(slice).errors;
+            assert.equal(errors.length, 0);
+        });
+        it('0_7_addition: missing broker & direct dataformat mismatch, should add broker + mediator', function(){
+            //TODO check test
+            let slice = basic_data.test_7_missing_broker_and_dataformat_mismatch();
+            let old_slice = util.deepcopy(slice);
+            let old_count = util.resourceCount(old_slice);
+            //intopcheck returns 1 error
+            let checkresults = check.checkSlice(slice);
+            let errors = checkresults.errors;
+            assert.equal(errors.length, 1);
+
+            let resources = solutionResources.solutionResources_test_0_7();
+            recommendation.setTestMode(true, resources);
+            slice = recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults);
+
+            /* recommendation:
+                - +1 resource (broker)
+                - no connection between source and dest
+                - connection between: source->broker, broker->dest
+             */
+            let count = util.resourceCount(slice);
+            assert.equal(count, old_count+1);
+            assert.equal(util.contains(slice, "transformer"), true);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_transformer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.dest), true);
 
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;

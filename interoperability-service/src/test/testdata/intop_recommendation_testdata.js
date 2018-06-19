@@ -7,7 +7,7 @@ exports.solutionResources_test_0_0 = function (){
 exports.solutionResources_test_0_1 = function (){
     let resources = [];
     //csv to json
-    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
+    resources.push(csvToJsonArtefact("transformer", httpProtocol()));
     return resources;
 };
 
@@ -39,6 +39,23 @@ exports.solutionResources_test_0_5 = function (){
     let resources = [];
     resources.push(httpPoller("poller", jsonFormat()));
     resources.push(httpBuffer("buffer", jsonFormat()));
+    return resources;
+};
+
+
+exports.solutionResources_test_0_6 = function (){
+    let resources = [];
+    //broker
+    resources.push(mqttBroker("broker", mqttProtocol()));
+    return resources;
+};
+
+
+exports.solutionResources_test_0_7 = function (){
+    let resources = [];
+    //csv to json
+    resources.push(csvToJsonArtefact("transformer", mqttProtocol()));
+    resources.push(mqttBroker("broker", mqttProtocol()));
     return resources;
 };
 
@@ -74,7 +91,7 @@ function source(name, push_pull, protocol, format){
         source: [],
         target: [],
         metadata:{
-            resource:{category:"iot"},
+            resource:{category:"iot", type:{prototype:"sensor"}},
             inputs: [],
             outputs:[
                 {
@@ -93,7 +110,7 @@ function dest(name, push_pull, protocol, format){
         source: [],
         target: [],
         metadata:{
-            resource:{category:"iot"},
+            resource:{category:"iot", type:{prototype:"storage"}},
             inputs:[
                 {
                     push_pull:push_pull,
@@ -112,7 +129,7 @@ function csvToJsonArtefact(name, protocol){
         source: [],
         target: [],
         metadata:{
-            resource:{category:"iot"},
+            resource:{category:"iot", type:{prototype:"software_artefact"}},
             inputs:[
                 {
                     push_pull:"push",
@@ -137,7 +154,7 @@ function httpPoller(name, dataformat){
         source: [],
         target: [],
         metadata:{
-            resource:{category:"iot"},
+            resource:{category:"iot", type:{prototype:"software_artefact"}},
             inputs:[
                 {
                     push_pull:"pull",
@@ -162,7 +179,7 @@ function httpBuffer(name, dataformat){
         source: [],
         target: [],
         metadata:{
-            resource:{category:"iot"},
+            resource:{category:"iot", type:{prototype:"software_artefact"}},
             inputs:[
                 {
                     push_pull:"push",
@@ -188,10 +205,10 @@ function mqttBroker(name, mqttprotocol){
         target:[],
         metadata: {
             resource: {
-                category:"network_funciton",
-                prototype: "messagebroker",
+                category:"network_function",
+                type:{prototype: "messagebroker",
                 protocols: [mqttprotocol],
-                topics: [mqttprotocol.topic]
+                topics: [mqttprotocol.topic]}
             }
         }
     }
