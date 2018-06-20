@@ -33,27 +33,21 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
         }
         let promises = [];
         for(let i = 0; i < checkresults.errors.length; i++) {
-            //while(checkresults.errors.length>0){
-            //TODO search
-            promises.push(searchResources(checkresults.errors[i]).then(function (solution_resource) {
-                if(solution_resource != null) {
-                    solveByAddition(checkresults.errors[i], slice, solution_resource);
-                    //checkresults = intop_check.checkSlice(slice);
-                }
-            }, console.err));
-            /*if(checkresults.errors.length>=errorcount){
-                break;
-            }*/
-            /* TODO: solution categorisation (Addition, Reduction, Substitution)
-            if (checkresults.errors[i].impact.length > 0) {
-                // can not be solved by reduction
-            }else{
-                solveBySubstitution()
-            }
-            */
+            promises.push(searchResources(checkresults.errors[i]).then(
+                function (solution_resource) {
+                    if(solution_resource != null) {
+                        return solveByAddition(checkresults.errors[i], slice, solution_resource);
+                    }else{
+                        resolve(slice);
+                    }
+                }, console.err
+            ).then(function(){},console.err));
+            // TODO: solution categorisation (Addition, Reduction, Substitution)
+
         }
 
-        Promise.all(promises).then(function(){resolve(slice)});
+        Promise.all(promises).then(function(){
+            resolve(slice)});
 
         //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
         //TODO solve problem by kind
@@ -61,47 +55,38 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
 };
 
 function solveByAddition(error, slice, solution_resource){
-    if(error.cause.isDirect) {
+    return new Promise(function(resolve, reject) {
+        let intopName = "intop_" + solution_resource.name;
+        intopName = util.sliceAddResource(slice, solution_resource, intopName);
+
         //if its a structural problem or protocol issue, add broker
         //otherwise there should not be a broker involved --> add transformer
         //TODO direct add broker
         let source = slice.resources[error.cause.source.nodename];
         let dest = slice.resources[error.cause.target.nodename];
+
+
+        let first = error.cause.source.nodename;
+        let second = intopName;
+        let third = error.cause.target.nodename;
+
+        if (error.cause.isDirect === true) {
+            dest = slice.resources[error.cause.target.nodename];
+        } else {
+            dest = slice.resources[error.cause.path[1].nodename];
+            third = error.cause.path[1].nodename;
+        }
+
+
         util.sliceDisConnect(slice, source, dest);
+        reconnectResources(slice, [source, solution_resource, dest], intopName).then(resolve);
 
-        let intopName = "intop_" + solution_resource.name;
-
-        intopName = util.sliceAddResource(slice, solution_resource, intopName);
-
-        util.sliceConnectById(slice, error.cause.source.nodename, intopName, intopName + "1");
-        util.sliceConnectById(slice, intopName, error.cause.target.nodename, intopName + "2");
-    }else{
-        //if direct, check for M:N dependencies and add broker to the correct side of the transformer
-
-        let source = slice.resources[error.cause.source.nodename];
-        let origbroker = slice.resources[error.cause.path[1].nodename];
-        let target = slice.resources[error.cause.target.nodename];
+        //TODO check for M:N dependencies and
         //TODO check where transformation should be injected (between source/broker or broker/target)
         //TODO source/broker if: 1:N or M:N (coordinated)
         //TODO broker/target if: M:1 or M:N (coordinated)
+    });
 
-        util.sliceDisConnect(slice, source, origbroker);
-
-        //TODO add broker
-        /*let intopBroker = "intop_" + broker.name;
-        intopBroker = util.sliceAddResource(slice, broker, intopBroker);*/
-
-        let intopName = "intop_" + solution_resource.name;
-        intopName = util.sliceAddResource(slice, solution_resource, intopName);
-
-        util.sliceConnectById(slice, error.cause.source.nodename, intopName, intopName + "1");
-        util.sliceConnectById(slice, intopName, error.cause.path[1].nodename, intopName + "2");
-
-        /* OLD
-        util.sliceConnectById(slice, error.cause.source.nodename, intopBroker, intopName + "1");
-        util.sliceConnectById(slice, intopBroker, intopName, intopName + "2");
-        util.sliceConnectById(slice, intopName, error.cause.path[1].nodename, intopName + "3");*/
-    }
 }
 
 
@@ -112,6 +97,101 @@ function solveBySubstitution(error, slice, solution_resource, broker){
 
 function solveByReduction(error, slice, solution_resource, broker){
 
+}
+
+function reconnectResources(slice, resourceArray, connectionName){
+    //TODO add broker to the correct side of the transformer
+    //CASE 1: source -> intop -> dest (all http)
+    //CASE 2: source -> intop_broker -> dest
+
+    //CASE 3: source -> intop -> broker -> dest
+    //        source > broker > intop > broker > dest
+
+    //CASE 4: source -> intop -> dest
+    //        source -> broker -> intop -> broker -> dest
+
+    return new Promise(function(resolve,reject) {
+        addBrokers(slice, resourceArray).then(function (newResourceArray) {
+            for (let i = 1; i < newResourceArray.length; i++) {
+                //TODO connect by id
+                let source = newResourceArray[i - 1];
+                let dest = newResourceArray[i];
+                util.sliceConnect(slice, newResourceArray[i - 1], newResourceArray[i], connectionName + i);
+            }
+            resolve();
+        });
+    });
+}
+
+function addBrokers(slice, resourceArray){
+    return new Promise(function(resolve, reject){
+
+        let newResourceArray = [];
+        let promises = [];
+        let brokers = {};
+
+        for(let i = 1; i<resourceArray.length; i++){
+            let source = resourceArray[i-1];
+            let dest = resourceArray[i];
+
+            let protocol_name = brokerNeeded(source,dest);
+
+            if(protocol_name){
+                promises.push(searchBroker(protocol_name).then(function (broker) {
+                    brokers[""+i] = broker;
+                }));
+            }
+        }
+
+        Promise.all(promises).then(function(){
+            for(let i = 1; i<=resourceArray.length; i++){
+                newResourceArray.push(resourceArray[i-1]);
+                if(brokers[""+i]){
+                    let newBroker = util.deepcopy(brokers[""+i]);
+                    util.sliceAddResource(slice, newBroker, newBroker.name);
+                    newResourceArray.push(newBroker);
+                }
+            }
+            resolve(newResourceArray);
+        });
+
+    });
+
+}
+
+function brokerNeeded(source, target){
+    if(source.metadata.resource.type.prototype === "messagebroker" || target.metadata.resource.type.prototype === "messagebroker"){
+        return;
+    }
+
+    let sourceOutput = source.metadata.outputs[0];
+    let targetInput = target.metadata.inputs[0];
+    //TODO use correct input/output
+
+
+    if(sourceOutput.protocol.protocol_name === targetInput.protocol.protocol_name) {
+        if(arrayContains(["mqtt", "mqtts", "amqp", "amqps"],sourceOutput.protocol.protocol_name)){
+            if(source.metadata.resource.type.prototype !== "messagebroker" && target.metadata.resource.type.prototype !== "messagebroker") {
+                return sourceOutput.protocol.protocol_name;
+            }
+        }
+    }
+}
+
+function searchBroker(protocol_name){
+    return new Promise(function (resolve, reject){
+        let query = {"metadata.resource.type.prototype":"messagebroker", "metadata.resource.type.protocols.protocol_name":protocol_name};
+
+        MongoClient.connect(mongodb_config.url, function(err, db) {
+            if (err) return reject(err);
+            let dbo = db.db(mongodb_config.db);
+            dbo.collection(mongodb_config.collection).find(query).toArray(function(err, result) {
+                if (err) throw err;
+                db.close();
+                resolve(result[0]);
+            });
+        });
+    });
 }
 
 
@@ -149,4 +229,9 @@ function createQueryByExample(error){
     // example["metadata.inputs.protocol.protocol_name"]="http";
 
     return example;
+}
+
+
+function arrayContains(array, value){
+    return array.indexOf(value)>-1;
 }

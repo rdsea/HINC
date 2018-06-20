@@ -119,12 +119,12 @@ describe('intop_recommendation', function(){
              */
             let countA = util.resourceCount(newSlice);
             assert.equal(countA, old_count+2);
-            assert.equal(util.contains(newSlice, "newbroker"), true);
-            assert.equal(util.contains(newSlice, "transformer"), true);
+            assert.equal(util.contains(newSlice, "mqttbroker"), true);
+            assert.equal(util.contains(newSlice, "mqtt_transformer_csv_to_json"), true);
             assert.equal(util.isConnected(newSlice, newSlice.resources.source, newSlice.resources.broker), false);
-            assert.equal(util.isConnected(newSlice, newSlice.resources.source, newSlice.resources.intop_newbroker), true);
-            assert.equal(util.isConnected(newSlice, newSlice.resources.intop_newbroker, newSlice.resources.intop_transformer), true);
-            assert.equal(util.isConnected(newSlice, newSlice.resources.intop_transformer, newSlice.resources.broker), true);
+            assert.equal(util.isConnected(newSlice, newSlice.resources.source, newSlice.resources.mqttbroker), true);
+            assert.equal(util.isConnected(newSlice, newSlice.resources.mqttbroker, newSlice.resources.intop_mqtt_transformer_csv_to_json), true);
+            assert.equal(util.isConnected(newSlice, newSlice.resources.intop_mqtt_transformer_csv_to_json, newSlice.resources.broker), true);
             assert.equal(util.isConnected(newSlice, newSlice.resources.broker, newSlice.resources.dest), true);
 
             // Alternative solution <-- not implemented
@@ -311,14 +311,14 @@ describe('intop_recommendation', function(){
              */
             let countA = util.resourceCount(slice);
             assert.equal(countA, old_count+2);
-            assert.equal(util.contains(slice, "newbroker"), true);
-            assert.equal(util.contains(slice, "transformer"), true);
+            assert.equal(util.contains(slice, "mqttbroker"), true);
+            assert.equal(util.contains(slice, "mqtt_transformer_csv_to_json"), true);
             assert.equal(util.isConnected(slice, slice.resources.source2, slice.resources.broker), false);
 
             assert.equal(util.isConnected(slice, slice.resources.source1, slice.resources.broker), true);
-            assert.equal(util.isConnected(slice, slice.resources.source2, slice.resources.intop_newbroker), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_newbroker, slice.resources.intop_transformer), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.source2, slice.resources.mqttbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.mqttbroker, slice.resources.intop_mqtt_transformer_csv_to_json), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_mqtt_transformer_csv_to_json, slice.resources.broker), true);
             assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest), true);
 
             //intopcheck returns 0 error
