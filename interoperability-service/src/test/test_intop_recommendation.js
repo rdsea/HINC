@@ -13,9 +13,22 @@ const bts_testslice_1 = require('./testdata/testslices/bts_testslice1');
 const bts_testslice_2 = require('./testdata/testslices/bts_testslice2');
 
 
+const MongoClient = require("mongodb").MongoClient;
+
+let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
+
+
 describe('intop_recommendation', function(){
     describe('0 - basic testcases on minimalistic slices', function(){
-        it('0_0_working: working slice, should not change', function () {
+        before(function() {
+            //TODO setup testdb
+        });
+
+        after(function() {
+            //TODO clean testdb
+        });
+
+        it('0_0_working: working slice, should not change', function (done) {
             let slice = basic_data.test_0_working_slice();
             let old_slice = util.deepcopy(slice);
             //intopcheck returns no errors (and warnings)
@@ -26,15 +39,17 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_0();
             recommendation.setTestMode(true,resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice) {
 
-            assert.deepEqual(slice, old_slice, "");
+                assert.deepEqual(slice, old_slice, "");
 
-            //intopcheck returns 0 error
-            errors = check.checkSlice(slice).errors;
-            assert.equal(errors.length, 0);
+                //intopcheck returns 0 error
+                errors = check.checkSlice(slice).errors;
+                assert.equal(errors.length, 0);
+                done();
+            });
         });
-        it('0_1_addition: direct dataformat mismatch, should add mediator', function(){
+        it('0_1_addition: direct dataformat mismatch, should add mediator', function(done){
             let slice = basic_data.test_1_direct_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -45,25 +60,27 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_1();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice) {
 
-            /* recommendation:
-                - +1 resource (broker)
-                - no connection between source and dest
-                - connection between: source->broker, broker->dest
-             */
-            let count = util.resourceCount(slice);
-            assert.equal(count, old_count+1);
-            assert.equal(util.contains(slice, "transformer"), true);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_transformer), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.dest), true);
+                /* recommendation:
+                    - +1 resource (broker)
+                    - no connection between source and dest
+                    - connection between: source->broker, broker->dest
+                 */
+                let count = util.resourceCount(slice);
+                assert.equal(count, old_count + 1);
+                assert.equal(util.contains(slice, "transformer"), true);
+                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
+                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_transformer), true);
+                assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.dest), true);
 
-            //intopcheck returns 0 error
-            errors = check.checkSlice(slice).errors;
-            assert.equal(errors.length, 0);
+                //intopcheck returns 0 error
+                errors = check.checkSlice(slice).errors;
+                assert.equal(errors.length, 0);
+                done();
+            });
         });
-        it('0_2_addition: indirect mismatch, should add mediator', function(){
+        it('0_2_addition: indirect mismatch, should add mediator', function(done){
             let slice = basic_data.test_2_indirect_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -74,22 +91,24 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_2();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function (newSlice) {
+
+
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
                 - +2 resource (broker, transformer)
                 - no connection between source and original broker
                 - connection between: source->newbroker, newbroker->transformer, transformer->orig.broker
              */
-            let countA = util.resourceCount(slice);
+            let countA = util.resourceCount(newSlice);
             assert.equal(countA, old_count+2);
-            assert.equal(util.contains(slice, "newbroker"), true);
-            assert.equal(util.contains(slice, "transformer"), true);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.broker), false);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_newbroker), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_newbroker, slice.resources.intop_transformer), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.broker), true);
-            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest), true);
+            assert.equal(util.contains(newSlice, "newbroker"), true);
+            assert.equal(util.contains(newSlice, "transformer"), true);
+            assert.equal(util.isConnected(newSlice, newSlice.resources.source, newSlice.resources.broker), false);
+            assert.equal(util.isConnected(newSlice, newSlice.resources.source, newSlice.resources.intop_newbroker), true);
+            assert.equal(util.isConnected(newSlice, newSlice.resources.intop_newbroker, newSlice.resources.intop_transformer), true);
+            assert.equal(util.isConnected(newSlice, newSlice.resources.intop_transformer, newSlice.resources.broker), true);
+            assert.equal(util.isConnected(newSlice, newSlice.resources.broker, newSlice.resources.dest), true);
 
             // Alternative solution <-- not implemented
             /* recommendation - Solution B:
@@ -101,10 +120,12 @@ describe('intop_recommendation', function(){
              */
 
             //intopcheck returns 0 error
-            errors = check.checkSlice(slice).errors;
+            errors = check.checkSlice(newSlice).errors;
             assert.equal(errors.length, 0);
+            done();
+            });
         });
-        it('0_3_substitution: wrong broker, should substitute broker', function () {
+        it('0_3_substitution: wrong broker, should substitute broker', function (done) {
             let slice = basic_data.test_3_substitution();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -115,26 +136,28 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_3();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice) {
 
-            /* recommendation:
-                - resourcecount equal
-                - broker.protocol == mqtt
-                - connection between: source->broker, broker->dest
-             */
-            let count = util.resourceCount(slice);
-            assert.equal(count, old_count);
-            assert.equal(util.contains(slice, "oldbroker"), false);
-            assert.equal(util.contains(slice, "newbroker"), true);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.newbroker), true);
-            assert.equal(util.isConnected(slice, slice.resources.newbroker, slice.resources.dest), true);
-            //TODO assert brokerprotocol
+                /* recommendation:
+                    - resourcecount equal
+                    - broker.protocol == mqtt
+                    - connection between: source->broker, broker->dest
+                 */
+                let count = util.resourceCount(slice);
+                assert.equal(count, old_count);
+                assert.equal(util.contains(slice, "oldbroker"), false);
+                assert.equal(util.contains(slice, "newbroker"), true);
+                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.newbroker), true);
+                assert.equal(util.isConnected(slice, slice.resources.newbroker, slice.resources.dest), true);
+                //TODO assert brokerprotocol
 
-            //intopcheck returns 0 error
-            errors = check.checkSlice(slice).errors;
-            assert.equal(errors.length, 0);
+                //intopcheck returns 0 error
+                errors = check.checkSlice(slice).errors;
+                assert.equal(errors.length, 0);
+                done();
+            });
         });
-        it('0_4_reduction: broker not needed, should remove broker', function () {
+        it('0_4_reduction: broker not needed, should remove broker', function (done) {
             let slice = basic_data.test_4_reduction();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -145,7 +168,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_4();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice){
 
             /* recommendation:
                 - -1 resource (broker)
@@ -159,8 +182,9 @@ describe('intop_recommendation', function(){
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
+            done();});
         });
-        it('0_5_addition: multiple push-pull problem with needed broker, should add poller and buffer', function () {
+        it('0_5_addition: multiple push-pull problem with needed broker, should add poller and buffer', function (done) {
             let slice = basic_data.test_5_push_pull();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -171,7 +195,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_5();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice){
 
             /* recommendation:
                 - +2 resources (poller, buffer)
@@ -196,8 +220,9 @@ describe('intop_recommendation', function(){
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
+            done();});
         });
-        it('0_6_addition: missing message_broker, should add broker', function(){
+        it('0_6_addition: missing message_broker, should add broker', function(done){
             let slice = basic_data.test_6_missing_broker();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -208,7 +233,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_6();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice){
 
             /* recommendation:
                 - +1 resource (broker)
@@ -225,8 +250,9 @@ describe('intop_recommendation', function(){
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
+            done();});
         });
-        it('0_7_addition: missing broker & direct dataformat mismatch, should add broker + mediator', function(){
+        it('0_7_addition: missing broker & direct dataformat mismatch, should add broker + mediator', function(done){
             let slice = basic_data.test_7_missing_broker_and_dataformat_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -237,7 +263,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_7();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice){
 
             /* recommendation:
                 - +3 resource (broker, transformer, broker)
@@ -259,8 +285,9 @@ describe('intop_recommendation', function(){
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
+            done();});
         });
-        it('0_8_addition: indirect mismatch M:1, should add mediator at problematic source', function(){
+        it('0_8_addition: indirect mismatch M:1, should add mediator at problematic source', function(done){
             let slice = basic_data.test_8_indirect_mismatch_m1();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -271,7 +298,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_8();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice){
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
                 - +2 resource (broker, transformer)
@@ -293,8 +320,9 @@ describe('intop_recommendation', function(){
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
+            done();});
         });
-        it('0_9_addition: indirect mismatch 1:N, should add mediator at problematic dest', function(){
+        it('0_9_addition: indirect mismatch 1:N, should add mediator at problematic dest', function(done){
             let slice = basic_data.test_9_indirect_mismatch_1n();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -305,7 +333,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_9();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice){
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
                 - +2 resource (broker, transformer)
@@ -328,8 +356,9 @@ describe('intop_recommendation', function(){
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
+            done();});
         });
-        it('0_10_addition: indirect mismatch M:N, should add mediators for only one dataformat', function(){
+        it('0_10_addition: indirect mismatch M:N, should add mediators for only one dataformat', function(done){
             let slice = basic_data.test_10_indirect_mismatch_mn();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -340,7 +369,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_10();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults);
+            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults, function(slice){
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
                 - +2 resource (broker, transformer)
@@ -370,6 +399,7 @@ describe('intop_recommendation', function(){
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
+            done();});
         });
     });
 

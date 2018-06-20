@@ -1,5 +1,8 @@
 const intop_check = require('../check/intop_check');
 const util = require('../util/slice_util');
+const MongoClient = require("mongodb").MongoClient;
+
+let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
 
 let test_mode = false;
 let test_resources = [];
@@ -20,8 +23,12 @@ exports.applyRecommendations = function(slice){
 };
 
 
-exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
+exports.applyRecommendationsWithoutCheck = function(slice, checkresults, cb){
+    testMongoDB(function (queryresults) {
+
+
     if(checkresults.errors.length === 0){
+        cb(slice);
         return slice;
     }
     let queryMockIndex = 0;
@@ -51,7 +58,8 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
 
     //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
     //TODO solve problem by kind
-
+    cb(slice);
+    });
     return slice;
 };
 
@@ -119,4 +127,19 @@ function searchResources(error){
     }
     //TODO
     return null;
+}
+
+function testMongoDB(cb){
+    MongoClient.connect(mongodbUrl, function(err, db) {
+        if (err) throw err;
+        let dbo = db.db("recommendation_test");
+        let query = { "metadata.inputs.protocol.protocol_name": "mqtt" };
+        dbo.collection("test").find(query).toArray(function(err, result) {
+            if (err) throw err;
+            console.log(result);
+            db.close();
+            cb(result);
+            return result;
+        });
+    });
 }

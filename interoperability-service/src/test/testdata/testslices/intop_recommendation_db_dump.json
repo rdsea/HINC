@@ -1,0 +1,248 @@
+[{
+  "_id": {
+    "$oid": "5b2a02f2e7179a5892852c04"
+  },
+  "name": "http_transformer_csv_to_json",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type": {
+        "prototype": "software_artefact"
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "http://test:80",
+          "protocol_name": "http",
+          "http_method": "get"
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "csv"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "http://test:80",
+          "protocol_name": "http",
+          "http_method": "get"
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        }
+      }
+    ]
+  }
+},{
+  "_id": {
+    "$oid": "5b2a0338e7179a5892852c25"
+  },
+  "name": "mqttbroker",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "network_function",
+      "type": {
+        "prototype": "messagebroker",
+        "protocols": [
+          {
+            "uri": "mqtt://test:1883",
+            "protocol_name": "mqtt",
+            "topic": "basic_test",
+            "qos": 0
+          }
+        ],
+        "topics": [
+          "basic_test"
+        ]
+      }
+    }
+  }
+},{
+  "_id": {
+    "$oid": "5b2a0381e7179a5892852c54"
+  },
+  "name": "mqtt_transformer_csv_to_json",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type": {
+        "prototype": "software_artefact"
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "mqtt://test:1883",
+          "protocol_name": "mqtt",
+          "topic": "basic_test",
+          "qos": 0
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "csv"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "mqtt://test:1883",
+          "protocol_name": "mqtt",
+          "topic": "basic_test",
+          "qos": 0
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        }
+      }
+    ]
+  }
+},{
+  "_id": {
+    "$oid": "5b2a03cfe7179a5892852c7c"
+  },
+  "name": "http_mqtt_poller",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type": {
+        "prototype": "software_artefact"
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "pull",
+        "protocol": {
+          "uri": "http://test:80",
+          "protocol_name": "http",
+          "http_method": "get"
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "mqtt://test:1883",
+          "protocol_name": "mqtt",
+          "topic": "basic_test",
+          "qos": 0
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        }
+      }
+    ]
+  }
+},{
+  "_id": {
+    "$oid": "5b2a03f3e7179a5892852c82"
+  },
+  "name": "mqtt_http_buffer",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type": {
+        "prototype": "software_artefact"
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "mqtt://test:1883",
+          "protocol_name": "mqtt",
+          "topic": "basic_test",
+          "qos": 0
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "push_pull": "pull",
+        "protocol": {
+          "uri": "http://test:80",
+          "protocol_name": "http",
+          "http_method": "get"
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        }
+      }
+    ]
+  }
+},{
+  "_id": {
+    "$oid": "5b2a0485e7179a5892852cd1"
+  },
+  "name": "mqtt_transformer_json_to_csv",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type": {
+        "prototype": "software_artefact"
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "mqtt://test:1883",
+          "protocol_name": "mqtt",
+          "topic": "basic_test",
+          "qos": 0
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "mqtt://test:1883",
+          "protocol_name": "mqtt",
+          "topic": "basic_test",
+          "qos": 0
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "csv"
+        }
+      }
+    ]
+  }
+}]
