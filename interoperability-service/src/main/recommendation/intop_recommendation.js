@@ -3,10 +3,11 @@ const util = require('../util/slice_util');
 const MongoClient = require("mongodb").MongoClient;
 
 //let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
-let mongodbUrl = "mongodb://localhost:27017/recommendation_test";
-
-let test_mode = false;
-let test_resources = [];
+let mongodb_config = {
+    url: "mongodb://localhost:27017/recommendation_test",
+    db: "recommendation_test",
+    collection: "test"
+};
 
 exports.getRecommendationsWithoutCheck = function(slice, checkresults){
     let testslice = util.deepcopy(slice);
@@ -30,11 +31,9 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
         if(checkresults.errors.length === 0){
             resolve(slice);
         }
-        let queryMockIndex = 0;
         let promises = [];
         for(let i = 0; i < checkresults.errors.length; i++) {
             //while(checkresults.errors.length>0){
-            queryMockIndex ++;
             //TODO search
             promises.push(searchResources(checkresults.errors[i]).then(function (solution_resource) {
                 if(solution_resource != null) {
@@ -116,21 +115,14 @@ function solveByReduction(error, slice, solution_resource, broker){
 }
 
 
-
-exports.setTestMode = function (testMode, testResources) {
-  test_mode = testMode;
-  test_resources = testResources;
-};
-
 function searchResources(error){
     return new Promise(function (resolve, reject){
-        //TODO testmode/productionmode
         let query = createQueryByExample(error);
 
-        MongoClient.connect(mongodbUrl, function(err, db) {
+        MongoClient.connect(mongodb_config.url, function(err, db) {
             if (err) return reject(err);
-            let dbo = db.db("recommendation_test");
-            dbo.collection("test").find(query).toArray(function(err, result) {
+            let dbo = db.db(mongodb_config.db);
+            dbo.collection(mongodb_config.collection).find(query).toArray(function(err, result) {
                 if (err) throw err;
                 db.close();
                 resolve(result[0]);
@@ -146,13 +138,11 @@ function createQueryByExample(error){
         example[error.cause.metadataInvolved[i].key]=error.cause.metadataInvolved[i].value;
     }
 
-    if(!(example["metadata.inputs.protocol.protocol_name"] && example["metadata.outputs.protocol.protocol_name"]) ){
+    if(!((example["metadata.inputs.protocol.protocol_name"] && example["metadata.outputs.protocol.protocol_name"])
+        || example["metadata.resource.type.prototype"]==="messagebroker") ){
         example["metadata.outputs.protocol.protocol_name"] = error.cause.target.resource.metadata.inputs[0].protocol.protocol_name;
         example["metadata.inputs.protocol.protocol_name"] = error.cause.source.resource.metadata.outputs[0].protocol.protocol_name;
     }
-
-    // example["metadata.outputs"+error.cause.metadataInvolved[0]] = error.cause.source.resource.metadata.outputs[0][error.cause.metadataInvolved[0]];
-    // example["metadata.inputs"+error.cause.metadataInvolved[0]] = error.cause.target.resource.metadata.inputs[0][error.cause.metadataInvolved[0]];
 
     // example = {"metadata.outputs.protocol.protocol_name":"mqtt", "metadata.inputs.protocol.protocol_name":"http"};
     // example["metadata.outputs.protocol.protocol_name"]="mqtt";

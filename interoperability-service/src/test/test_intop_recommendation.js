@@ -62,8 +62,6 @@ describe('intop_recommendation', function(){
             assert.equal(errors.length, 0);
             //slice after recommendation equals before recommendation
 
-            let resources = solutionResources.solutionResources_test_0_0();
-            recommendation.setTestMode(true,resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then(function(slice) {
 
                 assert.deepEqual(slice, old_slice, "");
@@ -82,8 +80,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            let resources = solutionResources.solutionResources_test_0_1();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice) {
 
                 /* recommendation:
@@ -112,8 +108,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            let resources = solutionResources.solutionResources_test_0_2();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then(function (newSlice) {
 
 
@@ -157,8 +151,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length>=1, true);
 
-            let resources = solutionResources.solutionResources_test_0_3();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice) {
 
                 /* recommendation:
@@ -188,8 +180,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 2);
 
-            let resources = solutionResources.solutionResources_test_0_4();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice){
 
             /* recommendation:
@@ -215,8 +205,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 2);
 
-            let resources = solutionResources.solutionResources_test_0_5();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice){
 
             /* recommendation:
@@ -253,8 +241,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            let resources = solutionResources.solutionResources_test_0_6();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice){
 
             /* recommendation:
@@ -264,15 +250,15 @@ describe('intop_recommendation', function(){
              */
             let count = util.resourceCount(slice);
             assert.equal(count, old_count+1);
-            assert.equal(util.contains(slice, "broker"), true);
+            assert.equal(util.contains(slice, "mqttbroker"), true);
             assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_broker), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_broker, slice.resources.dest), true);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_mqttbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_mqttbroker, slice.resources.dest), true);
 
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
             assert.equal(errors.length, 0);
-            done();});
+            });
         });
         it('0_7_addition: missing broker & direct dataformat mismatch, should add broker + mediator', function(){
             let slice = basic_data.test_7_missing_broker_and_dataformat_mismatch();
@@ -283,8 +269,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            let resources = solutionResources.solutionResources_test_0_7();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice){
 
             /* recommendation:
@@ -318,8 +302,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            let resources = solutionResources.solutionResources_test_0_8();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice){
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
@@ -353,8 +335,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            let resources = solutionResources.solutionResources_test_0_9();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice){
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
@@ -389,8 +369,6 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 2);
 
-            let resources = solutionResources.solutionResources_test_0_10();
-            recommendation.setTestMode(true, resources);
             return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice){
 
             /* recommendation - Solution A (and new broker between sensor and transformer):
