@@ -23,30 +23,79 @@ exports.applyRecommendations = function(slice){
 };
 
 
-exports.applyRecommendationsWithoutCheck = function(slice, checkresults, cb){
-    testMongoDB(function (queryresults) {
+exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
+    return new Promise(function(resolve, reject){
+        /*testMongoDB().then(function(data){
+            console.log(data)
+        }, console.err);*/
 
+        if(checkresults.errors.length === 0){
+            resolve(slice);
+        }
+        let queryMockIndex = 0;
+        let promises = [];
+        for(let i = 0; i < checkresults.errors.length; i++) {
+            //while(checkresults.errors.length>0){
+            queryMockIndex ++;
+            //TODO search
+            promises.push(searchPromise("query"+queryMockIndex).then(function (solution_resource) {
+                if(solution_resource != null) {
+                    searchPromise("broker").then(function(broker){
+                        solveByAddition(checkresults.errors[i], slice, solution_resource, broker);
+                        //checkresults = intop_check.checkSlice(slice);
+                    }, console.err);
+                }
+            }, console.err));
+            /*if(checkresults.errors.length>=errorcount){
+                break;
+            }*/
+            /* TODO: solution categorisation (Addition, Reduction, Substitution)
+            if (checkresults.errors[i].impact.length > 0) {
+                // can not be solved by reduction
+            }else{
+                solveBySubstitution()
+            }
+            */
+        }
+
+        Promise.all(promises).then(function(){resolve(slice)});
+
+        //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
+        //TODO solve problem by kind
+    });
+};
+
+
+exports.callbackApplyRecommendationsWithoutCheck = function(slice, checkresults, cb){
+    testMongoDB().then(function(data){
+        console.log(data)
+    }, console.err);
 
     if(checkresults.errors.length === 0){
         cb(slice);
-        return slice;
     }
     let queryMockIndex = 0;
-    //for(let i = 0; i < checkresults.errors.length; i++) {
-    while(checkresults.errors.length>0){
+    for(let i = 0; i < checkresults.errors.length; i++) {
+        //while(checkresults.errors.length>0){
         queryMockIndex ++;
         //TODO search
-        let solution_resource = searchResources("query" + queryMockIndex);
-        let errorcount = checkresults.errors.length;
-        if(solution_resource != null) {
-            let broker = searchResources("broker");
-            solveByAddition(checkresults.errors[0], slice, solution_resource, broker);
-            checkresults = intop_check.checkSlice(slice);
-        }
+        searchResources("query" + queryMockIndex, checkresults, slice, cb, function (solution_resource, checkresults, slice, cb) {
 
-        if(checkresults.errors.length>=errorcount){
+            //let errorcount = checkresults.errors.length;
+            if(solution_resource != null) {
+                searchResources("broker", checkresults, slice, cb, function(broker, checkresults, slice, cb){
+                    solveByAddition(checkresults.errors[0], slice, solution_resource, broker);
+                    checkresults = intop_check.checkSlice(slice);
+                    cb(slice);
+                });
+            }
+
+
+        });
+
+        /*if(checkresults.errors.length>=errorcount){
             break;
-        }
+        }*/
         /* TODO: solution categorisation (Addition, Reduction, Substitution)
         if (checkresults.errors[i].impact.length > 0) {
             // can not be solved by reduction
@@ -58,9 +107,9 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults, cb){
 
     //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
     //TODO solve problem by kind
+
+
     cb(slice);
-    });
-    return slice;
 };
 
 function solveByAddition(error, slice, solution_resource, broker){
@@ -120,26 +169,42 @@ exports.setTestMode = function (testMode, testResources) {
   test_resources = testResources;
 };
 
-
-function searchResources(error){
-    if(test_mode){
-        return test_resources[error];
-    }
-    //TODO
-    return null;
+function searchPromise(error){
+    return new Promise(function (resolve, reject){
+        resolve(test_resources[error]);
+    });
 }
 
-function testMongoDB(cb){
-    MongoClient.connect(mongodbUrl, function(err, db) {
-        if (err) throw err;
-        let dbo = db.db("recommendation_test");
-        let query = { "metadata.inputs.protocol.protocol_name": "mqtt" };
-        dbo.collection("test").find(query).toArray(function(err, result) {
-            if (err) throw err;
-            console.log(result);
-            db.close();
-            cb(result);
-            return result;
+function searchResources(error, checkresults, slice, old_cb, cb){
+    if(test_mode){
+        cb(test_resources[error],checkresults, slice, old_cb);
+    }
+    //TODO
+    cb(null, checkresults, slice, old_cb);
+}
+
+function testMongoDB(){
+    /*
+    function readFileAsync (file, encoding) {
+  return new Promise(function (resolve, reject) {
+    fs.readFile(file, encoding, function (err, data) {
+      if (err) return reject(err) // rejects the promise with `err` as the reason
+      resolve(data)               // fulfills the promise with `data` as the value
+    })
+  })
+}
+     */
+
+    return new Promise(function(resolve, reject){
+        MongoClient.connect(mongodbUrl, function(err, db) {
+            if (err) return reject(err);
+            let dbo = db.db("recommendation_test");
+            let query = { "metadata.inputs.protocol.protocol_name": "mqtt" };
+            dbo.collection("test").find(query).toArray(function(err, result) {
+                if (err) throw err;
+                db.close();
+                resolve(result);
+            });
         });
     });
 }
