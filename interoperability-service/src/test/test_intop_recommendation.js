@@ -184,7 +184,6 @@ describe('intop_recommendation', function(){
             assert.equal(util.contains(slice, "poller"), true);
             assert.equal(util.contains(slice, "buffer"), true);
 
-            //TODO
             assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.broker), false);
             assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.httpdest), false);
 
@@ -228,7 +227,6 @@ describe('intop_recommendation', function(){
             assert.equal(errors.length, 0);
         });
         it('0_7_addition: missing broker & direct dataformat mismatch, should add broker + mediator', function(){
-            //TODO check test
             let slice = basic_data.test_7_missing_broker_and_dataformat_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);

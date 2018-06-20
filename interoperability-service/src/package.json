@@ -1,9 +1,9 @@
 {
   "name": "interoperability_service",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "./main/index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node ./main/index.js",
     "test": "mocha spec"
   },
   "dependencies": {
@@ -12,6 +12,7 @@
     "yamljs": "^0.3.0",
     "body-parser": "^1.18.3",
     "mocha": "^5.1.0",
-    "deep-copy": "^1.4.2"
+    "deep-copy": "^1.4.2",
+    "mongodb": "^3.0.10"
   }
 }
