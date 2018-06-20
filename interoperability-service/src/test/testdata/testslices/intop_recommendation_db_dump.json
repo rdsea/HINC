@@ -1,7 +1,4 @@
 [{
-  "_id": {
-    "$oid": "5b2a02f2e7179a5892852c04"
-  },
   "name": "http_transformer_csv_to_json",
   "source": [],
   "target": [],
@@ -42,9 +39,6 @@
     ]
   }
 },{
-  "_id": {
-    "$oid": "5b2a0338e7179a5892852c25"
-  },
   "name": "mqttbroker",
   "source": [],
   "target": [],
@@ -68,9 +62,6 @@
     }
   }
 },{
-  "_id": {
-    "$oid": "5b2a0381e7179a5892852c54"
-  },
   "name": "mqtt_transformer_csv_to_json",
   "source": [],
   "target": [],
@@ -113,9 +104,6 @@
     ]
   }
 },{
-  "_id": {
-    "$oid": "5b2a03cfe7179a5892852c7c"
-  },
   "name": "http_mqtt_poller",
   "source": [],
   "target": [],
@@ -157,9 +145,6 @@
     ]
   }
 },{
-  "_id": {
-    "$oid": "5b2a03f3e7179a5892852c82"
-  },
   "name": "mqtt_http_buffer",
   "source": [],
   "target": [],
@@ -201,9 +186,6 @@
     ]
   }
 },{
-  "_id": {
-    "$oid": "5b2a0485e7179a5892852cd1"
-  },
   "name": "mqtt_transformer_json_to_csv",
   "source": [],
   "target": [],

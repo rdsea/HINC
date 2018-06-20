@@ -2,7 +2,8 @@ const intop_check = require('../check/intop_check');
 const util = require('../util/slice_util');
 const MongoClient = require("mongodb").MongoClient;
 
-let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
+//let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
+let mongodbUrl = "mongodb://localhost:27017/recommendation_test";
 
 let test_mode = false;
 let test_resources = [];
@@ -77,7 +78,7 @@ function solveByAddition(error, slice, solution_resource){
         util.sliceConnectById(slice, intopName, error.cause.target.nodename, intopName + "2");
     }else{
         //if direct, check for M:N dependencies and add broker to the correct side of the transformer
-        /*
+
         let source = slice.resources[error.cause.source.nodename];
         let origbroker = slice.resources[error.cause.path[1].nodename];
         let target = slice.resources[error.cause.target.nodename];
@@ -88,13 +89,16 @@ function solveByAddition(error, slice, solution_resource){
         util.sliceDisConnect(slice, source, origbroker);
 
         //TODO add broker
-        let intopBroker = "intop_" + broker.name;
-        intopBroker = util.sliceAddResource(slice, broker, intopBroker);
+        /*let intopBroker = "intop_" + broker.name;
+        intopBroker = util.sliceAddResource(slice, broker, intopBroker);*/
 
         let intopName = "intop_" + solution_resource.name;
         intopName = util.sliceAddResource(slice, solution_resource, intopName);
 
+        util.sliceConnectById(slice, error.cause.source.nodename, intopName, intopName + "1");
+        util.sliceConnectById(slice, intopName, error.cause.path[1].nodename, intopName + "2");
 
+        /* OLD
         util.sliceConnectById(slice, error.cause.source.nodename, intopBroker, intopName + "1");
         util.sliceConnectById(slice, intopBroker, intopName, intopName + "2");
         util.sliceConnectById(slice, intopName, error.cause.path[1].nodename, intopName + "3");*/
@@ -155,20 +159,4 @@ function createQueryByExample(error){
     // example["metadata.inputs.protocol.protocol_name"]="http";
 
     return example;
-}
-
-function testMongoDB(){
-
-    return new Promise(function(resolve, reject){
-        MongoClient.connect(mongodbUrl, function(err, db) {
-            if (err) return reject(err);
-            let dbo = db.db("recommendation_test");
-            let query = { "metadata.inputs.protocol.protocol_name": "mqtt" };
-            dbo.collection("test").find(query).toArray(function(err, result) {
-                if (err) throw err;
-                db.close();
-                resolve(result);
-            });
-        });
-    });
 }
