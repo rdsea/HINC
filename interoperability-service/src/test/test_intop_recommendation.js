@@ -68,10 +68,10 @@ describe('intop_recommendation', function(){
                  */
                 let count = util.resourceCount(slice);
                 assert.equal(count, old_count + 1);
-                assert.equal(util.contains(slice, "transformer"), true);
+                assert.equal(util.contains(slice, "http_transformer_csv_to_json"), true);
                 assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
-                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_transformer), true);
-                assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.dest), true);
+                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_http_transformer_csv_to_json), true);
+                assert.equal(util.isConnected(slice, slice.resources.intop_http_transformer_csv_to_json, slice.resources.dest), true);
 
                 //intopcheck returns 0 error
                 errors = check.checkSlice(slice).errors;
@@ -192,7 +192,7 @@ describe('intop_recommendation', function(){
 
             let resources = solutionResources.solutionResources_test_0_5();
             recommendation.setTestMode(true, resources);
-            slice = recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice){
+            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(slice){
 
             /* recommendation:
                 - +2 resources (poller, buffer)
@@ -202,16 +202,16 @@ describe('intop_recommendation', function(){
             let count = util.resourceCount(slice);
             assert.equal(count, old_count+2);
 
-            assert.equal(util.contains(slice, "poller"), true);
-            assert.equal(util.contains(slice, "buffer"), true);
+            assert.equal(util.contains(slice, "http_mqtt_poller"), true);
+            assert.equal(util.contains(slice, "mqtt_http_buffer"), true);
 
             assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.broker), false);
             assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.httpdest), false);
 
-            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_poller), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_poller, slice.resources.broker), true);
-            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.intop_buffer), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_buffer, slice.resources.httpdest), true);
+            assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_http_mqtt_poller), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_http_mqtt_poller, slice.resources.broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.intop_mqtt_http_buffer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_mqtt_http_buffer, slice.resources.httpdest), true);
             assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.mqttdest), true);
 
             //intopcheck returns 0 error
