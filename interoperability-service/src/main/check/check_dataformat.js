@@ -8,9 +8,17 @@ exports.checkDataFormat = function (sourceMetadata, sourceOutput, targetMetadata
         return;
     }
 
-    if(sourceOutput.dataformat.dataformat_name !== targetInput.dataformat.dataformat_name){
-        errors.push({key:"metadata.inputs.dataformat.dataformat_name", value:sourceOutput.dataformat.dataformat_name});
-        errors.push({key:"metadata.outputs.dataformat.dataformat_name", value:targetInput.dataformat.dataformat_name});
+    if(sourceOutput.dataformat && targetInput.dataformat) {
+        if (sourceOutput.dataformat.dataformat_name !== targetInput.dataformat.dataformat_name) {
+            errors.push({
+                key: "metadata.inputs.dataformat.dataformat_name",
+                value: sourceOutput.dataformat.dataformat_name
+            });
+            errors.push({
+                key: "metadata.outputs.dataformat.dataformat_name",
+                value: targetInput.dataformat.dataformat_name
+            });
+        }
     }
 
 };

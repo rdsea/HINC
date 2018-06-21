@@ -1,8 +1,51 @@
 {
-  "sliceId": "bts_testslice1",
+  "sliceId": "bts_testslice2",
   "resources": {
-    "sensorcsv": {
-      "name": "sensor humidity csv",
+    "json_sensor": {
+      "name": "sensor humidity json",
+      "pluginName": null,
+      "providerUuid": "sensor",
+      "resourceType": "IOT_RESOURCE",
+      "location": null,
+      "metadata": {
+        "resource":{
+          "category": "iot",
+          "type": {
+            "prototype":"sensor"
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull": "push",
+          "protocol": {
+            "uri":"TODO",
+            "protocol_name":"mqtt",
+            "topic":"test",
+            "qos":0
+          },
+          "dataformat": {
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "parameters":{
+          "topic": "test"
+        }
+      },
+      "controlPoints": [],
+      "dataPoints": [
+        {
+          "name": "humidity",
+          "dataType": null,
+          "unit": "percent"
+        }
+      ],
+
+      "source": [],
+      "target": ["mqtt_connectivity2"]
+    },
+    "csv_sensor": {
+      "name": "sensor humidity",
       "pluginName": null,
       "providerUuid": "sensor",
       "resourceType": "IOT_RESOURCE",
@@ -47,49 +90,6 @@
       "source": [],
       "target": ["mqtt_connectivity"]
     },
-    "sensorjson": {
-      "name": "sensor humidity json",
-      "pluginName": null,
-      "providerUuid": "sensor",
-      "resourceType": "IOT_RESOURCE",
-      "location": null,
-      "metadata": {
-        "resource":{
-          "category": "iot",
-          "type": {
-            "prototype":"sensor"
-          }
-        },
-        "inputs":[],
-        "outputs":[{
-          "push_pull": "push",
-          "protocol": {
-            "uri":"TODO",
-            "protocol_name":"mqtt",
-            "topic":"test",
-            "qos":0
-          },
-          "dataformat": {
-            "encoding":"utf-8",
-            "dataformat_name":"json"
-          }
-        }],
-        "parameters":{
-          "topic": "test"
-        }
-      },
-      "controlPoints": [],
-      "dataPoints": [
-        {
-          "name": "humidity",
-          "dataType": null,
-          "unit": "percent"
-        }
-      ],
-
-      "source": [],
-      "target": ["mqtt_connectivity2"]
-    },
 
     "broker": {
       "name": "mosquitto broker",
@@ -99,7 +99,7 @@
       "location": null,
       "metadata": {
         "resource":{
-          "category":"",
+          "category":"network_function",
           "type":{
             "prototype":"messagebroker",
             "protocols":[{
@@ -116,7 +116,7 @@
       "dataPoints": [],
 
       "source": ["mqtt_connectivity", "mqtt_connectivity2"],
-      "target": []
+      "target": ["mqtt_connectivity3"]
     },
 
     "bigquery":{
@@ -183,7 +183,7 @@
       "controlPoints": [],
       "dataPoints": [],
 
-      "source": ["mqtt_connectivity"],
+      "source": ["ingest_connectivity"],
       "target": []
     },
     "ingest": {
@@ -252,12 +252,11 @@
       "controlPoints": [],
       "dataPoints": [],
 
-      "source": ["ingest_connectivity"],
-      "target": []
+      "source": ["mqtt_connectivity3"],
+      "target": ["ingest_connectivity"]
     }
 
   },
-
   "connectivities": {
     "mqtt_connectivity": {
       "accessPoint": {
@@ -266,8 +265,8 @@
         "qos": 0,
         "topics":[]
       },
-      "dataFormat": "CSV",
-      "in": "sensorcsv",
+      "dataFormat": "JSON",
+      "in": "csv_sensor",
       "out": "broker"
     },
     "mqtt_connectivity2": {
@@ -278,10 +277,20 @@
         "topics":[]
       },
       "dataFormat": "JSON",
-      "in": "sensorjson",
+      "in": "json_sensor",
       "out": "broker"
     },
-
+    "mqtt_connectivity3": {
+      "accessPoint": {
+        "applicationProtocol": "MQTT",
+        "networkProtocol": "IP",
+        "qos": 0,
+        "topics":[]
+      },
+      "dataFormat": "JSON",
+      "in": "broker",
+      "out": "ingest"
+    },
     "ingest_connectivity":{
       "accessPoint": {
         "applicationProtocol": "MQTT",
@@ -291,7 +300,7 @@
       },
       "dataFormat": "JSON",
       "in": "ingest",
-      "out": "broker"
+      "out": "bigquery"
     }
   }
 }

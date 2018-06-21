@@ -85,8 +85,9 @@ describe('test data-generating-functions to build testslices', function() {
     it('test #sliceConnectResources', function() {
         let r1 = data.emptyResource("id_r1");
         let r2 = data.emptyResource("id_r2");
+        let slice = {resources:{"r1":r1,"r2":r2}, connectivities:{}};
 
-        data.sliceConnectResources(r1, r2, {protocol:"mqtt"});
+        data.sliceConnectResources(slice, r1, r2, {protocol:"mqtt"}, "connectionId");
 
         assert.equal(r1.metadata.hasOwnProperty("outputs"), true);
         assert.equal(r2.metadata.hasOwnProperty("inputs"), true);

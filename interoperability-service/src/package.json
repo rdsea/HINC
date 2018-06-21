@@ -4,7 +4,7 @@
   "main": "./main/index.js",
   "scripts": {
     "start": "node ./main/index.js",
-    "test": "mocha spec"
+    "test": "mocha test"
   },
   "dependencies": {
     "express": "^4.16.3",

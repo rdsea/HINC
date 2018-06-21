@@ -25,11 +25,21 @@ exports.isConnected = function(slice, source, destination){
     }
 
     //slice[connectivity.in].name == source.name
-    if(slice.resources[slice.connectivities[connectivityName].in].name !== source.name){
+    let inId = slice.connectivities[connectivityName].in;
+    if(typeof inId !== "string"){
+        inId = inId.label;
+    }
+
+    if(slice.resources[inId].name !== source.name){
         return false
     }
 
-    if(slice.resources[slice.connectivities[connectivityName].out].name !== destination.name){
+    let outId = slice.connectivities[connectivityName].out;
+    if(typeof outId !== "string"){
+        outId = outId.label;
+    }
+
+    if(slice.resources[outId].name !== destination.name){
         return false
     }
 

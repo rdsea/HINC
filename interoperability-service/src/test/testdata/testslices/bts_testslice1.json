@@ -1,7 +1,7 @@
 {
   "sliceId": "bts_testslice1",
   "resources": {
-    "sensor": {
+    "csv_sensor": {
       "name": "sensor humidity",
       "pluginName": null,
       "providerUuid": "sensor",
@@ -56,7 +56,7 @@
       "location": null,
       "metadata": {
         "resource":{
-          "category":"",
+          "category":"network_function",
           "type":{
             "prototype":"messagebroker",
             "protocols":[{
@@ -73,7 +73,7 @@
       "dataPoints": [],
 
       "source": ["mqtt_connectivity"],
-      "target": []
+      "target": ["mqtt_connectivity2"]
     },
 
     "bigquery":{
@@ -140,7 +140,7 @@
       "controlPoints": [],
       "dataPoints": [],
 
-      "source": ["mqtt_connectivity"],
+      "source": ["ingest_connectivity"],
       "target": []
     },
     "ingest": {
@@ -209,12 +209,11 @@
       "controlPoints": [],
       "dataPoints": [],
 
-      "source": ["ingest_connectivity"],
-      "target": []
+      "source": ["mqtt_connectivity2"],
+      "target": ["ingest_connectivity"]
     }
 
   },
-
   "connectivities": {
     "mqtt_connectivity": {
       "accessPoint": {
@@ -224,10 +223,20 @@
         "topics":[]
       },
       "dataFormat": "JSON",
-      "in": "sensor",
+      "in": "csv_sensor",
       "out": "broker"
     },
-
+    "mqtt_connectivity2": {
+      "accessPoint": {
+        "applicationProtocol": "MQTT",
+        "networkProtocol": "IP",
+        "qos": 0,
+        "topics":[]
+      },
+      "dataFormat": "JSON",
+      "in": "broker",
+      "out": "ingest"
+    },
     "ingest_connectivity":{
       "accessPoint": {
         "applicationProtocol": "MQTT",
@@ -237,7 +246,7 @@
       },
       "dataFormat": "JSON",
       "in": "ingest",
-      "out": "broker"
+      "out": "bigquery"
     }
   }
 }

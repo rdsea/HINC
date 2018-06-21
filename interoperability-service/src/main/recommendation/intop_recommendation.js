@@ -9,6 +9,10 @@ let mongodb_config = {
     collection: "test"
 };
 
+exports.setMongoDBConfig = function (config) {
+    mongodb_config = config;
+};
+
 exports.getRecommendationsWithoutCheck = function(slice, checkresults){
     let testslice = util.deepcopy(slice);
     return exports.applyRecommendationsWithoutCheck(testslice, checkresults);
@@ -28,7 +32,7 @@ exports.applyRecommendations = function(slice){
 exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
     return new Promise(function(resolve, reject){
 
-        if(checkresults.errors.length === 0){
+        /*if(checkresults.errors.length === 0){
             resolve(slice);
         }
         let promises = [];
@@ -42,17 +46,44 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
                     }
                 }, console.err
             ).then(function(){},console.err));
-            // TODO: solution categorisation (Addition, Reduction, Substitution)
-
         }
 
         Promise.all(promises).then(function(){
-            resolve(slice)});
+            resolve(slice)});*/
+
+        recursiveSolve(slice,checkresults,0).then(function (slice){resolve(slice)});
 
         //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
         //TODO solve problem by kind
     });
 };
+
+function recursiveSolve(slice, checkresults, i){
+    return new Promise(function (resolve, reject) {
+        if(i>=checkresults.errors.length){
+            resolve(slice)
+        }else {
+
+            searchResources(checkresults.errors[i])
+                .then(
+                    function (solution_resource) {
+                        if (solution_resource != null) {
+                            return solveByAddition(checkresults.errors[i], slice, solution_resource, checkresults);
+                        } else {
+                            resolve(slice);
+                        }
+                    }, reject)
+                .then(function (slice) {
+                    checkresults = intop_check.checkSlice(slice);
+                    return recursiveSolve(slice, checkresults, 0);
+                }, reject)
+                .then(function (slice) {
+                    resolve(slice);
+                }, reject);
+        }
+    })
+
+}
 
 function solveByAddition(error, slice, solution_resource, checkresults){
     return new Promise(function(resolve, reject) {
@@ -174,7 +205,7 @@ function reconnectResources(slice, resourceArray, connectionName){
                 let dest = newResourceArray[i];
                 util.sliceConnect(slice, newResourceArray[i - 1], newResourceArray[i], connectionName + i);
             }
-            resolve();
+            resolve(slice);
         });
     });
 }
