@@ -344,16 +344,16 @@ describe('intop_recommendation', function(){
              */
             let countA = util.resourceCount(slice);
             assert.equal(countA, old_count+2);
-            assert.equal(util.contains(slice, "newbroker"), true);
-            assert.equal(util.contains(slice, "transformer"), true);
+            assert.equal(util.contains(slice, "mqttbroker"), true);
+            assert.equal(util.contains(slice, "mqtt_transformer_json_to_csv"), true);
             assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest2), false);
 
             assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.broker), true);
 
             assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.dest1), true);
-            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.intop_transformer), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.intop_newbroker), true);
-            assert.equal(util.isConnected(slice, slice.resources.intop_newbroker, slice.resources.dest2), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.intop_mqtt_transformer_json_to_csv), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_mqtt_transformer_json_to_csv, slice.resources.mqttbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.mqttbroker, slice.resources.dest2), true);
 
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
