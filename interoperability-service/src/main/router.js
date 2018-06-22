@@ -10,8 +10,9 @@ router.use(bodyParser.json());
 // define the home page route
 router.post('/recommendation', function (req, res) {
     let slice = req.body.slice;
-    let response = recommendation.getRecommendationsWithoutCheck(slice, "todo");
-    res.send(response);
+    recommendation.applyRecommendations(slice).then(function (result) {
+        res.send(result);
+    })
 });
 
 // define the about route

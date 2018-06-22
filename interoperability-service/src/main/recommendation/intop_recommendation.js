@@ -5,7 +5,8 @@ const MongoClient = require("mongodb").MongoClient;
 
 //let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
 let mongodb_config = {
-    url: "mongodb://localhost:27017/recommendation_test",
+    //url: "mongodb://localhost:27017/recommendation_test",
+    url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
     db: "recommendation_test",
     collection: "test"
 };
@@ -242,7 +243,7 @@ function searchBroker(protocol_name){
         MongoClient.connect(mongodb_config.url, function(err, db) {
             if (err) return reject(err);
             let dbo = db.db(mongodb_config.db);
-            dbo.collection(mongodb_config.collection).find(query).toArray(function(err, result) {
+            dbo.collection(mongodb_config.collection).find(query, {projection:{_id: 0}}).toArray(function(err, result) {
                 if (err) throw err;
                 db.close();
                 resolve(result[0]);
@@ -259,7 +260,7 @@ function searchResources(error){
         MongoClient.connect(mongodb_config.url, function(err, db) {
             if (err) return reject(err);
             let dbo = db.db(mongodb_config.db);
-            dbo.collection(mongodb_config.collection).find(query).toArray(function(err, result) {
+            dbo.collection(mongodb_config.collection).find(query, {projection:{_id: 0}}).toArray(function(err, result) {
                 if (err) throw err;
                 db.close();
                 resolve(result[0]);
