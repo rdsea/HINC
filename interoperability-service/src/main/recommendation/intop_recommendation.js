@@ -3,10 +3,9 @@ const util = require('../util/slice_util');
 const log_util = require('../util/log_util');
 const MongoClient = require("mongodb").MongoClient;
 
-//let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
 let mongodb_config = {
-    //url: "mongodb://localhost:27017/recommendation_test",
-    url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
+    url: "mongodb://localhost:27017/recommendation_test",
+    //url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
     db: "recommendation_test",
     collection: "test"
 };

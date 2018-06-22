@@ -9,7 +9,10 @@ router.use(bodyParser.json());
 
 // define the home page route
 router.post('/recommendation', function (req, res) {
-    let slice = req.body.slice;
+    let slice = req.body;
+    if(req.body.slice){
+        slice =req.body.slice;
+    }
     recommendation.applyRecommendations(slice).then(function (result) {
         res.send(result);
     })
@@ -17,7 +20,10 @@ router.post('/recommendation', function (req, res) {
 
 // define the about route
 router.post('/check',  function (req, res) {
-    let slice = req.body.slice;
+    let slice = req.body;
+    if(req.body.slice){
+        slice =req.body.slice;
+    }
     let response = check.checkSlice(slice);
     res.send(response);
 });
