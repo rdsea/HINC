@@ -1,5 +1,6 @@
 const intop_check = require('../check/intop_check');
 const util = require('../util/slice_util');
+const log_util = require('../util/log_util');
 const MongoClient = require("mongodb").MongoClient;
 
 //let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
@@ -32,50 +33,37 @@ exports.applyRecommendations = function(slice){
 exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
     return new Promise(function(resolve, reject){
 
-        /*if(checkresults.errors.length === 0){
-            resolve(slice);
-        }
-        let promises = [];
-        for(let i = 0; i < checkresults.errors.length; i++) {
-            promises.push(searchResources(checkresults.errors[i]).then(
-                function (solution_resource) {
-                    if(solution_resource != null) {
-                        return solveByAddition(checkresults.errors[i], slice, solution_resource, checkresults);
-                    }else{
-                        resolve(slice);
-                    }
-                }, console.err
-            ).then(function(){},console.err));
-        }
+        let logs = [];
+        recursiveSolve(slice,checkresults, logs).then(function (slice){
+            let result = {slice:slice, logs:logs};
+            resolve(result);
+        });
 
-        Promise.all(promises).then(function(){
-            resolve(slice)});*/
-
-        recursiveSolve(slice,checkresults,0).then(function (slice){resolve(slice)});
-
-        //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
-        //TODO solve problem by kind
     });
 };
 
-function recursiveSolve(slice, checkresults, i){
+function recursiveSolve(slice, checkresults, logs){
     return new Promise(function (resolve, reject) {
-        if(i>=checkresults.errors.length){
+        if(checkresults.errors.length === 0){
             resolve(slice)
         }else {
 
-            searchResources(checkresults.errors[i])
-                .then(
-                    function (solution_resource) {
-                        if (solution_resource != null) {
-                            return solveByAddition(checkresults.errors[i], slice, solution_resource, checkresults);
-                        } else {
-                            resolve(slice);
-                        }
-                    }, reject)
+            searchResources(checkresults.errors[0])
+                .then(function (solution_resource) {
+                    if (solution_resource != null) {
+                        return solveByAddition(checkresults.errors[0], slice, solution_resource, checkresults, logs);
+                        //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
+                        //TODO solve problem by kind
+                    } else {
+                        //TODO add log information that no resource has been found for this error
+
+                        logs.push(log_util.createNoSolutionFoundLog(checkresults.errors[0]));
+                        resolve(slice);
+                    }
+                }, reject)
                 .then(function (slice) {
                     checkresults = intop_check.checkSlice(slice);
-                    return recursiveSolve(slice, checkresults, 0);
+                    return recursiveSolve(slice, checkresults, logs);
                 }, reject)
                 .then(function (slice) {
                     resolve(slice);
@@ -85,7 +73,7 @@ function recursiveSolve(slice, checkresults, i){
 
 }
 
-function solveByAddition(error, slice, solution_resource, checkresults){
+function solveByAddition(error, slice, solution_resource, checkresults, logs){
     return new Promise(function(resolve, reject) {
         let intopName = "intop_" + solution_resource.name;
         intopName = util.sliceAddResource(slice, solution_resource, intopName);
@@ -100,12 +88,8 @@ function solveByAddition(error, slice, solution_resource, checkresults){
             dest = slice.resources[error.cause.path[1].nodename];
         }
 
-        //TODO check for M:N dependencies and
-        //TODO check where transformation should be injected (between source/broker or broker/target)
-        //TODO source/broker if: 1:N or M:N (coordinated)
-        //TODO broker/target if: M:1 or M:N (coordinated)
-
         if(error.impact.length>0 && !error.cause.isDirect){
+            //check where solution_resource should be added (between source/broker or broker/target)
             let result = determineSolutionPosition(slice, error, source, solution_resource, dest, checkresults);
 
             if(result){
@@ -114,33 +98,29 @@ function solveByAddition(error, slice, solution_resource, checkresults){
             }
         }
 
+        logs.push(log_util.createRecommendationLog(error, source, solution_resource, dest));
 
 
         util.sliceDisConnect(slice, source, dest);
-        reconnectResources(slice, [source, solution_resource, dest], intopName).then(resolve);
-
+        reconnectResources(slice, [source, solution_resource, dest], intopName).then(
+            function(slice){
+                resolve(slice)
+            });
     });
+}
+
+
+function solveBySubstitution(error, slice, solution_resource, checkresults, logs){
 
 }
 
 
-function solveBySubstitution(error, slice, solution_resource, broker){
-
-}
-
-
-function solveByReduction(error, slice, solution_resource, broker){
+function solveByReduction(error, slice, solution_resource, checkresults, logs){
 
 }
 
 function determineSolutionPosition(slice, error, source, solution_resource, dest, checkresults) {
-    //CASE 0_2:  source -> dest, impact broker
-    //CASE 0_5:  broker -> httpdest, impact mqttdest
-    //        :  source -> broker, impact httpdest, mqttdest
-    //CASE 0_8:  source -> dest, impact broker
-    //CASE 0_9:  source -> dest2, impact broker,dest1
-    //CASE 0_10:  source1 -> dest2, impact broker,dest2
-    //         :  source2 -> dest1, impact broker,dest1
+    //check where solution_resource should be added (between source/broker or broker/target)
 
     let target = slice.resources[error.cause.target.nodename];
     //if source || dest broker --> ignore
@@ -187,22 +167,12 @@ function isBroker(resource){
 }
 
 function reconnectResources(slice, resourceArray, connectionName){
-    //TODO add broker to the correct side of the transformer
-    //CASE 1: source -> intop -> dest (all http)
-    //CASE 2: source -> intop_broker -> dest
-
-    //CASE 3: source -> intop -> broker -> dest
-    //        source > broker > intop > broker > dest
-
-    //CASE 4: source -> intop -> dest
-    //        source -> broker -> intop -> broker -> dest
+    //add broker to the correct side of the transformer
 
     return new Promise(function(resolve,reject) {
         addBrokers(slice, resourceArray).then(function (newResourceArray) {
             for (let i = 1; i < newResourceArray.length; i++) {
                 //TODO connect by id
-                let source = newResourceArray[i - 1];
-                let dest = newResourceArray[i];
                 util.sliceConnect(slice, newResourceArray[i - 1], newResourceArray[i], connectionName + i);
             }
             resolve(slice);

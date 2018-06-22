@@ -1,4 +1,5 @@
 const graph_util = require('./slice_to_graph');
+const log_util = require('../util/log_util');
 
 
 exports.generateErrorObject = function(sourceNode, targetNode, checkErrors, isDirectConnection, path, graph){
@@ -11,6 +12,8 @@ exports.generateErrorObject = function(sourceNode, targetNode, checkErrors, isDi
     getDependentNodes(sourceNode, sourceNode, targetNode, graph, dependentNodes, true);
 
     error.impact = dependentNodes;
+
+    error.log = log_util.createCheckErrorLog(error);
 
     return error;
 };
@@ -28,5 +31,4 @@ function getDependentNodes(startNode, currentNode, targetNode, graph, dependentN
             getDependentNodes(startNode, nextNodes[i], targetNode, graph, dependentNodes, false);
         }
     }
-
 }
