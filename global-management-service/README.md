@@ -1,6 +1,7 @@
-# HINC global service
+# rsiHub global service
 
 ## Overview
+
 This package contain core functions of HINC global service.
 The global service will integrate various other local services through AMQP. The messaging
 protocol is described in the top level of the repo.
@@ -11,11 +12,12 @@ On startup the global will also be listening for registration from different loc
 local management service has been registered then all queries to the global api will query the 
 appropriate local(s)
 
+
 ## Running Local
 java -jar global-management-service-spring-boot-0.0.1-SNAPSHOT.jar
 
 ## Configuration
-You will need to provide an application.properties file in the same directory. A sample can be found in src/main/resources 
+You will need to provide an application.properties file in the same directory. A sample can be found in src/main/resources
 
 ```dtd
 # amqp connection string

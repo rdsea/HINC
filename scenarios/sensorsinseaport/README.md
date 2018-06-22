@@ -1,3 +1,7 @@
+# Overview
+This document describes steps in running the  resource slice for the scenario of sensor data exchange in the seaport.
+ The short video is available in youtube: (https://youtu.be/_SCrK8Q3xBs)
+ 
 # rsiHub Deployment
 
 in the `deployment` folder you will find the docker-compose.yml file and relevant configuration mounts to deploy a basic instance of rsiHub which comprises of:
