@@ -1,5 +1,5 @@
 {
-  "prototype":"messagebroker"
+  "prototype":"messagebroker",
   "broker":"",
   "broker_version":"",
   "protocols":[],
