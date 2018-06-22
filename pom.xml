@@ -24,7 +24,13 @@
     <url>http://maven.apache.org</url>
 
     
-    
+    <modules>
+        <module>common</module>
+        <module>repository</module>
+		<module>global-management-service</module>
+		<module>local-management-service</module>
+    </modules>
+
     <dependencies>
     <!-- spring boot -->
 		<dependency>
