@@ -16,7 +16,6 @@ exports.handler = function (argv) {
         throw new Error(`could not find slice for file ${argv.file}, please try again`);
     }
 
-    //TODO query intop_service
     let jsonObj = {slice:s}
     let requestBody = { json: true, body: jsonObj };
     let requestUri = config.intop_service_uri + "/interoperability/check";
@@ -28,7 +27,6 @@ exports.handler = function (argv) {
             return console.err(err);
         }
 
-        //TODO print check results
         printCheckResults(body);
 
 
