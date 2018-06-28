@@ -6,7 +6,7 @@ const swaggerDocument = YAML.load('./main/swagger.yaml');
 const router = require("./router");
 const bodyParser = require('body-parser');
 
-const PORT = 8080;
+const PORT = 8081;
 const HOST = '0.0.0.0';
 
 
