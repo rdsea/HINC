@@ -32,7 +32,7 @@ public class SoftwareArtefactService {
         return softwareArtefactRepository.delete(uuid);
     }
 
-    public List<SoftwareArtefact> querySoftwareArtefact(int limit) throws JsonProcessingException {
+    public List<SoftwareArtefact> getSoftwareArtefacts(int limit) throws JsonProcessingException {
         return softwareArtefactRepository.readAll(limit);
     }
 
@@ -44,4 +44,13 @@ public class SoftwareArtefactService {
         }
         return softwareArtefact;
     }
+
+    public List<SoftwareArtefact> queryByExample(SoftwareArtefact example){
+        return softwareArtefactRepository.queryByExample(example);
+    }
+
+    public List<SoftwareArtefact> query(String query){
+        return softwareArtefactRepository.query(query);
+    }
+
 }

@@ -1,10 +1,23 @@
 const intop_check = require('../check/intop_check');
 const util = require('../util/slice_util');
 const log_util = require('../util/log_util');
+const request = require('request');
 const MongoClient = require("mongodb").MongoClient;
 
 let mongodb_config = {
     //url: "mongodb://localhost:27017/recommendation_test",
+    url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
+    db: "recommendation_test",
+    collection: "test"
+};
+
+const software_artefact_config = {
+    url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
+    db: "recommendation_test",
+    collection: "test"
+};
+
+const global_management_config = {
     url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
     db: "recommendation_test",
     collection: "test"
@@ -265,6 +278,8 @@ function searchResources(error){
                 resolve(result[0]);
             });
         });
+
+        //request.get()
     });
 }
 

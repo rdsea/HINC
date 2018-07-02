@@ -37,7 +37,7 @@ public class SoftwareArtefactController {
 
         List<SoftwareArtefact> softwareArtefactList = new ArrayList<>();
         try {
-            softwareArtefactList = softwareArtefactService.querySoftwareArtefact(limit);
+            softwareArtefactList = softwareArtefactService.getSoftwareArtefacts(limit);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -77,5 +77,10 @@ public class SoftwareArtefactController {
         }
 
         return new ResponseEntity<>(softwareArtefact, HttpStatus.OK);
+    }
+
+    @GetMapping("/query")
+    public ResponseEntity<List<SoftwareArtefact>> querySoftwareArtefacts(@RequestParam(required = false, defaultValue = "{}")String query) {
+        return new ResponseEntity<>(softwareArtefactService.query(query), HttpStatus.OK);
     }
 }
