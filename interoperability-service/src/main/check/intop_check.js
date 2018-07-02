@@ -3,6 +3,8 @@ const check_protocol = require('../check/check_protocol');
 const check_dataformat = require('../check/check_dataformat');
 const check_qod = require('../check/check_qod');
 const check_qos = require('../check/check_qos');
+const util = require('../util/slice_util');
+
 
 const errorGenerator = require('../transform/error_generator_graph');
 const matchGenerator = require('../transform/match_generator_graph');
@@ -80,6 +82,7 @@ function checkDirectConnection(sourceNode, targetNode, path, graph, errors, warn
         errors.push(errorObject);
     }
 
+    //TODO reset in/outputs if some temporary changes were made (for brokers)
     return connection.output;
 }
 
@@ -105,6 +108,8 @@ function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutp
         //TODO maybe map errors to responsible source- or targetnode
         errors.push(errorObject);
     }
+
+    //TODO reset in/outputs if some temporary changes were made (for brokers)
 }
 
 function checkMetadataConnection(sourceNode, sourceOutput, targetNode, targetInput, checkFunctionArray){
@@ -167,10 +172,10 @@ function protocolMatchingOutInputs(source, target){
     let inputs = [];
 
     if(source.metadata.outputs){
-        outputs = source.metadata.outputs;
+        outputs = util.deepcopy(source.metadata.outputs);
     }
     if(target.metadata.inputs){
-        inputs = target.metadata.inputs;
+        inputs = util.deepcopy(target.metadata.inputs);
     }
 
     addBrokerOutinputs(inputs, target, "input");
@@ -195,10 +200,10 @@ function firstOutInputPair(source, target){
     let inputs = [];
 
     if(source.metadata.outputs){
-        outputs = source.metadata.outputs;
+        outputs = util.deepcopy(source.metadata.outputs);
     }
     if(target.metadata.inputs){
-        inputs = target.metadata.inputs;
+        inputs = util.deepcopy(target.metadata.inputs);
     }
 
     addBrokerOutinputs(inputs, target, "input");

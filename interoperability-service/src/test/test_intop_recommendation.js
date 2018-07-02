@@ -533,6 +533,7 @@ describe('intop_recommendation', function(){
                 assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.ingest), true);
                 assert.equal(util.isConnected(slice, slice.resources.ingest, slice.resources.bigquery), true);
 
+                assert.deepEqual(slice.resources.broker.metadata, old_slice.resources.broker.metadata);
 
                 // Alternative solution <-- not implemented
                 /* recommendation - Solution B:

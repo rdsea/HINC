@@ -1,5 +1,6 @@
 const intop_check = require('../main/check/intop_check');
 const assert = require('assert');
+const util = require('../main/util/slice_util');
 
 const testdata = require('./testdata/intop_check_testdata');
 
@@ -197,6 +198,21 @@ describe('intop_check.checkSlice', function(){
 });
 
 describe('basic checks', function(){
+    it('checkslice.addBrokerInoutPuts doesnt persist changes to the metadata of broker', function () {
+        let slice = basic_testslices.test_2_indirect_mismatch();
+        let old_slice = util.deepcopy(slice);
+        let result = intop_check.checkSlice(slice);
+
+        assert.deepEqual(slice.resources.broker.metadata, old_slice.resources.broker.metadata);
+
+        slice = basic_testslices.test_2_indirect_mismatch();
+        slice.resources.broker.metadata.inputs = [];
+        slice.resources.broker.metadata.outputs = [];
+        old_slice = util.deepcopy(slice);
+        result = intop_check.checkSlice(slice);
+
+        assert.deepEqual(slice.resources.broker.metadata, old_slice.resources.broker.metadata);
+    });
     describe('protocol check', function () {
         
     });
