@@ -40,8 +40,8 @@ function printCheckResults(body){
         console.info("Errors:");
         for (let i = 0; i < body.errors.length; i++) {
             console.info((i+1) + ": \tError: \n\t\t\t"+ body.errors[i].log.nodes);
-            console.info("\t\tMetadata: \n\t\t\t"+ JSON.stringify(body.errors[i].log.metadata));
-            console.info("\t\tPath: \n\t\t\t"+ body.errors[i].log.path);
+            console.info("\tMetadata: \n\t\t\t"+ JSON.stringify(body.errors[i].log.metadata));
+            console.info("\tPath: \n\t\t\t"+ body.errors[i].log.path);
             console.info("");
 
 

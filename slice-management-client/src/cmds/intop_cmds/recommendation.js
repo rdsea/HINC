@@ -66,9 +66,9 @@ function printRecommendationResults(body){
     if(body.logs.length>0) {
         for (let i = 0; i < body.logs.length; i++) {
             console.info((i+1) + ": \tError: \n\t\t\t"+ body.logs[i].error.nodes);
-            console.info("\t\tRecommendation: \n\t\t\t"+ body.logs[i].recommendation.description);
-            console.info("\t\tResource: \n\t\t\t"+ JSON.stringify(body.logs[i].recommendation.resource));
-            console.info("\t\tNew Path: \n\t\t\t"+ body.logs[i].recommendation.path);
+            console.info("\tRecommendation: \n\t\t\t"+ body.logs[i].recommendation.description);
+            console.info("\tResource: \n\t\t\t"+ JSON.stringify(body.logs[i].recommendation.resource));
+            console.info("\tNew Path: \n\t\t\t"+ body.logs[i].recommendation.path);
             console.info("");
         }
     }
