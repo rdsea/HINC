@@ -2,26 +2,12 @@ const intop_check = require('../check/intop_check');
 const util = require('../util/slice_util');
 const log_util = require('../util/log_util');
 const request = require('request-promise');
-const MongoClient = require("mongodb").MongoClient;
+const config = require('../../config');
 
-let mongodb_config = {
-    //url: "mongodb://localhost:27017/recommendation_test",
-    url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
-    db: "recommendation_test",
-    collection: "test"
-};
+const SEARCH_SOFTWARE_ARTEFACT = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_ARTEFACTS;
 
-const software_artefact_config = {
-    url: "http://localhost:8082/softwareartefacts/search"
-};
+const SEARCH_RESOURCES = config.GLOBAL_MANAGEMENT_URI + config.SEARCH_RESOURCES;
 
-const global_management_config = {
-    url: "http://localhost:8080/resources/search"
-};
-
-exports.setMongoDBConfig = function (config) {
-    mongodb_config = config;
-};
 
 exports.getRecommendationsWithoutCheck = function(slice, checkresults){
     let testslice = util.deepcopy(slice);
@@ -248,27 +234,27 @@ function brokerNeeded(source, target){
 
 function searchBrokers(protocol_name){
     let query = {"metadata.resource.type.prototype":"messagebroker", "metadata.resource.type.protocols.protocol_name":protocol_name};
-    return queryServices(query);
+    return exports.queryServices(query);
 }
 
 function searchResources(error){
     let query = createQueryByExample(error);
-    return queryServices(query);
+    return exports.queryServices(query);
 }
 
-function queryServices(query){
+exports.queryServices = function(query){
     return new Promise(function (resolve, reject){
         let jsonQuery = JSON.stringify(query, 0, null);
         let allResources = [];
         let promises = [];
 
-        promises.push(request.post({url:global_management_config.url, body: jsonQuery}).then((result)=>{
+        promises.push(request.post({url: SEARCH_RESOURCES, body: jsonQuery}).then((result)=>{
             console.log(result);
             let resources = JSON.parse(result);
             allResources = allResources.concat(resources);
         }));
 
-        promises.push(request.post({url:software_artefact_config.url, body: jsonQuery}).then((result)=>{
+        promises.push(request.post({url: SEARCH_SOFTWARE_ARTEFACT, body: jsonQuery}).then((result)=>{
             console.log(result);
             let resources = JSON.parse(result);
             allResources = allResources.concat(resources);

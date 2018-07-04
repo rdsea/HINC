@@ -4,8 +4,6 @@ const util = require('../main/util/slice_util');
 const check = require('../main/check/intop_check');
 const recommendation = require('../main/recommendation/intop_recommendation');
 
-const solutionResources = require('./testdata/intop_recommendation_testdata');
-
 const basic_data = require('./testdata/testslices/basic_testslices');
 
 const bts_testslice_0 = require('./testdata/testslices/bts_testslice0');
@@ -14,20 +12,28 @@ const bts_testslice_2 = require('./testdata/testslices/bts_testslice2');
 
 const solutionResourcesDB = require('./testdata/testslices/intop_recommendation_db_dump');
 
-
 const MongoClient = require("mongodb").MongoClient;
 
-//let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
 let mongodbUrl = "mongodb://localhost:27017/recommendation_test";
+//let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
 
 
 describe('intop_recommendation', function(){
     before(function() {
-        recommendation.setMongoDBConfig({
-            url: "mongodb://localhost:27017/recommendation_test",
-            db: "recommendation_test",
-            collection: "test"
-        });
+
+        recommendation.queryServices = function(query){
+            return new Promise((resolve, reject) => {
+            MongoClient.connect(mongodbUrl, function(err, db) {
+                if (err) return reject(err);
+                let dbo = db.db("recommendation_test");
+                dbo.collection("test").find(query).toArray(function(err, result) {
+                    if (err) throw err;
+                    db.close();
+                    resolve(result);
+                });
+            });
+            })
+        };
 
         return new Promise(function(resolve, reject){
             MongoClient.connect(mongodbUrl, function(err, db) {
