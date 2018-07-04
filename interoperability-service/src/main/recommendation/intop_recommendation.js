@@ -52,8 +52,6 @@ function recursiveSolve(slice, checkresults, logs){
                         //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
                         //TODO solve problem by kind
                     } else {
-                        //TODO add log information that no resource has been found for this error
-
                         logs.push(log_util.createNoSolutionFoundLog(checkresults.errors[0]));
                         resolve(slice);
                     }

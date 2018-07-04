@@ -7,7 +7,7 @@ const router = require("./router");
 const bodyParser = require('body-parser');
 const config = require('../config');
 
-const PORT = config.APPLICATION_PORT;
+const PORT = config.SERVER_PORT;
 const HOST = '0.0.0.0';
 
 

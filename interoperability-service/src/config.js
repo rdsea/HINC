@@ -4,5 +4,5 @@ module.exports = {
     SEARCH_ARTEFACTS:"/softwareartefacts/search",
     SEARCH_RESOURCES:"/resources/search",
 
-    APPLICATION_PORT:8081
-}
+    SERVER_PORT:8081
+};

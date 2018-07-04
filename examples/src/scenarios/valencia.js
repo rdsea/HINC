@@ -35,7 +35,9 @@ prompt(questions).then((ans) => {
 function create(config){
     createGlobal(config);
     createAllLocals(config);
-    createAllAdaptorsAndProviders(config)
+    createAllAdaptorsAndProviders(config);
+    createSoftwareArtefactService(config);
+    createInteroperabilityService(config);
 
     console.log("navigate to the folder ./result and run the command:")
     console.log("$ docker-compose up");
@@ -201,6 +203,52 @@ function writeAdaptorConfig(adaptorConfig){
 
     fs.writeFileSync(path.join(__dirname, `../../result/config/${adaptorConfig.ADAPTOR_NAME}.js`), config);
 }
+
+
+function createInteroperabilityService(config){
+    let template = require("../configTempates/interoperability.json");
+    template['GLOBAL_MANAGEMENT_URI'] = "http://global:8080";
+    template['SOFTWARE_ARTEFACT_URI'] = "http://software-artefact-service:8082";
+
+    let interoperabilityConfig = `module.exports = {
+    SOFTWARE_ARTEFACT_URI:'${template.SOFTWARE_ARTEFACT_URI}',
+    GLOBAL_MANAGEMENT_URI:'${template.GLOBAL_MANAGEMENT_URI}',
+    SEARCH_ARTEFACTS:'${template.SEARCH_ARTEFACTS}',
+    SEARCH_RESOURCES:'${template.SEARCH_RESOURCES}',
+
+    SERVER_PORT:${template.SERVER_PORT}
+}`;
+
+    fs.writeFileSync(path.join(__dirname, "../../result/config/interoperability_config.js"), interoperabilityConfig);
+
+    let service = {
+        image: "interoperability-service",
+        ports:[
+            `8081:${template.SERVER_PORT}`
+        ],
+        volumes: [
+            "./config/interoperability_config.js:/src/config.js"
+        ],
+        depends_on:[]
+    };
+
+    dockerComposeHinc.services['interoperability-service'] = service;
+}
+
+
+function createSoftwareArtefactService(config){
+
+    let service = {
+        image: "software-artefact-service",
+        ports:[
+            "8082:8082"
+        ],
+        depends_on:[]
+    };
+
+    dockerComposeHinc.services['software-artefact-service'] = service;
+}
+
 
 function clearResult(){
     if(fs.existsSync(path.join(__dirname, `../../result`))){
