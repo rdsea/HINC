@@ -1,7 +1,7 @@
 const intop_check = require('../check/intop_check');
 const util = require('../util/slice_util');
 const log_util = require('../util/log_util');
-const request = require('request');
+const request = require('request-promise');
 const MongoClient = require("mongodb").MongoClient;
 
 let mongodb_config = {
@@ -12,15 +12,11 @@ let mongodb_config = {
 };
 
 const software_artefact_config = {
-    url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
-    db: "recommendation_test",
-    collection: "test"
+    url: "http://localhost:8082/softwareartefacts/search"
 };
 
 const global_management_config = {
-    url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
-    db: "recommendation_test",
-    collection: "test"
+    url: "http://localhost:8080/resources/search"
 };
 
 exports.setMongoDBConfig = function (config) {
@@ -50,6 +46,8 @@ exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
         recursiveSolve(slice,checkresults, logs).then(function (slice){
             let result = {slice:slice, logs:logs};
             resolve(result);
+        }).catch((error)=>{
+            console.log(error);
         });
 
     });
@@ -62,9 +60,9 @@ function recursiveSolve(slice, checkresults, logs){
         }else {
 
             searchResources(checkresults.errors[0])
-                .then(function (solution_resource) {
-                    if (solution_resource != null) {
-                        return solveByAddition(checkresults.errors[0], slice, solution_resource, checkresults, logs);
+                .then(function (solution_resources) {
+                    if (solution_resources.length > 0) {
+                        return solveByAddition(checkresults.errors[0], slice, solution_resources[0], checkresults, logs);
                         //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
                         //TODO solve problem by kind
                     } else {
@@ -207,8 +205,8 @@ function addBrokers(slice, resourceArray){
             let protocol_name = brokerNeeded(source,dest);
 
             if(protocol_name){
-                promises.push(searchBroker(protocol_name).then(function (broker) {
-                    brokers[""+i] = broker;
+                promises.push(searchBrokers(protocol_name).then(function (found_brokers) {
+                    brokers[""+i] = found_brokers[0];
                 }));
             }
         }
@@ -248,38 +246,39 @@ function brokerNeeded(source, target){
     }
 }
 
-function searchBroker(protocol_name){
-    return new Promise(function (resolve, reject){
-        let query = {"metadata.resource.type.prototype":"messagebroker", "metadata.resource.type.protocols.protocol_name":protocol_name};
-
-        MongoClient.connect(mongodb_config.url, function(err, db) {
-            if (err) return reject(err);
-            let dbo = db.db(mongodb_config.db);
-            dbo.collection(mongodb_config.collection).find(query, {projection:{_id: 0}}).toArray(function(err, result) {
-                if (err) throw err;
-                db.close();
-                resolve(result[0]);
-            });
-        });
-    });
+function searchBrokers(protocol_name){
+    let query = {"metadata.resource.type.prototype":"messagebroker", "metadata.resource.type.protocols.protocol_name":protocol_name};
+    return queryServices(query);
 }
 
-
 function searchResources(error){
+    let query = createQueryByExample(error);
+    return queryServices(query);
+}
+
+function queryServices(query){
     return new Promise(function (resolve, reject){
-        let query = createQueryByExample(error);
+        let jsonQuery = JSON.stringify(query, 0, null);
+        let allResources = [];
+        let promises = [];
 
-        MongoClient.connect(mongodb_config.url, function(err, db) {
-            if (err) return reject(err);
-            let dbo = db.db(mongodb_config.db);
-            dbo.collection(mongodb_config.collection).find(query, {projection:{_id: 0}}).toArray(function(err, result) {
-                if (err) throw err;
-                db.close();
-                resolve(result[0]);
-            });
-        });
+        promises.push(request.post({url:global_management_config.url, body: jsonQuery}).then((result)=>{
+            console.log(result);
+            let resources = JSON.parse(result);
+            allResources = allResources.concat(resources);
+        }));
 
-        //request.get()
+        promises.push(request.post({url:software_artefact_config.url, body: jsonQuery}).then((result)=>{
+            console.log(result);
+            let resources = JSON.parse(result);
+            allResources = allResources.concat(resources);
+        }));
+
+        return Promise.all(promises).then(()=>{
+            resolve(allResources);
+        }).catch((error)=>{
+            reject(error);
+        })
     });
 }
 

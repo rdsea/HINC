@@ -127,6 +127,10 @@ public class ResourceService {
         return result;
     }
 
+    public List<Resource> queryResourceRepository(String query){
+        return resourceRepository.query(query);
+    }
+
 
 
     private String getDestinationExchange(String id, String group){

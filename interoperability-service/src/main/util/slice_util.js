@@ -64,8 +64,16 @@ exports.sliceConnect = function(slice, source, dest, connectivityname){
     let destId = exports.getResourceIdByName(slice, dest.name);
 
     slice.connectivities[connectivityId]={in:sourceId, out:destId};
-    source.target.push(connectivityId);
-    dest.source.push(connectivityId);
+    if(source.target) {
+        source.target.push(connectivityId);
+    }else{
+        source.target = [connectivityId];
+    }
+    if(dest.source) {
+        dest.source.push(connectivityId);
+    }else{
+        dest.source = [connectivityId];
+    }
 };
 
 exports.sliceConnectById = function(slice, sourceId, destId, connectivityname){

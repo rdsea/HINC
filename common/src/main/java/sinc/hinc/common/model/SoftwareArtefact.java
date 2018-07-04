@@ -7,6 +7,7 @@ public class SoftwareArtefact {
     @Id
     private String uuid;
 
+    private String name;
     private String executionEnvironment;
     private String artefactReference;
 
@@ -42,5 +43,13 @@ public class SoftwareArtefact {
 
     public void setMetadata(JsonNode metadata) {
         this.metadata = metadata;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
