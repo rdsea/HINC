@@ -1,8 +1,9 @@
 const graph_util = require('../transform/slice_to_graph');
-const check_protocol = require('../check/check_protocol');
-const check_dataformat = require('../check/check_dataformat');
-const check_qod = require('../check/check_qod');
-const check_qos = require('../check/check_qos');
+const check_protocol = require('./connection_checks/check_protocol');
+const check_dataformat = require('./connection_checks/check_dataformat');
+const check_qod = require('./connection_checks/check_qod');
+const check_qos = require('./connection_checks/check_qos');
+const check_datacontract_qos = require('./datacontract_checks/check_datacontract_qos');
 const util = require('../util/slice_util');
 
 
@@ -11,33 +12,56 @@ const matchGenerator = require('../transform/match_generator_graph');
 
 
 exports.checkSlice = function(slice){
+    return exports.checkWithContract(slice, null);
+};
+
+
+exports.checkWithContract = function(slice, contract){
     let graph = graph_util.sliceToGraph(slice);
     let errors = [];
     let warnings = [];
     let matches = [];
+    let contract_violations = [];
 
-    checkGraph(graph, errors, warnings, matches);
+    checkGraph(graph, errors, warnings, matches, contract, contract_violations);
 
-    return {errors:errors, warnings:warnings, matches: matches};
+    return {errors:errors, warnings:warnings, matches: matches, contract_violations:contract_violations};
 };
 
-function checkGraph(graph, errors, warnings, matches){
-    graph.startNodes.forEach(function (startNode){traverseGraph(startNode, graph, errors, warnings, matches)});
+function checkGraph(graph, errors, warnings, matches, datacontract, contract_violations){
+    graph.startNodes.forEach(function (startNode){
+        traverseGraph(startNode, graph, errors, warnings, matches, datacontract, contract_violations)});
     let unmarkedNodes = graph_util.getUnmarkedNodes(graph);
-    unmarkedNodes.forEach(function (node){traverseGraph(node, graph, errors, warnings, matches)});
+    unmarkedNodes.forEach(function (node){traverseGraph(node, graph, errors, warnings, matches, datacontract, contract_violations)});
 }
 
 
-function traverseGraph(node, graph, errors, warnings, matches) {
+function traverseGraph(node, graph, errors, warnings, matches, datacontract, contract_violations) {
     let path = [];
+
+    if(typeof datacontract !== 'undefined' && datacontract !== null) {
+        if (node.marked === false) {
+            checkDataContract(node, datacontract, contract_violations);
+        }
+    }
+
     node.marked = true;
     checkConnectedNodes(node, node, true, path, null, graph, errors, warnings, matches);
 
     let nextNodes = graph_util.nextNodes(graph, node);
     for(let i = 0; i<nextNodes.length;i++){
         if(nextNodes[i].marked===false){
-            traverseGraph(nextNodes[i], graph, errors, warnings, matches);
+            traverseGraph(nextNodes[i], graph, errors, warnings, matches, datacontract, contract_violations);
         }
+    }
+}
+
+function checkDataContract(node, datacontract, contract_violations){
+    let checkFunctions = [check_datacontract_qos.checkDataContractQos];
+
+    for(let i = 0; i < checkFunctions.length; i++){
+        let contractCheck = checkFunctions[i];
+        contractCheck(node, node.resource.metadata, datacontract, contract_violations);
     }
 }
 

@@ -1,4 +1,4 @@
-
+//TODO adjust or remove / currently not used
 //*********************************************************************************************** helper functions
 
 exports.emptyIoTResource = function(id) {

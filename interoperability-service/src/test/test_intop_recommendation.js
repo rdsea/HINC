@@ -63,9 +63,9 @@ describe('intop_recommendation', function(){
         });
     });
 
-    describe('0 - basic testcases on minimalistic slices', function(){
+    describe('0 - basic interoperability testcases on minimalistic slices', function(){
         it('0_0_working: working slice, should not change', function () {
-            let slice = basic_data.test_0_working_slice();
+            let slice = basic_data.test_0_0_working_slice();
             let old_slice = util.deepcopy(slice);
             //intopcheck returns no errors (and warnings)
             let checkresults = check.checkSlice(slice);
@@ -85,7 +85,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_1_addition: direct dataformat mismatch, should add mediator', function(){
-            let slice = basic_data.test_1_direct_mismatch();
+            let slice = basic_data.test_0_1_direct_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -115,7 +115,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_2_addition: indirect mismatch, should add mediator', function(){
-            let slice = basic_data.test_2_indirect_mismatch();
+            let slice = basic_data.test_0_2_indirect_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -159,7 +159,7 @@ describe('intop_recommendation', function(){
         });
         //TODO implement algorithm to pass test and activate it again (remove x from xit)
         xit('0_3_substitution: wrong broker, should substitute broker', function () {
-            let slice = basic_data.test_3_substitution();
+            let slice = basic_data.test_0_3_substitution();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns >=1 error
@@ -191,7 +191,7 @@ describe('intop_recommendation', function(){
         });
         //TODO implement algorithm to pass test and activate it again (remove x from xit)
         xit('0_4_reduction: broker not needed, should remove broker', function () {
-            let slice = basic_data.test_4_reduction();
+            let slice = basic_data.test_0_4_reduction();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 2 errors
@@ -218,7 +218,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_5_addition: multiple push-pull problem with needed broker, should add poller and buffer', function () {
-            let slice = basic_data.test_5_push_pull();
+            let slice = basic_data.test_0_5_push_pull();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 2 errors
@@ -256,7 +256,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_6_addition: missing message_broker, should add broker', function(){
-            let slice = basic_data.test_6_missing_broker();
+            let slice = basic_data.test_0_6_missing_broker();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -287,7 +287,7 @@ describe('intop_recommendation', function(){
         });
         //TODO implement algorithm to pass test and activate it again (remove x from xit)
         xit('0_7_addition: missing broker & direct dataformat mismatch, should add broker + transformer', function(){
-            let slice = basic_data.test_7_missing_broker_and_dataformat_mismatch();
+            let slice = basic_data.test_0_7_missing_broker_and_dataformat_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -322,7 +322,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_8_addition: indirect mismatch M:1, should add transformer at problematic source', function(){
-            let slice = basic_data.test_8_indirect_mismatch_m1();
+            let slice = basic_data.test_0_8_indirect_mismatch_m1();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -357,7 +357,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_9_addition: indirect mismatch 1:N, should add transformer at problematic dest', function(){
-            let slice = basic_data.test_9_indirect_mismatch_1n();
+            let slice = basic_data.test_0_9_indirect_mismatch_1n();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -393,7 +393,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_10_addition: indirect mismatch M:N, should add transformers for only one dataformat', function(){
-            let slice = basic_data.test_10_indirect_mismatch_mn();
+            let slice = basic_data.test_0_10_indirect_mismatch_mn();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
