@@ -3,41 +3,63 @@ const util = require('../util/slice_util');
 const log_util = require('../util/log_util');
 const request = require('request-promise');
 const config = require('../../config');
+const flat = require("flat");
 
 const SEARCH_SOFTWARE_ARTEFACT = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_ARTEFACTS;
 
 const SEARCH_RESOURCES = config.GLOBAL_MANAGEMENT_URI + config.SEARCH_RESOURCES;
 
 
-exports.getRecommendationsWithoutCheck = function(slice, checkresults){
-    let testslice = util.deepcopy(slice);
-    return exports.applyRecommendationsWithoutCheck(testslice, checkresults);
+exports.getRecommendations = function(slice){
+    return exports.getContractRecommendations(slice, null);
 };
 
-exports.getRecommendations = function(slice){
-    let checkresults = intop_check.checkSlice(slice);
+exports.getRecommendationsWithoutCheck = function(slice, checkresults){
+    return exports.getContractRecommendationsWithoutCheck(slice, null, checkresults);
+};
+
+exports.getContractRecommendations = function(slice, contract){
+    let checkresults = intop_check.checkWithContract(slice, contract);
     return exports.getRecommendationsWithoutCheck(slice, checkresults);
 };
 
-exports.applyRecommendations = function(slice){
-    let checkresults = intop_check.checkSlice(slice);
-    return exports.applyRecommendationsWithoutCheck(slice, checkresults);
-};
 
-
-exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
+exports.getContractRecommendationsWithoutCheck = function(slice, contract, checkresults){
     return new Promise(function(resolve, reject){
-
         let logs = [];
-        recursiveSolve(slice,checkresults, logs).then(function (slice){
-            let result = {slice:slice, logs:logs};
-            resolve(result);
-        }).catch((error)=>{
-            console.log(error);
-        });
-
+        recursiveSolve(slice,checkresults, logs)
+            .then(function (slice){
+                let newResults = intop_check.checkWithContract(slice, contract);
+                return solveContractErrors(slice, newResults, logs, contract);
+            }).then(function (slice){
+                let result = {slice:slice, logs:logs};
+                resolve(result);
+            }).catch((error)=>{
+                console.log(error);
+                resolve(error);
+            });
     });
 };
+
+function solveContractErrors(slice, checkresults, logs, contract){
+    return new Promise((resolve,reject) => {
+        //TODO for each contract_violation
+        if(checkresults.contract_violations.length>0){
+            let resourceId = checkresults.contract_violations[0].nodename;
+            let resource = slice.resources[resourceId];
+            searchContractSubstitution(resource, contract).then((substitutionResources)=>{
+                if(substitutionResources.length>0){
+                    let newResource = substitutionResources[0];
+                    util.substituteResource(slice, resourceId, newResource);
+                }
+            });
+        }
+
+        resolve(slice);
+
+    });
+}
+
 
 function recursiveSolve(slice, checkresults, logs){
     return new Promise(function (resolve, reject) {
@@ -231,12 +253,19 @@ function brokerNeeded(source, target){
 }
 
 function searchBrokers(protocol_name){
+    //TODO add contract constraints
     let query = {"metadata.resource.type.prototype":"messagebroker", "metadata.resource.type.protocols.protocol_name":protocol_name};
     return exports.queryServices(query);
 }
 
 function searchResources(error){
+    //TODO add contract constraints
     let query = createQueryByExample(error);
+    return exports.queryServices(query);
+}
+
+function searchContractSubstitution(resource, contract){
+    let query = createSubstitutionQuery(resource, contract);
     return exports.queryServices(query);
 }
 
@@ -278,10 +307,36 @@ function createQueryByExample(error){
         example["metadata.outputs.protocol.protocol_name"] = error.cause.target.resource.metadata.inputs[0].protocol.protocol_name;
         example["metadata.inputs.protocol.protocol_name"] = error.cause.source.resource.metadata.outputs[0].protocol.protocol_name;
     }
+    return example;
+}
 
-    // example = {"metadata.outputs.protocol.protocol_name":"mqtt", "metadata.inputs.protocol.protocol_name":"http"};
-    // example["metadata.outputs.protocol.protocol_name"]="mqtt";
-    // example["metadata.inputs.protocol.protocol_name"]="http";
+function createSubstitutionQuery(resource, contract){
+    let example = {};
+    //take inputs and outputs from resource
+
+    example.metadata = util.deepcopy(resource.metadata);
+
+    if(example.metadata.outputs && example.metadata.outputs.length > 0){
+        example.metadata.outputs = example.metadata.outputs[0];
+    }else {
+        delete example.metadata.outputs;
+    }
+
+    if(example.metadata.inputs && example.metadata.inputs.length > 0){
+        example.metadata.inputs= example.metadata.inputs[0];
+    }else {
+        delete example.metadata.inputs;
+    }
+    //take metadata.resource from contract
+
+    Object.keys(contract).forEach((key)=>{
+       example.metadata.resource[key]=contract[key];
+    });
+
+    //TODO translate example object to mongodb query-strings
+    //TODO use $gt, $lt, ....
+
+    example = flat(example);
 
     return example;
 }

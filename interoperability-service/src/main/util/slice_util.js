@@ -55,8 +55,6 @@ exports.deepcopy = function(obj){
     return JSON.parse(JSON.stringify(obj));
 };
 
-
-
 exports.sliceConnect = function(slice, source, dest, connectivityname){
     let connectivityId = getConnectivityId(slice, connectivityname);
 
@@ -113,6 +111,11 @@ exports.getResourceIdByName = function(slice, resourceName){
     return Object.keys(slice.resources).filter(function filterFunction(key){
         return slice.resources[key].name === resourceName
     }).pop();
+};
+
+
+exports.substituteResource = function (slice, resourceId, newResource) {
+    //TODO
 };
 
 function getResourceId(slice, baseId){

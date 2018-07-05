@@ -23,36 +23,42 @@ exports.handler = function (argv) {
 
     request.post(requestUri, requestBody , (err, res, body) => {
         if (err) {
-            console.err("Error connecting to the interoperability service. Please check the http uri of the interoperability service " +
+            console.error("Error connecting to the interoperability service. Please check the http uri of the interoperability service " +
                 "(" + config.intop_service_uri + "). Detailed error message:")
-            return console.err(err);
+            console.error(err);
+            return;
         }
 
-        if(body.logs.length>0) {
-            printRecommendationResults(body).then(()=>{
+        if(body.logs){
 
-            let questions = [
-                {
-                    name: 'overwriteSlice',
-                    message: 'Should the slice be updated with the recommendation?',
-                    type: "confirm",
-                    default: false
-                }
-            ];
+            if(body.logs.length>0) {
+                printRecommendationResults(body).then(()=>{
 
-            prompt(questions).then((ans)=>{
-                if(ans.overwriteSlice){
-                    overwriteFile(filepath, JSON.stringify(body.slice, null, 2), function (err) {
-                        if (err) {
-                            return console.log("Error writing file: " + err);
-                        }
-                    })
-                }
-            });
-            });
+                let questions = [
+                    {
+                        name: 'overwriteSlice',
+                        message: 'Should the slice be updated with the recommendation?',
+                        type: "confirm",
+                        default: false
+                    }
+                ];
 
+                prompt(questions).then((ans)=>{
+                    if(ans.overwriteSlice){
+                        overwriteFile(filepath, JSON.stringify(body.slice, null, 2), function (err) {
+                            if (err) {
+                                return console.log("Error writing file: " + err);
+                            }
+                        })
+                    }
+                });
+                });
+
+            }else{
+                console.info("No interoperability issues detected")
+            }
         }else{
-            console.info("No interoperability issues detected")
+            console.error(body);
         }
     });
 };

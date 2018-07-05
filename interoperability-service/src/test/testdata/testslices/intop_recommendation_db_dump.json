@@ -227,4 +227,35 @@
       }
     ]
   }
+},
+{
+  "name": "reliable_httpsource",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type": {
+        "prototype": "sensor"
+      },
+      "qos": {
+        "reliability": 90
+      }
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "http://test:80",
+          "protocol_name": "http",
+          "http_method": "get"
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        }
+      }
+    ]
+  }
 }]

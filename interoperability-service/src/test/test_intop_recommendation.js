@@ -73,7 +73,7 @@ describe('intop_recommendation', function(){
             assert.equal(errors.length, 0);
             //slice after recommendation equals before recommendation
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -93,7 +93,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -123,7 +123,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -167,7 +167,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length>=1, true);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -199,7 +199,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 2);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -226,7 +226,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 2);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -264,7 +264,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -295,7 +295,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -330,7 +330,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -365,7 +365,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -401,7 +401,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 2);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -448,7 +448,7 @@ describe('intop_recommendation', function(){
             assert.equal(checkresults.errors.length, 0);
             assert.equal(checkresults.warnings.length, 0);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
                 assert.equal(util.resourceCount(slice), old_count);
@@ -471,7 +471,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -517,7 +517,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults).then(function(result) {
+            return recommendation.getRecommendationsWithoutCheck(old_slice, checkresults).then(function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -559,4 +559,45 @@ describe('intop_recommendation', function(){
 
         });
     });
+
+
+
+    describe('2 - basic datacontract testcases with minimalistic slices and datacontracts', function(){
+        it('2_0_reliability: reliability of source too low', function(){
+            let slice = basic_data.test_2_0_datacontract_reliability();
+            let contract = {qos:{reliability:90}};
+            let result = check.checkWithContract(slice, contract);
+            assert.equal(result.errors.length, 0);
+            assert.equal(result.matches.length, 1);
+            assert.equal(result.contract_violations.length, 1);
+
+
+            return recommendation.getContractRecommendationsWithoutCheck(slice, contract, result).then( function(result) {
+                let slice = result.slice;
+                let logs = result.logs;
+
+                /* recommendation:
+                    - +3 resource (broker, transformer, broker)
+                    - no connection between source and dest
+                    - connection between: source->broker1->transformer->broker2->dest
+                 */
+                /*let count = util.resourceCount(slice);
+                assert.equal(count, old_count+3);
+                assert.equal(util.contains(slice, "transformer"), true);
+                assert.equal(util.contains(slice, "broker1"), true);
+                assert.equal(util.contains(slice, "broker2"), true);
+                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
+
+                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_broker), true);
+                assert.equal(util.isConnected(slice, slice.resources.intop_broker, slice.resources.intop_transformer), true);
+                assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.intop_broker_1), true);
+                assert.equal(util.isConnected(slice, slice.resources.intop_broker_1, slice.resources.dest), true);
+
+                //intopcheck returns 0 error
+                errors = check.checkSlice(slice).errors;
+                assert.equal(errors.length, 0);*/
+            });
+
+        });
+    })
 });
