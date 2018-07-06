@@ -2,11 +2,12 @@ const intop_check = require('../check/intop_check');
 const util = require('../util/slice_util');
 const log_util = require('../util/log_util');
 const request = require('request-promise');
-const config = require('../../config');
 const flat = require("flat");
+const MongoClient = require("mongodb").MongoClient;
+const moment = require("moment");
+const config = require('../../config');
 
 const SEARCH_SOFTWARE_ARTEFACT = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_ARTEFACTS;
-
 const SEARCH_RESOURCES = config.GLOBAL_MANAGEMENT_URI + config.SEARCH_RESOURCES;
 
 
@@ -24,22 +25,27 @@ exports.getContractRecommendations = function(slice, contract){
 };
 
 
-exports.getContractRecommendationsWithoutCheck = function(slice, contract, checkresults){
-    return new Promise(function(resolve, reject){
+exports.getContractRecommendationsWithoutCheck = function(slice, contract, checkresults) {
+    let old_slice = util.deepcopy(slice);
+    return new Promise(function (resolve, reject) {
         let logs = [];
-        recursiveSolve(slice,checkresults, logs)
-            .then(function (slice){
+        recursiveSolve(slice, checkresults, logs)
+            .then(function (slice) {
                 let newResults = intop_check.checkWithContract(slice, contract);
                 return solveContractErrors(slice, newResults, logs, contract);
-            }).then(function (slice){
-                let result = {slice:slice, logs:logs};
+            }).then(function (slice) {
+            let result = {slice: slice, logs: logs};
+
+            saveRecommendationToMongo(old_slice, result, contract).then(() => {
                 resolve(result);
-            }).catch((error)=>{
-                console.log(error);
-                resolve(error);
             });
-    });
+        }).catch((error) => {
+            console.log(error);
+            resolve(error);
+        });
+    })
 };
+
 
 function solveContractErrors(slice, checkresults, logs, contract){
     return new Promise((resolve,reject) => {
@@ -340,4 +346,30 @@ function createSubstitutionQuery(resource, contract){
 
 function arrayContains(array, value){
     return array.indexOf(value)>-1;
+}
+
+
+function saveRecommendationToMongo(old_slice, result, contract){
+    let db_item = {
+        _id: old_slice.sliceId,
+        problem_slice: old_slice,
+        recommended_solution: result.slice,
+        contract: contract,
+        timestamp: moment().format()
+    };
+    return new Promise((resolve,reject) => {
+        MongoClient.connect(config.MONGODB_URL, function (err, db) {
+            if (err) {
+                db.close();
+                resolve(result);
+                return;
+            }
+            let dbo = db.db("recommendation_history");
+            dbo.collection("recommendations").update({_id:db_item._id}, db_item, {upsert:true},  function (err, res) {
+                //if (err) throw err;
+                db.close();
+                resolve(result);
+            });
+        });
+    });
 }

@@ -216,7 +216,8 @@ function createInteroperabilityService(config){
     SEARCH_ARTEFACTS:'${template.SEARCH_ARTEFACTS}',
     SEARCH_RESOURCES:'${template.SEARCH_RESOURCES}',
 
-    SERVER_PORT:${template.SERVER_PORT}
+    SERVER_PORT:${template.SERVER_PORT},
+    MONGODB_URL: '${template.SERVER_PORT}'
 }`;
 
     fs.writeFileSync(path.join(__dirname, "../../result/config/interoperability_config.js"), interoperabilityConfig);

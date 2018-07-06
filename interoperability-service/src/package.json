@@ -16,6 +16,7 @@
     "mongodb": "^3.0.10",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
-    "flat": "^4.1.0"
+    "flat": "^4.1.0",
+    "moment": "^2.22.2"
   }
 }

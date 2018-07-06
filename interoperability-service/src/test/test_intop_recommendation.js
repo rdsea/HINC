@@ -3,6 +3,7 @@ const assert = require('assert');
 const util = require('../main/util/slice_util');
 const check = require('../main/check/intop_check');
 const recommendation = require('../main/recommendation/intop_recommendation');
+let config = require("../config");
 
 const basic_data = require('./testdata/testslices/basic_testslices');
 
@@ -14,16 +15,16 @@ const solutionResourcesDB = require('./testdata/testslices/intop_recommendation_
 
 const MongoClient = require("mongodb").MongoClient;
 
-let mongodbUrl = "mongodb://localhost:27017/recommendation_test";
-//let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
+let test_mongodb_url = "mongodb://localhost:27017/";
+let old_recommendation_history = config.MONGODB_URL;
 
 
 describe('intop_recommendation', function(){
     before(function() {
-
+        config.MONGODB_URL = test_mongodb_url;
         recommendation.queryServices = function(query){
             return new Promise((resolve, reject) => {
-            MongoClient.connect(mongodbUrl, function(err, db) {
+            MongoClient.connect(test_mongodb_url, function(err, db) {
                 if (err) return reject(err);
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").find(query).toArray(function(err, result) {
@@ -36,7 +37,7 @@ describe('intop_recommendation', function(){
         };
 
         return new Promise(function(resolve, reject){
-            MongoClient.connect(mongodbUrl, function(err, db) {
+            MongoClient.connect(test_mongodb_url, function(err, db) {
                 if (err) return reject(err);
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").insertMany(solutionResourcesDB, function(err, res) {
@@ -49,18 +50,33 @@ describe('intop_recommendation', function(){
         });
     });
     after(function() {
-        return new Promise(function(resolve, reject){
-            MongoClient.connect(mongodbUrl, function(err, db) {
-                if (err) return reject(err);
+        let promises = [];
+        promises.push(new Promise(function(resolve, reject){
+            MongoClient.connect(test_mongodb_url, function(err, db) {
+                if (err) {db.close(); return reject(err);}
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").drop(function(err, delOK) {
+                    db.close();
                     if (err) return reject(err);
                     if (delOK) console.log("Collection deleted");
-                    db.close();
                     resolve();
                 });
             });
-        });
+        }));
+        promises.push(new Promise(function(resolve, reject){
+            MongoClient.connect(test_mongodb_url, function(err, db) {
+                if (err) {db.close(); return reject(err);}
+                let dbo = db.db("recommendation_history");
+                dbo.collection("recommendations").drop(function(err, delOK) {
+                    db.close();
+                    if (err) return reject(err);
+                    if (delOK) console.log("Collection deleted");
+                    resolve();
+                });
+            });
+        }));
+        config.MONGODB_URL = old_recommendation_history;
+        return Promise.all(promises);
     });
 
     describe('0 - basic interoperability testcases on minimalistic slices', function(){

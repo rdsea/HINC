@@ -16,8 +16,8 @@ module.exports = {
 
 
 
-function empty_slice(){
-    return {resources:{},connectivities:{}};
+function empty_slice(id){
+    return {sliceId: id, resources:{},connectivities:{}};
 }
 
 function source(name, push_pull, protocol, format){
