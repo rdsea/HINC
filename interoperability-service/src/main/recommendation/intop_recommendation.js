@@ -43,20 +43,19 @@ exports.getContractRecommendationsWithoutCheck = function(slice, contract, check
 
 function solveContractErrors(slice, checkresults, logs, contract){
     return new Promise((resolve,reject) => {
-        //TODO for each contract_violation
-        if(checkresults.contract_violations.length>0){
-            let resourceId = checkresults.contract_violations[0].nodename;
-            let resource = slice.resources[resourceId];
-            searchContractSubstitution(resource, contract).then((substitutionResources)=>{
-                if(substitutionResources.length>0){
-                    let newResource = substitutionResources[0];
-                    util.substituteResource(slice, resourceId, newResource);
-                }
-            });
+        if(checkresults.contract_violations.length===0){
+            resolve(slice);
         }
-
-        resolve(slice);
-
+        let resourceId = checkresults.contract_violations[0].nodename;
+        let resource = slice.resources[resourceId];
+        searchContractSubstitution(resource, contract).then((substitutionResources)=>{
+            if(substitutionResources.length>0){
+                let newResource = substitutionResources[0];
+                util.substituteResource(slice, resourceId, newResource);
+                checkresults = intop_check.checkWithContract(slice,contract);
+                return solveContractErrors(slice,checkresults,logs,contract).then(resolve);
+            }
+        });
     });
 }
 
@@ -65,27 +64,24 @@ function recursiveSolve(slice, checkresults, logs){
     return new Promise(function (resolve, reject) {
         if(checkresults.errors.length === 0){
             resolve(slice)
-        }else {
-
-            searchResources(checkresults.errors[0])
-                .then(function (solution_resources) {
-                    if (solution_resources.length > 0) {
-                        return solveByAddition(checkresults.errors[0], slice, solution_resources[0], checkresults, logs);
-                        //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
-                        //TODO solve problem by kind
-                    } else {
-                        logs.push(log_util.createNoSolutionFoundLog(checkresults.errors[0]));
-                        resolve(slice);
-                    }
-                }, reject)
-                .then(function (slice) {
-                    checkresults = intop_check.checkSlice(slice);
-                    return recursiveSolve(slice, checkresults, logs);
-                }, reject)
-                .then(function (slice) {
-                    resolve(slice);
-                }, reject);
         }
+
+        searchResources(checkresults.errors[0])
+            .then(function (solution_resources) {
+                if (solution_resources.length > 0) {
+                    return solveByAddition(checkresults.errors[0], slice, solution_resources[0], checkresults, logs);
+                    //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
+                    //TODO solve problem by kind
+                } else {
+                    logs.push(log_util.createNoSolutionFoundLog(checkresults.errors[0]));
+                    resolve(slice);
+                }
+            }, reject)
+            .then(function (slice) {
+                checkresults = intop_check.checkSlice(slice);
+                return recursiveSolve(slice, checkresults, logs).then(resolve)
+            }, reject)
+
     })
 
 }

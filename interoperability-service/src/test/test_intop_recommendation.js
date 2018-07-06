@@ -565,37 +565,36 @@ describe('intop_recommendation', function(){
     describe('2 - basic datacontract testcases with minimalistic slices and datacontracts', function(){
         it('2_0_reliability: reliability of source too low', function(){
             let slice = basic_data.test_2_0_datacontract_reliability();
-            let contract = {qos:{reliability:90}};
+            let old_slice = util.deepcopy(slice);
+            let old_count = util.resourceCount(old_slice);
+
+            let contract = {qos:{reliability:99.9}};
             let result = check.checkWithContract(slice, contract);
+
             assert.equal(result.errors.length, 0);
             assert.equal(result.matches.length, 1);
-            assert.equal(result.contract_violations.length, 1);
+            assert.equal(result.contract_violations.length, 2);
 
 
             return recommendation.getContractRecommendationsWithoutCheck(slice, contract, result).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
-                /* recommendation:
-                    - +3 resource (broker, transformer, broker)
-                    - no connection between source and dest
-                    - connection between: source->broker1->transformer->broker2->dest
-                 */
-                /*let count = util.resourceCount(slice);
-                assert.equal(count, old_count+3);
-                assert.equal(util.contains(slice, "transformer"), true);
-                assert.equal(util.contains(slice, "broker1"), true);
-                assert.equal(util.contains(slice, "broker2"), true);
-                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), false);
+                let count = util.resourceCount(slice);
+                assert.equal(count, old_count);
+                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), true);
+                assert.equal(util.contains(slice, "reliable_httpsource"), true);
+                assert.equal(slice.resources.source.name, "reliable_httpsource");
+                assert.equal(slice.resources.source.metadata.resource.qos.reliability>=contract.qos.reliability, true);
 
-                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.intop_broker), true);
-                assert.equal(util.isConnected(slice, slice.resources.intop_broker, slice.resources.intop_transformer), true);
-                assert.equal(util.isConnected(slice, slice.resources.intop_transformer, slice.resources.intop_broker_1), true);
-                assert.equal(util.isConnected(slice, slice.resources.intop_broker_1, slice.resources.dest), true);
+                assert.equal(util.contains(slice, "reliable_httpdest"), true);
+                assert.equal(slice.resources.dest.name, "reliable_httpdest");
+                assert.equal(slice.resources.dest.metadata.resource.qos.reliability>=contract.qos.reliability, true);
 
                 //intopcheck returns 0 error
-                errors = check.checkSlice(slice).errors;
-                assert.equal(errors.length, 0);*/
+                let checkresults = check.checkWithContract(slice, contract);
+                assert.equal(checkresults.errors.length, 0);
+                assert.equal(checkresults.contract_violations.length, 0);
             });
 
         });

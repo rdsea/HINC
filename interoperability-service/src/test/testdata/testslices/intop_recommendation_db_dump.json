@@ -239,7 +239,7 @@
         "prototype": "sensor"
       },
       "qos": {
-        "reliability": 90
+        "reliability": 99.9
       }
     },
     "inputs": [],
@@ -257,5 +257,35 @@
         }
       }
     ]
+  }
+},{
+  "name": "reliable_httpdest",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type": {
+        "prototype": "storage"
+      },
+      "qos": {
+        "reliability": 99.9
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "http://test:80",
+          "protocol_name": "http",
+          "http_method": "get"
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        }
+      }
+    ],
+    "outputs": []
   }
 }]
