@@ -115,7 +115,13 @@ exports.getResourceIdByName = function(slice, resourceName){
 
 
 exports.substituteResource = function (slice, resourceId, newResource) {
-    //TODO
+    let old_resource = slice.resources[resourceId];
+    slice.resources[resourceId] = newResource;
+    newResource.source = exports.deepcopy(old_resource.source);
+    newResource.target = exports.deepcopy(old_resource.target);
+
+    old_resource.source = [];
+    old_resource.target = [];
 };
 
 function getResourceId(slice, baseId){
