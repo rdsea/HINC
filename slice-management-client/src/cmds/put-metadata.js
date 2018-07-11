@@ -16,7 +16,7 @@ exports.builder = {
 }
 
 exports.handler = function (argv) {
-    let globalmanagementUri = config.globalManagementHttp;
+    let globalmanagementUri = config.uri;
 
     if(argv.globalURI){
         globalmanagementUri = argv.globalURI;
@@ -38,7 +38,7 @@ exports.handler = function (argv) {
 
             request.put(requestUri, requestBody , (err, res, body) => {
                 if (err) {
-                    console.log("Error connecting to the global management service. Please check the http uri of the global management service " +
+                    console.err("Error connecting to the global management service. Please check the http uri of the global management service " +
                         "(" + globalmanagementUri + "). Detailed error message:")
                     return console.err(err);
                 }

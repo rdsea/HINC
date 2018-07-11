@@ -29,7 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -131,6 +133,28 @@ public class AbstractDAO<T> {
     
     public List<T> readAll(){
         return deserializeDocuments(mongoTemplate.findAll(Document.class, clazz.getSimpleName()));
+    }
+
+    public List<T> query(String queryString){
+
+        Query query = new BasicQuery(queryString);
+
+        return deserializeDocuments(mongoTemplate.find(query, Document.class, clazz.getSimpleName()));
+
+    }
+
+    public List<T> queryByExample(T example){
+        List<T> result = new ArrayList<>();
+        try {
+            Document document = Document.parse(mapper.writeValueAsString(example));
+            Query query = new BasicQuery(document);
+
+            result = deserializeDocuments(mongoTemplate.find(query, Document.class, clazz.getSimpleName()));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     private List<T> deserializeDocuments(List<Document> documents){

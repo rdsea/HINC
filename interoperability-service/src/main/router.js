@@ -7,18 +7,24 @@ const bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
 
-// define the home page route
 router.post('/recommendation', function (req, res) {
     let slice = req.body;
     if(req.body.slice){
         slice =req.body.slice;
     }
-    recommendation.applyRecommendations(slice).then(function (result) {
+    recommendation.getRecommendations(slice).then(function (result) {
         res.send(result);
     })
 });
 
-// define the about route
+router.post('/recommendation/contract', function (req, res) {
+    let slice = req.body.slice;
+    let contract = req.body.contract;
+    recommendation.getContractRecommendations(slice, contract).then(function (result) {
+        res.send(result);
+    })
+});
+
 router.post('/check',  function (req, res) {
     let slice = req.body;
     if(req.body.slice){
@@ -27,5 +33,14 @@ router.post('/check',  function (req, res) {
     let response = check.checkSlice(slice);
     res.send(response);
 });
+
+router.post('/check/contract',  function (req, res) {
+    let slice = req.body.slice;
+    let contract = req.body.contract;
+
+    let response = check.checkWithContract(slice, contract);
+    res.send(response);
+});
+
 
 module.exports = router;

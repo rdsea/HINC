@@ -55,8 +55,6 @@ exports.deepcopy = function(obj){
     return JSON.parse(JSON.stringify(obj));
 };
 
-
-
 exports.sliceConnect = function(slice, source, dest, connectivityname){
     let connectivityId = getConnectivityId(slice, connectivityname);
 
@@ -64,8 +62,16 @@ exports.sliceConnect = function(slice, source, dest, connectivityname){
     let destId = exports.getResourceIdByName(slice, dest.name);
 
     slice.connectivities[connectivityId]={in:sourceId, out:destId};
-    source.target.push(connectivityId);
-    dest.source.push(connectivityId);
+    if(source.target) {
+        source.target.push(connectivityId);
+    }else{
+        source.target = [connectivityId];
+    }
+    if(dest.source) {
+        dest.source.push(connectivityId);
+    }else{
+        dest.source = [connectivityId];
+    }
 };
 
 exports.sliceConnectById = function(slice, sourceId, destId, connectivityname){
@@ -105,6 +111,17 @@ exports.getResourceIdByName = function(slice, resourceName){
     return Object.keys(slice.resources).filter(function filterFunction(key){
         return slice.resources[key].name === resourceName
     }).pop();
+};
+
+
+exports.substituteResource = function (slice, resourceId, newResource) {
+    let old_resource = slice.resources[resourceId];
+    slice.resources[resourceId] = newResource;
+    newResource.source = exports.deepcopy(old_resource.source);
+    newResource.target = exports.deepcopy(old_resource.target);
+
+    old_resource.source = [];
+    old_resource.target = [];
 };
 
 function getResourceId(slice, baseId){

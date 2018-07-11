@@ -5,10 +5,12 @@ const prompt = require('inquirer').createPromptModule();
 const conf = new Configstore(pkg.name, {});
 
 exports.uri = conf.get('globalUri');
+exports.intop_service_uri = conf.get('intopUri');
 
 exports.hasConfig = () => {
     let hasUri = conf.get('globalUri') !== undefined && conf.get('globalUri') !== null
-    let hasConfig = hasUri;
+    let hasIntopUri = conf.get('intopUri') !== undefined && conf.get('intopUri') !== null
+    let hasConfig = hasUri && hasIntopUri;
     return hasConfig
 }
 
@@ -19,10 +21,16 @@ exports.setConfig = () => {
             message: 'global management service url',
             default: 'http://localhost:8080'
         },
+        {
+            name: 'intopUri',
+            message: 'interoperability service url',
+            default: 'http://localhost:8081'
+        },
     ]
 
     prompt(questions).then((ans) => {
         conf.set('globalUri', ans.globalUri)
+        conf.set('intopUri', ans.intopUri)
         
         console.log('configuration set :')
         console.log(JSON.stringify(ans, null, 2));

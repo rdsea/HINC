@@ -3,8 +3,7 @@ const assert = require('assert');
 const util = require('../main/util/slice_util');
 const check = require('../main/check/intop_check');
 const recommendation = require('../main/recommendation/intop_recommendation');
-
-const solutionResources = require('./testdata/intop_recommendation_testdata');
+let config = require("../config");
 
 const basic_data = require('./testdata/testslices/basic_testslices');
 
@@ -14,23 +13,31 @@ const bts_testslice_2 = require('./testdata/testslices/bts_testslice2');
 
 const solutionResourcesDB = require('./testdata/testslices/intop_recommendation_db_dump');
 
-
 const MongoClient = require("mongodb").MongoClient;
 
-//let mongodbUrl = "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test";
-let mongodbUrl = "mongodb://localhost:27017/recommendation_test";
+let test_mongodb_url = "mongodb://localhost:27017/";
+let old_recommendation_history = config.MONGODB_URL;
 
 
 describe('intop_recommendation', function(){
     before(function() {
-        recommendation.setMongoDBConfig({
-            url: "mongodb://localhost:27017/recommendation_test",
-            db: "recommendation_test",
-            collection: "test"
-        });
+        config.MONGODB_URL = test_mongodb_url;
+        recommendation.queryServices = function(query){
+            return new Promise((resolve, reject) => {
+            MongoClient.connect(test_mongodb_url, function(err, db) {
+                if (err) return reject(err);
+                let dbo = db.db("recommendation_test");
+                dbo.collection("test").find(query).toArray(function(err, result) {
+                    if (err) throw err;
+                    db.close();
+                    resolve(result);
+                });
+            });
+            })
+        };
 
         return new Promise(function(resolve, reject){
-            MongoClient.connect(mongodbUrl, function(err, db) {
+            MongoClient.connect(test_mongodb_url, function(err, db) {
                 if (err) return reject(err);
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").insertMany(solutionResourcesDB, function(err, res) {
@@ -43,23 +50,38 @@ describe('intop_recommendation', function(){
         });
     });
     after(function() {
-        return new Promise(function(resolve, reject){
-            MongoClient.connect(mongodbUrl, function(err, db) {
-                if (err) return reject(err);
+        let promises = [];
+        promises.push(new Promise(function(resolve, reject){
+            MongoClient.connect(test_mongodb_url, function(err, db) {
+                if (err) {db.close(); return reject(err);}
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").drop(function(err, delOK) {
+                    db.close();
                     if (err) return reject(err);
                     if (delOK) console.log("Collection deleted");
-                    db.close();
                     resolve();
                 });
             });
-        });
+        }));
+        promises.push(new Promise(function(resolve, reject){
+            MongoClient.connect(test_mongodb_url, function(err, db) {
+                if (err) {db.close(); return reject(err);}
+                let dbo = db.db("recommendation_history");
+                dbo.collection("recommendations").drop(function(err, delOK) {
+                    db.close();
+                    if (err) return reject(err);
+                    if (delOK) console.log("Collection deleted");
+                    resolve();
+                });
+            });
+        }));
+        config.MONGODB_URL = old_recommendation_history;
+        return Promise.all(promises);
     });
 
-    describe('0 - basic testcases on minimalistic slices', function(){
+    describe('0 - basic interoperability testcases on minimalistic slices', function(){
         it('0_0_working: working slice, should not change', function () {
-            let slice = basic_data.test_0_working_slice();
+            let slice = basic_data.test_0_0_working_slice();
             let old_slice = util.deepcopy(slice);
             //intopcheck returns no errors (and warnings)
             let checkresults = check.checkSlice(slice);
@@ -67,7 +89,7 @@ describe('intop_recommendation', function(){
             assert.equal(errors.length, 0);
             //slice after recommendation equals before recommendation
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -79,7 +101,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_1_addition: direct dataformat mismatch, should add mediator', function(){
-            let slice = basic_data.test_1_direct_mismatch();
+            let slice = basic_data.test_0_1_direct_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -87,7 +109,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -109,7 +131,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_2_addition: indirect mismatch, should add mediator', function(){
-            let slice = basic_data.test_2_indirect_mismatch();
+            let slice = basic_data.test_0_2_indirect_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -117,7 +139,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -153,7 +175,7 @@ describe('intop_recommendation', function(){
         });
         //TODO implement algorithm to pass test and activate it again (remove x from xit)
         xit('0_3_substitution: wrong broker, should substitute broker', function () {
-            let slice = basic_data.test_3_substitution();
+            let slice = basic_data.test_0_3_substitution();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns >=1 error
@@ -161,7 +183,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length>=1, true);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -185,7 +207,7 @@ describe('intop_recommendation', function(){
         });
         //TODO implement algorithm to pass test and activate it again (remove x from xit)
         xit('0_4_reduction: broker not needed, should remove broker', function () {
-            let slice = basic_data.test_4_reduction();
+            let slice = basic_data.test_0_4_reduction();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 2 errors
@@ -193,7 +215,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 2);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -212,7 +234,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_5_addition: multiple push-pull problem with needed broker, should add poller and buffer', function () {
-            let slice = basic_data.test_5_push_pull();
+            let slice = basic_data.test_0_5_push_pull();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 2 errors
@@ -220,7 +242,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 2);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -250,7 +272,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_6_addition: missing message_broker, should add broker', function(){
-            let slice = basic_data.test_6_missing_broker();
+            let slice = basic_data.test_0_6_missing_broker();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -258,7 +280,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -281,7 +303,7 @@ describe('intop_recommendation', function(){
         });
         //TODO implement algorithm to pass test and activate it again (remove x from xit)
         xit('0_7_addition: missing broker & direct dataformat mismatch, should add broker + transformer', function(){
-            let slice = basic_data.test_7_missing_broker_and_dataformat_mismatch();
+            let slice = basic_data.test_0_7_missing_broker_and_dataformat_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -289,7 +311,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -316,7 +338,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_8_addition: indirect mismatch M:1, should add transformer at problematic source', function(){
-            let slice = basic_data.test_8_indirect_mismatch_m1();
+            let slice = basic_data.test_0_8_indirect_mismatch_m1();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -324,7 +346,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -351,7 +373,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_9_addition: indirect mismatch 1:N, should add transformer at problematic dest', function(){
-            let slice = basic_data.test_9_indirect_mismatch_1n();
+            let slice = basic_data.test_0_9_indirect_mismatch_1n();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -359,7 +381,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -387,7 +409,7 @@ describe('intop_recommendation', function(){
             });
         });
         it('0_10_addition: indirect mismatch M:N, should add transformers for only one dataformat', function(){
-            let slice = basic_data.test_10_indirect_mismatch_mn();
+            let slice = basic_data.test_0_10_indirect_mismatch_mn();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
             //intopcheck returns 1 error
@@ -395,7 +417,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 2);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then( function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -442,7 +464,7 @@ describe('intop_recommendation', function(){
             assert.equal(checkresults.errors.length, 0);
             assert.equal(checkresults.warnings.length, 0);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
                 assert.equal(util.resourceCount(slice), old_count);
@@ -465,7 +487,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
+            return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -511,7 +533,7 @@ describe('intop_recommendation', function(){
             let errors = checkresults.errors;
             assert.equal(errors.length, 1);
 
-            return recommendation.applyRecommendationsWithoutCheck(old_slice, checkresults).then(function(result) {
+            return recommendation.getRecommendationsWithoutCheck(old_slice, checkresults).then(function(result) {
                 let slice = result.slice;
                 let logs = result.logs;
 
@@ -533,6 +555,7 @@ describe('intop_recommendation', function(){
                 assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.ingest), true);
                 assert.equal(util.isConnected(slice, slice.resources.ingest, slice.resources.bigquery), true);
 
+                assert.deepEqual(slice.resources.broker.metadata, old_slice.resources.broker.metadata);
 
                 // Alternative solution <-- not implemented
                 /* recommendation - Solution B:
@@ -552,4 +575,44 @@ describe('intop_recommendation', function(){
 
         });
     });
+
+
+
+    describe('2 - basic datacontract testcases with minimalistic slices and datacontracts', function(){
+        it('2_0_reliability: reliability of source too low', function(){
+            let slice = basic_data.test_2_0_datacontract_reliability();
+            let old_slice = util.deepcopy(slice);
+            let old_count = util.resourceCount(old_slice);
+
+            let contract = {qos:{reliability:99.9}};
+            let result = check.checkWithContract(slice, contract);
+
+            assert.equal(result.errors.length, 0);
+            assert.equal(result.matches.length, 1);
+            assert.equal(result.contract_violations.length, 2);
+
+
+            return recommendation.getContractRecommendationsWithoutCheck(slice, contract, result).then( function(result) {
+                let slice = result.slice;
+                let logs = result.logs;
+
+                let count = util.resourceCount(slice);
+                assert.equal(count, old_count);
+                assert.equal(util.isConnected(slice, slice.resources.source, slice.resources.dest), true);
+                assert.equal(util.contains(slice, "reliable_httpsource"), true);
+                assert.equal(slice.resources.source.name, "reliable_httpsource");
+                assert.equal(slice.resources.source.metadata.resource.qos.reliability>=contract.qos.reliability, true);
+
+                assert.equal(util.contains(slice, "reliable_httpdest"), true);
+                assert.equal(slice.resources.dest.name, "reliable_httpdest");
+                assert.equal(slice.resources.dest.metadata.resource.qos.reliability>=contract.qos.reliability, true);
+
+                //intopcheck returns 0 error
+                let checkresults = check.checkWithContract(slice, contract);
+                assert.equal(checkresults.errors.length, 0);
+                assert.equal(checkresults.contract_violations.length, 0);
+            });
+
+        });
+    })
 });

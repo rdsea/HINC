@@ -10,8 +10,8 @@ For now, it is just tested with regards to protocol issues, dataformat issues an
 ## Running Local
 Install node_modules with : `npm install`
 
-Run instance with: `npm start`. Currently it is hardcoded to run at **localhost:8080**. 
-A swagger-api is available at **localhost:8080/api-docs**.
+Run instance with: `npm start`. Currently it is hardcoded to run at **localhost:8081**. 
+A swagger-api is available at **localhost:8081/api-docs**.
 The swagger-api is not complete yet and contains some faults, but it will be updated soon. The core service-routes work though.  
 
 ## Configuration

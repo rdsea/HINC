@@ -1,74 +1,93 @@
 const intop_check = require('../check/intop_check');
 const util = require('../util/slice_util');
 const log_util = require('../util/log_util');
+const request = require('request-promise');
+const flat = require("flat");
 const MongoClient = require("mongodb").MongoClient;
+const moment = require("moment");
+const config = require('../../config');
 
-let mongodb_config = {
-    url: "mongodb://localhost:27017/recommendation_test",
-    //url: "mongodb://test:rsihub1@ds161710.mlab.com:61710/recommendation_test",
-    db: "recommendation_test",
-    collection: "test"
-};
+const SEARCH_SOFTWARE_ARTEFACT = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_ARTEFACTS;
+const SEARCH_RESOURCES = config.GLOBAL_MANAGEMENT_URI + config.SEARCH_RESOURCES;
 
-exports.setMongoDBConfig = function (config) {
-    mongodb_config = config;
+
+exports.getRecommendations = function(slice){
+    return exports.getContractRecommendations(slice, null);
 };
 
 exports.getRecommendationsWithoutCheck = function(slice, checkresults){
-    let testslice = util.deepcopy(slice);
-    return exports.applyRecommendationsWithoutCheck(testslice, checkresults);
+    return exports.getContractRecommendationsWithoutCheck(slice, null, checkresults);
 };
 
-exports.getRecommendations = function(slice){
-    let checkresults = intop_check.checkSlice(slice);
+exports.getContractRecommendations = function(slice, contract){
+    let checkresults = intop_check.checkWithContract(slice, contract);
     return exports.getRecommendationsWithoutCheck(slice, checkresults);
 };
 
-exports.applyRecommendations = function(slice){
-    let checkresults = intop_check.checkSlice(slice);
-    return exports.applyRecommendationsWithoutCheck(slice, checkresults);
-};
 
-
-exports.applyRecommendationsWithoutCheck = function(slice, checkresults){
-    return new Promise(function(resolve, reject){
-
+exports.getContractRecommendationsWithoutCheck = function(slice, contract, checkresults) {
+    let old_slice = util.deepcopy(slice);
+    return new Promise(function (resolve, reject) {
         let logs = [];
-        recursiveSolve(slice,checkresults, logs).then(function (slice){
-            let result = {slice:slice, logs:logs};
-            resolve(result);
-        });
+        recursiveSolve(slice, checkresults, logs)
+            .then(function (slice) {
+                let newResults = intop_check.checkWithContract(slice, contract);
+                return solveContractErrors(slice, newResults, logs, contract);
+            }).then(function (slice) {
+            let result = {slice: slice, logs: logs};
 
-    });
+            saveRecommendationToMongo(old_slice, result, contract).then(() => {
+                resolve(result);
+            });
+        }).catch((error) => {
+            console.log(error);
+            resolve(error);
+        });
+    })
 };
+
+
+function solveContractErrors(slice, checkresults, logs, contract){
+    return new Promise((resolve,reject) => {
+        if(checkresults.contract_violations.length===0){
+            resolve(slice);
+        }
+        let resourceId = checkresults.contract_violations[0].nodename;
+        let resource = slice.resources[resourceId];
+        searchContractSubstitution(resource, contract).then((substitutionResources)=>{
+            if(substitutionResources.length>0){
+                let newResource = substitutionResources[0];
+                util.substituteResource(slice, resourceId, newResource);
+                checkresults = intop_check.checkWithContract(slice,contract);
+                return solveContractErrors(slice,checkresults,logs,contract).then(resolve);
+            }
+        });
+    });
+}
+
 
 function recursiveSolve(slice, checkresults, logs){
     return new Promise(function (resolve, reject) {
         if(checkresults.errors.length === 0){
             resolve(slice)
-        }else {
-
-            searchResources(checkresults.errors[0])
-                .then(function (solution_resource) {
-                    if (solution_resource != null) {
-                        return solveByAddition(checkresults.errors[0], slice, solution_resource, checkresults, logs);
-                        //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
-                        //TODO solve problem by kind
-                    } else {
-                        //TODO add log information that no resource has been found for this error
-
-                        logs.push(log_util.createNoSolutionFoundLog(checkresults.errors[0]));
-                        resolve(slice);
-                    }
-                }, reject)
-                .then(function (slice) {
-                    checkresults = intop_check.checkSlice(slice);
-                    return recursiveSolve(slice, checkresults, logs);
-                }, reject)
-                .then(function (slice) {
-                    resolve(slice);
-                }, reject);
         }
+
+        searchResources(checkresults.errors[0])
+            .then(function (solution_resources) {
+                if (solution_resources.length > 0) {
+                    return solveByAddition(checkresults.errors[0], slice, solution_resources[0], checkresults, logs);
+                    //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
+                    //TODO solve problem by kind
+                } else {
+                    logs.push(log_util.createNoSolutionFoundLog(checkresults.errors[0]));
+                    resolve(slice);
+                }
+            }, reject)
+            .then(function (slice) {
+                checkresults = intop_check.checkSlice(slice);
+                return recursiveSolve(slice, checkresults, logs).then(resolve)
+            }, reject)
+
     })
 
 }
@@ -194,8 +213,8 @@ function addBrokers(slice, resourceArray){
             let protocol_name = brokerNeeded(source,dest);
 
             if(protocol_name){
-                promises.push(searchBroker(protocol_name).then(function (broker) {
-                    brokers[""+i] = broker;
+                promises.push(searchBrokers(protocol_name).then(function (found_brokers) {
+                    brokers[""+i] = found_brokers[0];
                 }));
             }
         }
@@ -235,36 +254,46 @@ function brokerNeeded(source, target){
     }
 }
 
-function searchBroker(protocol_name){
-    return new Promise(function (resolve, reject){
-        let query = {"metadata.resource.type.prototype":"messagebroker", "metadata.resource.type.protocols.protocol_name":protocol_name};
-
-        MongoClient.connect(mongodb_config.url, function(err, db) {
-            if (err) return reject(err);
-            let dbo = db.db(mongodb_config.db);
-            dbo.collection(mongodb_config.collection).find(query, {projection:{_id: 0}}).toArray(function(err, result) {
-                if (err) throw err;
-                db.close();
-                resolve(result[0]);
-            });
-        });
-    });
+function searchBrokers(protocol_name){
+    //TODO add contract constraints
+    let query = {"metadata.resource.type.prototype":"messagebroker", "metadata.resource.type.protocols.protocol_name":protocol_name};
+    return exports.queryServices(query);
 }
 
-
 function searchResources(error){
-    return new Promise(function (resolve, reject){
-        let query = createQueryByExample(error);
+    //TODO add contract constraints
+    let query = createQueryByExample(error);
+    return exports.queryServices(query);
+}
 
-        MongoClient.connect(mongodb_config.url, function(err, db) {
-            if (err) return reject(err);
-            let dbo = db.db(mongodb_config.db);
-            dbo.collection(mongodb_config.collection).find(query, {projection:{_id: 0}}).toArray(function(err, result) {
-                if (err) throw err;
-                db.close();
-                resolve(result[0]);
-            });
-        });
+function searchContractSubstitution(resource, contract){
+    let query = createSubstitutionQuery(resource, contract);
+    return exports.queryServices(query);
+}
+
+exports.queryServices = function(query){
+    return new Promise(function (resolve, reject){
+        let jsonQuery = JSON.stringify(query, 0, null);
+        let allResources = [];
+        let promises = [];
+
+        promises.push(request.post({url: SEARCH_RESOURCES, body: jsonQuery}).then((result)=>{
+            console.log(result);
+            let resources = JSON.parse(result);
+            allResources = allResources.concat(resources);
+        }));
+
+        promises.push(request.post({url: SEARCH_SOFTWARE_ARTEFACT, body: jsonQuery}).then((result)=>{
+            console.log(result);
+            let resources = JSON.parse(result);
+            allResources = allResources.concat(resources);
+        }));
+
+        return Promise.all(promises).then(()=>{
+            resolve(allResources);
+        }).catch((error)=>{
+            reject(error);
+        })
     });
 }
 
@@ -280,10 +309,36 @@ function createQueryByExample(error){
         example["metadata.outputs.protocol.protocol_name"] = error.cause.target.resource.metadata.inputs[0].protocol.protocol_name;
         example["metadata.inputs.protocol.protocol_name"] = error.cause.source.resource.metadata.outputs[0].protocol.protocol_name;
     }
+    return example;
+}
 
-    // example = {"metadata.outputs.protocol.protocol_name":"mqtt", "metadata.inputs.protocol.protocol_name":"http"};
-    // example["metadata.outputs.protocol.protocol_name"]="mqtt";
-    // example["metadata.inputs.protocol.protocol_name"]="http";
+function createSubstitutionQuery(resource, contract){
+    let example = {};
+    //take inputs and outputs from resource
+
+    example.metadata = util.deepcopy(resource.metadata);
+
+    if(example.metadata.outputs && example.metadata.outputs.length > 0){
+        example.metadata.outputs = example.metadata.outputs[0];
+    }else {
+        delete example.metadata.outputs;
+    }
+
+    if(example.metadata.inputs && example.metadata.inputs.length > 0){
+        example.metadata.inputs= example.metadata.inputs[0];
+    }else {
+        delete example.metadata.inputs;
+    }
+    //take metadata.resource from contract
+
+    Object.keys(contract).forEach((key)=>{
+       example.metadata.resource[key]=contract[key];
+    });
+
+    //TODO translate example object to mongodb query-strings
+    //TODO use $gt, $lt, ....
+
+    example = flat(example);
 
     return example;
 }
@@ -291,4 +346,30 @@ function createQueryByExample(error){
 
 function arrayContains(array, value){
     return array.indexOf(value)>-1;
+}
+
+
+function saveRecommendationToMongo(old_slice, result, contract){
+    let db_item = {
+        _id: old_slice.sliceId,
+        problem_slice: old_slice,
+        recommended_solution: result.slice,
+        contract: contract,
+        timestamp: moment().format()
+    };
+    return new Promise((resolve,reject) => {
+        MongoClient.connect(config.MONGODB_URL, function (err, db) {
+            if (err) {
+                db.close();
+                resolve(result);
+                return;
+            }
+            let dbo = db.db("recommendation_history");
+            dbo.collection("recommendations").update({_id:db_item._id}, db_item, {upsert:true},  function (err, res) {
+                //if (err) throw err;
+                db.close();
+                resolve(result);
+            });
+        });
+    });
 }

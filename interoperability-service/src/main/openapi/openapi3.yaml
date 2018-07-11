@@ -1,0 +1,1068 @@
+openapi: "3.0.0"
+info:
+  description: "This is the openAPI interface of the `interoperability service` for `rsiHub`.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/)."
+  version: "1.0.0"
+  title: "rsiHub - Interoperability Service"
+  #termsOfService: "http://swagger.io/terms/"
+  #contact:
+  #  email: "apiteam@swagger.io"
+  #license:
+  #  name: "Apache 2.0"
+  #  url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+
+externalDocs:
+  description: "Find out more about the metadata catalogue draft"
+  url: "https://docs.google.com/spreadsheets/d/1gUbGliYG9Vzpqbd9zggK1BGNFlerM0gznOtlJRHfpqc/edit?usp=sharing"
+
+
+tags:
+- name: "check"
+  description: "Interoperability Check"
+- name: "recommendation"
+  description: "Interoperability Recommendation"
+
+servers:
+  - url: "http://localhost:8081/interoperability"
+
+
+paths:
+  /check:
+    post:
+      tags:
+      - "check"
+      summary: "Perform an interoperability check on the slice"
+      description: ""
+      operationId: "check"
+      consumes:
+      - "application/json"
+      produces: ["application/json"]
+      requestBody:
+        $ref: '#/components/requestBodies/slice_only'
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "Invalid input"
+  /check/contract:
+      post:
+        tags:
+        - "check"
+        summary: "Perform an interoperability check on the slice and additional contract requirements"
+        description: ""
+        operationId: "check_contract"
+        consumes:
+        - "application/json"
+        produces: ["application/json"]
+        requestBody:
+          $ref: '#/components/requestBodies/slice_and_contract'
+        responses:
+          200:
+            description: "successful operation"
+          405:
+            description: "Invalid input"
+  /recommendation:
+    post:
+      tags:
+      - "recommendation"
+      summary: "Get the interoperability recommendation for the slice"
+      description: ""
+      operationId: "recommendation"
+      consumes:
+      - "application/json"
+      produces: ["application/json"]
+      requestBody:
+        $ref: '#/components/requestBodies/slice_only'
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "Invalid input"
+  /recommendation/contract:
+    post:
+      tags:
+      - "recommendation"
+      summary: "Get the interoperability recommendation for the slice with additional contract requirements"
+      description: ""
+      operationId: "recommendation_contract"
+      consumes:
+      - "application/json"
+      produces: ["application/json"]
+      requestBody:
+        $ref: '#/components/requestBodies/slice_and_contract'
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "Invalid input"
+
+components:
+  schemas:
+    Slice:
+      type: object
+      properties:
+        sliceId:
+          type: "string"
+        resources:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/Resource"
+        connectivities:
+          type: object
+          additionalProperties:
+            $ref: "#components/schemas/Connectivity"
+      example:
+        $ref: "#/components/examples/bts_slice"
+
+    Resource:
+      type: object
+      properties:
+        name:
+          type: "string"
+        pluginName:
+          type: "string"
+        providerUuid:
+          type: "string"
+        resourceType:
+          $ref: "#/components/schemas/enums/category"
+        location:
+          type: "string"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+        controlPoints:
+          type: array
+          items:
+            type: object
+            additionalParameters: true
+        dataPoints:
+          type: array
+          items:
+            type: object
+            additionalParameters: true
+        source:
+          type: array
+          items:
+            type: string
+        target:
+          type: array
+          items:
+            type: string
+    Metadata:
+      type: object
+      properties:
+        resource:
+          $ref: "#/components/schemas/metadata_catalogue/general/Resource"
+        inputs:
+          type: array
+          items:
+            $ref: "#/components/schemas/metadata_catalogue/general/Input"
+        outputs:
+          type: array
+          items:
+            $ref: "#/components/schemas/metadata_catalogue/general/Output"
+        parameters:
+          type: object
+          additionalProperties: true
+      required: [resource, inputs, outputs]
+
+    Connectivity:
+      type: object
+      properties:
+        accessPoint:
+          type: object
+          properties:
+            applicationProtocol:
+              type: "string"
+            networkProtocol:
+              type: "string"
+            qos:
+              type: "integer"
+            topics:
+                type: "array"
+                items:
+                  type: "string"
+        dataFormat:
+          type: "string"
+        in:
+          type: "string"
+        out:
+          type: "string"
+    Contract:
+      type: object
+      properties:
+        qos:
+          type: object
+          properties:
+            reliability:
+              type: number
+          additionalProperties: true
+      additionalProperties: true
+      example:
+        $ref: "#/components/examples/contract"
+
+
+# **********************************************************************************  Metadata Catalogue
+    metadata_catalogue:
+      type: object
+      properties:
+        general:
+          $ref: "#/components/schemas/metadata_catalogue/general"
+        types:
+          $ref: "#/components/schemas/metadata_catalogue/prototypes"
+        protocols:
+          $ref: "#/components/schemas/metadata_catalogue/protocols"
+        dataformats:
+          $ref: "#components/schemas/metadata_catalogue/dataformats"
+        DataContract:
+          $ref: "#components/schemas/metadata_catalogue/DataContract"
+        QualityOfService:
+          $ref: "#components/schemas/metadata_catalogue/QualityOfService"
+        QualityOfData:
+          $ref: "#components/schemas/metadata_catalogue/QualityOfData"
+
+# ************************************************************ Metadata General
+      general:
+        type: object
+        properties:
+          resource:
+            $ref: "#/components/schemas/metadata_catalogue/general/Resource"
+          input:
+            $ref: "#/components/schemas/metadata_catalogue/general/Input"
+          output:
+            $ref: "#/components/schemas/metadata_catalogue/general/Output"
+
+        Resource:
+          type: object
+          properties:
+            category:
+              $ref: "#/components/schemas/enums/category"
+            type:
+              $ref: "#/components/schemas/metadata_catalogue/prototypes"
+            data_contract:
+              $ref: "#/components/schemas/metadata_catalogue/DataContract"
+            qos:
+              $ref: "#/components/schemas/metadata_catalogue/QualityOfService"
+            qod:
+              $ref: "#/components/schemas/metadata_catalogue/QualityOfData"
+            required_qos:
+              $ref: "#/components/schemas/metadata_catalogue/QualityOfService"
+            required_qod:
+              $ref: "#/components/schemas/metadata_catalogue/QualityOfData"
+
+        Input:
+          type: object
+          properties:
+            push_pull:
+              $ref: "#components/schemas/enums/push_pull"
+            protocol:
+              $ref: "#components/schemas/metadata_catalogue/protocols"
+            dataformat:
+              $ref: "#components/schemas/metadata_catalogue/dataformats"
+            required_qos:
+              $ref: "#components/schemas/metadata_catalogue/QualityOfService"
+            required_qod:
+              $ref: "#components/schemas/metadata_catalogue/QualityOfData"
+          required: [push_pull, protocol, dataformat]
+
+        Output:
+          type: object
+          properties:
+            push_pull:
+              $ref: "#components/schemas/enums/push_pull"
+            protocol:
+              $ref: "#components/schemas/metadata_catalogue/protocols"
+            dataformat:
+              $ref: "#components/schemas/metadata_catalogue/dataformats"
+            qos:
+              $ref: "#components/schemas/metadata_catalogue/QualityOfService"
+            qod:
+              $ref: "#components/schemas/metadata_catalogue/QualityOfData"
+          required: [push_pull, protocol, dataformat]
+
+# ************************************************************ Metadata Prototypes
+      prototypes:
+        oneOf:
+          - $ref: "#/components/schemas/metadata_catalogue/prototype/MessageBroker"
+          - $ref: "#/components/schemas/metadata_catalogue/prototype/Firewall"
+          - $ref: "#/components/schemas/metadata_catalogue/prototype/Sensor"
+          - $ref: "#/components/schemas/metadata_catalogue/prototype/Storage"
+          - $ref: "#/components/schemas/metadata_catalogue/prototype/Ingestion"
+          - $ref: "#/components/schemas/metadata_catalogue/prototype/VPN"
+          - $ref: "#/components/schemas/metadata_catalogue/prototype/Container"
+          - $ref: "#/components/schemas/metadata_catalogue/prototype/VirtualMachine"
+          - $ref: "#/components/schemas/metadata_catalogue/prototype/SoftwareArtefact"
+        discriminator:
+          propertyname: prototype
+          mapping:
+            MessageBroker: "#/components/schemas/metadata_catalogue/prototype/MessageBroker"
+            Firewall: "#/components/schemas/metadata_catalogue/prototype/Firewall"
+            Sensor: "#/components/schemas/metadata_catalogue/prototype/Sensor"
+            Storage: "#/components/schemas/metadata_catalogue/prototype/Storage"
+            Ingestion: "#/components/schemas/metadata_catalogue/prototype/Ingestion"
+            VPN: "#/components/schemas/metadata_catalogue/prototype/VPN"
+            Container: "#/components/schemas/metadata_catalogue/prototype/Container"
+            VirtualMachine: "#/components/schemas/metadata_catalogue/prototype/VirtualMachine"
+            SoftwareArtefact: "#/components/schemas/metadata_catalogue/prototype/SoftwareArtefact"
+
+      prototype:
+        properties_prototype:
+          type: object
+          properties:
+            prototype:
+              type: string
+          required: [prototype]
+
+        MessageBroker:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/prototype/properties_prototype"
+            - type: object
+              properties:
+                broker:
+                  type: string
+                broker_version:
+                  type: string
+                protocols:
+                  type: array
+                  items:
+                    $ref: "#components/schemas/metadata_catalogue/protocols"
+                queues:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      durable:
+                        type: boolean
+                exchanges:
+                  type: array
+                  items:
+                    type: string
+                bindings:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      queue:
+                        type: string
+                      exchange:
+                        type: string
+                      type:
+                        type: string
+                      routing_key:
+                        type: string
+                topics:
+                  type: array
+                  items:
+                    type: string
+                auto_create:
+                  type: boolean
+
+        Firewall:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/prototype/properties_prototype"
+            - type: object
+              properties:
+                rules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      action:
+                        type: string
+                        enum: ["deny", "allow"]
+                      protocol:
+                        type: string
+                      port_range:
+                        type: string
+                      ip_range:
+                        type: string
+                      direction:
+                        type: string
+                        enum: ["incoming", "outgoing"]
+                default_incoming:
+                  type: string
+                  enum: ["deny","allow"]
+                default_outgoing:
+                  type: string
+                  enum: ["deny","allow"]
+
+        Sensor:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/prototype/properties_prototype"
+            - type: object
+              properties:
+                unit:
+                  type: string
+                sampling_interval:
+                  type: number
+                precision:
+                  type: number
+                range_minValue:
+                  type: number
+                range_maxValue:
+                  type: number
+                location:
+                  type: string
+                longitude:
+                  type: number
+                latitude:
+                  type: number
+                description:
+                  type: string
+
+        Storage:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/prototype/properties_prototype"
+            - type: object
+              properties:
+                product_name:
+                  type: string
+                provider:
+                  type: string
+                database_type:
+                  type: string
+
+        Ingestion:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/prototype/properties_prototype"
+            - type: object
+              properties:
+                product_names:
+                  type: array
+                  items:
+                    type: string
+                providers:
+                  type: array
+                  items:
+                    type: string
+                database_types:
+                  type: array
+                  items:
+                    type: string
+
+        VPN:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/prototype/properties_prototype"
+            - type: object
+              properties:
+                type:
+                  type: string
+                destination:
+                  type: string
+                vpn_protocol:
+                  type: string
+
+        Container:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/prototype/properties_prototype"
+            - type: object
+              properties:
+                port_mappings:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+                container_network:
+                  type: string
+
+        VirtualMachine:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/prototype/properties_prototype"
+            - type: object
+              properties:
+                provider:
+                  type: string
+                instance_type:
+                  type: string
+                cpu_count:
+                  type: integer
+                memory:
+                  type: number
+                gpu_count:
+                  type: integer
+                os:
+                  type: string
+
+        SoftwareArtefact:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/prototype/properties_prototype"
+            - type: object
+              properties:
+                programming_language:
+                  type: string
+                application:
+                  type: string
+                artefact_type:
+                  type: string
+
+# ************************************************************ Metadata Application Protocols
+      protocols:
+        oneOf:
+          - $ref: "#/components/schemas/metadata_catalogue/protocol/MQTT"
+          - $ref: "#/components/schemas/metadata_catalogue/protocol/MQTTs"
+          - $ref: "#/components/schemas/metadata_catalogue/protocol/AMQP"
+          - $ref: "#/components/schemas/metadata_catalogue/protocol/AMQPs"
+          - $ref: "#/components/schemas/metadata_catalogue/protocol/HTTP"
+          - $ref: "#/components/schemas/metadata_catalogue/protocol/HTTPs"
+          - $ref: "#/components/schemas/metadata_catalogue/protocol/CoAP"
+          - $ref: "#/components/schemas/metadata_catalogue/protocol/CoAPs"
+          - $ref: "#/components/schemas/metadata_catalogue/protocol/STOMP"
+        discriminator:
+          propertyname: protocol_name
+          mapping:
+            mqtt: "#/components/schemas/metadata_catalogue/protocol/MQTT"
+            mqtts: "#/components/schemas/metadata_catalogue/protocol/MQTTs"
+            amqp: "#/components/schemas/metadata_catalogue/protocol/AMQP"
+            amqps: "#/components/schemas/metadata_catalogue/protocol/AMQPs"
+            http: "#/components/schemas/metadata_catalogue/protocol/HTTP"
+            https: "#/components/schemas/metadata_catalogue/protocol/HTTPs"
+            coap: "#/components/schemas/metadata_catalogue/protocol/CoAP"
+            coaps: "#/components/schemas/metadata_catalogue/protocol/CoAPs"
+            stomp: "#/components/schemas/metadata_catalogue/protocol/STOMP"
+
+      protocol:
+        properties_protocol:
+          type: object
+          properties:
+            protocol_name:
+              type: string
+          required: [protocol_name]
+
+        MQTT:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/protocol/properties_protocol"
+            - type: object
+              properties:
+                version:
+                  type: string
+                topic:
+                  type: string
+                qos:
+                  type: integer
+                keep_alive:
+                  type: integer
+                will_required:
+                  type: boolean
+                will_topic:
+                  type: string
+                will_qos:
+                  type: integer
+                implementation:
+                  type: string
+                implementation_version:
+                  type: string
+
+        AMQP:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/protocol/properties_protocol"
+            - type: object
+              properties:
+                version:
+                  type: string
+                queue:
+                  type: string
+                exchange:
+                  type: string
+                implementation:
+                  type: string
+                implementation_version:
+                  type: string
+
+        HTTP:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/protocol/properties_protocol"
+            - type: object
+              properties:
+                http_method:
+                  type: string
+                parameters:
+                  type: object
+                  additionalParameters: true
+
+        CoAP:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/protocol/properties_protocol"
+            - type: object
+              properties:
+                version:
+                  type: string
+                method:
+                  type: string
+                parameters:
+                  type: object
+                  additionalParameters: true
+                observe:
+                  type: boolean
+                max_age:
+                  type: integer
+                observer_limit:
+                  type: integer
+                implementation:
+                  type: string
+                implementation_version:
+                  type: string
+
+        STOMP:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/protocol/properties_protocol"
+            - type: object
+              properties:
+                topic:
+                  type: string
+                version:
+                  type: string
+                heartbeat:
+                  type: integer
+                secured:
+                  type: boolean
+                implementation:
+                  type: string
+                implementation_version:
+                  type: string
+
+        # secured versions of protocols
+        MQTTs:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/protocol/MQTT"
+        AMQPs:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/protocol/AMQP"
+        HTTPs:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/protocol/HTTP"
+        CoAPs:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/protocol/CoAP"
+
+# ************************************************************ Metadata Data Formats
+      dataformats:
+        oneOf:
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/CSV"
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/JSON"
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/XML"
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/RDF"
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/ApacheAVRO"
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/CBOR"
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/PlainText"
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/Binary"
+        discriminator:
+          propertyname: dataformat_name
+          mapping:
+            csv: "#/components/schemas/metadata_catalogue/dataformat/CSV"
+            json: "#/components/schemas/metadata_catalogue/dataformat/JSON"
+            xml: "#/components/schemas/metadata_catalogue/dataformat/XML"
+            rdf: "#/components/schemas/metadata_catalogue/dataformat/RDF"
+            apacheavro: "#/components/schemas/metadata_catalogue/dataformat/ApacheAVRO"
+            cbor: "#/components/schemas/metadata_catalogue/dataformat/CBOR"
+            plaintext: "#/components/schemas/metadata_catalogue/dataformat/PlainText"
+            binary: "#/components/schemas/metadata_catalogue/dataformat/Binary"
+
+      dataformat:
+        properties_dataformat:
+          type: object
+          properties:
+            encoding:
+              type: string
+            dataformat_name:
+              type: string
+          required: [dataformat_name, encoding]
+
+        CSV:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
+            - type: object
+              properties:
+                seperator:
+                  type: string
+                newline_seperator:
+                  type: string
+                headers:
+                  type: string
+
+        JSON:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
+
+        XML:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
+
+        RDF:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
+
+        ApacheAVRO:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
+            - type: object
+              properties:
+                schema:
+                  type: object
+                  additionalProperties: true
+
+        CBOR:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
+
+        PlainText:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
+
+        Binary:
+          allOf:
+            - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
+
+# ************************************************************ Metadata Data Contract
+      DataContract:
+        type: object
+        properties:
+          data_rights:
+            $ref: "#/components/schemas/metadata_catalogue/DataContract/DataRights"
+          pricing:
+            $ref: "#/components/schemas/metadata_catalogue/DataContract/Pricing"
+          regulation:
+            $ref: "#/components/schemas/metadata_catalogue/DataContract/Regulation"
+
+        DataRights:
+          type: object
+          properties:
+            derivation:
+              type: boolean
+            collection:
+              type: boolean
+            reproduction:
+              type: boolean
+            commercial_usage:
+              type: boolean
+            attribution:
+              type: boolean
+
+        Pricing:
+          type: object
+          properties:
+            price:
+              type: number
+            currency:
+              type: string
+            price_per:
+              type: string
+
+        Regulation:
+          type: object
+          properties:
+            jurisdiction:
+              type: string
+            data_regulation_acts:
+              type: string
+
+# ************************************************************ Metadata QoS
+      QualityOfService:
+        type: object
+        properties:
+          data_interval:
+            type: number
+          reliability:
+            type: number
+          availability:
+            type: number
+          bit_rate:
+            type: number
+          bit_rate_unit:
+            type: string
+          connection_limit:
+            type: integer
+
+# ************************************************************ Metadata QoD
+      QualityOfData:
+        type: object
+        properties:
+          completeness:
+            type: number
+          conformity:
+            type: number
+          average_message_age:
+            type: number
+          average_measurement_age:
+            type: number
+          precision:
+            type: number
+
+
+# **********************************************************************************  enums
+    enums:
+      category:
+        type: "string"
+        enum: ["NETWORK_FUNCTION", "IOT", "CLOUD_SERVICE"]
+      push_pull:
+        type: "string"
+        enum: ["push", "pull"]
+
+
+
+
+
+  requestBodies:
+    slice_only:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              slice:
+                $ref: '#/components/schemas/Slice'
+      description: "The resource slice that the interoperability check or recommendation is performed on"
+
+    slice_and_contract:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  slice:
+                    $ref: '#/components/schemas/Slice'
+                  contract:
+                    $ref: '#/components/schemas/Contract'
+          description: "The resource slice and contract that the interoperability check or recommendation is performed on"
+
+  examples:
+    bts_slice:
+      sliceId: bts_testslice2
+      resources:
+        json_sensor:
+          name: sensor humidity json
+          pluginName:
+          providerUuid: sensor
+          resourceType: IOT_RESOURCE
+          location:
+          metadata:
+            resource:
+              category: iot
+              type:
+                prototype: sensor
+            inputs: []
+            outputs:
+            - push_pull: push
+              protocol:
+                uri: TODO
+                protocol_name: mqtt
+                topic: test
+                qos: 0
+              dataformat:
+                encoding: utf-8
+                dataformat_name: json
+            parameters:
+              topic: test
+          controlPoints: []
+          dataPoints:
+          - name: humidity
+            dataType:
+            unit: percent
+          source: []
+          target:
+          - mqtt_connectivity2
+        csv_sensor:
+          name: sensor humidity
+          pluginName:
+          providerUuid: sensor
+          resourceType: IOT_RESOURCE
+          location:
+          metadata:
+            resource:
+              category: iot
+              type:
+                prototype: sensor
+            inputs: []
+            outputs:
+            - push_pull: push
+              protocol:
+                uri: TODO
+                protocol_name: mqtt
+                topic: test
+                qos: 0
+              dataformat:
+                encoding: utf-8
+                dataformat_name: csv
+                seperator: ","
+                newline_seperator: "\n"
+                headers: []
+            parameters:
+              topic: test
+          controlPoints: []
+          dataPoints:
+          - name: humidity
+            dataType:
+            unit: percent
+          source: []
+          target:
+          - mqtt_connectivity
+        broker:
+          name: mosquitto broker
+          pluginName: mosquittobroker
+          providerUuid: mosquitto
+          resourceType: NETWORK_FUNCTION_SERVICE
+          location:
+          metadata:
+            resource:
+              category: network_function
+              type:
+                prototype: messagebroker
+                protocols:
+                - protocol_name: mqtt
+                  qos: 0
+                topics:
+                - test
+            inputs: []
+            outputs: []
+          controlPoints: []
+          dataPoints: []
+          source:
+          - mqtt_connectivity
+          - mqtt_connectivity2
+          target:
+          - mqtt_connectivity3
+        bigquery:
+          name: bigQuery dataset
+          pluginName: bigquery
+          providerUuid: bigquery
+          resourceType: CLOUD_SERVICE
+          location:
+          metadata:
+            resource:
+              category: cloud
+              type:
+                prototype: storage
+                product_name: bigQuery
+                provider: Google Cloud Platform
+            inputs:
+            - push_pull: push
+              protocol:
+                protocol_name: other
+                table_name: testTable
+                dataset: testDataset
+            outputs: []
+            parameters:
+              datasetId: testDataset
+              tables:
+              - id: testTable
+                schema:
+                - description: field description
+                  mode: REQUIRED
+                  name: id
+                  type: STRING
+                - description: field description
+                  mode: REQUIRED
+                  name: value
+                  type: FLOAT64
+                - description: field description
+                  mode: REQUIRED
+                  name: reading_time
+                  type: TIMESTAMP
+                - description: field description
+                  mode: REQUIRED
+                  name: station_id
+                  type: INT64
+                - description: field description
+                  mode: REQUIRED
+                  name: parameter_id
+                  type: INT64
+          controlPoints: []
+          dataPoints: []
+          source:
+          - ingest_connectivity
+          target: []
+        ingest:
+          name: bts ingestion client
+          pluginName: btsingestion
+          providerUuid: ingest
+          resourceType: CLOUD_SERVICE
+          location:
+          metadata:
+            resource:
+              category: cloud
+              type:
+                prototype: ingestion
+                product_names:
+                - bigquery
+                providers:
+                - Google Cloud Platform
+            inputs:
+            - push_pull: push
+              protocol:
+                uri: TODO
+                protocol_name: mqtt
+                topic: test
+                qos: 0
+              dataformat:
+                encoding: utf-8
+                dataformat_name: json
+            outputs:
+            - push_pull: push
+              protocol:
+                protocol_name: other
+                table_name: testTable
+                dataset: testDataset
+            parameters:
+              data: bigQuery
+              brokers:
+              - host: 35.205.138.49
+                port: 1883
+                clientId: testclient1
+                username: xxx
+                password: xxx
+                topics:
+                - test
+              bigQuery:
+                dataset: testDataset
+                tables:
+                - id: testTable
+                  topics:
+                  - test
+          controlPoints: []
+          dataPoints: []
+          source:
+          - mqtt_connectivity3
+          target:
+          - ingest_connectivity
+      connectivities:
+        mqtt_connectivity:
+          accessPoint:
+            applicationProtocol: MQTT
+            networkProtocol: IP
+            qos: 0
+            topics: []
+          dataFormat: JSON
+          in: csv_sensor
+          out: broker
+        mqtt_connectivity2:
+          accessPoint:
+            applicationProtocol: MQTT
+            networkProtocol: IP
+            qos: 0
+            topics: []
+          dataFormat: JSON
+          in: json_sensor
+          out: broker
+        mqtt_connectivity3:
+          accessPoint:
+            applicationProtocol: MQTT
+            networkProtocol: IP
+            qos: 0
+            topics: []
+          dataFormat: JSON
+          in: broker
+          out: ingest
+        ingest_connectivity:
+          accessPoint:
+            applicationProtocol: MQTT
+            networkProtocol: IP
+            qos: 0
+            topics: []
+          dataFormat: JSON
+          in: ingest
+          out: bigquery
+    contract:
+      qos:
+        reliability: 99.9
