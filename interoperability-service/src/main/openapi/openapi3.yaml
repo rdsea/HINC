@@ -1,14 +1,20 @@
 openapi: "3.0.0"
 info:
-  description: "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters."
+  description: "This is the openAPI interface of the `interoperability service` for `rsiHub`.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/)."
   version: "1.0.0"
   title: "rsiHub - Interoperability Service"
-  termsOfService: "http://swagger.io/terms/"
-  contact:
-    email: "apiteam@swagger.io"
-  license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+  #termsOfService: "http://swagger.io/terms/"
+  #contact:
+  #  email: "apiteam@swagger.io"
+  #license:
+  #  name: "Apache 2.0"
+  #  url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+
+externalDocs:
+  description: "Find out more about the metadata catalogue draft"
+  url: "https://docs.google.com/spreadsheets/d/1gUbGliYG9Vzpqbd9zggK1BGNFlerM0gznOtlJRHfpqc/edit?usp=sharing"
+
 
 tags:
 - name: "check"
@@ -38,6 +44,23 @@ paths:
           description: "successful operation"
         405:
           description: "Invalid input"
+  /check/contract:
+      post:
+        tags:
+        - "check"
+        summary: "Perform an interoperability check on the slice and additional contract requirements"
+        description: ""
+        operationId: "check_contract"
+        consumes:
+        - "application/json"
+        produces: ["application/json"]
+        requestBody:
+          $ref: '#/components/requestBodies/slice_and_contract'
+        responses:
+          200:
+            description: "successful operation"
+          405:
+            description: "Invalid input"
   /recommendation:
     post:
       tags:
@@ -55,28 +78,41 @@ paths:
           description: "successful operation"
         405:
           description: "Invalid input"
+  /recommendation/contract:
+    post:
+      tags:
+      - "recommendation"
+      summary: "Get the interoperability recommendation for the slice with additional contract requirements"
+      description: ""
+      operationId: "recommendation_contract"
+      consumes:
+      - "application/json"
+      produces: ["application/json"]
+      requestBody:
+        $ref: '#/components/requestBodies/slice_and_contract'
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "Invalid input"
 
 components:
   schemas:
     Slice:
       type: object
-      required:
-      - "name"
-      - "photoUrls"
       properties:
         sliceId:
           type: "string"
-          example: "testslice01"
         resources:
           type: object
           additionalProperties:
             $ref: "#/components/schemas/Resource"
-          example:
-            $ref: '#/components/examples/resources'
         connectivities:
           type: object
           additionalProperties:
             $ref: "#components/schemas/Connectivity"
+      example:
+        $ref: "#/components/examples/bts_slice"
 
     Resource:
       type: object
@@ -93,8 +129,24 @@ components:
           type: "string"
         metadata:
           $ref: "#/components/schemas/Metadata"
-      example:
-        $ref: "#/components/examples/Resource"
+        controlPoints:
+          type: array
+          items:
+            type: object
+            additionalParameters: true
+        dataPoints:
+          type: array
+          items:
+            type: object
+            additionalParameters: true
+        source:
+          type: array
+          items:
+            type: string
+        target:
+          type: array
+          items:
+            type: string
     Metadata:
       type: object
       properties:
@@ -108,6 +160,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/metadata_catalogue/general/Output"
+        parameters:
+          type: object
+          additionalProperties: true
       required: [resource, inputs, outputs]
 
     Connectivity:
@@ -133,7 +188,17 @@ components:
         out:
           type: "string"
     Contract:
-      type: "string"
+      type: object
+      properties:
+        qos:
+          type: object
+          properties:
+            reliability:
+              type: number
+          additionalProperties: true
+      additionalProperties: true
+      example:
+        $ref: "#/components/examples/contract"
 
 
 # **********************************************************************************  Metadata Catalogue
@@ -197,6 +262,7 @@ components:
               $ref: "#components/schemas/metadata_catalogue/QualityOfService"
             required_qod:
               $ref: "#components/schemas/metadata_catalogue/QualityOfData"
+          required: [push_pull, protocol, dataformat]
 
         Output:
           type: object
@@ -211,6 +277,7 @@ components:
               $ref: "#components/schemas/metadata_catalogue/QualityOfService"
             qod:
               $ref: "#components/schemas/metadata_catalogue/QualityOfData"
+          required: [push_pull, protocol, dataformat]
 
 # ************************************************************ Metadata Prototypes
       prototypes:
@@ -732,7 +799,8 @@ components:
         enum: ["push", "pull"]
 
 
-  examples:
+
+
 
   requestBodies:
     slice_only:
@@ -745,6 +813,7 @@ components:
               slice:
                 $ref: '#/components/schemas/Slice'
       description: "The resource slice that the interoperability check or recommendation is performed on"
+
     slice_and_contract:
           required: true
           content:
@@ -758,8 +827,242 @@ components:
                     $ref: '#/components/schemas/Contract'
           description: "The resource slice and contract that the interoperability check or recommendation is performed on"
 
-
-
-externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+  examples:
+    bts_slice:
+      sliceId: bts_testslice2
+      resources:
+        json_sensor:
+          name: sensor humidity json
+          pluginName:
+          providerUuid: sensor
+          resourceType: IOT_RESOURCE
+          location:
+          metadata:
+            resource:
+              category: iot
+              type:
+                prototype: sensor
+            inputs: []
+            outputs:
+            - push_pull: push
+              protocol:
+                uri: TODO
+                protocol_name: mqtt
+                topic: test
+                qos: 0
+              dataformat:
+                encoding: utf-8
+                dataformat_name: json
+            parameters:
+              topic: test
+          controlPoints: []
+          dataPoints:
+          - name: humidity
+            dataType:
+            unit: percent
+          source: []
+          target:
+          - mqtt_connectivity2
+        csv_sensor:
+          name: sensor humidity
+          pluginName:
+          providerUuid: sensor
+          resourceType: IOT_RESOURCE
+          location:
+          metadata:
+            resource:
+              category: iot
+              type:
+                prototype: sensor
+            inputs: []
+            outputs:
+            - push_pull: push
+              protocol:
+                uri: TODO
+                protocol_name: mqtt
+                topic: test
+                qos: 0
+              dataformat:
+                encoding: utf-8
+                dataformat_name: csv
+                seperator: ","
+                newline_seperator: "\n"
+                headers: []
+            parameters:
+              topic: test
+          controlPoints: []
+          dataPoints:
+          - name: humidity
+            dataType:
+            unit: percent
+          source: []
+          target:
+          - mqtt_connectivity
+        broker:
+          name: mosquitto broker
+          pluginName: mosquittobroker
+          providerUuid: mosquitto
+          resourceType: NETWORK_FUNCTION_SERVICE
+          location:
+          metadata:
+            resource:
+              category: network_function
+              type:
+                prototype: messagebroker
+                protocols:
+                - protocol_name: mqtt
+                  qos: 0
+                topics:
+                - test
+            inputs: []
+            outputs: []
+          controlPoints: []
+          dataPoints: []
+          source:
+          - mqtt_connectivity
+          - mqtt_connectivity2
+          target:
+          - mqtt_connectivity3
+        bigquery:
+          name: bigQuery dataset
+          pluginName: bigquery
+          providerUuid: bigquery
+          resourceType: CLOUD_SERVICE
+          location:
+          metadata:
+            resource:
+              category: cloud
+              type:
+                prototype: storage
+                product_name: bigQuery
+                provider: Google Cloud Platform
+            inputs:
+            - push_pull: push
+              protocol:
+                protocol_name: other
+                table_name: testTable
+                dataset: testDataset
+            outputs: []
+            parameters:
+              datasetId: testDataset
+              tables:
+              - id: testTable
+                schema:
+                - description: field description
+                  mode: REQUIRED
+                  name: id
+                  type: STRING
+                - description: field description
+                  mode: REQUIRED
+                  name: value
+                  type: FLOAT64
+                - description: field description
+                  mode: REQUIRED
+                  name: reading_time
+                  type: TIMESTAMP
+                - description: field description
+                  mode: REQUIRED
+                  name: station_id
+                  type: INT64
+                - description: field description
+                  mode: REQUIRED
+                  name: parameter_id
+                  type: INT64
+          controlPoints: []
+          dataPoints: []
+          source:
+          - ingest_connectivity
+          target: []
+        ingest:
+          name: bts ingestion client
+          pluginName: btsingestion
+          providerUuid: ingest
+          resourceType: CLOUD_SERVICE
+          location:
+          metadata:
+            resource:
+              category: cloud
+              type:
+                prototype: ingestion
+                product_names:
+                - bigquery
+                providers:
+                - Google Cloud Platform
+            inputs:
+            - push_pull: push
+              protocol:
+                uri: TODO
+                protocol_name: mqtt
+                topic: test
+                qos: 0
+              dataformat:
+                encoding: utf-8
+                dataformat_name: json
+            outputs:
+            - push_pull: push
+              protocol:
+                protocol_name: other
+                table_name: testTable
+                dataset: testDataset
+            parameters:
+              data: bigQuery
+              brokers:
+              - host: 35.205.138.49
+                port: 1883
+                clientId: testclient1
+                username: xxx
+                password: xxx
+                topics:
+                - test
+              bigQuery:
+                dataset: testDataset
+                tables:
+                - id: testTable
+                  topics:
+                  - test
+          controlPoints: []
+          dataPoints: []
+          source:
+          - mqtt_connectivity3
+          target:
+          - ingest_connectivity
+      connectivities:
+        mqtt_connectivity:
+          accessPoint:
+            applicationProtocol: MQTT
+            networkProtocol: IP
+            qos: 0
+            topics: []
+          dataFormat: JSON
+          in: csv_sensor
+          out: broker
+        mqtt_connectivity2:
+          accessPoint:
+            applicationProtocol: MQTT
+            networkProtocol: IP
+            qos: 0
+            topics: []
+          dataFormat: JSON
+          in: json_sensor
+          out: broker
+        mqtt_connectivity3:
+          accessPoint:
+            applicationProtocol: MQTT
+            networkProtocol: IP
+            qos: 0
+            topics: []
+          dataFormat: JSON
+          in: broker
+          out: ingest
+        ingest_connectivity:
+          accessPoint:
+            applicationProtocol: MQTT
+            networkProtocol: IP
+            qos: 0
+            topics: []
+          dataFormat: JSON
+          in: ingest
+          out: bigquery
+    contract:
+      qos:
+        reliability: 99.9
