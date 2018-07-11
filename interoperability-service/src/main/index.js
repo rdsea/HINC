@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./main/swagger.yaml');
+const swaggerDocument = YAML.load('./main/openapi/openapi3.yaml');
 const router = require("./router");
 const bodyParser = require('body-parser');
 const config = require('../config');
@@ -17,4 +17,4 @@ app.use('/interoperability', router);
 app.use(bodyParser.json());
 
 app.listen(PORT);
-console.log(`Running on http://${HOST}:${PORT}`);
+console.log(`Running on http://localhost:${PORT}/api-docs`);
