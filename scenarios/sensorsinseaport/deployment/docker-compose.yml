@@ -1,0 +1,49 @@
+version: '3'
+services:
+  global:
+    image: rdsea/global
+    ports:
+      - '8080:8080'
+    volumes:
+      - './config/global.properties:/application.properties'
+    depends_on: []
+  locallocal1:
+    image: rdsea/local
+    volumes:
+      - './config/local.local1.properties:/application.properties'
+    depends_on:
+      - global
+  sensorproviderlocal1:
+    image: rdsea/sensor-provider
+  mqttproviderlocal1:
+    image: rdsea/mqtt-provider
+  bigqueryproviderlocal1:
+    image: rdsea/bigquery-provider
+  ingestionproviderlocal1:
+    image: rdsea/ingestion-provider
+  firewallproviderlocal1:
+    image: rdsea/kube-firewall-provider
+  sensorlocal1:
+    image: rdsea/sensor-adaptor
+    volumes:
+      - './config/sensorlocal1.js:/sensor/config.js'
+  mqttlocal1:
+    image: rdsea/mqtt-adaptor
+    volumes:
+      - './config/mqttlocal1.js:/mqtt/config.js'
+  bigquerylocal1:
+    image: rdsea/bigquery-adaptor
+    volumes:
+      - './config/bigquerylocal1.js:/bigquery/config.js'
+  ingestionlocal1:
+    image: rdsea/ingestion-adaptor
+    volumes:
+      - './config/ingestionlocal1.js:/ingestion/config.js'
+  amqplocal1:
+    image: rdsea/amqp-adaptor
+    volumes:
+      - './config/amqplocal1.js:/adaptor/config.js'
+  firewalllocal1:
+    image: rdsea/firewall-adaptor
+    volumes:
+      - './config/firewalllocal1.js:/adaptor/config.js'
