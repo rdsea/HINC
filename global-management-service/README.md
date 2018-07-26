@@ -8,20 +8,20 @@ protocol is described in the top level of the repo.
 
 On startup the api swagger documentation will be available on `http://localhost:8080/swagger-ui.html`.
 
-On startup the global will also be listening for registration from different locals. Once a 
-local management service has been registered then all queries to the global api will query the 
+On startup the global will also be listening for registration from different locals. Once a
+local management service has been registered then all queries to the global api will query the
 appropriate local(s)
 
 
 ## Running Local
-java -jar global-management-service-spring-boot-0.0.1-SNAPSHOT.jar
+java -jar global-management-service-spring-boot-0.1.0-SNAPSHOT.jar
 
 ## Configuration
 You will need to provide an application.properties file in the same directory. A sample can be found in src/main/resources
 
 ```dtd
-# amqp connection string
-spring.rabbitmq.addresses=amqp://zldxlzzt:feJDiwOkdkVuzuqwIXohBG0_hs4VOFVA@sheep.rmq.cloudamqp.com/zldxlzzt
+# amqp connection string: set the string to the AMQP URL
+spring.rabbitmq.addresses=
 #id
 hinc.global.id=globalId
 # input exchange name (receive messages)
