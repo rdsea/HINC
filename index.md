@@ -14,18 +14,6 @@ HINC work is initially supported by the [H2020 U-Test](www.u-test.eu) and rsiHub
 
 Download the [rsiHub source code from Github](https://github.com/SINCConcept/HINC) and play with it.
 
-----
-
-## Services
-
-- HINC: Local Management Service and Global Management Service
-
-- Slice Management Service
-
-- Interoperability Recommendation Service
-
-----
-
 ---
 ## Integration with other platforms
 
@@ -37,11 +25,3 @@ Download the [rsiHub source code from Github](https://github.com/SINCConcept/HIN
 ## Contact
 
 Contact: [Hong-Linh Truong](http://www.infosys.tuwien.ac.at/staff/truong/) at hong-linh.truong@tuwien.ac.at for further information.
-
-## Publications
-
-- Duc-Hung Le, Nanjangud Narendra, Hong-Linh Truong [HINC - Harmonizing Diverse Resource Information Across IoT, Network Functions and Clouds](http://bit.ly/1Y36tIY) ([Submitted PDF](http://bit.ly/1Y36tIY)), [The IEEE 4th International Conference on Future Internet of Things and Cloud (FiCloud2016)](http://www.ficloud.org/2016/), 22-24 Aug, 2016, Vienna, Austria
-
----
-
-Copyright 2017, by TU Wien. Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
