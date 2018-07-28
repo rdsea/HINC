@@ -3,19 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>at.ac.tuwien.dsg.hinc</groupId>
-	<artifactId>global-management-service-spring-boot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-
-	<name>global-management-service-spring-boot</name>
-
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>at.ac.tuwien.dsg.hinc</groupId>
+		<artifactId>hinc-pom</artifactId>
+		<version>0.1.1</version>
 	</parent>
+
+	<artifactId>global-management-service</artifactId>
+	<packaging>jar</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

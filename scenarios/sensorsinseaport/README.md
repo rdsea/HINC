@@ -3,6 +3,8 @@ This document describes steps in running the  resource slice for the scenario of
  The short video is available in youtube: (https://youtu.be/_SCrK8Q3xBs)
  
 # rsiHub Deployment
+WARNING: Currently all artifacts can only be deployed in this way on our Google Cloud Platform account due to automated configurations. For access please contact the owners of this repository.
+To deploy all these services on your own deployment configuration, please read all the relevant documentation in this repository and the IoTCloudSamples repository.
 
 in the `deployment` folder you will find the docker-compose.yml file and relevant configuration mounts to deploy a basic instance of rsiHub which comprises of:
 
@@ -15,6 +17,8 @@ in the `deployment` folder you will find the docker-compose.yml file and relevan
 * BigQuery Provider + Adaptor
 
 simple in the target directory run `$ docker-compose up -d` to launch this rsiHub instace. Make sure to run on a relatively powerful machine due to the overhead of so many components
+
+
 
 # Resource discovery
 
