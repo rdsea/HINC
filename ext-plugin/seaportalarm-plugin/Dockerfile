@@ -1,7 +1,7 @@
 FROM node:8-alpine
 
-COPY . /alarmclient
-WORKDIR /alarmclient
+COPY . /seaportalarm-plugin
+WORKDIR /seaportalarm-plugin
 RUN npm install
 
 CMD ["npm", "start"]
