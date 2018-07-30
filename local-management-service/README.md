@@ -1,4 +1,4 @@
-# HINC local service
+# rsiHub Local Management Service
 
 ## Overview
 This application is reponsible for marshalling resource and provider data as well
@@ -7,7 +7,7 @@ as forwarding controls to the various resource providers (e.g. provision, reconf
 It uses and AMQP as communication method between the different adaptors deployed. The messaging
 protocol is documented at the top level of this repository.
 
-On startup the local management service listens for registration from adaptors, once an 
+On startup the local management service listens for registration from adaptors, once an
 adaptor has been registered, it will be queried for resource data periodically at an interval
 defined in the configuration.
 
@@ -21,7 +21,7 @@ You will need to provide an application.properties file in the same directory. A
 
 ```
 # amqp broker connection string
-spring.rabbitmq.addresses=amqp://zldxlzzt:feJDiwOkdkVuzuqwIXohBG0_hs4VOFVA@sheep.rmq.cloudamqp.com/zldxlzzt
+spring.rabbitmq.addresses=
 # exchange name of the global
 hinc.local.amqp.output=hinc_global_input
 # group name
@@ -40,7 +40,7 @@ adaptor.amqp.output.unicast=adaptor_local_unicast
 # these settings bear no significance to functionality but are required
 spring.jackson.deserialization.fail-on-unknown-properties=false
 server.port=12342
-``` 
+```
 
 ## Limitation
 - Secure HTTPS
