@@ -59,12 +59,12 @@
 		<dependency>
 			<groupId>at.ac.tuwien.dsg.hinc</groupId>
 			<artifactId>common</artifactId>
-			<version>1.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>at.ac.tuwien.dsg.hinc</groupId>
 			<artifactId>repository</artifactId>
-			<version>1.0</version>
+			<version>${project.version}</version>
 		</dependency>
 
 	</dependencies>

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.Resource;
+import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+
 import java.io.IOException;
 
 @Component
@@ -57,7 +59,12 @@ public class ControlService {
         System.out.println(stringReply);
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
-        return objectMapper.readValue(reply.getPayload(), Resource.class);
+        Resource provisionedResource = objectMapper.readValue(reply.getPayload(), Resource.class);
+        AbstractDAO<Resource> resourceAbstractDAO = new AbstractDAO<>(Resource.class);
+        resourceAbstractDAO.save(provisionedResource);
+
+
+        return provisionedResource;
     }
 
     public Resource delete(Resource resource) throws IOException{
@@ -79,7 +86,12 @@ public class ControlService {
         System.out.println(stringReply);
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
-        return objectMapper.readValue(reply.getPayload(), Resource.class);
+        Resource deletedResource = objectMapper.readValue(reply.getPayload(), Resource.class);
+
+        AbstractDAO<Resource> resourceAbstractDAO = new AbstractDAO<>(Resource.class);
+        resourceAbstractDAO.delete(deletedResource.getUuid());
+
+        return deletedResource;
 
     }
 
@@ -102,7 +114,12 @@ public class ControlService {
         System.out.println(stringReply);
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
-        return objectMapper.readValue(reply.getPayload(), Resource.class);
+        Resource configuredResource = objectMapper.readValue(reply.getPayload(), Resource.class);
+        AbstractDAO<Resource> resourceAbstractDAO = new AbstractDAO<>(Resource.class);
+        resourceAbstractDAO.save(configuredResource);
+
+
+        return configuredResource;
     }
 
     public JsonNode getLogs(Resource resource) throws IOException{

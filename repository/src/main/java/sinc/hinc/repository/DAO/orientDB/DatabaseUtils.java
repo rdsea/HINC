@@ -8,10 +8,11 @@ package sinc.hinc.repository.DAO.orientDB;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.ResourceProvider;
 
-import static sinc.hinc.repository.DAO.orientDB.AbstractDAO.logger;
 
 /**
  *
@@ -20,6 +21,7 @@ import static sinc.hinc.repository.DAO.orientDB.AbstractDAO.logger;
 public class DatabaseUtils {
 
     static Class[] clazzes = {Resource.class, ResourceProvider.class};
+    private static Logger logger = LoggerFactory.getLogger(DatabaseUtils.class.getName());
 
     public static void initDB() {
         logger.debug("Initilizing the database... any data will be cleaned!");

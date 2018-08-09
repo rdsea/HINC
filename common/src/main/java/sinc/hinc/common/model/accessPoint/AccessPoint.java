@@ -2,6 +2,7 @@ package sinc.hinc.common.model.accessPoint;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.springframework.data.annotation.Id;
 
 
 // annotations to deserialize child classes properly
@@ -36,12 +37,12 @@ public class AccessPoint {
     }
 
     private AccessPointType applicationProtocol;
+    @Id
     private String uri;
     private NetworkProtocol networkProtocol;
     private AccessPattern accessPattern;
     private String host;
     private int port;
-
     public String getHost() {
         return host;
     }

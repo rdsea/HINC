@@ -1,5 +1,6 @@
 package sinc.hinc.common.model.payloads;
 
+import org.springframework.data.annotation.Id;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 
 public class ControlResult {
@@ -11,6 +12,7 @@ public class ControlResult {
 
     private ControlResultOutcome outcome;
     private String rawOutput;
+    @Id
     private String controlUuid;
     private long timestamp;
 

@@ -14,6 +14,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.ResourceProvider;
@@ -62,7 +63,7 @@ public class ResourceProviderService {
         this.rabbitAdmin = rabbitAdmin;
     }
 
-    public List<ResourceProvider> queryResourceProviders(int timeout, int limit) throws JsonProcessingException {
+    public List<ResourceProvider> queryResourceProviders(int timeout, int limit, String query) throws JsonProcessingException {
         String id = null;
         String group = null;
 
@@ -93,7 +94,12 @@ public class ResourceProviderService {
         }
 
         //TODO temporary queue
-        return getProviders(id, group, limit);
+        if(StringUtils.isEmpty(query)){
+            return getProviders(id, group, limit);
+        }else{
+            return queryProviders(id, group, limit, query);
+        }
+
     }
 
 
@@ -121,6 +127,18 @@ public class ResourceProviderService {
             result = providerRepository.readAll(limit);
         }else{
             result = providerRepository.readAll();
+        }
+
+        return result;
+    }
+
+    private List<ResourceProvider> queryProviders(String id, String group, int limit, String query){
+        List<ResourceProvider> result = new ArrayList<>();
+
+        if(limit>0) {
+            result = providerRepository.query(query, limit);
+        }else{
+            result = providerRepository.query(query);
         }
 
         return result;

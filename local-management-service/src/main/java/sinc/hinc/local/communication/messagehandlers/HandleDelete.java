@@ -4,12 +4,14 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HINCMessageHandler;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.Resource;
 import sinc.hinc.local.plugin.AdaptorManager;
+import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
 
 import java.io.IOException;
 
@@ -53,6 +55,9 @@ public class HandleDelete extends HINCMessageHandler {
 
             replyMessage.setSenderID(id);
             replyMessage.setPayload(objectMapper.writeValueAsString(deletedResource));
+
+            AbstractDAO<Resource> resourceAbstractDAO = new AbstractDAO<>(Resource.class);
+            resourceAbstractDAO.delete(deletedResource.getUuid());
             return replyMessage;
         }catch(Exception e){
             e.printStackTrace();

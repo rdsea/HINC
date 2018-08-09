@@ -7,6 +7,7 @@ package sinc.hinc.common.metadata;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.annotation.Id;
 
 import java.io.IOException;
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.*;
  */
 public class HincLocalMeta {
 
+    @Id
     String uuid;
     String ip;
     String unicastTopic;

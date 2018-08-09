@@ -37,13 +37,31 @@ public class ResourceProviderController {
 
         List<ResourceProvider> resourceProviderList = new ArrayList<>();
         try {
-            resourceProviderList = resourceProviderService.queryResourceProviders(timeout,limit);
+            resourceProviderList = resourceProviderService.queryResourceProviders(timeout,limit, "");
             return new ResponseEntity<>(resourceProviderList, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
         return new ResponseEntity<>(resourceProviderList, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping
+    public ResponseEntity<List<ResourceProvider>> queryResources(@RequestParam(required = false, defaultValue = "3000")Integer timeout,
+                                                               //@RequestParam(required = false, defaultValue = "")String id,
+                                                               //@RequestParam(required = false, defaultValue = "")String group,
+                                                               @RequestParam(required = false, defaultValue = "0")Integer limit,
+                                                                 @RequestBody(required = false) String query){
+        List<ResourceProvider> resourceProviderList = new ArrayList<>();
+        try {
+            resourceProviderList = resourceProviderService.queryResourceProviders(timeout,limit, query);
+            return new ResponseEntity<>(resourceProviderList, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(resourceProviderList, HttpStatus.INTERNAL_SERVER_ERROR);
+
     }
 
     @PostMapping("/{providerId}/controlpoints/{controlPointId}")

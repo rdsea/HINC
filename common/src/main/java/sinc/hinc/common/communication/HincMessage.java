@@ -39,9 +39,7 @@ public class HincMessage {
     private String payload;
     private long timeStamp;
     private String uuid;
-
     public HincMessage() {}
-
     /**
      * Construct a HINC Message with full information for the sender and
      * listener

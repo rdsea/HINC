@@ -1,6 +1,7 @@
 package sinc.hinc.common.model.payloads;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.data.annotation.Id;
 import sinc.hinc.common.model.accessPoint.AccessPoint;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 
@@ -11,6 +12,7 @@ public class Control {
 
     private String controlPointUuid;
     private String resourceProviderUuid;
+    @Id
     private String uuid;
 
     private String name;
