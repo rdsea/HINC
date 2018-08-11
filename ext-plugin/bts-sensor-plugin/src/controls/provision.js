@@ -2,6 +2,7 @@ const axios = require('axios');
 const config = require('../../config')
 const url = require("url");
 
+
 function provision(resource){
 
     let data = {
@@ -11,7 +12,9 @@ function provision(resource){
 
     console.log(`making http call with config: `);
     console.log(JSON.stringify(data, null, '\t'));
-    return axios.post(`${config.ENDPOINT}/sensor/bts/humidity`, data).then((res) => {
+    let endpoint = resource.name.split(" ")[1]
+
+    return axios.post(`${config.ENDPOINT}/sensor/bts/${endpoint}`, data).then((res) => {
         let sensor = res.data;
         resource.uuid = sensor.clientId;
         let uri = url.parse(sensor.uri)
