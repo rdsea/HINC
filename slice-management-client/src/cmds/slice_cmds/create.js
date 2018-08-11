@@ -18,7 +18,7 @@ exports.handler = function (argv) {
         return db.sliceDao().insert(slice);
     }).then((slice) => {
         console.log(`writing slice deployment to ${filepath}.provisioned`);
-        fs.writeFileSync(`${filepath}.provisioned`, JSON.stringify(slice, null, 4));
+        fs.writeFileSync(`${filepath}  `, JSON.stringify(slice, null, 4));
     })
 }
 
