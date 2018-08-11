@@ -1,5 +1,7 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.services;
 
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ProviderRepository;
+import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository.ResourceRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.org.apache.regexp.internal.RE;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.Resource;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+
 
 import java.io.IOException;
 
@@ -30,6 +32,11 @@ public class ControlService {
     private ObjectMapper objectMapper;
     @Autowired
     private RabbitAdmin rabbitAdmin;
+
+    @Autowired
+    private ResourceRepository resourceRepository;
+    @Autowired
+    private ProviderRepository providerRepository;
 
     @Value("${hinc.global.id}")
     private String globalId;
@@ -60,8 +67,7 @@ public class ControlService {
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
         Resource provisionedResource = objectMapper.readValue(reply.getPayload(), Resource.class);
-        AbstractDAO<Resource> resourceAbstractDAO = new AbstractDAO<>(Resource.class);
-        resourceAbstractDAO.save(provisionedResource);
+        resourceRepository.save(provisionedResource);
 
 
         return provisionedResource;
@@ -88,8 +94,7 @@ public class ControlService {
 
         Resource deletedResource = objectMapper.readValue(reply.getPayload(), Resource.class);
 
-        AbstractDAO<Resource> resourceAbstractDAO = new AbstractDAO<>(Resource.class);
-        resourceAbstractDAO.delete(deletedResource.getUuid());
+        resourceRepository.delete(deletedResource.getUuid());
 
         return deletedResource;
 
@@ -115,8 +120,7 @@ public class ControlService {
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
         Resource configuredResource = objectMapper.readValue(reply.getPayload(), Resource.class);
-        AbstractDAO<Resource> resourceAbstractDAO = new AbstractDAO<>(Resource.class);
-        resourceAbstractDAO.save(configuredResource);
+        resourceRepository.save(configuredResource);
 
 
         return configuredResource;

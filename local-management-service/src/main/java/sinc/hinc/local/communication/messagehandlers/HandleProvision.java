@@ -58,6 +58,7 @@ public class HandleProvision extends HINCMessageHandler {
 
             replyMessage.setSenderID(id);
             replyMessage.setPayload(objectMapper.writeValueAsString(provisionedResource));
+            logger.info("provisioned resource "+objectMapper.writeValueAsString(provisionedResource));
 
             return replyMessage;
         } catch (IOException e) {
