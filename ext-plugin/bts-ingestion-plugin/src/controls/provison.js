@@ -19,9 +19,9 @@ function provision(resource){
             brokers:[],
         };
         resource.parameters.egressAccessPoints.forEach((accessPoint, index) => {
-            if(accessPoint.applicationProtocol === "ḦTTP"){
+            if(accessPoint.applicationProtocol === "HTTP"){
                 provisionParameters.http = {
-                    uri: `http://${accessPoint.host}${accessPoint.port}`
+                    uri: `http://${accessPoint.host}:${accessPoint.port}`
                 }
             }
         })
