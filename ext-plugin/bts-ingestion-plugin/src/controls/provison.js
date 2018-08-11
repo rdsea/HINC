@@ -6,15 +6,30 @@ function provision(resource){
     let controlResult = null;
 
     
-
-    let provisionParameters = {
-        data: resource.parameters.data,
-        brokers:[],
-        bigQuery: resource.parameters[resource.parameters.data],
-        remoteDataLocation: resource.parameters.remoteDataLocation
-    };
+    let provisionParameters = null 
+    if(resource.parameters.data){
+        provisionParameters = {
+            data: resource.parameters.data,
+            brokers:[],
+            bigQuery: resource.parameters[resource.parameters.data],
+        };
+    }else{
+        provisionParameters = {
+            data: "http",
+            brokers:[],
+        };
+        resource.parameters.egressAccessPoints.forEach((accessPoint, index) => {
+            if(accessPoint.applicationProtocol === "ḦTTP"){
+                provisionParameters.http = {
+                    uri: `http://${accessPoint.host}${accessPoint.port}`
+                }
+            }
+        })
+    }
+    
 
     resource.parameters.egressAccessPoints.forEach((accessPoint, index) => {
+        if(accessPoint.applicationProtocol !== "MQTT") return;
         provisionParameters.brokers.push({
             host: accessPoint.host,
             port: accessPoint.port,
