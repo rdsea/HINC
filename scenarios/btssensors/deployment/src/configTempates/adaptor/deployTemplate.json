@@ -1,0 +1,35 @@
+{
+    "apiVersion": "extensions/v1beta1",
+    "kind": "Deployment",
+    "metadata": {
+      "name": "adaptor"
+    },
+    "spec": {
+      "replicas": 1,
+      "template": {
+        "metadata": {
+          "labels": {
+            "app": "adaptor",
+            "role": "iotcloudexamples",
+            "tier": "iotcloudexamples"
+          }
+        },
+        "spec": {
+          "volumes":[],
+          "containers": [
+            {
+              "name": "adaptor",
+              "image": "rdsea/adaptor",
+              "volumeMounts":[],
+              "resources": {
+                "limits": {
+                  "cpu": "0.25",
+                  "memory": "500Mi"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }

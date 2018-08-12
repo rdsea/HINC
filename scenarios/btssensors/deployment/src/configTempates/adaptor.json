@@ -1,0 +1,6 @@
+{
+    "ADAPTOR_NAME" : "adaptor name",
+    "URI" : "rabbitmq broker uri",
+    "EXCHANGE" : "rabbitmq exchange",
+    "ENDPOINT": "http provider endpoint"
+}

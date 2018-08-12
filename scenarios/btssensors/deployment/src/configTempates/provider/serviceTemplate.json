@@ -1,0 +1,26 @@
+{
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": {
+      "name": "provider",
+      "labels": {
+        "app": "provider",
+        "role": "iotcloudexamples",
+        "tier": "iotcloudexamples"
+      }
+    },
+    "spec": {
+      "type": "ClusterIP",
+      "ports": [
+        {
+          "port": 80,
+          "targetPort": 8080 
+        }
+      ],
+      "selector": {
+        "app": "provider",
+        "role": "iotcloudexamples",
+        "tier": "iotcloudexamples"
+      }
+    }
+}
