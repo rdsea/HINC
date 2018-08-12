@@ -1,0 +1,30 @@
+{
+    "firewall": {
+        "name": "firewall",
+        "adaptorName": null,
+        "resourceCategory": "FIREWALL",
+        "resourceType": "NETWORK_FUNCTION_SERVICE",
+        "location": null,
+        "metadata": {},
+        "parameters": {
+          "ingressAccessPoints": [],
+          "egressAccessPoints": [],
+          "serviceName": "resourceUuid",
+          "ingress": {
+            "services": [],
+            "ips": [],
+            "ports": []
+          },
+          "egress": {
+            "services": [],
+            "ips": [],
+            "ports": []
+          }
+        },
+        "controlPoints": [],
+        "dataPoints": [],
+        "uuid": null,
+        "providerUuid": "firewalllocal1set0"
+      }
+  
+}
