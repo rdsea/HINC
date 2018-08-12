@@ -8,6 +8,8 @@ function provision(resource){
     let data = {
         uri: `tcp://${resource.parameters.egressAccessPoints[0].host}:${resource.parameters.egressAccessPoints[0].port}`,
         topic: resource.parameters.egressAccessPoints[0].topics[0],
+        username: resource.parameters.egressAccessPoints[0].username,
+        password: resource.parameters.egressAccessPoints[0].password
     }
 
     console.log(`making http call with config: `);
