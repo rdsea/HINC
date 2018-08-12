@@ -35,8 +35,8 @@ function provision(resource){
             port: accessPoint.port,
             topics: accessPoint.topics,
             clientId: `${randomString.generate(5)}`,
-            username: "xxx",
-            password: "xxx"
+            username: accessPoint.username || "xxx",
+            password: accessPoint.password || "xxx"
         });
     })
 
@@ -66,7 +66,5 @@ function provision(resource){
 }
 
 module.exports.provision = provision;
-
-
 
 //provision(resource).catch((err) => console.log(err));

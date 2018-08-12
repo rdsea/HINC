@@ -24,6 +24,8 @@ function getProvider(settings){
                     applicationProtocol: "MQTT",
                     host: "broker host",
                     port: "broker port",
+                    username: "xxx",
+                    password: "xxx",
                     accessPattern: "PUBSUB",
                     networkProtocol: "IP",
                     qos: 0,
@@ -94,5 +96,7 @@ function getProvider(settings){
         return provider;
     });
 }
+
+
 
 module.exports.getProvider = getProvider;

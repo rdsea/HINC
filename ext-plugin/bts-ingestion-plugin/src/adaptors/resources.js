@@ -21,17 +21,22 @@ function getItems(settings){
 
 function _ingestionClientToResource(ingestionClient){
     let egressAccessPoints = [];
-    ingestionClient.brokers.forEach((broker) => {
-        egressAccessPoints.push({
-            applicationProtocol: "MQTT",
-            host: broker.host,
-            port: broker.port,
-            accessPattern: "PUBSUB",
-            networkProtocol: "IP",
-            qos: 0,
-            topics: broker.topics
+    if(ingestionClient.brokers){
+        ingestionClient.brokers.forEach((broker) => {
+            egressAccessPoints.push({
+                applicationProtocol: "MQTT",
+                host: broker.host,
+                port: broker.port,
+                username: broker.username,
+                password: broker.password,
+                accessPattern: "PUBSUB",
+                networkProtocol: "IP",
+                qos: 0,
+                topics: broker.topics
+            })
         })
-    })
+    }
+    
 
     let resource = {
         uuid: ingestionClient.ingestionClientId,
@@ -56,5 +61,6 @@ function _ingestionClientToResource(ingestionClient){
     
     return resource;
 }
+
 
 module.exports.getItems = getItems;
