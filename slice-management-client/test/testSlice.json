@@ -166,6 +166,8 @@
             "resourceCategory": null,
             "uuid": "ingestionclient1528671663831"
         }
+
+        
     },
     "connectivities": {
         "mqtt_connectivity": {
