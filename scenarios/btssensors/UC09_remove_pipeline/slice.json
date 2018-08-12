@@ -1,0 +1,229 @@
+{
+    "sliceId": "sliceuc9",
+    "resources": {
+        "broker": {
+            "name": "mosquitto broker",
+            "resourceCategory": "BROKER",
+            "resourceType": "NETWORK_FUNCTION_SERVICE",
+            "location": null,
+            "metadata": {},
+            "parameters": {
+              "ingressAccessPoints": [],
+              "egressAccessPoints": []
+            },
+            "controlPoints": [],
+            "dataPoints": [],
+            "uuid": null,
+            "providerUuid": "mqttlocal1set0"
+        },
+        "analytics": {
+            "name": "bts ingestion client",
+            "resourceCategory": "SOFTWARE_ARTIFACT",
+            "resourceType": "CLOUD_SERVICE",
+            "location": null,
+            "metadata": {},
+            "parameters": {
+              "egressAccessPoints": [
+                {
+                  "applicationProtocol": "MQTT",
+                  "host": "broker host",
+                  "port": "broker port",
+                  "accessPattern": "PUBSUB",
+                  "networkProtocol": "IP",
+                  "qos": 0,
+                  "topics": [
+                    "uc4topic"
+                  ]
+                }
+              ],
+              "ingressAccessPoints": [],
+              "data": "bigQuery",
+              "bigQuery": {
+                "dataset": "uc4dataset",
+                "tables": [
+                  {
+                    "id": "btsdata",
+                    "topics": [
+                      "uc4topic"
+                    ]
+                  }
+                ]
+              }
+            },
+            "controlPoints": [],
+            "dataPoints": [],
+            "uuid": null,
+            "providerUuid": "ingestionlocal1set0"
+        },
+        "datasink": {
+            "name": "bigQuery dataset",
+            "resourceCategory": "STORAGE",
+            "resourceType": "CLOUD_SERVICE",
+            "location": null,
+            "metadata": {},
+            "parameters": {
+              "ingressAccessPoints": [],
+              "egressAccessPoints": [],
+              "datasetId": "uc4dataset",
+              "tables": [
+                {
+                    "id": "btsdata",
+                    "schema": [
+                        {
+                            "description": "field description",
+                            "mode": "REQUIRED",
+                            "name": "id",
+                            "type": "STRING"
+                        },
+                        {
+                            "description": "field description",
+                            "mode": "REQUIRED",
+                            "name": "value",
+                            "type": "FLOAT64"
+                        },
+                        {
+                            "description": "field description",
+                            "mode": "REQUIRED",
+                            "name": "reading_time",
+                            "type": "TIMESTAMP"
+                        },
+                        {
+                            "description": "field description",
+                            "mode": "REQUIRED",
+                            "name": "station_id",
+                            "type": "INT64"
+                        },
+                        {
+                            "description": "field description",
+                            "mode": "REQUIRED",
+                            "name": "parameter_id",
+                            "type": "INT64"
+                        }
+                    ]
+                }
+            ]
+
+            },
+            "controlPoints": [],
+            "dataPoints": [],
+            "uuid": null,
+            "providerUuid": "bigquerylocal1set0"
+        },
+        "temp":{
+            "name": "sensor temperature",
+            "adaptorName": null,
+            "resourceCategory": null,
+            "resourceType": "IOT_RESOURCE",
+            "location": null,
+            "metadata": {},
+            "parameters": {
+              "ingressAccessPoints": [],
+              "egressAccessPoints": [
+                {
+                  "applicationProtocol": "MQTT",
+                  "host": "target host",
+                  "port": "targetport",
+                  "accessPattern": "PUBSUB",
+                  "networkProtocol": "IP",
+                  "qos": 0,
+                  "topics": [
+                    "uc4topic"
+                  ]
+                }
+              ]
+            },
+            "controlPoints": [],
+            "dataPoints": [
+              {
+                "name": "temperature",
+                "dataType": "FLOAT",
+                "unit": "fahrenheit"
+              }
+            ],
+            "uuid": null,
+            "providerUuid": "sensorlocal1set0"
+        },
+        "hum": {
+            "name": "sensor humidity",
+            "adaptorName": null,
+            "resourceCategory": null,
+            "resourceType": "IOT_RESOURCE",
+            "location": null,
+            "metadata": {},
+            "parameters": {
+              "ingressAccessPoints": [],
+              "egressAccessPoints": [
+                {
+                  "applicationProtocol": "MQTT",
+                  "host": "target host",
+                  "port": "targetport",
+                  "accessPattern": "PUBSUB",
+                  "networkProtocol": "IP",
+                  "qos": 0,
+                  "topics": [
+                    "uc4topic"
+                  ]
+                }
+              ]
+            },
+            "controlPoints": [],
+            "dataPoints": [
+              {
+                "name": "humidity",
+                "dataType": "FLOAT",
+                "unit": "percent"
+              }
+            ],
+            "uuid": null,
+            "providerUuid": "sensorlocal1set0"
+        }
+    },
+    "connectivities": {
+        "mqtt_analytics": {
+            "accessPoint": {
+                "applicationProtocol": "MQTT",
+                "networkProtocol": "IP"
+            },
+            "dataFormat": "JSON",
+            "in": {
+                "label": "analytics",
+                "accessPoint": 0
+            },
+            "out": {
+                "label": "broker",
+                "accessPoint": 0
+            }
+        },
+        "temp_mqtt": {
+            "accessPoint": {
+                "applicationProtocol": "MQTT",
+                "networkProtocol": "IP"
+            },
+            "dataFormat": "JSON",
+            "in": {
+                "label": "temp",
+                "accessPoint": 0
+            },
+            "out": {
+                "label": "broker",
+                "accessPoint": 0
+            }
+        },
+        "hum_mqtt": {
+            "accessPoint": {
+                "applicationProtocol": "MQTT",
+                "networkProtocol": "IP"
+            },
+            "dataFormat": "JSON",
+            "in": {
+                "label": "hum",
+                "accessPoint": 0
+            },
+            "out": {
+                "label": "broker",
+                "accessPoint": 0
+            }
+        }
+    },
+    "createdAt": 1534059245
+}

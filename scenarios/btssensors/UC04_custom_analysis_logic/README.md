@@ -1,4 +1,4 @@
-# Use Case - New Data Consumer
+# Use Case - Custom Data Logic
 
 The default data processing logic of the system is not adapted
 to the Data Consumer's needs. The Data Consumer consults with the Data Scientist to 
