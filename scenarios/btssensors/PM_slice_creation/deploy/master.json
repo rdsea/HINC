@@ -1,0 +1,40 @@
+{
+    "apiVersion": "extensions/v1beta1",
+    "kind": "Deployment",
+    "metadata": {
+      "name": "testmaster"
+    },
+    "spec": {
+      "replicas": 1,
+      "template": {
+        "metadata": {
+          "labels": {
+            "app": "testmaster",
+            "role": "iotcloudexamples",
+            "tier": "iotcloudexamples"
+          }
+        },
+        "spec": {
+          "volumes":[],
+          "containers": [
+            {
+              "name": "testmaster",
+              "image": "rdsea/test-master",
+              "volumeMounts":[],
+              "resources": {
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "100Mi"
+                }
+              },
+              "ports": [
+                {
+                  "containerPort": 3000 
+                }
+              ] 
+            }
+          ]
+        }
+      }
+    }
+  }
