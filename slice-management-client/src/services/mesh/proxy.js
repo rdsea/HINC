@@ -18,7 +18,7 @@ function createProxy(sliceId, resourceId, accessPointNb){
     return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
         return _createConfigMap(resourceId, deployId, nameserver.location, accessPointNb);
     }).then(() => {
-        return _provisionProxy(deployId, accessPointNb);
+        return _provisionProxy(deployId, accessPointNb, resourceId);
     }).then(() => {
         let proxy = {
             id: deployId,
@@ -76,10 +76,11 @@ function deleteAllProxies(sliceId){
     });
 }
 
-function _provisionProxy(deployId, accessPointNb){
+function _provisionProxy(deployId, accessPointNb, resourceId){
     let deployTemplate = JSON.parse(JSON.stringify(linkerdDeployTemplate));
-    deployTemplate.metadata.name = deployId;
     deployTemplate.spec.template.metadata.labels.app = deployId;
+    deployTemplate.metadata.name = deployId;
+    deployTemplate.spec.template.metadata.labels.app = deployId; 
 
     deployTemplate.spec.template.spec.volumes.push({
         name: deployId,
@@ -99,11 +100,11 @@ function _provisionProxy(deployId, accessPointNb){
             throw new Error('error occurred creating linkerd proxy deployment');
         }
         console.debug(res.stdout);
-        return _exposeProxy(deployId, accessPointNb);
+        return _exposeProxy(deployId, accessPointNb, resourceId);
     })
 }
 
-function _exposeProxy(deployId, accessPointNb){
+function _exposeProxy(deployId, accessPointNb, resourceId){
     let serviceTemplate = JSON.parse(JSON.stringify(linkerdServiceTemplate));;
     serviceTemplate.metadata.labels.app = deployId;
     serviceTemplate.metadata.name = deployId;

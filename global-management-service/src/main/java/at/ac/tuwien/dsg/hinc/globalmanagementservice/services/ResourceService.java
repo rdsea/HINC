@@ -11,6 +11,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.Resource;
@@ -54,7 +55,7 @@ public class ResourceService {
         this.localMSRepository = localMSRepository;
     }
 
-    public List<Resource> queryResources(int timeout, int limit) throws JsonProcessingException {
+    public List<Resource> queryResources(int timeout, int limit, String query) throws JsonProcessingException {
         String group = null;
         String id = null;
         String exchange = getDestinationExchange(id,group);
@@ -82,7 +83,11 @@ public class ResourceService {
         }
 
         //TODO temporary queue
-        return getResources(id, group, limit);
+        if(StringUtils.isEmpty(query)){
+            return getResources(id, group, limit);
+        }else{
+            return queryResources(id, group, limit, query);
+        }
     }
 
     public Resource putMetadata(String resourceId, JsonNode metadata){
@@ -123,6 +128,18 @@ public class ResourceService {
         /*if(limit>0) {
             result = result.subList(0, limit);
         }*/
+
+        return result;
+    }
+
+    private List<Resource> queryResources(String id, String group, int limit, String query){
+        List<Resource> result = new ArrayList<>();
+
+        if(limit>0) {
+            result = resourceRepository.query(query, limit);
+        }else{
+            result = resourceRepository.query(query);
+        }
 
         return result;
     }

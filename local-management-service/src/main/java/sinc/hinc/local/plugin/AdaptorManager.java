@@ -66,6 +66,8 @@ public class AdaptorManager {
                 return adaptor.provisionResource(resource);
             }
         }
+
+        logger.info("couldn't find adaptor "+adaptorName);
         return null;
     }
 

@@ -13,6 +13,7 @@ function getProvider(settings){
         availableResources.push({
             plugin: 'bigquery',
             resourceType: 'CLOUD_SERVICE',
+            providerUuid: config.ADAPTOR_NAME,
             name: `bigQuery dataset`,
             controlPoints: [],
             dataPoints: [],

@@ -1,0 +1,84 @@
+[
+    {
+        "id": "419ebaac.490134",
+        "type": "mqtt in",
+        "z": "e1adf458.6a46d8",
+        "name": "",
+        "topic": "uc4topic",
+        "qos": "2",
+        "broker": "6069c372.ded78c",
+        "x": 240,
+        "y": 240,
+        "wires": [
+            [
+                "1b6e13be.89dd3c"
+            ]
+        ]
+    },
+    {
+        "id": "1b6e13be.89dd3c",
+        "type": "function",
+        "z": "e1adf458.6a46d8",
+        "name": "custom_analysis",
+        "func": "data = JSON.parse(msg.payload);\ndata.value = parseFloat(data.value) * 100;\n\nmsg.payload = JSON.stringify(data);\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 560,
+        "y": 240,
+        "wires": [
+            [
+                "ca9699bc.8162f8",
+                "edbfaaaf.80c9a8"
+            ]
+        ]
+    },
+    {
+        "id": "ca9699bc.8162f8",
+        "type": "debug",
+        "z": "e1adf458.6a46d8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 900,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "edbfaaaf.80c9a8",
+        "type": "mqtt out",
+        "z": "e1adf458.6a46d8",
+        "name": "",
+        "topic": "uc4topic_custom",
+        "qos": "",
+        "retain": "",
+        "broker": "6069c372.ded78c",
+        "x": 930,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "6069c372.ded78c",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "",
+        "broker": "35.195.145.146",
+        "port": 1883,
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]

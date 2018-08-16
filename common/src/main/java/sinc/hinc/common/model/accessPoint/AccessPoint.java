@@ -43,7 +43,6 @@ public class AccessPoint {
     private AccessPattern accessPattern;
     private String host;
     private int port;
-
     public String getHost() {
         return host;
     }

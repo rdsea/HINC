@@ -1,0 +1,40 @@
+{
+    "apiVersion": "extensions/v1beta1",
+    "kind": "Deployment",
+    "metadata": {
+      "name": "global"
+    },
+    "spec": {
+      "replicas": 1,
+      "template": {
+        "metadata": {
+          "labels": {
+            "app": "global",
+            "role": "iotcloudexamples",
+            "tier": "iotcloudexamples"
+          }
+        },
+        "spec": {
+          "volumes":[],
+          "containers": [
+            {
+              "name": "global",
+              "image": "rdsea/global",
+              "volumeMounts":[],
+              "resources": {
+                "limits": {
+                  "cpu": "2",
+                  "memory": "2048Mi"
+                }
+              },
+              "ports": [
+                {
+                  "containerPort": 8080 
+                }
+              ] 
+            }
+          ]
+        }
+      }
+    }
+  }

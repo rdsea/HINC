@@ -48,33 +48,6 @@
             "location": null,
             "parameters": {
                 "ingressAccessPoints": [
-                    {
-                        "applicationProtocol": "MQTT",
-                        "host": "35.195.240.154",
-                        "port": 1883,
-                        "accessPattern": "PUBSUB",
-                        "networkProtocol": "IP",
-                        "qos": 0,
-                        "topics": []
-                    },
-                    {
-                        "applicationProtocol": "MQTT",
-                        "host": "35.195.240.154",
-                        "port": 1883,
-                        "accessPattern": "PUBSUB",
-                        "networkProtocol": "IP",
-                        "qos": 0,
-                        "topics": []
-                    },
-                    {
-                        "applicationProtocol": "MQTT",
-                        "host": "35.187.126.57",
-                        "port": 1883,
-                        "accessPattern": "PUBSUB",
-                        "networkProtocol": "IP",
-                        "qos": 0,
-                        "topics": []
-                    }
                 ],
                 "egressAccessPoints": []
             },
@@ -148,7 +121,7 @@
             "resourceCategory": null,
             "uuid": "testDataset"
         },
-        "ingest": {
+        "analytics": {
             "name": "bts ingestion client",
             "pluginName": "btsingestion",
             "providerUuid": "ingestionlocal1",
@@ -193,6 +166,8 @@
             "resourceCategory": null,
             "uuid": "ingestionclient1528671663831"
         }
+
+        
     },
     "connectivities": {
         "mqtt_connectivity": {
@@ -221,7 +196,7 @@
             },
             "dataFormat": "JSON",
             "in": {
-                "label": "ingest",
+                "label": "analytics",
                 "accessPoint": 0
             },
             "out": {

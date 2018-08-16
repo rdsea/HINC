@@ -11,49 +11,21 @@ exports.builder = {
         describe: 'limit the number of results',
         type: 'number'
     },
-    refresh:{
-        alias: 'r',
-        describe: 'refresh data from datasource',
-        type: 'boolean',
-        demandOption: false
-    }
 }
 
 exports.handler = function (argv) {
     let payload = argv.limit ? { limit: argv.limit } : '';
     let query = amqpTools.buildMessage('FETCH_PROVIDERS', payload);
 
-    if(!(argv.refresh)){
-        return db.providerDao().find({}).then((resources) => {
-            _displayProviders(resources);
-        });
-    }else{
-        return axios.get(`${config.uri}/resourceproviders`).then((res) => {
-            let providers = res.data;
-            return _refreshProviders(providers);
-        }).then((providers) => {
-            console.log(`retrieved ${providers.length} providers`)
-            _displayProviders(providers)
-        }).catch((err) => {
-            console.err(err);
-        })
-    }
+    return axios.get(`${config.uri}/resourceproviders`).then((res) => {
+        let providers = res.data;
+        _displayProviders(providers)
+    }).catch((err) => {
+        console.err(err);
+    })
 
     
 }
-
-function _refreshProviders(providers){
-    return db.providerDao().remove({}, {multi: true}).then(() => {
-        let promises = [];
-        providers.forEach((provider) => {
-        promises.push(db.providerDao().insert(provider));
-    });
-        return Promise.all(promises);
-    }).then(() => {
-        return providers;
-    });    
-}
-
 
 
 function _displayProviders(providers){

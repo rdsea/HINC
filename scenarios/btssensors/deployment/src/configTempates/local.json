@@ -1,0 +1,14 @@
+{
+    "spring.rabbitmq.addresses": "amqp://zldxlzzt:feJDiwOkdkVuzuqwIXohBG0_hs4VOFVA@sheep.rmq.cloudamqp.com/zldxlzzt",
+    "hinc.local.amqp.output": "hinc_global_input",
+    "hinc.local.group": "test",
+    "hinc.local.id": "local",
+    "hinc.local.refresh":10000,
+    "adaptor.amqp.input": "adaptor_local_input",
+    "adaptor.amqp.output.broadcast": "adaptor_local_broadcast",
+    "adaptor.amqp.output.unicast": "adaptor_local_unicast",
+    "spring.jackson.deserialization.fail-on-unknown-properties": false,
+    "spring.data.mongodb.uri": "localhost:20170",
+    "spring.data.mongodb.database": "${hinc.local.group}${hinc.local.id}",
+    "server.port": 12342
+}

@@ -38,7 +38,26 @@ public class ResourceController {
 
         List<Resource> resourceList = new ArrayList<>();
         try {
-            resourceList = resourceService.queryResources(timeout, limit);
+            resourceList = resourceService.queryResources(timeout, limit, "");
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(resourceList, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<List<Resource>> getResources(@RequestParam(required = false, defaultValue = "3000")Integer timeout,
+                                                       //@RequestParam(required = false, defaultValue = "")String id,
+                                                       //@RequestParam(required = false, defaultValue = "")String group,
+                                                       @RequestParam(required = false, defaultValue = "0")Integer limit,
+                                                       @RequestBody(required = false) String query
+                                                       //@RequestParam(required = false, defaultValue = "false")Boolean rescan
+    ) {
+
+        List<Resource> resourceList = null;
+        try {
+            resourceList = resourceService.queryResources(timeout, limit, query);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

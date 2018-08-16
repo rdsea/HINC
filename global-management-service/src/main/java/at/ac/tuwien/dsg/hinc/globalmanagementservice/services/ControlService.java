@@ -1,5 +1,7 @@
 package at.ac.tuwien.dsg.hinc.globalmanagementservice.services;
 
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.repository.ProviderRepository;
+import at.ac.tuwien.dsg.hinc.globalmanagementservice.repository.ResourceRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Component;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.Resource;
+
+
 import java.io.IOException;
 
 @Component
@@ -27,6 +31,11 @@ public class ControlService {
     private ObjectMapper objectMapper;
     @Autowired
     private RabbitAdmin rabbitAdmin;
+
+    @Autowired
+    private ResourceRepository resourceRepository;
+    @Autowired
+    private ProviderRepository providerRepository;
 
     @Value("${hinc.global.id}")
     private String globalId;
@@ -56,7 +65,11 @@ public class ControlService {
         System.out.println(stringReply);
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
-        return objectMapper.readValue(reply.getPayload(), Resource.class);
+        Resource provisionedResource = objectMapper.readValue(reply.getPayload(), Resource.class);
+        resourceRepository.save(provisionedResource);
+
+
+        return provisionedResource;
     }
 
     public Resource delete(Resource resource) throws IOException{
@@ -78,7 +91,11 @@ public class ControlService {
         System.out.println(stringReply);
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
-        return objectMapper.readValue(reply.getPayload(), Resource.class);
+        Resource deletedResource = objectMapper.readValue(reply.getPayload(), Resource.class);
+
+        resourceRepository.delete(deletedResource.getUuid());
+
+        return deletedResource;
 
     }
 
@@ -101,7 +118,11 @@ public class ControlService {
         System.out.println(stringReply);
         reply = objectMapper.readValue(stringReply, HincMessage.class);
 
-        return objectMapper.readValue(reply.getPayload(), Resource.class);
+        Resource configuredResource = objectMapper.readValue(reply.getPayload(), Resource.class);
+        resourceRepository.save(configuredResource);
+
+
+        return configuredResource;
     }
 
     public JsonNode getLogs(Resource resource) throws IOException{

@@ -1,0 +1,16 @@
+configmap "global" created
+
+configmap "config-local1" created
+
+configmap "config-sensorlocal1set0" created
+
+configmap "config-mqttlocal1set0" created
+
+configmap "config-bigquerylocal1set0" created
+
+configmap "config-ingestionlocal1set0" created
+
+configmap "config-amqplocal1set0" created
+
+configmap "config-firewalllocal1set0" created
+

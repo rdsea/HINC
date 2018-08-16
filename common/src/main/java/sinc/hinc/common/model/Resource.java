@@ -1,6 +1,7 @@
 package sinc.hinc.common.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import sinc.hinc.common.model.accessPoint.AccessPoint;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 import sinc.hinc.common.model.accessPoint.AccessPoint;

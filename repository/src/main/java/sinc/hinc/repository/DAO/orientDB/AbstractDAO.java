@@ -5,18 +5,10 @@
  */
 package sinc.hinc.repository.DAO.orientDB;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.result.DeleteResult;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.schema.OType;
-import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.core.sql.OCommandSQL;
-import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -44,12 +36,14 @@ import javax.print.Doc;
  */
 public class AbstractDAO<T> {
 
-    private ObjectMapper mapper;
-    private Class<T> clazz;
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    protected ObjectMapper mapper;
+    protected Class<T> clazz;
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    protected MongoTemplate mongoTemplate;
+    protected T object;
+    protected String collection;
 
     public AbstractDAO(){
         mapper = new ObjectMapper();
@@ -60,6 +54,7 @@ public class AbstractDAO<T> {
         mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.clazz = clazz;
+        this.collection = clazz.getSimpleName();
     }
 
     public T save(T object) {
@@ -72,7 +67,7 @@ public class AbstractDAO<T> {
                 document.put("_id", idValue);
                 document = merge(document, idValue);
             }
-            mongoTemplate.save(document, clazz.getSimpleName());
+            mongoTemplate.save(document, collection);
             if(idValue == null){
                 setIdField(object,document);
             }
@@ -92,7 +87,7 @@ public class AbstractDAO<T> {
     }
 
     public T delete(T object) {
-        DeleteResult deleteResult = mongoTemplate.remove(object, clazz.getSimpleName());
+        DeleteResult deleteResult = mongoTemplate.remove(object, collection);
 
         if(deleteResult.getDeletedCount()==0){
             return null;
@@ -121,26 +116,32 @@ public class AbstractDAO<T> {
 
 
     public T read(String uuid) {
-        Document d = mongoTemplate.findById(uuid, Document.class, clazz.getSimpleName());
+        Document d = mongoTemplate.findById(uuid, Document.class, collection);
         return deserializeDocument(d);
     }
 
     public List<T> readAll(int limit) {
         Query query = new Query();
         query.limit(limit);
-        return deserializeDocuments(mongoTemplate.find(query,Document.class, clazz.getSimpleName()));
+        return deserializeDocuments(mongoTemplate.find(query,Document.class, collection));
     }
     
     public List<T> readAll(){
-        return deserializeDocuments(mongoTemplate.findAll(Document.class, clazz.getSimpleName()));
+        return deserializeDocuments(mongoTemplate.findAll(Document.class, collection));
     }
 
-    public List<T> query(String queryString){
+    public List<T> query(String jsonQuery, int limit){
+        Document document = Document.parse(jsonQuery);
 
-        Query query = new BasicQuery(queryString);
-
-        return deserializeDocuments(mongoTemplate.find(query, Document.class, clazz.getSimpleName()));
-
+        // if there is uuid field, we need to change it to _id for mongodb
+        if(document.containsKey("uuid")){
+            document.append("_id", document.get("uuid"));
+            document.remove("uuid");
+        }
+        BasicQuery query = new BasicQuery(document.toJson());
+        query.limit(limit);
+        List<T> results = mongoTemplate.find(query, clazz, collection);
+        return results;
     }
 
     public List<T> queryByExample(T example){
@@ -157,7 +158,23 @@ public class AbstractDAO<T> {
         return result;
     }
 
-    private List<T> deserializeDocuments(List<Document> documents){
+    public List<T> query(String jsonQuery){
+        Document document = Document.parse(jsonQuery);
+
+        // if there is uuid field, we need to change it to _id for mongodb
+        if(document.containsKey("uuid")){
+            document.append("_id", document.get("uuid"));
+            document.remove("uuid");
+        }
+        BasicQuery query = new BasicQuery(document.toJson());
+        List<Document> docs = mongoTemplate.find(query, Document.class);
+
+        return deserializeDocuments(docs);
+    }
+
+
+
+    protected List<T> deserializeDocuments(List<Document> documents){
         List<T> returnlist = new ArrayList<>();
         for(Document d: documents){
             T object = deserializeDocument(d);
@@ -168,7 +185,7 @@ public class AbstractDAO<T> {
         return returnlist;
     }
 
-    private T deserializeDocument(Document d){
+    protected T deserializeDocument(Document d){
         if(d==null){
             return null;
         }
@@ -182,7 +199,7 @@ public class AbstractDAO<T> {
         }
     }
 
-    private Object getIdValue(T object){
+    protected Object getIdValue(T object){
         Object idValue = new Object();
         for(Field f : object.getClass().getDeclaredFields()){
             if(f.getAnnotation(Id.class) != null){
@@ -199,7 +216,7 @@ public class AbstractDAO<T> {
         return idValue;
     }
 
-    private void setIdField(T object, Document document){
+    protected void setIdField(T object, Document document){
         for(Field f : object.getClass().getDeclaredFields()){
             if(f.getAnnotation(Id.class) != null){
                 boolean accessible = f.isAccessible();
@@ -219,8 +236,8 @@ public class AbstractDAO<T> {
         }
     }
 
-    private Document merge(Document newDoc, Object id){
-        Document oldDoc = mongoTemplate.findById(id, Document.class, clazz.getSimpleName());
+    protected Document merge(Document newDoc, Object id){
+        Document oldDoc = mongoTemplate.findById(id, Document.class, collection);
         Document merged = new Document();
 
         if(oldDoc==null) {

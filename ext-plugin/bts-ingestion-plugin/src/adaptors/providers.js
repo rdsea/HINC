@@ -24,6 +24,8 @@ function getProvider(settings){
                     applicationProtocol: "MQTT",
                     host: "broker host",
                     port: "broker port",
+                    username: "xxx",
+                    password: "xxx",
                     accessPattern: "PUBSUB",
                     networkProtocol: "IP",
                     qos: 0,
@@ -49,6 +51,42 @@ function getProvider(settings){
             },
         });
 
+        availableResources.push({
+            plugin: 'btsingestion',
+            providerUuid: config.ADAPTOR_NAME,
+            resourceType: 'CLOUD_SERVICE',
+            resourceCategory: 'SOFTWARE_ARTIFACT',
+            name: `bts ingestion client`,
+            controlPoints: [],
+            dataPoints: [],
+            location: null,
+            parameters:{
+                egressAccessPoints: [
+                    {
+                        applicationProtocol: "MQTT",
+                        host: "broker host",
+                        port: "broker port",
+                        accessPattern: "PUBSUB",
+                        networkProtocol: "IP",
+                        qos: 0,
+                        topics: ["topic1", "topic2"]
+                    },
+                    {
+                        applicationProtocol: "HTTP",
+                        host: "localhost",
+                        port: "3000",
+                        accessPattern: "",
+                        networkProtocol: "IP",
+                    },
+            
+                ],
+                ingressAccessPoints: [],
+            },
+            metadata: {
+                
+            },
+        })
+
         let provider = {
             name: config.ADAPTOR_NAME,
             uuid: config.ADAPTOR_NAME,
@@ -58,5 +96,7 @@ function getProvider(settings){
         return provider;
     });
 }
+
+
 
 module.exports.getProvider = getProvider;

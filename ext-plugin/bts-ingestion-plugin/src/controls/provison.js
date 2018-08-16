@@ -6,21 +6,37 @@ function provision(resource){
     let controlResult = null;
 
     
-
-    let provisionParameters = {
-        data: resource.parameters.data,
-        brokers:[],
-        bigQuery: resource.parameters[resource.parameters.data],
-    };
+    let provisionParameters = null 
+    if(resource.parameters.data){
+        provisionParameters = {
+            data: resource.parameters.data,
+            brokers:[],
+            bigQuery: resource.parameters[resource.parameters.data],
+        };
+    }else{
+        provisionParameters = {
+            data: "http",
+            brokers:[],
+        };
+        resource.parameters.egressAccessPoints.forEach((accessPoint, index) => {
+            if(accessPoint.applicationProtocol === "HTTP"){
+                provisionParameters.http = {
+                    uri: `http://${accessPoint.host}:${accessPoint.port}`
+                }
+            }
+        })
+    }
+    
 
     resource.parameters.egressAccessPoints.forEach((accessPoint, index) => {
+        if(accessPoint.applicationProtocol !== "MQTT") return;
         provisionParameters.brokers.push({
             host: accessPoint.host,
             port: accessPoint.port,
             topics: accessPoint.topics,
             clientId: `${randomString.generate(5)}`,
-            username: "xxx",
-            password: "xxx"
+            username: accessPoint.username || "xxx",
+            password: accessPoint.password || "xxx"
         });
     })
 
@@ -50,7 +66,5 @@ function provision(resource){
 }
 
 module.exports.provision = provision;
-
-
 
 //provision(resource).catch((err) => console.log(err));

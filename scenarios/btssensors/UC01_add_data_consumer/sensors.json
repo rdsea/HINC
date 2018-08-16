@@ -1,0 +1,107 @@
+{
+    "resources":{
+        "temp":{
+            "name": "sensor temperature",
+            "adaptorName": null,
+            "resourceCategory": null,
+            "resourceType": "IOT_RESOURCE",
+            "location": null,
+            "metadata": {},
+            "parameters": {
+              "ingressAccessPoints": [],
+              "egressAccessPoints": [
+                {
+                  "applicationProtocol": "MQTT",
+                  "host": "target host",
+                  "port": "targetport",
+                  "accessPattern": "PUBSUB",
+                  "networkProtocol": "IP",
+                  "qos": 0,
+                  "topics": [
+                    "uc1topic"
+                  ]
+                }
+              ]
+            },
+            "controlPoints": [],
+            "dataPoints": [
+              {
+                "name": "temperature",
+                "dataType": "FLOAT",
+                "unit": "fahrenheit"
+              }
+            ],
+            "uuid": null,
+            "providerUuid": "sensorlocal1set0"
+        },
+
+        "hum": {
+            "name": "sensor humidity",
+            "adaptorName": null,
+            "resourceCategory": null,
+            "resourceType": "IOT_RESOURCE",
+            "location": null,
+            "metadata": {},
+            "parameters": {
+              "ingressAccessPoints": [],
+              "egressAccessPoints": [
+                {
+                  "applicationProtocol": "MQTT",
+                  "host": "target host",
+                  "port": "targetport",
+                  "accessPattern": "PUBSUB",
+                  "networkProtocol": "IP",
+                  "qos": 0,
+                  "topics": [
+                    "uc1topic"
+                  ]
+                }
+              ]
+            },
+            "controlPoints": [],
+            "dataPoints": [
+              {
+                "name": "humidity",
+                "dataType": "FLOAT",
+                "unit": "percent"
+              }
+            ],
+            "uuid": null,
+            "providerUuid": "sensorlocal1set0"
+        }
+    },
+
+    "connectivities": {
+        "temp_mqtt":{
+            "accessPoint": {
+                "applicationProtocol": "MQTT",
+                "networkProtocol": "IP"
+            },
+            "dataFormat": "JSON",
+            "in": {
+                "label": "temp",
+                "accessPoint": 0
+            },
+            "out": {
+                "label": "broker",
+                "accessPoint": 0
+            }
+        },
+
+        "hum_mqtt":{
+            "accessPoint": {
+                "applicationProtocol": "MQTT",
+                "networkProtocol": "IP"
+            },
+            "dataFormat": "JSON",
+            "in": {
+                "label": "hum",
+                "accessPoint": 0
+            },
+            "out": {
+                "label": "broker",
+                "accessPoint": 0
+            }
+        }
+    }
+}

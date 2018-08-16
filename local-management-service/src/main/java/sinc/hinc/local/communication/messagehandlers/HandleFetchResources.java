@@ -3,14 +3,15 @@ package sinc.hinc.local.communication.messagehandlers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import sinc.hinc.common.communication.HINCMessageHandler;
 import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.utils.HincConfiguration;
-import sinc.hinc.local.plugin.AdaptorManager;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+import sinc.hinc.local.repository.ResourceRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 @Component
 public class HandleFetchResources extends HINCMessageHandler {
@@ -18,11 +19,19 @@ public class HandleFetchResources extends HINCMessageHandler {
         super(HINCMessageType.FETCH_RESOURCES);
     }
 
+    @Autowired
+    private ResourceRepository resourceRepository;
+
     @Override
     protected HincMessage doHandle(HincMessage hincMessage) {
-        AbstractDAO<Resource> resourceAbstractDAO = new AbstractDAO<>(Resource.class);
 
-        List<Resource> resources = resourceAbstractDAO.readAll();
+        List<Resource> resources = new ArrayList<>();
+        if(StringUtils.isEmpty(hincMessage.getPayload())){
+            resources = resourceRepository.readAll();
+        }else{
+            resources = resourceRepository.query(hincMessage.getPayload());
+        }
+
         logger.info(resources.size()+ " resources fetched");
         try {
             String payload = this.objectMapper.writeValueAsString(resources);
@@ -39,4 +48,7 @@ public class HandleFetchResources extends HINCMessageHandler {
         }
         return null;
     }
+
+
 }
+

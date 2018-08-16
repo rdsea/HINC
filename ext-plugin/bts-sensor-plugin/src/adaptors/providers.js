@@ -31,6 +31,8 @@ function getProvider(settings){
                         applicationProtocol: "MQTT",
                         host: "target host",
                         port: "targetport",
+                        username: "xxx",
+                        password: "xxx",
                         accessPattern: "PUBSUB",
                         networkProtocol: "IP",
                         qos: 0,

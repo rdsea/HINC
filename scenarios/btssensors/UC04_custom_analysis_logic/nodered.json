@@ -1,0 +1,20 @@
+{
+    "resources":{
+        "customanalysis":{
+            "name": "nodered instance",
+            "adaptorName": null,
+            "resourceCategory": "SOFTWARE_ARTIFACT",
+            "resourceType": "CLOUD_SERVICE",
+            "location": null,
+            "metadata": {},
+            "parameters": {
+              "ingressAccessPoints": [],
+              "egressAccessPoints": []
+            },
+            "controlPoints": [],
+            "dataPoints": [],
+            "uuid": null,
+            "providerUuid": "noderedlocal1set0"
+        }
+    }
+}
