@@ -2,9 +2,9 @@ const express = require('express')
 const app = express()
 
 const MongoClient = require("mongodb").MongoClient;
-let MONGODB_URL = 'mongodb://iotcloudexamples:ac.at.tuwien.dsg@iotcloudexamples-shard-00-00-pz2vu.mongodb.net:27017,iotcloudexamples-shard-00-01-pz2vu.mongodb.net:27017,iotcloudexamples-shard-00-02-pz2vu.mongodb.net:27017/sinc?ssl=true&replicaSet=IoTCloudExamples-shard-0&authSource=admin';
-const DB_NAME = "perfomance";
-const COLLECTION = "test";
+let MONGODB_URL = "mongodb://35.240.93.210:27017/test"
+let DB_NAME = "perfomance";
+let COLLECTION = "test";
 
 // an environment variable can also be passed
 if(process.env.MONGODB_URL){
@@ -20,11 +20,14 @@ MongoClient.connect(MONGODB_URL, {useNewUrlParser: true}).then((c) => {
     db = client.db(DB_NAME);
 });
 
+// record operation response time
 app.get('/result/:second/:nanosecond', (req, res) => {
+    timestamp = Date.now();
     let collection = db.collection(COLLECTION);
     let result = {
         second: req.params.second,
-        nanosecond: req.params.nanosecond
+        nanosecond: req.params.nanosecond,
+        timestamp
     }
 
     collection.insert(result).catch((err) => {
@@ -32,6 +35,14 @@ app.get('/result/:second/:nanosecond', (req, res) => {
     });
 
     res.send('success')
+})
+
+// record successful executions
+app.get("/successful", (req, res) => {
+    let collection = db.collection("success");
+    collection.insert({sucessful: 1}).catch((err) => console.error(err));
+
+    res.send('success');
 })
 
 app.listen(3000, () => console.log('master listening on port 3000!'))

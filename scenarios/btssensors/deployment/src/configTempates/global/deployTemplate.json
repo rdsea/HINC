@@ -23,8 +23,8 @@
               "volumeMounts":[],
               "resources": {
                 "limits": {
-                  "cpu": "2",
-                  "memory": "2048Mi"
+                  "cpu": "4",
+                  "memory": "4096"
                 }
               },
               "ports": [
