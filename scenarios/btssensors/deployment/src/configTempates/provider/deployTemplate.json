@@ -23,7 +23,7 @@
               "volumeMounts":[],
               "resources": {
                 "limits": {
-                  "cpu": "0.5",
+                  "cpu": "1",
                   "memory": "500Mi"
                 }
               },
@@ -31,7 +31,10 @@
                 {
                   "containerPort": 8080 
                 }
-              ] 
+              ],
+              "env":[
+                  
+              ]
             }
           ]
         }

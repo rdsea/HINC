@@ -45,7 +45,8 @@ global.service = globalService;
 let locals = [];
 // create the configs for each local
 for(let i=1;i<=config.local_count;i++){
-    let localConfig = require("../configTempates/local.json");
+    let localTemplate = require("../configTempates/local/deployTemplate.json")
+    let localConfig = JSON.parse(JSON.stringify(localTemplate));
     let localId = `local${i}`;
 
     localConfig["spring.data.mongodb.uri"] = config.mongodb_uri;
@@ -90,15 +91,16 @@ for(let i=0;i<locals.length;i++){
     adaptorConfigBase.URI = config.broker_uri;
     adaptorConfigBase.EXCHANGE =  locals[i].config["adaptor.amqp.input"];
 
-    let sensorAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
-    let mqttAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
-    let bigqueryAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
-    let ingestionAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
-    let amqpAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
-    let firewallAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
-    let noderedAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
-
     for(let j=0;j<config.provider_sets;j++){
+        let sensorAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+        let mqttAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+        let bigqueryAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+        let ingestionAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+        let amqpAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+        let firewallAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+        let noderedAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+        let cloudmqttAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
+
         sensorAdaptorConfig.ADAPTOR_NAME = `sensor${locals[i].localId}set${j}`;
         mqttAdaptorConfig.ADAPTOR_NAME = `mqtt${locals[i].localId}set${j}`;
         bigqueryAdaptorConfig.ADAPTOR_NAME = `bigquery${locals[i].localId}set${j}`;
@@ -106,6 +108,7 @@ for(let i=0;i<locals.length;i++){
         amqpAdaptorConfig.ADAPTOR_NAME = `amqp${locals[i].localId}set${j}`;
         firewallAdaptorConfig.ADAPTOR_NAME = `firewall${locals[i].localId}set${j}`
         noderedAdaptorConfig.ADAPTOR_NAME = `nodered${locals[i].localId}set${j}`
+        cloudmqttAdaptorConfig.ADAPTOR_NAME = `cloudmqtt${locals[i].localId}set${j}`
 
         sensorAdaptorConfig.ENDPOINT = `http://sensorprovider${locals[i].localId}set${j}`;
         mqttAdaptorConfig.ENDPOINT = `http://mqttprovider${locals[i].localId}set${j}`
@@ -114,6 +117,7 @@ for(let i=0;i<locals.length;i++){
         amqpAdaptorConfig.ENDPOINT = `https://customer.cloudamqp.com/api/instances`;
         firewallAdaptorConfig.ENDPOINT = `http://firewallprovider${locals[i].localId}set${j}`
         noderedAdaptorConfig.ENDPOINT = `http://noderedprovider${locals[i].localId}set${j}`
+        cloudmqttAdaptorConfig.ENDPOINT = `https://customer.cloudmqtt.com/api/instances`
 
         let createAdaptorDeploy = function(adaptorName, mountPath, image){
             let template = require("../configTempates/adaptor/deployTemplate.json");
@@ -175,6 +179,11 @@ for(let i=0;i<locals.length;i++){
             deploy: createAdaptorDeploy(noderedAdaptorConfig.ADAPTOR_NAME, "/adaptor", "rdsea/nodred-adaptor"),
         }
 
+        let cloudmqttAdaptor = {
+            config: cloudmqttAdaptorConfig,
+            deploy: createAdaptorDeploy(cloudmqttAdaptorConfig.ADAPTOR_NAME, "/adaptor", "rdsea/cloudmqtt-adaptor"),
+        }
+
         locals[i].adaptors.push(
             sensorAdaptor,
             mqttAdaptor,
@@ -182,7 +191,8 @@ for(let i=0;i<locals.length;i++){
             ingestionAdaptor,
             amqpAdaptor,
             firewallAdaptor,
-            noderedAdaptor
+            noderedAdaptor,
+            cloudmqttAdaptor
         );
 
         // create deployment and service templates for providers
@@ -195,6 +205,7 @@ for(let i=0;i<locals.length;i++){
             deploy.spec.template.spec.containers[0].name = providerName;
             deploy.spec.template.spec.containers[0].ports[0].containerPort = port;
             deploy.spec.template.spec.containers[0].image = image;
+            deploy.spec.template.spec.containers[0].env.push({name: "MONGODB_URL", value: config.mongodb_uri+"sinc"})
             return deploy;
         }
 
@@ -244,27 +255,6 @@ for(let i=0;i<locals.length;i++){
     }
 }
 
-
-// setup the amqp input exchanges for local and global 
-// we only need one global
-exchanges = {
-    hinc_global_input: {
-        type: "fanout",
-        queues: ["hinc_global_input"]
-    }
-}
-
-for(let i=0;i<locals.length;i++){
-    exchanges[locals[i].config["adaptor.amqp.input"]] = {
-        type: 'fanout',
-        queues:[
-            locals[i].config["adaptor.amqp.input"]
-        ],
-    }
-}
-// setup broker
-setupBroker(exchanges, config.broker_uri);
-
 // create configmaps
 
 // create global configmap
@@ -299,6 +289,21 @@ for(let i=0;i<locals.length;i++){
 
 // create deployments and services
 
+// deploy providers 
+locals.forEach((local) => {
+    // create provider deployment
+    local.providers.forEach((provider) => {
+        fs.writeFileSync(`/tmp/deploy-${provider.providerName}.yml`, JSON.stringify(provider.deploy, null, 2));
+    out = execSync(`kubectl create -f /tmp/deploy-${provider.providerName}.yml`);
+    console.log(out.toString());
+
+    // create provider service
+    fs.writeFileSync(`/tmp/service-${provider.providerName}.yml`, JSON.stringify(provider.service, null, 2));
+    out = execSync(`kubectl create -f /tmp/service-${provider.providerName}.yml`);
+    console.log(out.toString());
+    })
+})
+
 // create global deployment
 fs.writeFileSync("/tmp/deploy-global.yml", JSON.stringify(global.deploy, null, 2));
 out = execSync(`kubectl create -f /tmp/deploy-global.yml`);
@@ -314,21 +319,6 @@ locals.forEach((local) => {
     fs.writeFileSync(`/tmp/local-${local.localId}.yml`, JSON.stringify(local.deploy, null, 2));
     out = execSync(`kubectl create -f /tmp/local-${local.localId}.yml`);
     console.log(out.toString());
-})
-
-// deploy providers 
-locals.forEach((local) => {
-    // create provider deployment
-    local.providers.forEach((provider) => {
-        fs.writeFileSync(`/tmp/deploy-${provider.providerName}.yml`, JSON.stringify(provider.deploy, null, 2));
-    out = execSync(`kubectl create -f /tmp/deploy-${provider.providerName}.yml`);
-    console.log(out.toString());
-
-    // create provider service
-    fs.writeFileSync(`/tmp/service-${provider.providerName}.yml`, JSON.stringify(provider.service, null, 2));
-    out = execSync(`kubectl create -f /tmp/service-${provider.providerName}.yml`);
-    console.log(out.toString());
-    })
 })
 
 // deploy adaptors

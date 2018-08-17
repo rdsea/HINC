@@ -2,14 +2,14 @@
     "apiVersion": "extensions/v1beta1",
     "kind": "Deployment",
     "metadata": {
-      "name": "userclient"
+      "name": "testmaster"
     },
     "spec": {
       "replicas": 1,
       "template": {
         "metadata": {
           "labels": {
-            "app": "userclient",
+            "app": "testmaster",
             "role": "iotcloudexamples",
             "tier": "iotcloudexamples"
           }
@@ -18,18 +18,23 @@
           "volumes":[],
           "containers": [
             {
-              "name": "userclient",
-              "image": "rdsea/user-client",
+              "name": "testmaster",
+              "image": "rdsea/test-master",
               "volumeMounts":[],
               "resources": {
                 "requests": {
-                  "cpu": "100m",
-                  "memory": "100Mi"
+                  "cpu": "1",
+                  "memory": "500Mi"
                 }
               },
+              "ports": [
+                {
+                  "containerPort": 3000 
+                }
+              ],
               "env":[
                   
-              ]
+              ] 
             }
           ]
         }

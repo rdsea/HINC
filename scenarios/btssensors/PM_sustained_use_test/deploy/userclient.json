@@ -2,14 +2,14 @@
     "apiVersion": "extensions/v1beta1",
     "kind": "Deployment",
     "metadata": {
-      "name": "adaptor"
+      "name": "userclient"
     },
     "spec": {
       "replicas": 1,
       "template": {
         "metadata": {
           "labels": {
-            "app": "adaptor",
+            "app": "userclient",
             "role": "iotcloudexamples",
             "tier": "iotcloudexamples"
           }
@@ -18,15 +18,18 @@
           "volumes":[],
           "containers": [
             {
-              "name": "adaptor",
-              "image": "rdsea/adaptor",
+              "name": "userclient",
+              "image": "rdsea/user-client",
               "volumeMounts":[],
               "resources": {
-                "limits": {
-                  "cpu": "1",
-                  "memory": "500Mi"
+                "requests": {
+                  "cpu": "0.2",
+                  "memory": "256Mi"
                 }
-              }
+              },
+              "env":[
+                  
+              ]
             }
           ]
         }
