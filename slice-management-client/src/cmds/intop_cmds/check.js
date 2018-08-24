@@ -4,7 +4,7 @@ const config = require("../../config")
 const path = require('path');
 
 exports.command = 'check <file>'
-exports.desc = 'perform an interoperability check on the a slice specified in <file>'
+exports.desc = 'perform an interoperability check on a slice specified in <file>'
 exports.builder = {}
 
 exports.handler = function (argv) {
