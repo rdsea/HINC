@@ -3,20 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!--<groupId>at.ac.tuwien.dsg.hinc</groupId>-->
-    <!--<version>0.1.1</version>-->
     <artifactId>software-artefact-service</artifactId>
     <packaging>jar</packaging>
 
     <name>software-artefact-service</name>
-    <description></description>
-
-    <!--<parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.2.RELEASE</version>
-        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;
-    </parent>-->
 
     <parent>
         <groupId>at.ac.tuwien.dsg.hinc</groupId>
