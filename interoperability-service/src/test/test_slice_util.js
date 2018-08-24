@@ -22,7 +22,7 @@ describe('test slice_util', function() {
         assert.equal(isConnected, false);
     });
     it('test slice_util#contains should return true', function() {
-        let resource = testslice.resources.ingest.name;
+        let resource = testslice.resources.analytics.name;
         let contains = util.contains(testslice, resource);
         assert.equal(contains, true);
     });
