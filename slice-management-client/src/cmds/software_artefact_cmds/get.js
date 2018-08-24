@@ -6,14 +6,14 @@ const config = require('../../config');
 
 exports.command = 'get <artefactId>'
 exports.desc = 'get details about software artefact with id <artefactId>'
-exports.builder = {
+/*exports.builder = {
     detailed:{
         alias: 'd',
         describe: 'display detailed JSON artefact specification',
         type: 'boolean',
         demandOption: false
     }
-}
+}*/
 
 exports.handler = function (argv) {
     let requestUri = config.software_artefact_service_uri + "/softwareartefacts";
@@ -25,11 +25,11 @@ exports.handler = function (argv) {
                 "(" + config.intop_service_uri + "). Detailed error message:")*/
             return console.err(err);
         }
-        if(argv.detailed){
-            console.log(JSON.stringify(body, null, 2));
-        }else{
+        //if(argv.detailed){
+            console.log(JSON.stringify(JSON.parse(body), null, 2));
+        /*}else{
             _displayOverview(body);
-        }
+        }*/
 
 
     });
