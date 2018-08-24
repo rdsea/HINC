@@ -6,100 +6,55 @@ const path = require('path');
 const axios = require('axios');
 const config = require('../../config');
 const fs = require("fs");
+const request = require('request');
 
-exports.command = 'create <file>'
-exports.desc = 'creates a slice specified in <file>'
+exports.command = 'create <software-artefact-file> <execution-environment> <metadata-file> <name>'
+exports.desc = 'creates a software artefact specified in <software-artefact-file> for the execution environment <execution-environment> ' +
+    ' with metadata specified in <metadata-file> and the name <name>'
 exports.builder = {}
+
+
 exports.handler = function (argv) {
-    let filepath = path.resolve(argv.file);
-    let slice = require(filepath);
-    return _provisionResources(slice).then(() => {
-        slice.createdAt = moment().unix();
-        return db.sliceDao().insert(slice);
-    }).then((slice) => {
-        console.log(`writing slice deployment to ${filepath}`);
-        fs.writeFileSync(`${filepath}`, JSON.stringify(slice, null, 4));
-    })
-}
+    let filePath_softwareArtefact= path.resolve(argv.softwareArtefactFile);
+    //TODO change to read file
+    let softwareArtefact = require(filePath_softwareArtefact);
+
+    let filePath_metadata= path.resolve(argv.metadataFile);
+    let metadataFile = require(filePath_metadata);
 
 
-function _provisionResources(slice){
-    console.log("provisioning service mesh");
-    return _provisionMesh(slice).then(() => {
-        console.log("provisioned service mesh");
-        console.log("provisioning resources");
-        let provisionResourcePromises = [];
-        let provisionResourceItems = [];
+    let requestUri = config.software_artefact_service_uri + "/softwareartefacts";
 
-        Object.keys(slice.resources).forEach((label) => {
-            provisionResourcePromises.push(_provisionResource(slice.sliceId, slice.resources[label], label));
-        })
-        return Promise.all(provisionResourcePromises);
-    }).then((provisionedResourceResults) => {
-        // update slice resources with metadata afer provisioning
-        provisionedResourceResults.forEach((provisionedResourceResult) => {
-            Object.assign(slice.resources[provisionedResourceResult.label], provisionedResourceResult.provisionedResource);
-        })
+    let jsonObj =
+        {
+            artefactReference: JSON.stringify(softwareArtefact),
+            executionEnvironment: argv.executionEnvironment,
+            metadata: metadataFile,
+            name: argv.name
+        };
 
-        // each resource is connected to the proxy as an egress endpoint
-        let nameObjs = [];
+    let requestBody = { json: true, body: jsonObj };
 
-        for(let label in slice.connectivities){
-            let inResource = slice.resources[slice.connectivities[label].in.label];
-            let outResource = slice.resources[slice.connectivities[label].out.label];
-            nameObjs.push(_connectResources(slice.sliceId, slice.connectivities[label], inResource, outResource));
+    request.put(requestUri, requestBody , (err, res, body) => {
+        if (err) {
+            console.err("Error connecting to the software artefact service. Please check the http uri of the software artefact service" +
+                "(" + config.software_artefact_service_uri + "). Detailed error message:")
+            return console.err(err);
         }
-        console.log("connecting resources")
-        return meshService.setNames(slice.sliceId, nameObjs);
-    }).then(() => {
-        return slice;
-    })
-
-}
-
-function _connectResources(sliceId, connectivity, inResource, outResource){
-    let outAccessPoint = outResource.parameters.ingressAccessPoints[connectivity.out.accessPoint];
-    let name = `${connectivity.in.label}${connectivity.in.accessPoint}`
-    return {
-        name: `${connectivity.in.label}${connectivity.in.accessPoint}`,
-        host: outAccessPoint.host,
-        port: outAccessPoint.port,
-    }
-}
-
-function _provisionResource(sliceId, resource, label){
-    return meshService.getProxyInfo(sliceId, label).then((proxy) => {
-        // add the tcp ip endpoint into the resource metadata for the plugin
-        for(let i=0;i<resource.parameters.egressAccessPoints.length;i++){
-            resource.parameters.egressAccessPoints[i].host = proxy.ip;
-            resource.parameters.egressAccessPoints[i].port = proxy.ports[i];
-        }
-        console.debug(`provisioning ${label}`);
-        return axios.post(`${config.uri}/controls/provision`, resource);
-    }).then((res) => {
-        let provisionedResource = res.data
-        console.log("resource provisioned: ");
-        console.log(JSON.stringify(provisionedResource, null, 2));
-        return {
-            label,
-            provisionedResource,
-        };  
-    }).catch((err) => {
-        console.err(err.response);
-    })
-}
-
-
-function _provisionMesh(slice){
-    return meshService.createNameServer(slice.sliceId).then(() => {
-        let proxyCreatePromises = [];
-        for(let label in slice.resources){
-            let proxyCreatePromise = meshService.createProxy(slice.sliceId, label, slice.resources[label].parameters.egressAccessPoints.length);
-            proxyCreatePromises.push(proxyCreatePromise);
-        }
-        
-        return Promise.all(proxyCreatePromises);
+        console.log(body);
     });
-}
 
+
+    //first version sketch:
+    //input:
+    // * software-artefact-file
+    // * execution-environment (simple string for now)
+    // * metadata-file (later maybe change to prompt)
+    // * name
+
+
+    //optimal solution:
+    // * set input in command with -optionflag
+    // * prompt for unprovided inputs
+}
 
