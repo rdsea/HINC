@@ -45,7 +45,7 @@ public class SoftwareArtefactController {
         return new ResponseEntity<>(softwareArtefactList, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/")
+    @GetMapping("/{id}")
     public ResponseEntity getSoftwareArtefact(@PathVariable String id){
         SoftwareArtefact softwareArtefact = softwareArtefactService.getSoftwareArtefact(id);
 
@@ -57,7 +57,7 @@ public class SoftwareArtefactController {
 
     }
 
-    @DeleteMapping("/{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity deleteSoftwareArtefact(@PathVariable String id){
         SoftwareArtefact softwareArtefact = softwareArtefactService.deleteSoftwareArtefact(id);
 
