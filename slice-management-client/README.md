@@ -1,4 +1,4 @@
-# PIZZA - Slice and Resource mangement client
+# PIZZA - Slice and Resource Management Client
 
 This tool is used as a CLI client to interface with an Local Management service as an information source. The different commands included in the client will allow you to query and manage resources and
 slices.
