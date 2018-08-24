@@ -1,0 +1,8 @@
+# amount of local clusters
+local_count: 1
+# a set of 7 resource providers attached to each local 
+provider_sets: 1
+# rabbitmq connection string for services
+broker_uri: guest@guest:broker.com/
+# mongodb instance used by the local and global
+mongodb_uri: mongodb://localhost:27017
