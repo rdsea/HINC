@@ -3,7 +3,9 @@
 The work is initially supported by the U-TEST until 2016. Since 2017 the work is supported 
 by H2020 INTER-IoT  through the INTER-HINC project.
 
-If you use the software, pls. cite the following papers:
+If you use the software, pls. cite the following relevant papers:
+
+- Hong-Linh Truong, Lingfan Gao, Michael Hammerer, Service Architectures and Dynamic Solutions for Interoperability of IoT, Network Functions and Cloud Resources [Preprint](https://www.researchgate.net/publication/326317224_Service_Architectures_and_Dynamic_Solutions_for_Interoperability_of_IoT_Network_Functions_and_Cloud_Resources), 12th European Conference on Software Architecture, September 24-28, 2018, Madrid, Spain
 
 - Hong-Linh Truong, Towards a Resource Slice Interoperability Hub for IoT, [Preprint PDF](http://www.infosys.tuwien.ac.at/staff/truong/publications/2018/rsihub_draft_jan18.pdf), 3rd edition of Globe-IoT 2018: Towards Global Interoperability among IoT Systems, IEEE, 2018. Orlando, Florida, USA, April 17-20, 2018. 
 
