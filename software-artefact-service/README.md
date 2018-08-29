@@ -88,4 +88,5 @@ curl -X PUT --header 'Content-Type: application/json' --header 'Accept: applicat
 
 
 **search softwareartefacts that have an mqtt input set in the metadata** 
+
 ```curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"metadata.inputs.protocol.protocol_name": "mqtt"}' 'http://localhost:8082/softwareartefacts/search'```
