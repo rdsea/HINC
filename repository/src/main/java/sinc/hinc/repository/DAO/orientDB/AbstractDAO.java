@@ -150,7 +150,7 @@ public class AbstractDAO<T> {
             Document document = Document.parse(mapper.writeValueAsString(example));
             Query query = new BasicQuery(document);
 
-            result = deserializeDocuments(mongoTemplate.find(query, Document.class, clazz.getSimpleName()));
+            result = deserializeDocuments(mongoTemplate.find(query, Document.class, collection));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -167,7 +167,7 @@ public class AbstractDAO<T> {
             document.remove("uuid");
         }
         BasicQuery query = new BasicQuery(document.toJson());
-        List<Document> docs = mongoTemplate.find(query, Document.class);
+        List<Document> docs = mongoTemplate.find(query, Document.class, collection);
 
         return deserializeDocuments(docs);
     }
