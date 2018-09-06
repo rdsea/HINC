@@ -1,6 +1,7 @@
 import requests
 import sys
 import os
+import json
 import pycurl
 from urllib.parse import urlparse
 '''
@@ -22,25 +23,41 @@ parser.add_argument('--provider_url', default='http://localhost:3000/camera', he
 parser.add_argument('--lon', default='108.1494449', help='longitude')
 parser.add_argument('--lat', default='16.0723458', help='latitude')
 parser.add_argument('--distance', default='10000', help='default in meters')
-parser.add_argument('--bridge_url',default='http://localhost:8085/datastorageArtefact/dataurl',help='URL of an interoperability bridge')
+parser.add_argument('--bridge_url',default='http://daredevil.infosys.tuwien.ac.at:8085/datastorageArtefact/dataurl',help='URL of an interoperability bridge')
+parser.add_argument('--user_email',help='Given an user emails indicate that the customer wants to use service pull_push')
 args = parser.parse_args()
 
-def service_pull_push (video, email, cameraprovider_url):
+def get_filename(source_url):
+    #create local file name
+    url_detail = urlparse(source_url)
+    filename=os.path.basename(url_detail.path)
+    return filename
+
+def service_pull_push (video, camera_id, user_email, cameraprovider_url):
     print("The IoT Camera Provider will do the data transfer")
+    payload = {"videoName":source_url,"email":user_email}
+    headers = {
+        'Cache-Control': "no-cache",
+        'Content-Type': "application/json"
+    }
+    service_url =cameraprovider_url+"/"+camera_id
+    response = requests.request("POST", service_url, data=json.dumps(payload), headers=headers)
+    print(response.text)
+
 
 def external_pull_push(source_url,timestamp,bridge_url):
     print("We will call an external program to store ",)
     payload = {"dataurl":source_url}
     headers = {
         'Cache-Control': "no-cache",
+        'Content-Type': "application/json"
     }
-    response = requests.request("POST", bridge_url, data=payload, headers=headers)
+    response = requests.request("POST", bridge_url, data=json.dumps(payload), headers=headers)
     print(response.text)
 
 def external_pull_local(source_url, timestamp):
     #create local file name
-    url_detail = urlparse(source_url)
-    filename=os.path.basename(url_detail.path)
+    filename=get_filename(source_url)
     #we assume we store in the current directory
     local_filename=timestamp+"_"+filename
     fp = open(local_filename, "wb")
@@ -69,8 +86,10 @@ def camera_data_handle(camera):
     Get url and timestamp
     '''
     print(response.text)
+    #should check response
     url =response.json()['name']
     timestamp=response.json()['timestamp']
+
     '''
     Here we assume that the consumer knows its destination and also know the
     service capabilities so we just do a simple check
@@ -87,12 +106,24 @@ def camera_data_handle(camera):
     '''
     ## Random choice is just for demonstration
     ## CASE 1:
-    external_pull_local(url,timestamp)
+    try:
+        external_pull_local(url,timestamp)
+    except:
+        print("Exception in pull_local")
+
     ### CASE 2: here one also uses our rsi to find suitable bridge
     ### If the bridge is not available, one can deploy on-demand, we dont show here
-    external_pull_push(url,timestamp,args.bridge_url)
+    try:
+        external_pull_push(url,timestamp,args.bridge_url)
+    except:
+        print("Exception in pull_push with an external bridge")
     ### CASE 3: Other choice
-    service_pull_push()
+    try:
+        if (args.user_email != None):
+            service_pull_push(get_filename(url),camera['id'],args.user_email, args.provider_url)
+    except:
+        print("exception with service_push")
+
 
 # Search for cameras close to a location
 ##TODO check values
