@@ -23,13 +23,14 @@
     <name>HINC-pom</name>
     <url>http://maven.apache.org</url>
 
-    
-    <modules>
-        <module>common</module>
-        <module>repository</module>
+	<modules>
 		<module>global-management-service</module>
 		<module>local-management-service</module>
-    </modules>
+		<module>common</module>
+		<!-- <module>collector</module>-->
+		<module>repository</module>
+		<module>software-artefact-service</module>
+	</modules>
 
     <dependencies>
     <!-- spring boot -->

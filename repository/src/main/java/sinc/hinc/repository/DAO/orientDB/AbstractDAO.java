@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -95,6 +96,20 @@ public class AbstractDAO<T> {
         return object;
     }
 
+    public T delete(String uuid) {
+        Document d = mongoTemplate.findById(uuid, Document.class, clazz.getSimpleName());
+        if(d==null){
+            return null;
+        }
+        DeleteResult deleteResult = mongoTemplate.remove(d, clazz.getSimpleName());
+
+        if(deleteResult.getDeletedCount()==0){
+            return null;
+        }
+
+        return deserializeDocument(d);
+    }
+
     public void deleteAll(){
         mongoTemplate.dropCollection(clazz.getSimpleName());
     }
@@ -129,6 +144,20 @@ public class AbstractDAO<T> {
         return results;
     }
 
+    public List<T> queryByExample(T example){
+        List<T> result = new ArrayList<>();
+        try {
+            Document document = Document.parse(mapper.writeValueAsString(example));
+            Query query = new BasicQuery(document);
+
+            result = deserializeDocuments(mongoTemplate.find(query, Document.class, collection));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     public List<T> query(String jsonQuery){
         Document document = Document.parse(jsonQuery);
 
@@ -138,15 +167,9 @@ public class AbstractDAO<T> {
             document.remove("uuid");
         }
         BasicQuery query = new BasicQuery(document.toJson());
-        List<Document> docs = mongoTemplate.find(query, Document.class);
+        List<Document> docs = mongoTemplate.find(query, Document.class, collection);
 
         return deserializeDocuments(docs);
-    }
-
-    public void delete(String uuid){
-        Query query = new Query(Criteria.where("_id").is(uuid));
-        mongoTemplate.remove(query, collection);
-        logger.info("deleted record"+uuid);
     }
 
 
@@ -163,6 +186,9 @@ public class AbstractDAO<T> {
     }
 
     protected T deserializeDocument(Document d){
+        if(d==null){
+            return null;
+        }
         try {
             T object = mapper.readValue(d.toJson(),clazz);
             setIdField(object,d);
