@@ -2,8 +2,8 @@ package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository;
 
 import org.springframework.stereotype.Repository;
 import sinc.hinc.common.model.ResourceProvider;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
-import sinc.hinc.repository.DAO.orientDB.ProviderDAO;
+import sinc.hinc.repository.DAO.AbstractDAO;
+import sinc.hinc.repository.DAO.ProviderDAO;
 
 
 @Repository

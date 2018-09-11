@@ -1,8 +1,7 @@
-package sinc.hinc.repository.DAO.orientDB;
+package sinc.hinc.repository.DAO;
 
 import org.bson.Document;
 import org.springframework.data.mongodb.core.query.BasicQuery;
-import sinc.hinc.common.model.Resource;
 import sinc.hinc.common.model.ResourceProvider;
 
 import java.util.List;

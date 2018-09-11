@@ -2,7 +2,7 @@ package at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.repository;
 
 import at.ac.tuwien.dsg.hinc.globalmanagementservicespringboot.model.LocalMS;
 import org.springframework.stereotype.Repository;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+import sinc.hinc.repository.DAO.AbstractDAO;
 
 @Repository
 public class LocalMSRepository extends AbstractDAO<LocalMS> {

@@ -8,7 +8,7 @@ import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.ResourceProvider;
 import sinc.hinc.common.model.capabilities.ControlPoint;
 import sinc.hinc.local.repository.ProviderRepository;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+import sinc.hinc.repository.DAO.AbstractDAO;
 
 import java.io.IOException;
 @Component

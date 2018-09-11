@@ -7,7 +7,7 @@ import sinc.hinc.common.communication.HINCMessageType;
 import sinc.hinc.common.communication.HincMessage;
 import sinc.hinc.common.model.Resource;
 import sinc.hinc.local.repository.ResourceRepository;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+import sinc.hinc.repository.DAO.AbstractDAO;
 
 import java.io.IOException;
 import java.util.Arrays;
