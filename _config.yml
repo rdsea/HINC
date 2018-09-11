@@ -18,13 +18,7 @@ navigation: 2
 codeurl: 'https://github.com/SINCConcept/HINC'
 
 # Default categories (in order) to appear in the navigation
-sections: [
-    ['doc', 'Documentation'],
-    ['tut', 'Tutorial'],
-    ['ref', 'Reference'],
-    ['dev', 'Developers'],
-    ['post', 'Posts']
-]
+sections: []
 
 # Keep as an empty string if served up at the root. If served up at a specific
 # path (e.g. on GitHub pages) leave off the trailing slash, e.g. /my-project
