@@ -40,7 +40,7 @@ for(let i=1;i<=LOCAL_COUNT;i++){
     for(let j=0;j<PROVIDER_GROUP_COUNT;j++){
         providerGroups.push({
             sensor: `sensor`,
-            mqtt: `cloudmqtt`,
+            mqtt: `mqtt`,
             bigquery : `bigquery`,
             ingestion:  `ingest`
         });

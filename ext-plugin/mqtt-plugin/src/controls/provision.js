@@ -9,6 +9,7 @@ function provision(resource){
         resource.uuid = broker.brokerId;
         console.log('successful control execution');
         // location of broker might not set, await it
+        console.log("waiting for IP assignment")
         return _waitForLocation(broker.brokerId, `${config.ENDPOINT}/mosquittobroker`);
     }).then((brokerIp) => {
         let ingressAccessPoint = {
@@ -30,7 +31,7 @@ function provision(resource){
         return controlResult
     }).catch((err) => {
         console.log('control execution failed');
-        console.error(err.response)
+        console.error(err)
         controlResult = {
             status: 'FAILED',
             rawOutput: err.response,
@@ -43,15 +44,13 @@ function provision(resource){
 function _waitForLocation(brokerId, uri){
     return axios.get(`${uri}/${brokerId}`).then((res) => {
         let broker = res.data[0];
-
-        console.log(broker.location)
         let locationExists = broker.location.indexOf("<pending>") === -1 &&
                                 broker.location.indexOf("creating") === -1 ? true : false
         if(locationExists){
             console.log(JSON.stringify(broker, null, '\t'));
             return broker.location;
         }else{
-            console.log('broker location not set, check again in 3 secs..')
+            //console.log('broker location not set, check again in 3 secs..')
             return new Promise((resolve, reject) => {
                 setTimeout(() => resolve(_waitForLocation(broker.brokerId, uri)), 3000);
             });

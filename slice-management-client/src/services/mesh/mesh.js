@@ -13,7 +13,6 @@ module.exports = {
     setName: nameserverService.setName,
     deleteNameserver: nameserverService.deleteNameserver,
     createProxy: proxyService.createProxy,
-    flush: nameserverService.flush,
     getProxyInfo: proxyService.getProxyInfo,
     setNames: nameserverService.setNames,
     deleteMesh: deleteMesh

@@ -100,6 +100,7 @@ public class RabbitMQConfig {
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setReplyTimeout(600000);
+        template.setUseTemporaryReplyQueues(true);
         return template;
     }
 }

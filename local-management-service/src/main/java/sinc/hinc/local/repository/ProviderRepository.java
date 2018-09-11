@@ -1,7 +1,7 @@
 package sinc.hinc.local.repository;
 
 import org.springframework.stereotype.Repository;
-import sinc.hinc.repository.DAO.orientDB.ProviderDAO;
+import sinc.hinc.repository.DAO.ProviderDAO;
 
 
 @Repository
