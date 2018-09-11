@@ -4,7 +4,7 @@ const fs = require("fs");
 const execSync = require("child_process").execSync
 
 // ADJUST PARAMETERS HERE
-const USER_NB = 5
+const USER_NB = 30
 const LOCAL_COUNT = 1
 const PROVIDER_GROUP_COUNT = 1
 const GLOBAL_IP = "global"
