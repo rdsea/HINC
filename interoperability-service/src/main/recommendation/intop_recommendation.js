@@ -8,6 +8,7 @@ const moment = require("moment");
 const config = require('../../config');
 
 const SEARCH_SOFTWARE_ARTEFACT = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_ARTEFACTS;
+const SEARCH_INTEROPERABILITY_BRIDGE = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_BRIDGE;
 const SEARCH_RESOURCES = config.GLOBAL_MANAGEMENT_URI + config.SEARCH_RESOURCES;
 
 
@@ -35,6 +36,8 @@ exports.getContractRecommendationsWithoutCheck = function(slice, contract, check
                 return solveContractErrors(slice, newResults, logs, contract);
             }).then(function (slice) {
             let result = {slice: slice, logs: logs};
+
+            //TODO substitute bridges / save new bridges
 
             saveRecommendationToMongo(old_slice, result, contract).then(() => {
                 resolve(result);
@@ -288,6 +291,8 @@ exports.queryServices = function(query){
             let resources = JSON.parse(result);
             allResources = allResources.concat(resources);
         }));
+
+        //TODO search bridges
 
         return Promise.all(promises).then(()=>{
             resolve(allResources);
