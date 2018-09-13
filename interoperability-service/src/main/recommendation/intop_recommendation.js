@@ -34,14 +34,15 @@ exports.getContractRecommendationsWithoutCheck = function(slice, contract, check
             .then(function (slice) {
                 let newResults = intop_check.checkWithContract(slice, contract);
                 return solveContractErrors(slice, newResults, logs, contract);
-            }).then(function (slice) {
-            let result = {slice: slice, logs: logs};
-
-            //TODO substitute bridges / save new bridges
-
-            saveRecommendationToMongo(old_slice, result, contract).then(() => {
-                resolve(result);
-            });
+            })
+            .then(function (slice) {
+                return handleInteroperabilityBridges(old_slice, slice);
+            })
+            .then(function (slice) {
+                let result = {slice: slice, logs: logs};
+                saveRecommendationToMongo(old_slice, result, contract).then(() => {
+                    resolve(result);
+                });
         }).catch((error) => {
             console.log(error);
             resolve(error);
@@ -79,8 +80,6 @@ function recursiveSolve(slice, checkresults, logs){
             .then(function (solution_resources) {
                 if (solution_resources.length > 0) {
                     return solveByAddition(checkresults.errors[0], slice, solution_resources[0], checkresults, logs);
-                    //TODO for each problem, check which kind of problem it is (addition, reduction, substitution)
-                    //TODO solve problem by kind
                 } else {
                     logs.push(log_util.createNoSolutionFoundLog(checkresults.errors[0]));
                     resolve(slice);
@@ -90,9 +89,7 @@ function recursiveSolve(slice, checkresults, logs){
                 checkresults = intop_check.checkSlice(slice);
                 return recursiveSolve(slice, checkresults, logs).then(resolve)
             }, reject)
-
     })
-
 }
 
 function solveByAddition(error, slice, solution_resource, checkresults, logs){
@@ -283,16 +280,23 @@ exports.queryServices = function(query){
         promises.push(request.post({url: SEARCH_RESOURCES, body: jsonQuery}).then((result)=>{
             console.log(result);
             let resources = JSON.parse(result);
+            resources.forEach(e=>{e._type = "resource"});
             allResources = allResources.concat(resources);
         }));
 
         promises.push(request.post({url: SEARCH_SOFTWARE_ARTEFACT, body: jsonQuery}).then((result)=>{
             console.log(result);
-            let resources = JSON.parse(result);
-            allResources = allResources.concat(resources);
+            let software_artefacts = JSON.parse(result);
+            software_artefacts.forEach(e=>{e._type = "software_artefact"});
+            allResources = allResources.concat(software_artefacts);
         }));
 
-        //TODO search bridges
+        promises.push(request.post({url: SEARCH_INTEROPERABILITY_BRIDGE, body: jsonQuery}).then((result)=>{
+            console.log(result);
+            let bridges = JSON.parse(result);
+            bridges.forEach(e=>{e._type = "bridge"});
+            allResources = allResources.concat(bridges);
+        }));
 
         return Promise.all(promises).then(()=>{
             resolve(allResources);
@@ -363,18 +367,25 @@ function saveRecommendationToMongo(old_slice, result, contract){
         timestamp: moment().format()
     };
     return new Promise((resolve,reject) => {
-        MongoClient.connect(config.MONGODB_URL, function (err, db) {
+        MongoClient.connect(config.MONGODB_URL, {useNewUrlParser: true}, function (err, db) {
             if (err) {
                 db.close();
                 resolve(result);
                 return;
             }
             let dbo = db.db("recommendation_history");
-            dbo.collection("recommendations").update({_id:db_item._id}, db_item, {upsert:true},  function (err, res) {
+            dbo.collection("recommendations").updateMany({_id:db_item._id}, db_item, {upsert:true},  function (err, res) {
                 //if (err) throw err;
                 db.close();
                 resolve(result);
             });
         });
+    });
+}
+
+function handleInteroperabilityBridges(old_slice, slice){
+    return new Promise((resolve, reject) => {
+        //TODO substitute bridges / save new bridges
+        resolve(slice);
     });
 }

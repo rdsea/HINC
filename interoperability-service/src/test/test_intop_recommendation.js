@@ -24,20 +24,22 @@ describe('intop_recommendation', function(){
         config.MONGODB_URL = test_mongodb_url;
         recommendation.queryServices = function(query){
             return new Promise((resolve, reject) => {
-            MongoClient.connect(test_mongodb_url, function(err, db) {
+            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true} , function(err, db) {
                 if (err) return reject(err);
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").find(query).toArray(function(err, result) {
                     if (err) throw err;
                     db.close();
+                    result.forEach(e=>{e._type = "resource"});
                     resolve(result);
                 });
             });
             })
         };
 
-        return new Promise(function(resolve, reject){
-            MongoClient.connect(test_mongodb_url, function(err, db) {
+        let promises = [];
+        promises.push(new Promise(function(resolve, reject){
+            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true}, function(err, db) {
                 if (err) return reject(err);
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").insertMany(solutionResourcesDB, function(err, res) {
@@ -47,12 +49,24 @@ describe('intop_recommendation', function(){
                     resolve();
                 });
             });
-        });
+        }));
+        promises.push(new Promise(function(resolve, reject){
+            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true}, function(err, db) {
+                if (err) return reject(err);
+                let dbo = db.db("recommendation_test");
+                dbo.createCollection("recommendations", function(err, res) {
+                    if (err) throw err;
+                    db.close();
+                    resolve();
+                });
+            });
+        }));
+        return Promise.all(promises);
     });
     after(function() {
         let promises = [];
         promises.push(new Promise(function(resolve, reject){
-            MongoClient.connect(test_mongodb_url, function(err, db) {
+            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true}, function(err, db) {
                 if (err) {db.close(); return reject(err);}
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").drop(function(err, delOK) {
@@ -64,9 +78,9 @@ describe('intop_recommendation', function(){
             });
         }));
         promises.push(new Promise(function(resolve, reject){
-            MongoClient.connect(test_mongodb_url, function(err, db) {
+            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true}, function(err, db) {
                 if (err) {db.close(); return reject(err);}
-                let dbo = db.db("recommendation_history");
+                let dbo = db.db("recommendation_test");
                 dbo.collection("recommendations").drop(function(err, delOK) {
                     db.close();
                     if (err) return reject(err);
