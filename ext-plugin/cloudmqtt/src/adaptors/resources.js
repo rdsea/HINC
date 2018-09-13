@@ -5,6 +5,7 @@ const parse = require("url-parse");
 function getItems(){
     console.log("fetching amqp brokers");
 
+    console.log(config.ENDPOINT)
     return axios.get(`${config.ENDPOINT}`, {auth: { username: process.env.MQTT_KEY}}).then((res) => {
         let items = res.data;
         let getBrokerPromises = [];
@@ -15,8 +16,9 @@ function getItems(){
     }).then((brokers) => {
         let resources = [];
 
-        let brokerUrl = parse(broker.url);
+        
         brokers.forEach((broker) => {
+            let brokerUrl = parse(broker.url);
             let ingressAccessPoint = {
                 applicationProtocol: "MQTT",
                 host: brokerUrl.hostname,
@@ -55,5 +57,6 @@ function getItems(){
     })
 }
 
+getItems().then((res) => console.log(res));
 module.exports.getItems = getItems;
 

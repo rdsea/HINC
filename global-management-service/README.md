@@ -14,7 +14,8 @@ appropriate local(s)
 
 
 ## Running Local
-java -jar global-management-service-spring-boot-0.1.0-SNAPSHOT.jar
+
+java -jar global-management-service-0.1.1.jar
 
 ## Configuration
 You will need to provide an application.properties file in the same directory. A sample can be found in src/main/resources

@@ -10,7 +10,7 @@ import sinc.hinc.common.model.ResourceProvider;
 import sinc.hinc.common.utils.HincConfiguration;
 import sinc.hinc.local.repository.ProviderRepository;
 import sinc.hinc.local.repository.ResourceRepository;
-import sinc.hinc.repository.DAO.orientDB.AbstractDAO;
+import sinc.hinc.repository.DAO.AbstractDAO;
 
 import java.util.List;
 @Component

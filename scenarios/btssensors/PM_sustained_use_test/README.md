@@ -1,5 +1,4 @@
 ## Deployment
-
 Deployment of the entire testbed must take place in the same google cloud platform project! this is to avoid having manual IP configuration for each component as we can take advantage of the GCP's internal DNS.
 
 This tests requires a deployment of rsiHub that consists of the following:

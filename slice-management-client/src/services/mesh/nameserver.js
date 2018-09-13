@@ -36,15 +36,25 @@ function createNameServer(sliceId){
 }
 
 function deleteNameserver(sliceId){
-    db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
-        let out = execSync(`kubectl delete configmap disco-${nameserver.id}`).toString();
-        console.debug(out);
-        out = execSync(`kubectl delete service ${nameserver.id}`).toString();
-        console.debug(out);
-        out = execSync(`kubectl delete configmap ${nameserver.id}`).toString();
-        console.debug(out);
-        out = execSync(`kubectl delete deployment ${nameserver.id}`).toString();
-        console.debug(out);        
+    return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
+        return exec(`kubectl delete configmap disco-${nameserver.id}`).then((res) => {
+            if(res.stderr) throw new Error('error occurred cdeleting disco configmap');
+            console.debug(res.stdout);
+            return exec(`kubectl delete service ${nameserver.id}`)
+        }).then((res) => {
+            if(res.stderr) throw new Error(`error occurred deleting service ${nameserver.id}`);
+            console.debug(res.stdout);
+            return exec(`kubectl delete configmap ${nameserver.id}`)
+        }).then((res) => {
+            if(res.stderr) throw new Error(`error occurred deleting configmap ${nameserver.id}`);
+            console.debug(res.stdout);
+            return exec(`kubectl delete deployment ${nameserver.id}`)
+        }).then((res) => {
+            if(res.stderr) throw new Error(`error occurred deleting  deployment ${nameserver.id}`);
+            console.debug(res.stdout);
+        }).then(() => {
+            return db.meshDao().remove({sliceId, type: 'NAMESERVER'}, {})
+        });;     
     })
 }
 
@@ -99,27 +109,6 @@ function setNames(sliceId, nameObjs){
         console.debug(update)
         return axios.put(`${url}/api/1/dtabs/default`, update, {headers: {"Content-Type": "application/dtab"}})
     })
-}
-
-function flush(sliceId){
-    return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
-        // restart pod
-        let out = execSync(`kubectl get pod --selector=app=${nameserver.id} --template="{{range .items}}{{.metadata.name}}{{end}}"`).toString();
-        console.debug(`stopping pod ${out}`);
-        out = execSync(`kubectl delete pod ${out}`).toString();
-        console.debug(out);
-    })
-}
-
-function deleteNameserver(sliceId){
-    return db.meshDao().findOne({sliceId, type: 'NAMESERVER'}).then((nameserver) => {
-        execSync(`kubectl delete deployment ${nameserver.id}`);
-        execSync(`kubectl delete service ${nameserver.id}`);
-        execSync(`kubectl delete configmap ${nameserver.id}`);
-        execSync(`kubectl delete configmap disco-${nameserver.id}`);
-    }).then(() => {
-        return db.meshDao().remove({sliceId, type: 'NAMESERVER'}, {})
-    });
 }
 
 function _waitForIp(deployId){
@@ -208,8 +197,10 @@ function _createNamerdConfig(config, deployId){
 }
 
 function _createNamerdNames(deployId){
-    let out = execSync(`kubectl create configmap disco-${deployId} --from-literal=dummy=dummy`);
-    console.debug(out.toString());
+    return exec(`kubectl create configmap disco-${deployId} --from-literal=dummy=dummy`).then((res) => {
+        if(res.stderr) throw new Error('error occurred creating ingestion client config');
+        console.debug(res.stdout);
+    });
 }
 
 
@@ -218,6 +209,4 @@ module.exports = {
     setName,
     setNames,
     deleteNameserver,
-    flush,
-    deleteNameserver
 }
