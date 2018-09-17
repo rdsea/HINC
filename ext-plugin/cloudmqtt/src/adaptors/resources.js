@@ -3,20 +3,18 @@ const config = require('../../config');
 const parse = require("url-parse");
 
 function getItems(){
-    console.log("fetching amqp brokers");
-
-    console.log(config.ENDPOINT)
-    return axios.get(`${config.ENDPOINT}`, {auth: { username: process.env.MQTT_KEY}}).then((res) => {
+    console.log("Obtaining resources from the provider ",config.ENDPOINT);
+    return axios.get(`${config.ENDPOINT}`, {auth: { username: process.env.CLOUDMQTT_KEY}}).then((res) => {
         let items = res.data;
         let getBrokerPromises = [];
         items.forEach((item) => {
-            getBrokerPromises.push(axios.get(`${config.ENDPOINT}/${item.id}`, {auth: { username: process.env.MQTT_KEY}}).then(res => res.data));
+            getBrokerPromises.push(axios.get(`${config.ENDPOINT}/${item.id}`, {auth: { username: process.env.CLOUDMQTT_KEY}}).then(res => res.data));
         })
         return Promise.all(getBrokerPromises);
     }).then((brokers) => {
         let resources = [];
 
-        
+
         brokers.forEach((broker) => {
             let brokerUrl = parse(broker.url);
             let ingressAccessPoint = {
@@ -36,7 +34,8 @@ function getItems(){
                 providerUuid: config.ADAPTOR_NAME,
                 resourceType: 'NETWORK_FUNCTION_SERVICE',
                 name: `cloudmqtt broker`,
-                controlPoints: [],
+                controlPoints: [
+                ],
                 dataPoints: [],
                 type: 'BROKER',
                 location: null,
@@ -59,4 +58,3 @@ function getItems(){
 
 getItems().then((res) => console.log(res));
 module.exports.getItems = getItems;
-
