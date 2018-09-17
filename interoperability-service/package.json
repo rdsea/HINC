@@ -7,16 +7,17 @@
     "test": "mocha src/test"
   },
   "dependencies": {
-    "express": "^4.16.3",
-    "swagger-ui-express": "^3.0.9",
-    "yamljs": "^0.3.0",
     "body-parser": "^1.18.3",
-    "mocha": "^5.1.0",
     "deep-copy": "^1.4.2",
+    "express": "^4.16.3",
+    "flat": "^4.1.0",
+    "mocha": "^5.1.0",
+    "moment": "^2.22.2",
     "mongodb": "^3.0.10",
+    "public-ip": "^2.4.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
-    "flat": "^4.1.0",
-    "moment": "^2.22.2"
+    "swagger-ui-express": "^3.0.9",
+    "yamljs": "^0.3.0"
   }
 }

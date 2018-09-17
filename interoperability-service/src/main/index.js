@@ -6,7 +6,7 @@ const swaggerDocument = YAML.load('./src/main/openapi/openapi3.yaml');
 const router = require("./router");
 const bodyParser = require('body-parser');
 const config = require('../config');
-
+const publicIp = require('public-ip');
 const PORT = config.SERVER_PORT;
 
 
@@ -16,4 +16,6 @@ app.use('/interoperability', router);
 app.use(bodyParser.json());
 
 app.listen(PORT);
-console.log(`Running on http://<public-ip>:${PORT}/api-docs`);
+publicIp.v4().then(ip => {
+  console.log(`Running on http://${ip}:${PORT}/api-docs`);
+});
