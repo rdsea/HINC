@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build -t rdsea/local .
-docker push rdsea/local
+docker build -t rdsea/rsilocal .
+docker push rdsea/rsilocal
