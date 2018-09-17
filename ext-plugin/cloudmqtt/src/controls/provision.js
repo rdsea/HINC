@@ -2,6 +2,7 @@ const axios = require('axios');
 const config = require('../../config');
 const qs = require("qs");
 const parse = require("url-parse");
+const assert = require('assert');
 
 function provision(resource){
     let controlResult = null;
@@ -12,9 +13,10 @@ function provision(resource){
         plan: "cat",
         region: "amazon-web-services::eu-west-1",
     }
-
+    assert.notEqual(process.env.CLOUDMQTT_KEY,null);
+    assert.notEqual(process.env.CLOUDMQTT_KEY,'');
     let options = {
-        auth: { username: process.env.MQTT_KEY},
+        auth: { username: process.env.CLOUDMQTT_KEY},
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
@@ -25,7 +27,7 @@ function provision(resource){
             return axios.post(`${config.ENDPOINT}`, qs.stringify(provisionParameters), options).catch((err) => {
                 console.error(err)
                 if(brokers.length > 0) return brokers[Math.floor(Math.random()*brokers.length)];
-                
+
                 throw err;
             });
         }else{
@@ -55,7 +57,7 @@ function provision(resource){
             url: broker.url,
         }
         resource.uuid = broker.id;
-                    
+
         let controlResult = {
             status: 'SUCCESS',
             rawOutput: JSON.stringify(resource),
@@ -76,11 +78,11 @@ function provision(resource){
 }
 
 function _getAvailableBrokers(){
-    return axios.get(`${config.ENDPOINT}`, {auth: { username: process.env.MQTT_KEY}}).then((res) => {
+    return axios.get(`${config.ENDPOINT}`, {auth: { username: process.env.CLOUDMQTT_KEY}}).then((res) => {
         let items = res.data;
         let getBrokerPromises = [];
         items.forEach((item) => {
-            getBrokerPromises.push(axios.get(`${config.ENDPOINT}/${item.id}`, {auth: { username: process.env.MQTT_KEY}}).then(res => res.data));
+            getBrokerPromises.push(axios.get(`${config.ENDPOINT}/${item.id}`, {auth: { username: process.env.CLOUDMQTT_KEY}}).then(res => res.data));
         })
         return Promise.all(getBrokerPromises);
     })
