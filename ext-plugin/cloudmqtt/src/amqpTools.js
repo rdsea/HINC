@@ -26,7 +26,7 @@ function init(){
             channel.bindQueue(queue, exchange, routingKey),
             channel.consume(queue, _handleMessage),
         ];
-
+  if(msg === null) return;
         return Promise.all(setup);
     }).then(() => {
         return register(routingKey);
@@ -63,8 +63,9 @@ function sendToQueue(msg, queue, correlation){
 }
 
 function _handleMessage(msg){
-    console.log(JSON.stringify(msg.properties, null, 2));
     if(msg === null) return;
+    console.log("Adaptor receives message from Local Management Service");
+    console.log(JSON.stringify(msg.properties, null, 2));
     let message = JSON.parse(msg.content.toString());
     console.log(JSON.stringify(message, null, 2));
     messageHandler.handle(message).then((reply) => {

@@ -1,7 +1,8 @@
 # Overview
+
 This document describes steps in running the  resource slice for the scenario of sensor data exchange in the seaport.
  The short video is available in youtube: (https://youtu.be/_SCrK8Q3xBs)
- 
+
 # rsiHub Deployment
 WARNING: Currently all artifacts can only be deployed in this way on our Google Cloud Platform account due to automated configurations. For access please contact the owners of this repository.
 To deploy all these services on your own deployment configuration, please read all the relevant documentation in this repository and the IoTCloudSamples repository.
@@ -22,7 +23,7 @@ simple in the target directory run `$ docker-compose up -d` to launch this rsiHu
 
 # Resource discovery
 
-The slice description `sensor2bigquery.json` contains resouces that can all be discovered through the global from the following http GET endpoint `http//<global_uri>/resourceproviders`. This http endpoint returns a list of available providers and the resources that can be provisioned/managed by those providers. 
+The slice description `sensor2bigquery.json` contains resouces that can all be discovered through the global from the following http GET endpoint `http//<global_uri>/resourceproviders`. This http endpoint returns a list of available providers and the resources that can be provisioned/managed by those providers.
 
 We assume that the user knows semantics of the parameters of each resource provider (to provision a resource).
 
@@ -58,15 +59,15 @@ For this scenario use the add the resource in `amqpResource.json` to the resourc
 The amqp resource can also be found through the global through the api call `http://<global_url>/resourceproviders`. You should see a an amqp provider
 with the available resource.
 
-Now call `$ node pizza slice update [path to file]` and the new amqp broker should be provisioned. The update command autogenerates another 
+Now call `$ node pizza slice update [path to file]` and the new amqp broker should be provisioned. The update command autogenerates another
 file with an updated slice specification that includes the url of the newly provisioned broker, you can see that pizza added extra metadata to the amqp broker resource you just inserted into the slice.
 
-The analytics program has an a outgoing http endpoint that sends data to a url through a parameter `remoteDataLocation`. However, the http endpoint 
-will not help to publish data the recently published amqp broker. 
+The analytics program has an a outgoing http endpoint that sends data to a url through a parameter `remoteDataLocation`. However, the http endpoint
+will not help to publish data the recently published amqp broker.
 
 # Interoperability search
 
-For the purposes of this demo, the interoperability search is mocked as the actual feature is still under development. 
+For the purposes of this demo, the interoperability search is mocked as the actual feature is still under development.
 
 The intended functionality is hard coded in pizza. simple run the command
 
@@ -79,12 +80,11 @@ node pizza.js query-intop input-data-format=JSON \
 
 to simulate an interperability query, the return will contain `available_artifact` which is a software artifact that reads data from http in JSON format and publishes the data in CSV format to and amqp queue. The configuration includes the broker url and amqp_queue in the parameters section.
 
-In reality you will need to have this artifact running somewhere with the correct configuration (amqp url and queue). 
+In reality you will need to have this artifact running somewhere with the correct configuration (amqp url and queue).
 
 A sample of this software artifact(used in the demo) can be found under https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/httpAmqpclient
 
 # Final Update
 
-Now that the broker url has been provisioned and returned in the previous update operation add the parameter `remoteDataLocation` with the url of the 
+Now that the broker url has been provisioned and returned in the previous update operation add the parameter `remoteDataLocation` with the url of the
 sofware artifact discovered in the last step. Submit a slice update through pizza and start consuming the queue of the provisioned amqp broker. After and initial delay, you should be receiveing amqp messages with the sensor data.
-
