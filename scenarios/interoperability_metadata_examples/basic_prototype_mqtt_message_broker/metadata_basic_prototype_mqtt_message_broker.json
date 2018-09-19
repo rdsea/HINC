@@ -1,0 +1,16 @@
+{
+  "resource": {
+    "category": "network_function",
+    "type": {
+      "prototype": "messagebroker",
+      "protocols":[
+        {
+          "uri": "mqtt://192.168.99.101:1883",
+          "protocol_name": "mqtt"
+        }
+      ],
+      "topics":["noderedtest"],
+      "auto_create":true
+    }
+  }
+}
