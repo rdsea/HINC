@@ -1,0 +1,13 @@
+{
+  "resource": {
+    "data_contract":{
+      "data_rights":{
+        "derivation":true,
+        "collection":true,
+        "reproduction":true,
+        "commercial_usage":true,
+        "attribution":false
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "inputs": [
+    {
+      "push_pull": "pull",
+      "protocol": {
+        "uri": "http://localhost:8082/softwareartefacts",
+        "protocol_name": "http",
+        "http_method": "GET"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "push_pull": "push",
+      "protocol": {
+        "uri": "mqtt://localhost:1883",
+        "protocol_name": "mqtt",
+        "topic": "noderedtest",
+        "qos": 0
+      }
+    }
+  ]
+}
