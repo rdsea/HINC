@@ -1,10 +1,11 @@
-#Basic Interoperability Metadata Example - Prototype MessageBroker
+# Basic Interoperability Metadata Example - Prototype MessageBroker
+
 A basic example that only focuses on one messagebroker prototype.
 Can be used to merge with a full interoperability metadata example.
 
 The interoperability metadata describes an mqtt messagebroker. 
 
-##Metadata Description
+## Metadata Description
 
 | key | assigned value | description|
 |:--- |:---------------| :--------: |

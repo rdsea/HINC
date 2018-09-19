@@ -1,8 +1,8 @@
-#Basic Interoperability Metadata Example - Data Rights
+# Basic Interoperability Metadata Example - Data Rights
 A basic example that only focuses on data rights.
 Can be used to merge with a full interoperability metadata example.
 
-##Metadata Description
+## Metadata Description
 
 | key | assigned value | description|
 |:--- |:---------------| :--------: |

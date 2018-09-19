@@ -1,10 +1,10 @@
-#Basic Interoperability Metadata Example - Data Format
+# Basic Interoperability Metadata Example - Data Format
 A basic example that only focuses on data formats.
 Can be used to merge with a full interoperability metadata example.
  
-##Metadata Description
+## Metadata Description
 
-####CSV-Input
+#### CSV-Input
 
 | key | assigned value | description|
 |:--- |:---------------| :--------: |
@@ -19,7 +19,7 @@ Can be used to merge with a full interoperability metadata example.
 
 
 
-####JSON-Output
+#### JSON-Output
 
 | key | assigned value | description|
 |:--- |:---------------| :--------: |
