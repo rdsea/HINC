@@ -25,3 +25,7 @@ Assume that a consumer needs camera data, it searches the camera provider and ge
 the src/simple_find_and_push.py shows the above-mentioned scenarios. The idea is that by providing different utilities and combine with searches and dynamic provisioning, bridges or service features can be used to support interoperability.
 
 ## Create slices for exchanging IoT data between platforms.
+
+### Setting up rsiHub
+
+### Slice -- 

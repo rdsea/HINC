@@ -24,7 +24,7 @@ function getItems(){
                 networkProtocol: "IP",
                 qos: 0,
                 topics: []
-            };
+      if(msg === null) return;        };
 
             resources.push({
                 uuid: broker.id,
