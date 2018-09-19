@@ -2,7 +2,12 @@
 
 This adaptor is used to interface to cloudmqtt.com
 
-#Running with Docker
+## Configuration
+
+The configuration is defined in config/production.json.
+This configuration will be enabled by using the environment variable "NODE_ENV=production"
+
+## Running with Docker
 
 If the docker build does not have config/production.json,  
 the configuration file, production.json, must be mapped to the right configuration directory: /cloudmqttadaptor/config/production.json.
