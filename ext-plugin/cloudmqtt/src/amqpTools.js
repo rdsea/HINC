@@ -1,7 +1,7 @@
 const amqp = require('amqplib');
 const messageHandler = require('./messageHandlers/handler');
 const config = require('../config');
-
+const uuidv1 = require('uuid/v1');
 let connection = null;
 let channel = null;
 let queue = config.ADAPTOR_NAME;
@@ -11,6 +11,7 @@ let localRoutingKey = config.LOCAL_ROUTING_KEY;
 let uri = config.URI;
 
 function init(){
+  console.log("Connect to rsiHub Local Management Service");
     console.log(`connecting to amqp broker at ${uri}`);
     return amqp.connect(uri).then((conn) => {
         console.log(`successfully conencted to ${uri}`);
@@ -25,7 +26,7 @@ function init(){
             channel.bindQueue(queue, exchange, routingKey),
             channel.consume(queue, _handleMessage),
         ];
-
+  if(msg === null) return;
         return Promise.all(setup);
     }).then(() => {
         return register(routingKey);
@@ -33,11 +34,12 @@ function init(){
 }
 
 function register(adaptorName){
+    console.log("Register ", adaptorName, "to rsiHub Local Management");
     let payload = JSON.stringify({
         adaptorName,
     });
 
-    let msg = { 
+    let msg = {
         msgType: 'REGISTER_ADAPTOR',
         senderID: adaptorName,
         receiverID: null,
@@ -61,15 +63,16 @@ function sendToQueue(msg, queue, correlation){
 }
 
 function _handleMessage(msg){
-    console.log(JSON.stringify(msg.properties, null, 2));
     if(msg === null) return;
+    console.log("Adaptor receives message from Local Management Service");
+    console.log(JSON.stringify(msg.properties, null, 2));
     let message = JSON.parse(msg.content.toString());
     console.log(JSON.stringify(message, null, 2));
     messageHandler.handle(message).then((reply) => {
         if(msg.properties.replyTo){
             sendToQueue(reply, msg.properties.replyTo, msg.properties.correlationId);
         }
-        channel.ack(msg);    
+        channel.ack(msg);
     });
 }
 
@@ -77,8 +80,3 @@ module.exports = {
     init,
     publish,
 };
-
-
-
-
-

@@ -1,10 +1,18 @@
-# Instructions
+# BTS Sensor Adaptor
 
-configuration settings are located in `config.js`
+This adapter interfaces to generic sensor providers which can activate sensors to provide data via MQTT.
 
-* ADAPTOR_NAME : name of the adaptor,
-* URI : RabbitMQ connection string (e.g. amqp://guest:guest@localhost.com),
-* EXCHANGE : The exchange to consume messages from the Local Management System,
+The generic sensor provider is based on  (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTProviders/bts-sensor-provider)
 
+The provider offers REST API for controlling sensors.
 
-Any other configuration required to interface with a given provider is left to the discretion of the developer
+## Configuration
+
+configuration settings are located in `config.js`. It includes configuration for rsiHub Local Management Service and the endpoint of the provider.
+
+* ADAPTOR_NAME : the name of this adaptor
+* URI: the URI of the rsiHubLocal Management Service
+* EXCHANGE: the exchange for communicating with the rsiHub Local.
+* ENDPOINT: the endpoint of the provider.
+
+ 

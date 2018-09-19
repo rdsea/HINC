@@ -1,7 +1,7 @@
 FROM node:8.11-alpine
 
-COPY . /sensor
-WORKDIR /sensor
+COPY . /btssensoradaptor
+WORKDIR /btssensoradaptor
 RUN npm install
 
 CMD ["npm", "start"]

@@ -1,6 +1,6 @@
 {
-  "name": "cloudamqp",
-  "version": "1.0.0",
+  "name": "cloudmqtt",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
   "dependencies": {
     "amqplib": "^0.5.2",
     "axios": "^0.18.0",
+    "chai": "^4.1.2",
     "qs": "^6.5.2",
     "url-parse": "^1.4.3",
     "uuid": "^3.2.1"

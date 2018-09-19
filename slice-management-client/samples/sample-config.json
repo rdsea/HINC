@@ -1,0 +1,6 @@
+{
+  "globalUri": "http://localhost:8080",
+  "intopUri": "http://localhost:8081",
+  "softwareArtefactUri": "http://localhost:8082",
+  "storageKeyfile": "/home/truong/myprojects/rsitestbed-inter-hinc.json"
+}

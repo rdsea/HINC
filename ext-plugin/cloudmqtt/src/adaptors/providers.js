@@ -17,8 +17,15 @@ function getProvider(){
         providerUuid: config.ADAPTOR_NAME,
         resourceType: 'NETWORK_FUNCTION_SERVICE',
         name: `cloudmqtt broker`,
-        controlPoints: [],
-        dataPoints: [],
+        controlPoints: [{
+          "command":"PUT",
+          "api":"https://customer.cloudmqtt.com/api/instances",
+          "parameter":"resourceID"
+        }],
+        dataPoints: [{
+          "method":"GET",
+          "api": "https://customer.cloudmqtt.com/api/instances"
+        }],
         type: 'BROKER',
         location: null,
         parameters:{

@@ -1,7 +1,7 @@
 const axios = require('axios');
 const config = require('../../config');
 const qs = require("qs");
-
+const assert = require('assert');
 
 function provision(resource){
     let controlResult = null;
@@ -12,16 +12,18 @@ function provision(resource){
         plan: "lemur",
         region: "google-compute-engine::europe-west1",
     }
+    assert.notEqual(process.env.CLOUDAMQP_KEY,null);
+    assert.notEqual(process.env.CLOUDAMQP_KEY,'');
 
     let options = {
-        auth: { username: process.env.AMQP_KEY},
+        auth: { username: process.env.CLOUDAMQP_KEY},
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     }
     return axios.post(`${config.ENDPOINT}`, qs.stringify(provisionParameters), options).then((res) => {
         let item = res.data;
-        return axios.get(`${config.ENDPOINT}/${item.id}`, {auth: { username: process.env.AMQP_KEY}}).then((res) => res.data);
+        return axios.get(`${config.ENDPOINT}/${item.id}`, {auth: { username: process.env.CLOUDAMQP_KEY}}).then((res) => res.data);
     }).then((broker) => {
         console.log(broker);
         let ingressAccessPoint = {

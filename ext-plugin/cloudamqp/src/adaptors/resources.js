@@ -3,13 +3,13 @@ const config = require('../../config');
 const url = require("url");
 
 function getItems(){
-    console.log("fetching amqp brokers");
+    console.log("Obtaining resources from the provider");
 
-    return axios.get(`${config.ENDPOINT}`, {auth: { username: process.env.AMQP_KEY}}).then((res) => {
+    return axios.get(`${config.ENDPOINT}`, {auth: { username: process.env.CLOUDAMQP_KEY}}).then((res) => {
         let items = res.data;
         let getBrokerPromises = [];
         items.forEach((item) => {
-            getBrokerPromises.push(axios.get(`${config.ENDPOINT}/${item.id}`, {auth: { username: process.env.AMQP_KEY}}).then(res => res.data));
+            getBrokerPromises.push(axios.get(`${config.ENDPOINT}/${item.id}`, {auth: { username: process.env.CLOUDAMQP_KEY}}).then(res => res.data));
         })
         return Promise.all(getBrokerPromises);
     }).then((brokers) => {
@@ -24,7 +24,7 @@ function getItems(){
                 networkProtocol: "IP",
                 qos: 0,
                 topics: []
-            };
+      if(msg === null) return;        };
 
             resources.push({
                 uuid: broker.id,
@@ -53,4 +53,3 @@ function getItems(){
 }
 
 module.exports.getItems = getItems;
-
