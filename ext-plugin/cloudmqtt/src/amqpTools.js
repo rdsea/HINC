@@ -1,14 +1,16 @@
 const amqp = require('amqplib');
 const messageHandler = require('./messageHandlers/handler');
-const config = require('../config');
+//const config = require('../config');
+var config = require('config');
+var cloudmqtt_config = config.get('cloudmqtt');
 const uuidv1 = require('uuid/v1');
 let connection = null;
 let channel = null;
-let queue = config.ADAPTOR_NAME;
-let exchange = config.EXCHANGE;
-let routingKey = config.ADAPTOR_NAME;
-let localRoutingKey = config.LOCAL_ROUTING_KEY;
-let uri = config.URI;
+let queue = cloudmqtt_config.ADAPTOR_NAME;
+let exchange = cloudmqtt_config.EXCHANGE;
+let routingKey = cloudmqtt_config.ADAPTOR_NAME;
+let localRoutingKey = cloudmqtt_config.LOCAL_ROUTING_KEY;
+let uri = cloudmqtt_config.URI;
 
 function init(){
   console.log("Connect to rsiHub Local Management Service");
