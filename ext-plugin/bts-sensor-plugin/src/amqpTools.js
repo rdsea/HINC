@@ -1,15 +1,17 @@
 const amqp = require('amqplib');
 const randomstring = require('randomstring');
 const messageHandler = require('./messageHandlers/handler');
-const config = require('../config');
+//const config = require('../config');
+var config = require('config');
+var sensoradaptor_config = config.get('sensoradaptor');
 
 let connection = null;
 let channel = null;
-let queue = config.ADAPTOR_NAME;
-let exchange = config.EXCHANGE;
-let routingKey = config.ADAPTOR_NAME;
-let localRoutingKey = config.LOCAL_ROUTING_KEY;
-let uri = config.URI;
+let queue = sensoradaptor_config.ADAPTOR_NAME;
+let exchange = sensoradaptor_config.EXCHANGE;
+let routingKey = sensoradaptor_config.ADAPTOR_NAME;
+let localRoutingKey = sensoradaptor_config.LOCAL_ROUTING_KEY;
+let uri = sensoradaptor_config.URI;
 
 const messageTypes = {
     QUERY_RESOURCES: 'QUERY_RESOURCES',
@@ -47,7 +49,7 @@ function register(adaptorName){
         adaptorName,
     });
 
-    let msg = { 
+    let msg = {
         msgType: 'REGISTER_ADAPTOR',
         senderID: adaptorName,
         receiverID: null,
@@ -79,7 +81,7 @@ function _handleMessage(msg){
         if(msg.properties.replyTo){
             sendToQueue(reply, msg.properties.replyTo, msg.properties.correlationId);
         }
-        channel.ack(msg);    
+        channel.ack(msg);
     });
 }
 
@@ -88,8 +90,3 @@ module.exports = {
     init,
     publish,
 };
-
-
-
-
-

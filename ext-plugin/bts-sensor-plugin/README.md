@@ -15,4 +15,11 @@ configuration settings are located in `config.js`. It includes configuration for
 * EXCHANGE: the exchange for communicating with the rsiHub Local.
 * ENDPOINT: the endpoint of the provider.
 
- 
+## Running with Docker
+
+If the docker build does not have config/production.json,  
+the configuration file, production.json, must be mapped to the right configuration directory: /btssensoradaptor/config/production.json.
+
+Example of running:
+
+ docker run -v /var/temp/config:/btssensoradaptor/config/ -e "NODE_ENV=production"  btssensoradaptor npm start

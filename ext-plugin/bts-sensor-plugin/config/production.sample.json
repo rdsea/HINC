@@ -1,0 +1,8 @@
+{
+  "sensoradaptor":{
+    "ADAPTOR_NAME" : "sensoradaptor",
+    "URI" : "amqp://cloudamqp.com/",
+    "EXCHANGE" : "adaptor_localeurope_input",
+    "ENDPOINT": "http://abc.host:3001"
+  }
+}
