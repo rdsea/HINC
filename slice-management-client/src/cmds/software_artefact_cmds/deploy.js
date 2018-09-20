@@ -12,24 +12,6 @@ let softwareArtefactURL = config.software_artefact_service_uri + "/softwareartef
 let resourceProviderURL = config.uri + "/";
 
 exports.handler = function (argv) {
-    /*requestUri = config.software_artefact_service_uri + "/softwareartefacts";
-
-
-
-    let filePath_metadata= path.resolve(argv.metadataFile);
-    let metadataFile = require(filePath_metadata);
-
-    _getSoftwareArtefactURL(argv.softwareArtefact)
-        .then((softwareArtefactURL) => {
-            let jsonObj =
-                {
-                    artefactReference: softwareArtefactURL,
-                    executionEnvironment: argv.executionEnvironment,
-                    metadata: metadataFile,
-                    name: argv.name
-                };
-            _putSoftwareArtefact(jsonObj);
-        });*/
 
     //TODO get softwareArtefact & resourceProvider
 
@@ -39,17 +21,40 @@ exports.handler = function (argv) {
     let softwareArtefact = argv.softwareArtefactId;
     let resourceProvider = argv.resourceProviderId;
 
-    promises.push(reqprom.get(softwareArtefactURL+"/"+argv.softwareArtefactId)
+
+
+    promises.push(_getSoftwareArtefact(argv.softwareArtefactId)
         .then(data => {
             softwareArtefact = data;
         }));
 
-    promises.push()
+
+    promises.push(_getResourceProvider(argv.resourceProviderId)
+        .then(data => {
+            resourceProvider = data;
+        }));
+
 
     Promise.all(promises).then(()=>{
+
+        let artefact = {artefactReference: "https://storage.googleapis.com/mytestbucket_test/csv_to_json_flows.json"};
+        let provider = {uuid:"nodered"};
+
         deploy_service.deploy_artefact(softwareArtefact, resourceProvider)
     })
 };
+
+function _getSoftwareArtefact(softwareArtefactId){
+    return new Promise((resolve,reject)=>{resolve("test")})
+    //return reqprom.get(softwareArtefactURL+"/"+softwareArtefactId);
+}
+
+
+function _getResourceProvider(resourceProviderId){
+    //TODO mocked --> implement real query
+    //return reqprom.get(softwareArtefactURL+"/"+softwareArtefactId);
+    return new Promise((resolve,reject)=>{resolve("test")})
+}
 
 function _getSoftwareArtefactURL(softwareArtefact){
     if(!softwareArtefact.startsWith("http")){
