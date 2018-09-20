@@ -1,0 +1,8 @@
+{
+  "cloudmqtt": {
+    "ADAPTOR_NAME" : "cloudmqtt",
+    "URI" : "amqp://abc",
+    "EXCHANGE" : "adaptor_localeurope_input",
+    "ENDPOINT": "https://customer.cloudmqtt.com/api/instances"
+  }
+}
