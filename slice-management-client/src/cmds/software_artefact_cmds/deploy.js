@@ -9,17 +9,16 @@ exports.desc = 'deploys the software artefact with id <software-artefact-id> to 
 exports.builder = {}
 
 let softwareArtefactURL = config.software_artefact_service_uri + "/softwareartefacts";
-let resourceProviderURL = config.uri + "/";
+let resourceProviderURL = config.uri + "/resourceproviders";
 
 exports.handler = function (argv) {
 
-    //TODO get softwareArtefact & resourceProvider
 
     let promises = [];
 
 
-    let softwareArtefact = argv.softwareArtefactId;
-    let resourceProvider = argv.resourceProviderId;
+    let softwareArtefact;
+    let resourceProvider;
 
 
 
@@ -37,43 +36,28 @@ exports.handler = function (argv) {
 
     Promise.all(promises).then(()=>{
 
-        let artefact = {artefactReference: "https://storage.googleapis.com/mytestbucket_test/csv_to_json_flows.json"};
-        let provider = {uuid:"nodered"};
+        /*softwareArtefact = {artefactReference: "https://raw.githubusercontent.com/rdsea/IoTCloudSamples/master/IoTCloudUnits/node_red_dataflows/csv_to_json_flow/flow_csv_to_json.json"};
+        resourceProvider = {uuid:"nodered"};*/
 
         deploy_service.deploy_artefact(softwareArtefact, resourceProvider)
     })
 };
 
 function _getSoftwareArtefact(softwareArtefactId){
-    return new Promise((resolve,reject)=>{resolve("test")})
-    //return reqprom.get(softwareArtefactURL+"/"+softwareArtefactId);
+    let options = {
+        method: 'GET',
+        uri: softwareArtefactURL+"/"+softwareArtefactId,
+        json:true
+    };
+    return reqprom(options);
 }
 
 
 function _getResourceProvider(resourceProviderId){
-    //TODO mocked --> implement real query
-    //return reqprom.get(softwareArtefactURL+"/"+softwareArtefactId);
-    return new Promise((resolve,reject)=>{resolve("test")})
-}
-
-function _getSoftwareArtefactURL(softwareArtefact){
-    if(!softwareArtefact.startsWith("http")){
-        return storage_service.upload(softwareArtefact);
-    }else{
-        return new Promise((resolve,reject) => {resolve(softwareArtefact)});
-    }
-}
-
-
-function _putSoftwareArtefact(requestBody){
-    let body = { json: true, body: requestBody };
-
-    request.put(requestUri, body, (err, res, body) => {
-        if (err) {
-            console.err("Error connecting to the software artefact service. Please check the http uri of the software artefact service" +
-                "(" + config.software_artefact_service_uri + "). Detailed error message:")
-            return console.err(err);
-        }
-        console.log(body);
-    });
+    let options = {
+        method: 'GET',
+        uri: resourceProviderURL+"/"+resourceProviderId,
+        json:true
+    };
+    return reqprom(options);
 }

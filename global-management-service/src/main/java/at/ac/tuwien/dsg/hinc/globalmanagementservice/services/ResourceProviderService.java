@@ -143,6 +143,9 @@ public class ResourceProviderService {
     }
 
 
+    public ResourceProvider getResourceProvider(String id){
+        return providerRepository.read(id);
+    }
 
     private String getDestinationExchange(String id, String group){
         if(id!=null && !id.isEmpty()){

@@ -91,6 +91,18 @@ public class ResourceProviderController {
 
 
 
+    @GetMapping("/{id}")
+    public ResponseEntity getResourceProvider(@PathVariable String id){
+        ResourceProvider resourceProvider = resourceProviderService.getResourceProvider(id);
+
+        if(resourceProvider == null){
+            return new ResponseEntity<>("ResourceProvider with id " + id + " not found", HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<>(resourceProvider, HttpStatus.OK);
+        }
+
+    }
+
     /*GET /resourceproviders?type=&group=&id=&limit=&rescan=true&timeout=
     GET /resourceproviders/{id}/managementpoints
     POST /resourceproviders/{id}/managementpoints/{id}   Parameter:parameter
