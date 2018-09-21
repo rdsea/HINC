@@ -1,5 +1,6 @@
 const deleteAdaptor = require('../controls/delete');
-const config = require('../../config');
+const configModule = require('config');
+const config = configModule.get('cloudmqtt');
 
 function handleDelete(msg){
     let reply = { 

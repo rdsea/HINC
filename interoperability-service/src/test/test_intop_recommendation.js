@@ -3,7 +3,9 @@ const assert = require('assert');
 const util = require('../main/util/slice_util');
 const check = require('../main/check/intop_check');
 const recommendation = require('../main/recommendation/intop_recommendation');
-let config = require("../config");
+
+const configModule = require('config');
+const config = configModule.get('interoperability_service');
 
 const basic_data = require('./testdata/testslices/basic_testslices');
 

@@ -1,13 +1,14 @@
 {
   "name": "interoperability_service",
   "version": "0.0.1",
-  "src/main": "./src/main/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node ./src/main/index.js",
+    "start": "node src/main/index.js",
     "test": "mocha src/test"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "config": "^2.0.1",
     "deep-copy": "^1.4.2",
     "express": "^4.16.3",
     "flat": "^4.1.0",

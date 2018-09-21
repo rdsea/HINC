@@ -1,3 +1,4 @@
 #!/bin/bash
 
-docker build -t software-artefact-service .
+docker build -t rdsea/rsihubsas .
+docker push rdsea/rsihubsas

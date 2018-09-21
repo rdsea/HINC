@@ -1,6 +1,7 @@
 const provisionAdaptor = require('../controls/provision');
 const deleteAdaptor = require('../controls/delete');
-const config = require('../../config');
+const configModule = require('config');
+const config = configModule.get('cloudmqtt');
 
 function handleProvision(msg){
     let reply = { 
