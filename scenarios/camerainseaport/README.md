@@ -5,6 +5,7 @@
 Initially, a seaport/city has an IoTCameraProvider which manages various cameras as resources. Each camera has its own way of storing its data.
 
 ### Setup
+
 To setup this initial scenario we use the code from:
 
 https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/IoTCameraDataProvider
@@ -28,4 +29,4 @@ the src/simple_find_and_push.py shows the above-mentioned scenarios. The idea is
 
 ### Setting up rsiHub
 
-### Slice -- 
+### Slice --
