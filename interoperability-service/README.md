@@ -21,3 +21,17 @@ Change the config parameters if you want to use a different mongodb collection.
 
 ## Run tests
 `npm test`
+
+
+##How to use the interoperability service using pizza.js?
+  check: run `pizza intop check <file>`
+  recommendation: run `pizza intop recommendation <file>`
+  
+  where:
+  
+  |`<variable>`| description | example |
+  |:--- |:--- | :---|
+  | `<file>` | the file that contains the slice information | for examples see https://github.com/SINCConcept/HINC/tree/master/interoperability-service/client_testslices |
+  
+  
+  for further information: run run `pizza intop --help`
