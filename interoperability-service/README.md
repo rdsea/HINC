@@ -23,7 +23,7 @@ Change the config parameters if you want to use a different mongodb collection.
 `npm test`
 
 
-##How to use the interoperability service using pizza.js?
+## How to use the interoperability service using pizza.js?
   check: run `pizza intop check <file>`
   
   recommendation: run `pizza intop recommendation <file>`
