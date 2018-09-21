@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build -t rdsea/rsiglobal .
-docker push rdsea/rsiglobal
+docker build -t rdsea/rsihubglobal .
+docker push rdsea/rsihubglobal
