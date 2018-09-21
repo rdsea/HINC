@@ -1,5 +1,4 @@
 const axios = require('axios');
-const config = require('../../config')
 
 function getLogs(resource){
     return new Promise((resolve, reject) => {

@@ -1,5 +1,6 @@
 const axios = require('axios');
-const config = require('../../config');
+const configModule = require('config');
+const config = configModule.get('cloudmqtt');
 const parse = require("url-parse");
 
 function getItems(){

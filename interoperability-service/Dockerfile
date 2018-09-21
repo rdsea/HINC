@@ -1,7 +1,7 @@
 FROM node:8-alpine
 
 COPY . /
-WORKDIR /src
+WORKDIR /
 RUN npm install
 
 CMD ["npm", "start"]
