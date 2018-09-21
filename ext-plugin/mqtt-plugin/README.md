@@ -8,3 +8,12 @@ configuration settings are located in `config.js`
 
 
 Any other configuration required to interface with a given provider is left to the discretion of the developer
+
+## Docker run
+
+If the docker build does not have config/production.json,  
+the configuration file, production.json, must be mapped to the right configuration directory: /mqttadaptor/config/production.json.
+
+Example of running:
+
+ $docker run -v /var/temp/config:/mqttadaptor/config/ -e "NODE_ENV=production"  mqttadaptor npm start
