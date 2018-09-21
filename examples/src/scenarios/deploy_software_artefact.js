@@ -53,6 +53,7 @@ function createGlobal(config){
     fs.writeFileSync(path.join(__dirname, "../../result/config/global.properties"), properties.stringify(globalConfig));
 
     let service = {
+        //TODO use rdsea image
         image: "global-management-service",
         ports:[
             "8080:8080"
@@ -88,6 +89,7 @@ function createLocal(localId, config){
     fs.writeFileSync(path.join(__dirname, `../../result/config/local.${localId}.properties`), properties.stringify(localConfig));
 
     let service = {
+        //TODO use rdsea image
         image: "local-management-service",
         volumes: [
             `./config/local.${localId}.properties:/application.properties`
@@ -135,6 +137,7 @@ function createAdaptorsAndProviders(config, localConfig){
     writeAdaptorConfig(noderedAdaptorConfig);
 
     let noderedProviderService = {
+        //TODO use rdsea image
         image: "nodered-provider"
     }
 
@@ -143,6 +146,7 @@ function createAdaptorsAndProviders(config, localConfig){
     }*/
 
     let noderedAdaptorService = {
+        //TODO use rdsea image
         image: "nodered-adaptor",
         volumes: [
             `./config/${noderedAdaptorConfig.ADAPTOR_NAME}.js:/nodered/config.js`
@@ -192,6 +196,7 @@ function createInteroperabilityService(config){
     fs.writeFileSync(path.join(__dirname, "../../result/config/interoperability_config.js"), interoperabilityConfig);
 
     let service = {
+        //TODO use rdsea image
         image: "interoperability-service",
         ports:[
             `8081:${template.SERVER_PORT}`
@@ -209,6 +214,7 @@ function createInteroperabilityService(config){
 function createSoftwareArtefactService(config){
 
     let service = {
+        //TODO use rdsea image
         image: "software-artefact-service",
         ports:[
             "8082:8082"
