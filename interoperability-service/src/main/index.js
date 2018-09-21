@@ -5,7 +5,8 @@ const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./src/main/openapi/openapi3.yaml');
 const router = require("./router");
 const bodyParser = require('body-parser');
-const config = require('../config');
+let configModule = require('config');
+let config = configModule.get('interoperability_service');
 const publicIp = require('public-ip');
 const PORT = config.SERVER_PORT;
 
