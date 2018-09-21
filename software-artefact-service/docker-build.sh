@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build -t rdsea/rsisas .
-docker push rdsea/rsisas
+docker build -t rdsea/rsihubsas .
+docker push rdsea/rsihubsas
