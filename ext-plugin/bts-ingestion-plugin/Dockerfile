@@ -1,7 +1,7 @@
 FROM node:8-alpine
 
-COPY . /ingestion
-WORKDIR /ingestion
+COPY . /ingestadaptor
+WORKDIR /ingestadaptor
 RUN npm install
 
 CMD ["npm", "start"]

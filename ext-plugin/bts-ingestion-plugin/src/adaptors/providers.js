@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config');
-
+//const config = require('../../config');
+var ingestplugin_config = require('config');
+var config = ingestplugin_config.get('ingestionadaptor');
 
 /**
  * gets the available resources provider information
@@ -47,7 +48,7 @@ function getProvider(settings){
                 }
             },
             metadata: {
-                
+
             },
         });
 
@@ -78,12 +79,12 @@ function getProvider(settings){
                         accessPattern: "",
                         networkProtocol: "IP",
                     },
-            
+
                 ],
                 ingressAccessPoints: [],
             },
             metadata: {
-                
+
             },
         })
 

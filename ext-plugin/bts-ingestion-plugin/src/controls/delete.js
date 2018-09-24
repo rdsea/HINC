@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config')
-
+//const config = require('../../config')
+var ingestplugin_config = require('config');
+var config = ingestplugin_config.get('ingestionadaptor');
 function deleteResource(resource){
     console.log('making call to delete resource '+resource.uuid);
     return axios.delete(`${config.ENDPOINT}/ingestionClient/${resource.uuid}`).then((res) => {
