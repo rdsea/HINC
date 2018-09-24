@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config');
-
+//onst config = require('../../config');
+var bigqueryplugin_config = require('config');
+var config = bigqueryplugin_config.get('bigqueryadaptor');
 /**
  * gets the available resources from the provider
  */

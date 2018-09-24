@@ -1,7 +1,9 @@
 FROM node:8-alpine
 
-COPY . /bigquery
-WORKDIR /bigquery
+COPY . /bigqueryadaptor
+WORKDIR /bigqueryadaptor
 RUN npm install
+
+ENV NODE_ENV "production"
 
 CMD ["npm", "start"]

@@ -1,8 +1,9 @@
 const deleteAdaptor = require('../controls/delete');
-const config = require('../../config');
-
+//const config = require('../../config');
+var bigqueryplugin_config = require('config');
+var config = bigqueryplugin_config.get('bigqueryadaptor');
 function handleDelete(msg){
-    let reply = { 
+    let reply = {
         msgType: 'CONTROL_RESULT',
         senderID: config.ADAPTOR_NAME,
         receiverID: null,
