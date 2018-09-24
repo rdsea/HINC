@@ -17,6 +17,25 @@ To install the latest versions of `common` and `repository`, either run `mvn cle
 ## Swagger Interface
 http://localhost:8082/swagger-ui.html
 
+
+## pizza.js: how to interact with the service
+
+pizza.js, the slice management client can be used to interact with the software artefact service.
+
+to see the supported commands use `pizza artefact --help`
+
+####How to populate the software artefact service using pizza.js?
+run `pizza artefact create <software-artefact> <execution-environment> <metadata-file> <name>`
+
+where:
+
+|`<variable>`| description | example |
+|:--- |:--- | :---|
+| `<software-artefact>` | either url of a software artefact or a file. if it is a file, then the file will be uploaded to google storage | for examples see `flow_*.json` files of https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/node_red_dataflows |
+| `<execution-environment>` | the environment that the artefact runs in. currently supported is **nodered** . check updates if any other are already supported | nodered|
+| `<metadata-file>` | a file that contains the interoperability metadata of the software artefact | for examples see `metadata_*.json` files of https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/node_red_dataflows |
+| `<name>` | the name of the artefact | nodered_csv_to_json|
+
 ## REST API
 
 Base URL: `http://localhost:8082
