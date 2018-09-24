@@ -2,16 +2,16 @@ const amqp = require('amqplib');
 const randomstring = require('randomstring');
 const messageHandler = require('./messageHandlers/handler');
 //const config = require('../config');
-var config = require('config');
-var mqttprovider_config = config.get('mqttprovider');
+var mqttplugin_config = require('config');
+var config = mqttplugin_config.get('mqttadaptor');
 
 let connection = null;
 let channel = null;
-let queue = mqttprovider_config.ADAPTOR_NAME
-let exchange = mqttprovider_config.EXCHANGE;
-let routingKey = mqttprovider_config.ADAPTOR_NAME;
-let localRoutingKey = mqttprovider_config.LOCAL_ROUTING_KEY;
-let uri = mqttprovider_config.URI;
+let queue = config.ADAPTOR_NAME
+let exchange = config.EXCHANGE;
+let routingKey = config.ADAPTOR_NAME;
+let localRoutingKey = config.LOCAL_ROUTING_KEY;
+let uri = config.URI;
 
 function init(){
     console.log(`connecting to amqp broker at ${uri}`);

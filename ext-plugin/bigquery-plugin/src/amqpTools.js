@@ -1,7 +1,9 @@
 const amqp = require('amqplib');
 const randomstring = require('randomstring');
 const messageHandler = require('./messageHandlers/handler');
-const config = require('../config');
+//const config = require('../config');
+var bigqueryplugin_config = require('config');
+var config = bigqueryplugin_config.get('bigqueryadaptor');
 
 let connection = null;
 let channel = null;
@@ -47,20 +49,20 @@ function register(adaptorName){
         adaptorName,
     });
 
-    let msg = { 
+    let msg = {
         msgType: 'REGISTER_ADAPTOR',
         senderID: adaptorName,
         receiverID: null,
         payload: payload,
         timeStamp: Math.floor((new Date()).getMilliseconds()/1000),
         uuid: '',
-        destination: { 
-            exchange: exchange, 
-            routingKey: localRoutingKey 
+        destination: {
+            exchange: exchange,
+            routingKey: localRoutingKey
         },
-        reply: { 
-            exchange: exchange, 
-            routingKey: routingKey 
+        reply: {
+            exchange: exchange,
+            routingKey: routingKey
         },
     }
 
@@ -87,7 +89,7 @@ function _handleMessage(msg){
         if(msg.properties.replyTo){
             sendToQueue(reply, msg.properties.replyTo, msg.properties.correlationId);
         }
-        channel.ack(msg);    
+        channel.ack(msg);
     });
 }
 
@@ -96,8 +98,3 @@ module.exports = {
     init,
     publish,
 };
-
-
-
-
-

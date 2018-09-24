@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config');
-
+//const config = require('../../config');
+var bigqueryplugin_config = require('config');
+var config = bigqueryplugin_config.get('bigqueryadaptor');
 
 function provision(resource){
     let controlResult = null;
@@ -31,4 +32,3 @@ function provision(resource){
 }
 
 module.exports.provision = provision;
-

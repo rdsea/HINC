@@ -1,9 +1,8 @@
 FROM node:8-alpine
 
-COPY . /bigqueryadaptor
-WORKDIR /bigqueryadaptor
+COPY . /noderedadaptor
+WORKDIR /noderedadaptor
 RUN npm install
 
 ENV NODE_ENV "production"
-
 CMD ["npm", "start"]

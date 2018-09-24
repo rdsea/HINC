@@ -1,5 +1,7 @@
 const axios = require('axios');
-const config = require('../../config')
+
+var mqttplugin_config = require('config');
+var config = mqttplugin_config.get('mqttadaptor');
 
 function deleteResource(resource){
     console.log('making call to delete resource '+resource.uuid);

@@ -1,8 +1,10 @@
 const deleteAdaptor = require('../controls/delete');
-const config = require('../../config');
+
+var mqttplugin_config = require('config');
+var config = mqttplugin_config.get('mqttadaptor');
 
 function handleDelete(msg){
-    let reply = { 
+    let reply = {
         msgType: 'CONTROL_RESULT',
         senderID: config.ADAPTOR_NAME,
         receiverID: null,

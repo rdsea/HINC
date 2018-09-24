@@ -1,7 +1,7 @@
 FROM node:8-alpine
 
-COPY . /
-WORKDIR /
+COPY . /rsihubintop
+WORKDIR /rsihubintop
 RUN npm install
-
+ENV NODE_ENV "production"
 CMD ["npm", "start"]

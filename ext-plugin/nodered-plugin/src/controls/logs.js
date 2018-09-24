@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config')
-
+//const config = require('../../config')
+var noderedplugin_config = require('config');
+var config = noderedplugin_config.get('noderedadaptor');
 function getLogs(resource){
     return axios.get(`${config.ENDPOINT}/mosquittobroker/${resource.uuid}/logs`).then((res) => {
         controlResult = {
