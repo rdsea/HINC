@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build -t rdsea/amqp-adaptor .
-docker push rdsea/amqp-adaptor
+docker build -t rdsea/cloudamqp-adaptor .
+docker push rdsea/cloudamqp-adaptor
