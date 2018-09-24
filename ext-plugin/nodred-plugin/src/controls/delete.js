@@ -1,5 +1,7 @@
 const axios = require('axios');
-const config = require('../../config')
+//const config = require('../../config')
+var noderedplugin_config = require('config');
+var config = noderedplugin_config.get('noderedadaptor');
 
 function deleteResource(resource){
     console.log('making call to delete resource '+resource.uuid);

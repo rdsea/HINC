@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config');
 
+var noderedplugin_config = require('config');
+var config = noderedplugin_config.get('noderedadaptor');
 /**
  * gets the available resources provider information
  */
@@ -20,7 +21,7 @@ function getProvider(settings){
             egressAccessPoints: [],
         },
         metadata: {
-           
+
         },
     });
 

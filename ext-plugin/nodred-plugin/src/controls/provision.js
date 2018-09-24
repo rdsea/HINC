@@ -1,7 +1,8 @@
 const axios = require('axios');
-const config = require('../../config');
-
-function provision(resource){ 
+//const config = require('../../config');
+var noderedplugin_config = require('config');
+var config = noderedplugin_config.get('noderedadaptor');
+function provision(resource){
     let controlResult = null;
     let instance = null;
     return axios.post(`${config.ENDPOINT}/datatransformer`).then((res) => {
@@ -58,4 +59,3 @@ function _waitForLocation(datatransformerId, uri){
 }
 
 module.exports.provision = provision;
-
