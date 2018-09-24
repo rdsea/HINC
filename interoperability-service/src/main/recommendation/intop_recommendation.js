@@ -5,17 +5,12 @@ const request = require('request-promise');
 const flat = require("flat");
 const MongoClient = require("mongodb").MongoClient;
 const moment = require("moment");
-/*const configModule = require('config');
-const config = configModule.get('interoperability_service');*/
+const configModule = require('config');
+const config = configModule.get('interoperability_service');
 
-//const SEARCH_SOFTWARE_ARTEFACT = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_ARTEFACTS;
-//const SEARCH_INTEROPERABILITY_BRIDGE = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_BRIDGE;
-//const SEARCH_RESOURCES = config.GLOBAL_MANAGEMENT_URI + config.SEARCH_RESOURCES;
-
-
-const SEARCH_SOFTWARE_ARTEFACT = "";
-const SEARCH_INTEROPERABILITY_BRIDGE = "";
-const SEARCH_RESOURCES = "";
+const SEARCH_SOFTWARE_ARTEFACT = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_ARTEFACTS;
+const SEARCH_INTEROPERABILITY_BRIDGE = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_BRIDGE;
+const SEARCH_RESOURCES = config.GLOBAL_MANAGEMENT_URI + config.SEARCH_RESOURCES;
 
 exports.getRecommendations = function(slice){
     return exports.getContractRecommendations(slice, null);
