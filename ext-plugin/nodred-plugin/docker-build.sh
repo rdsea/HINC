@@ -1,5 +1,4 @@
 #!/bin/bash
 
-docker build -t rdsea/nodred-adaptor .
-docker push rdsea/nodred-adaptor
-
+docker build -t rdsea/nodered-adaptor .
+docker push rdsea/nodered-adaptor
