@@ -4,14 +4,13 @@
   "description": "A test system generator using the local and global management systems in this repo along with The providers located in the IoTCloudSamples repo",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "lingfangao@gmail.com",
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.5.2",
-    "inquirer": "^5.2.0",
+    "inquirer": "^6.2.0",
     "js-yaml": "^3.11.0",
     "properties": "^1.2.1"
   }
