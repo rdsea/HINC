@@ -1,5 +1,5 @@
 {
-  "mqttprovider": {
+  "mqttadaptor": {
     "ADAPTOR_NAME" : "mosquitto",
     "URI" : "amqp://sheep.rmq.cloudamqp.com",
     "EXCHANGE" : "adaptor_localeurope_input",

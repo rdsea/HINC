@@ -1,5 +1,7 @@
 const axios = require('axios');
-const config = require('../../config')
+
+var mqttplugin_config = require('config');
+var config = mqttplugin_config.get('mqttadaptor');
 
 function getLogs(resource){
     return axios.get(`${config.ENDPOINT}/mosquittobroker/${resource.uuid}/logs`).then((res) => {
