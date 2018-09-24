@@ -1,7 +1,8 @@
 FROM node:8-alpine
 
-COPY . /ingestadaptor
-WORKDIR /ingestadaptor
+COPY . /ingestionadaptor
+WORKDIR /ingestionadaptor
 RUN npm install
 
+ENV NODE_EVN "production"
 CMD ["npm", "start"]
