@@ -33,3 +33,5 @@ nohup.out
 logs
 copy-artifact.sh
 localrun
+
+node_modules

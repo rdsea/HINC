@@ -17,6 +17,8 @@ app.use('/interoperability', router);
 app.use(bodyParser.json());
 
 app.listen(PORT);
-publicIp.v4().then(ip => {
+//TODO revert
+console.log(`Running on http://localhost:${PORT}/api-docs`);
+/*publicIp.v4().then(ip => {
   console.log(`Running on http://${ip}:${PORT}/api-docs`);
-});
+});*/
