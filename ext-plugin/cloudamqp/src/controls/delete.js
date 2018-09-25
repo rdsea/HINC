@@ -1,6 +1,6 @@
 const axios = require('axios');
-const config = require('../../config')
-
+var cloudamqpplugin_config = require('config');
+var config = cloudamqpplugin_config.get('cloudamqpadaptor');
 function deleteResource(resource){
     console.log('making call to delete resource '+resource.uuid);
     return axios.delete(`${config.ENDPOINT}/${resource.uuid}`, {auth: { username: process.env.AMQP_KEY}}).then((res) => {

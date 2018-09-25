@@ -1,6 +1,8 @@
 const amqp = require('amqplib');
 const messageHandler = require('./messageHandlers/handler');
-const config = require('../config');
+//const config = require('../config');
+var cloudamqpplugin_config = require('config');
+var config = cloudamqpplugin_config.get('cloudamqpadaptor');
 
 let connection = null;
 let channel = null;
@@ -37,7 +39,7 @@ function register(adaptorName){
         adaptorName,
     });
 
-    let msg = { 
+    let msg = {
         msgType: 'REGISTER_ADAPTOR',
         senderID: adaptorName,
         receiverID: null,
@@ -69,7 +71,7 @@ function _handleMessage(msg){
         if(msg.properties.replyTo){
             sendToQueue(reply, msg.properties.replyTo, msg.properties.correlationId);
         }
-        channel.ack(msg);    
+        channel.ack(msg);
     });
 }
 
@@ -77,8 +79,3 @@ module.exports = {
     init,
     publish,
 };
-
-
-
-
-

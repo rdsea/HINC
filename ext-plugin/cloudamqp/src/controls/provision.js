@@ -1,5 +1,6 @@
 const axios = require('axios');
-const config = require('../../config');
+var cloudamqpplugin_config = require('config');
+var config = cloudamqpplugin_config.get('cloudamqpadaptor');
 const qs = require("qs");
 const assert = require('assert');
 

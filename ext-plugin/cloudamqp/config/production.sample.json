@@ -1,0 +1,8 @@
+{
+  "cloudamqpadaptor":{
+    "ADAPTOR_NAME" : "cloudamqp",
+    "URI" : "amqp://rmq.cloudamqp.com",
+    "EXCHANGE" : "adaptor_local_input",
+    "ENDPOINT": "https://customer.cloudamqp.com/api/instances"
+  }
+}

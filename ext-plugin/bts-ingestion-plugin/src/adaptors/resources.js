@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config');
-
+//const config = require('../../config');
+var ingestplugin_config = require('config');
+var config = ingestplugin_config.get('ingestionadaptor');
 /**
  * gets the available resources from the provider
  */
@@ -36,7 +37,7 @@ function _ingestionClientToResource(ingestionClient){
             })
         })
     }
-    
+
 
     let resource = {
         uuid: ingestionClient.ingestionClientId,
@@ -58,7 +59,7 @@ function _ingestionClientToResource(ingestionClient){
 
     delete ingestionClient.brokers;
     resource.parameters = Object.assign(resource.parameters, ingestionClient)
-    
+
     return resource;
 }
 
