@@ -7,11 +7,14 @@ To install the latest versions of `common` and `repository`, either run `mvn cle
 
 ## Build
 
+Make sure that you have the right application.properties in the root directory 
+or in config subdirectory. 
+
 1. `mvn clean install`
-2. `docker build -t software-artefact-service .`
+2. `docker build -t rdsea/rsihubsas .`
 
 ## Run
-`docker run -it --rm -p 8082:8082 software-artefact-service`
+`docker run -it --rm -p 8082:8082 rdsea/rsihubsas`
 
 
 ## Swagger Interface
