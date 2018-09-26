@@ -7,6 +7,7 @@
     "SEARCH_BRIDGE": "/interoperabilitybridge/search",
     "SERVER_PORT": 8081,
     // TODO revert to "MONGODB_URL": "mongodb://user:rsihub1@ds127961.mlab.com:27961/recommendation_history",
-    "MONGODB_URL": "mongodb://testing:testing1@ds052978.mlab.com:52978/bridge_test"
+    "MONGODB_URL": "mongodb://testing:testing1@ds052978.mlab.com:52978/bridge_test",
+    "BRIDGE_COLLECTION_NAME": "interoperability_bridges"
   }
 }

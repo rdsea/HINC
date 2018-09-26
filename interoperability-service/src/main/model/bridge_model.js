@@ -14,8 +14,8 @@ const Bridge = new Schema({
     outputResourceId: String
 });
 
-const BridgeModel = mongoose.model("Bridge", Bridge);
+
 
 module.exports = {
-    InteroperabilityBridge:BridgeModel
+    InteroperabilityBridgeSchema:Bridge
 };

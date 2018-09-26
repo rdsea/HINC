@@ -2,8 +2,13 @@ const assert = require('assert');
 
 const configModule = require('config');
 const config = configModule.get('interoperability_service');
+const testconfig = configModule.get('test');
+
+const mongoose = require("mongoose");
+mongoose.connect(config.MONGODB_URL, { useNewUrlParser: true });
 
 
+/* test code commented because it changes the state of the database*/
 
 describe('mongoose model tests', function(){
     const service = require("../main/bridges/bridges_service");
@@ -13,23 +18,32 @@ describe('mongoose model tests', function(){
     });
 
     after(()=>{
-       service.disconnect();
+        if(process.env.NODE_ENV === "test" && testconfig.drop_bridge_collection){
+            mongoose.connection.db.dropCollection(config.BRIDGE_COLLECTION_NAME);
+        }
+        mongoose.disconnect();
     });
 
-    it('test run', function () {
-        return service.create(_examplebridge()).then((data)=>{
-            console.log(data);
-        }).then(()=>{
-            return service.getList(2);
-        }).then((data)=>{
-            console.log(data);
-        });
+    it('test create', function () {
+        let old_count;
+        return service.getList(0).then((data)=>{
+                old_count = data.length;
+                return service.create(_examplebridge());
+            }).then((data)=>{
+                console.log(data);
+            }).then(()=>{
+                return service.getList(0);
+            }).then((data)=>{
+                assert(data.length===old_count+1);
+                console.log(data);
+            });
     });
-    it('test run', function () {
+    it('test delete', function () {
         let id;
         return service.create(_examplebridge()).then((data)=>{
-            console.log(data);
+            console.log("created: " + data);
             id = data._id;
+            assert(id!==null);
         }).then(()=>{
             return service.deleteBridge(id);
         }).then((data)=>{
@@ -37,15 +51,20 @@ describe('mongoose model tests', function(){
         }).then((data)=>{
             return service.get(id);
         }).then((data)=>{
-              console.log(data);
+            assert(data===null);
         });
     });
-    it('test run', function () {
-        return service.search({"slice.sliceId":"bridge 2"}).then((data)=>{
-            console.log(data);
-        });
+    it('test search', function () {
+        let bridge = _examplebridge();
+        bridge.slice.sliceId = "bridge 2";
+
+        return service.create(bridge).then(()=>{
+                return service.search({"slice.sliceId":"bridge 2"})})
+            .then((data)=>{
+                assert(data.length===2);
+            });
     });
-    it('test run', function () {
+    it('test update metadata', function () {
         let id;
         let metadata ={
             resource:{
@@ -60,7 +79,9 @@ describe('mongoose model tests', function(){
         }).then(()=>{
             return service.updateMetadata(id,metadata);
         }).then((data)=>{
-            console.log("updated to:" + data);
+            return service.get(id);
+        }).then((data) =>{
+            assert(data.metadata.resource.category === "network_function");
         });
     });
 });

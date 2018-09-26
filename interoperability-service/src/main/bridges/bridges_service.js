@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
-const config = require("config");
-const intopConfig = config.get("interoperability_service");
-const BridgeModel = require("../model/bridge_model").InteroperabilityBridge;
+let config = require("config");
+let intopConfig = config.get("interoperability_service");
+const BridgeSchema = require("../model/bridge_model").InteroperabilityBridgeSchema;
+
+
+const collectionName = intopConfig.BRIDGE_COLLECTION_NAME;
+const BridgeModel = mongoose.model("Bridge", BridgeSchema, collectionName);
 
 module.exports = {
     get:get,
@@ -9,11 +13,8 @@ module.exports = {
     create:create,
     search:search,
     deleteBridge:deleteBridge,
-    updateMetadata:updateMetadata,
-    disconnect:disconnect
+    updateMetadata:updateMetadata
 };
-
-mongoose.connect(intopConfig.MONGODB_URL, { useNewUrlParser: true });
 
 function get(id) {
     return BridgeModel.findById(id).exec();
@@ -41,19 +42,8 @@ function updateMetadata(id, metadata){
         bridge = data;
         bridge.metadata = metadata;
         // use mongodb directly to avoid usage of deprecated code by mongoose
-        return mongoose.connection.db.collection("bridges").findOneAndUpdate({_id:id},bridge);
+        return mongoose.connection.db.collection(collectionName).findOneAndUpdate({_id:id},bridge);
     }).then(()=>{
         return new Promise((resolve => {resolve(bridge)}));
     })
 }
-
-function disconnect() {
-    return mongoose.disconnect();
-}
-
-process.on('SIGINT', function(){
-    mongoose.connection.close(function(){
-        console.log("Mongoose default connection is disconnected due to application termination");
-        process.exit(0);
-    });
-});
