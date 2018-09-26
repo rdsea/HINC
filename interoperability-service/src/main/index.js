@@ -12,7 +12,7 @@ const PORT = config.SERVER_PORT;
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/interoperability', router);
+app.use('/', router);
 app.use(bodyParser.json());
 
 app.listen(PORT);
