@@ -18,7 +18,7 @@ appropriate local(s)
 java -jar global-management-service-0.1.1.jar
 
 ## Configuration
-You will need to provide an application.properties file in the same directory. A sample can be found in src/main/resources
+You will need to provide an application.properties file in the subdirectory config/ or in the same directory. A sample can be found in config/
 
 ```dtd
 # amqp connection string: set the string to the AMQP URL
@@ -39,6 +39,10 @@ spring.jackson.deserialization.fail-on-unknown-properties=false
 
 
 ```
+
+## Running with Docker
+
+A docker can be built and in order to run the docker, the configuration file should be prepared in the host and mapped to the container /rsihubglobal/config
 
 ## Limitation
 - Secure HTTPS
