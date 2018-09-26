@@ -11,7 +11,6 @@ const publicIp = require('public-ip');
 const PORT = config.SERVER_PORT;
 
 
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/interoperability', router);
 app.use(bodyParser.json());
