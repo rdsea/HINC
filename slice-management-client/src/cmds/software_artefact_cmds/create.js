@@ -17,7 +17,7 @@ exports.handler = function (argv) {
     let filePath_metadata= path.resolve(argv.metadataFile);
     let metadataFile = require(filePath_metadata);
 
-    _getSoftwareArtefactURL(argv.softwareArtefact)
+    _getSoftwareArtefactURL(argv.softwareArtefact, argv.executionEnvironment)
         .then((softwareArtefactURL) => {
             let jsonObj =
                 {
@@ -31,8 +31,8 @@ exports.handler = function (argv) {
 
 };
 
-function _getSoftwareArtefactURL(softwareArtefact){
-    if(!softwareArtefact.startsWith("http")){
+function _getSoftwareArtefactURL(softwareArtefact, executionEnvironment){
+    if(!softwareArtefact.startsWith("http") && !executionEnvironment.startsWith("docker")){
         return storage_service.upload(softwareArtefact);
     }else{
         return new Promise((resolve,reject) => {resolve(softwareArtefact)});
