@@ -13,8 +13,14 @@ or in config subdirectory.
 1. `mvn clean install`
 2. `docker build -t rdsea/rsihubsas .`
 
-## Run
-`docker run -it --rm -p 8082:8082 rdsea/rsihubsas`
+## Run with docker 
+
+you can pull rdsea/rsihubsas from docker hub or build your own.
+
+Make sure that the application.properties is in the config directory and mapped 
+to the docker filesystem 
+
+`docker run -it --rm -v /var/rsihubsas/config:/rsihubsas/config -p 8082:8082 rdsea/rsihubsas`
 
 
 ## Swagger Interface
