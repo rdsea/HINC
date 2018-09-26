@@ -4,7 +4,7 @@ const SliceConnectivity = require("./slice_connectivity_model").SliceConnectivit
 
 const Slice = new Schema({
     sliceId:String,
-    resources:{type:Map, of:Schema.Types.Mixed},
+    resources:Schema.Types.Mixed,
     connectivities:{type:Map, of:SliceConnectivity},
     createdAt:Number
 },{_id:false});
