@@ -42,7 +42,9 @@ function saveNew(){
         }
     };
     instance.metadata = {
-        resource:"res",
+        resource:{
+            category:"iot"
+        },
         inputs:["i1","i2"]
     };
     return instance.save();
@@ -52,10 +54,10 @@ function update(){
     let query = MyBridge.find({});
 
     return query.exec().then((results)=>{
-        let test = results[0];
+        /*let test = results[0];
         //test.slice = "update";
         test.metadata = {};
-        return test.save();
+        return test.save();*/
     });
     //return new Promise(resolve => {resolve()});
 }

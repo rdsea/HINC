@@ -44,7 +44,7 @@
   "target": [],
   "metadata": {
     "resource": {
-      "category": "network_function",
+      "category": "network_function_service",
       "type": {
         "prototype": "messagebroker",
         "protocols": [
