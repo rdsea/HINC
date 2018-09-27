@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const inoutput = require("./inoutput_model");
-const ResourceMetadata = require("./resource_metadata_model").ResourceMetadata;
+const inoutput = require("./inoutput_schema");
+const ResourceMetadata = require("./resource_metadata_schema").ResourceMetadata;
 
 const Metadata = new Schema({
     resource:ResourceMetadata,

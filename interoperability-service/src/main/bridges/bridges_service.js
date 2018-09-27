@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 let config = require("config");
 let intopConfig = config.get("interoperability_service");
-const BridgeSchema = require("../model/bridge_model").InteroperabilityBridgeSchema;
+const BridgeSchema = require("../schema/bridge_schema").InteroperabilityBridgeSchema;
 
 
 const collectionName = intopConfig.BRIDGE_COLLECTION_NAME;

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const MetadataModel = require("./interoperability_metadata/interoperability_metadata_model").Metadata;
-const SliceInformation = require("./slice_information/slice_information_model").Slice;
+const MetadataModel = require("./interoperability_metadata/interoperability_metadata_schema").Metadata;
+const SliceInformation = require("./slice_information/slice_information_schema").Slice;
 
 
 const Schema = mongoose.Schema;

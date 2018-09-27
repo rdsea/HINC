@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const SliceConnectivity = require("./slice_connectivity_model").SliceConnectivity;
+const SliceConnectivity = require("./slice_connectivity_schema").SliceConnectivity;
 
 const Slice = new Schema({
     sliceId:String,
