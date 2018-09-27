@@ -1,8 +1,8 @@
 const deleteAdaptor = require('../controls/delete');
-const config = require('../../config');
-
+var cloudamqpplugin_config = require('config');
+var config = cloudamqpplugin_config.get('cloudamqpadaptor');
 function handleDelete(msg){
-    let reply = { 
+    let reply = {
         msgType: 'CONTROL_RESULT',
         senderID: config.ADAPTOR_NAME,
         receiverID: null,

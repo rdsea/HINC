@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config');
-
+//const config = require('../../config');
+var cloudamqpplugin_config = require('config');
+var config = cloudamqpplugin_config.get('cloudamqpadaptor');
 function getProvider(){
     let availableResources = [];
 

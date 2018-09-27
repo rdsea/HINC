@@ -1,0 +1,8 @@
+{
+  "ingestionadaptor": {
+    "ADAPTOR_NAME" : "ingestionadaptor",
+    "URI" : "amqp:/rmq.cloudamqp.com",
+    "EXCHANGE" : "adaptor_localeurope_input",
+    "ENDPOINT": "http://localhost:3003"
+  }
+}

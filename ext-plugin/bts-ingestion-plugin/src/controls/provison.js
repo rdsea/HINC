@@ -1,12 +1,13 @@
 const axios = require('axios');
-const config = require('../../config');
+//const config = require('../../config');
 const randomString = require('randomstring');
-
+var ingestplugin_config = require('config');
+var config = ingestplugin_config.get('ingestionadaptor');
 function provision(resource){
     let controlResult = null;
 
-    
-    let provisionParameters = null 
+
+    let provisionParameters = null
     if(resource.parameters.data){
         provisionParameters = {
             data: resource.parameters.data,
@@ -26,7 +27,7 @@ function provision(resource){
             }
         })
     }
-    
+
 
     resource.parameters.egressAccessPoints.forEach((accessPoint, index) => {
         if(accessPoint.applicationProtocol !== "MQTT") return;
@@ -60,7 +61,7 @@ function provision(resource){
         controlResult = {
             status: 'FAILED',
             rawOutput: err.response,
-        }; 
+        };
         return controlResult;
     });
 }

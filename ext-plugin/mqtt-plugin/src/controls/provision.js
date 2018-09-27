@@ -1,7 +1,9 @@
 const axios = require('axios');
-const config = require('../../config');
 
-function provision(resource){ 
+var mqttplugin_config = require('config');
+var config = mqttplugin_config.get('mqttadaptor');
+
+function provision(resource){
     let controlResult = null;
     let broker = null;
     return axios.post(`${config.ENDPOINT}/mosquittobroker`).then((res) => {
@@ -60,4 +62,3 @@ function _waitForLocation(brokerId, uri){
 
 
 module.exports.provision = provision;
-

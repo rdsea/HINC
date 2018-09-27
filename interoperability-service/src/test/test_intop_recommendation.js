@@ -5,7 +5,7 @@ const check = require('../main/check/intop_check');
 const recommendation = require('../main/recommendation/intop_recommendation');
 
 const configModule = require('config');
-const config = configModule.get('interoperability_service');
+let config = configModule.get('interoperability_service');
 
 const basic_data = require('./testdata/testslices/basic_testslices');
 
@@ -17,16 +17,12 @@ const solutionResourcesDB = require('./testdata/testslices/intop_recommendation_
 
 const MongoClient = require("mongodb").MongoClient;
 
-let test_mongodb_url = "mongodb://localhost:27017/";
-let old_recommendation_history = config.MONGODB_URL;
-
 
 describe('intop_recommendation', function(){
     before(function() {
-        config.MONGODB_URL = test_mongodb_url;
         recommendation.queryServices = function(query){
             return new Promise((resolve, reject) => {
-            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true} , function(err, db) {
+            MongoClient.connect(config.MONGODB_URL, {useNewUrlParser: true} , function(err, db) {
                 if (err) return reject(err);
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").find(query).toArray(function(err, result) {
@@ -41,7 +37,7 @@ describe('intop_recommendation', function(){
 
         let promises = [];
         promises.push(new Promise(function(resolve, reject){
-            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true}, function(err, db) {
+            MongoClient.connect(config.MONGODB_URL, {useNewUrlParser: true}, function(err, db) {
                 if (err) return reject(err);
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").insertMany(solutionResourcesDB, function(err, res) {
@@ -53,7 +49,7 @@ describe('intop_recommendation', function(){
             });
         }));
         promises.push(new Promise(function(resolve, reject){
-            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true}, function(err, db) {
+            MongoClient.connect(config.MONGODB_URL, {useNewUrlParser: true}, function(err, db) {
                 if (err) return reject(err);
                 let dbo = db.db("recommendation_test");
                 dbo.createCollection("recommendations", function(err, res) {
@@ -68,7 +64,7 @@ describe('intop_recommendation', function(){
     after(function() {
         let promises = [];
         promises.push(new Promise(function(resolve, reject){
-            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true}, function(err, db) {
+            MongoClient.connect(config.MONGODB_URL, {useNewUrlParser: true}, function(err, db) {
                 if (err) {db.close(); return reject(err);}
                 let dbo = db.db("recommendation_test");
                 dbo.collection("test").drop(function(err, delOK) {
@@ -80,7 +76,7 @@ describe('intop_recommendation', function(){
             });
         }));
         promises.push(new Promise(function(resolve, reject){
-            MongoClient.connect(test_mongodb_url, {useNewUrlParser: true}, function(err, db) {
+            MongoClient.connect(config.MONGODB_URL, {useNewUrlParser: true}, function(err, db) {
                 if (err) {db.close(); return reject(err);}
                 let dbo = db.db("recommendation_test");
                 dbo.collection("recommendations").drop(function(err, delOK) {
@@ -91,7 +87,6 @@ describe('intop_recommendation', function(){
                 });
             });
         }));
-        config.MONGODB_URL = old_recommendation_history;
         return Promise.all(promises);
     });
 

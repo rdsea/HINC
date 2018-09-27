@@ -1,7 +1,7 @@
 const axios = require('axios');
-const config = require('../../config');
 const url = require("url");
-
+var cloudamqpplugin_config = require('config');
+var config = cloudamqpplugin_config.get('cloudamqpadaptor');
 function getItems(){
     console.log("Obtaining resources from the provider");
 
@@ -24,7 +24,7 @@ function getItems(){
                 networkProtocol: "IP",
                 qos: 0,
                 topics: []
-      if(msg === null) return;        };
+        };
 
             resources.push({
                 uuid: broker.id,

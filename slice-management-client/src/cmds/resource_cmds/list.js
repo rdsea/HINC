@@ -1,4 +1,4 @@
-const amqpTools = require('../../amqpTools');
+//const amqpTools = require('../../amqpTools');
 const db = require('../../data/db');
 const axios = require('axios');
 const config = require('../../config');
@@ -16,8 +16,8 @@ exports.builder = {
 }
 
 exports.handler = function (argv) {
-    let payload = argv.limit ? { limit: argv.limit } : '';
-    let query = amqpTools.buildMessage('FETCH_RESOURCES', payload);
+    //let payload = argv.limit ? { limit: argv.limit } : '';
+    //let query = amqpTools.buildMessage('FETCH_RESOURCES', payload);
 
 
     return axios.get(`${config.uri}/resources`).then((res) => {
@@ -33,6 +33,6 @@ function _displayResources(resources){
     resources.forEach((resource, count) => {
         console.log(JSON.stringify(resource, null, 2));
         console.log('\n================================================\n')
-    });    
+    });
     console.log(`retrieved ${resources.length} resources`)
 }

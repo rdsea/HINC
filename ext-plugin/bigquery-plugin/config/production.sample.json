@@ -1,0 +1,8 @@
+{
+  "bigqueryadaptor": {
+    "ADAPTOR_NAME" : "bigquery",
+    "URI" : "amqp://rmq.cloudamqp.com/",
+    "EXCHANGE" : "adaptor_local_input",
+    "ENDPOINT": "http://localhost:3000"
+  }
+}

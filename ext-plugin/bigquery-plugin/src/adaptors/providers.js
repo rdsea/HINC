@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config');
-
+//const config = require('../../config');
+var bigqueryplugin_config = require('config');
+var config = bigqueryplugin_config.get('bigqueryadaptor');
 
 /**
  * gets the available resources provider information
@@ -38,7 +39,7 @@ function getProvider(settings){
                 ]
             },
             metadata: {
-                
+
             },
         })
 

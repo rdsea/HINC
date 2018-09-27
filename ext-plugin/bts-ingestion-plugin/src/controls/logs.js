@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config')
-
+//const config = require('../../config')
+var ingestplugin_config = require('config');
+var config = ingestplugin_config.get('ingestionadaptor');
 function getLogs(resource){
     return axios.get(`${config.ENDPOINT}/ingestionClient/${resource.uuid}/logs`).then((res) => {
         controlResult = {

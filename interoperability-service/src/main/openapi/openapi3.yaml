@@ -21,6 +21,8 @@ tags:
   description: "Interoperability Check"
 - name: "recommendation"
   description: "Interoperability Recommendation"
+- name: "bridge"
+  description: "Interoperability Bridge Management"
 
 servers:
   - url: "http://localhost:8081/interoperability"
@@ -95,6 +97,124 @@ paths:
           description: "successful operation"
         405:
           description: "Invalid input"
+  /bridges:
+    get:
+      tags:
+        - "bridge"
+      summary: "Get a list of interoperability bridges"
+      description:
+      operationId: "get_bridges"
+      consumes: ["application/json"]
+      produces: ["application/json"]
+      parameters:
+        - name: limit
+          in: query
+          description: limit of bridges to fetch
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "invalid input"
+    put:
+      tags:
+        - "bridge"
+      summary: "Create an interoperability bridge"
+      description:
+      operationId: "create_bridge"
+      consumes: ["application/json"]
+      produces: ["application/json"]
+      requestBody:
+        $ref: "#/components/requestBodies/interoperabilitybridge"
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "invalid input"
+  /bridges/{id}:
+    get:
+      tags:
+        - "bridge"
+      summary: "Get an interoperability bridge by id"
+      description:
+      operationId: "get_bridge"
+      consumes: ["application/json"]
+      produces: ["application/json"]
+      parameters:
+      - name: id
+        in: path
+        description: id of bridge to fetch
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "invalid input"
+    delete:
+      tags:
+        - "bridge"
+      summary: "Delete an interoperability bridge by id"
+      description:
+      operationId: "delete_bridge"
+      consumes: ["application/json"]
+      produces: ["application/json"]
+      parameters:
+        - name: id
+          in: path
+          description: id of bridge to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "invalid input"
+  /bridges/search:
+    post:
+      tags:
+        - "bridge"
+      summary: "Search interoperability bridges with a mongodb query object as requestbody"
+      description:
+      operationId: "search_bridge"
+      consumes: ["application/json"]
+      produces: ["application/json"]
+      requestBody:
+        $ref: "#/components/requestBodies/query"
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "invalid input"
+  /bridges/{id}/metadata:
+    put:
+      tags:
+        - "bridge"
+      summary: "Update the metadata of an interoperability bridge that is identified by it's id"
+      description:
+      operationId: "update_bridge_metadata"
+      consumes: ["application/json"]
+      produces: ["application/json"]
+      parameters:
+      - name: id
+        in: path
+        description: id of bridge to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        $ref: "#/components/requestBodies/metadata"
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "invalid input"
+
+
 
 components:
   schemas:
@@ -113,6 +233,20 @@ components:
             $ref: "#components/schemas/Connectivity"
       example:
         $ref: "#/components/examples/bts_slice"
+
+    InteroperabilityBridge:
+      type: object
+      properties:
+        id:
+          type: "string"
+        slice:
+          $ref: "#/components/schemas/Slice"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+        inputResourceId:
+          type: "string"
+        outputResourceId:
+          type: "string"
 
     Resource:
       type: object
@@ -640,6 +774,7 @@ components:
         oneOf:
           - $ref: "#/components/schemas/metadata_catalogue/dataformat/CSV"
           - $ref: "#/components/schemas/metadata_catalogue/dataformat/JSON"
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/YAML"
           - $ref: "#/components/schemas/metadata_catalogue/dataformat/XML"
           - $ref: "#/components/schemas/metadata_catalogue/dataformat/RDF"
           - $ref: "#/components/schemas/metadata_catalogue/dataformat/ApacheAVRO"
@@ -651,6 +786,7 @@ components:
           mapping:
             csv: "#/components/schemas/metadata_catalogue/dataformat/CSV"
             json: "#/components/schemas/metadata_catalogue/dataformat/JSON"
+            yaml: "#/components/schemas/metadata_catalogue/dataformat/YAML"
             xml: "#/components/schemas/metadata_catalogue/dataformat/XML"
             rdf: "#/components/schemas/metadata_catalogue/dataformat/RDF"
             apacheavro: "#/components/schemas/metadata_catalogue/dataformat/ApacheAVRO"
@@ -683,6 +819,10 @@ components:
         JSON:
           allOf:
             - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
+
+        YAML:
+          allOf:
+          - $ref: "#/components/schemas/metadata_catalogue/dataformat/properties_dataformat"
 
         XML:
           allOf:
@@ -826,6 +966,35 @@ components:
                   contract:
                     $ref: '#/components/schemas/Contract'
           description: "The resource slice and contract that the interoperability check or recommendation is performed on"
+
+    interoperabilitybridge:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              bridge:
+                $ref: '#/components/schemas/InteroperabilityBridge'
+      description: "The interoperability bridge is going to be saved"
+    query:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+      description: "A valid mongodb query object"
+    metadata:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: '#/components/schemas/Metadata'
+      description: "The new metadata of the bridge"
 
   examples:
     bts_slice:

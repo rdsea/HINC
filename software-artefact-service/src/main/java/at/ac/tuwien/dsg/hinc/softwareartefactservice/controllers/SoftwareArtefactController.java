@@ -79,11 +79,6 @@ public class SoftwareArtefactController {
         return new ResponseEntity<>(softwareArtefact, HttpStatus.OK);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<SoftwareArtefact>> querySoftwareArtefacts(@RequestParam(required = false, defaultValue = "{}")String query) {
-        return new ResponseEntity<>(softwareArtefactService.query(query), HttpStatus.OK);
-    }
-
     @PostMapping("/search")
     public ResponseEntity<List<SoftwareArtefact>> querySoftwareArtefactsWithBody(@RequestBody String query) {
         return new ResponseEntity<>(softwareArtefactService.query(query), HttpStatus.OK);

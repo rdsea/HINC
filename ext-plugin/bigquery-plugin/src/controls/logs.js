@@ -1,6 +1,7 @@
 const axios = require('axios');
-const config = require('../../config')
-
+//const config = require('../../config')
+var bigqueryplugin_config = require('config');
+var config = bigqueryplugin_config.get('bigqueryadaptor');
 function getLogs(resource){
     return new Promise((resolve, reject) => {
         resolve({

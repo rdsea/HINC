@@ -1,9 +1,10 @@
 const provisionAdaptor = require('../controls/provison');
 const deleteAdaptor = require('../controls/delete');
-const config = require('../../config');
-
+//const config = require('../../config');
+var ingestplugin_config = require('config');
+var config = ingestplugin_config.get('ingestionadaptor');
 function handleProvision(msg){
-    let reply = { 
+    let reply = {
         msgType: 'CONTROL_RESULT',
         senderID: config.ADAPTOR_NAME,
         receiverID: null,
@@ -20,7 +21,7 @@ function handleProvision(msg){
         reply.destination = msg.reply;
 
         return reply;
-    }); 
+    });
 }
 
 module.exports = handleProvision;
