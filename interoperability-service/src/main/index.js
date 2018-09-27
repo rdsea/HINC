@@ -11,7 +11,7 @@ let config = configModule.get('interoperability_service');
 const publicIp = require('public-ip');
 const PORT = config.SERVER_PORT;
 
-mongoose.connect(intopConfig.MONGODB_URL, { useNewUrlParser: true });
+mongoose.connect(config.MONGODB_URL, { useNewUrlParser: true });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/', router);

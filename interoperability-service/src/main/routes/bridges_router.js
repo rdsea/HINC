@@ -8,45 +8,45 @@ router.use(bodyParser.json());
 
 router.get("/", function (req, res) {
     let limit = req.query.limit;
-    let bridges = service.getList(limit);
-    res.send(bridges);
+    service.getList(limit).then((bridges)=>{
+        res.send(bridges);
+    });
 });
 
 router.get("/:id", function (req, res) {
     let id = req.params.id;
-    let bridge = service.get(id);
-    res.send(bridge);
+    service.get(id).then((bridge)=>{
+        res.send(bridge);
+    });
 });
 
 router.put("/", function (req, res) {
-    let toCreate = req.body.interoperabilityBridge;
-    let created = service.create(toCreate);
-    res.send(created);
-});
-
-router.get("/search", function (req, res) {
-    let query = req.query.query;
-    let bridges = service.search(query);
-    res.send(bridges);
+    let toCreate = req.body.bridge;
+    service.create(toCreate).then((created)=>{
+        res.send(created);
+    });
 });
 
 router.post("/search", function (req, res) {
-    let query = req.body.query;
-    let bridges = service.search(query);
-    res.send(bridges);
+    let query = req.body;
+    service.search(query).then((result)=>{
+        res.send(result);
+    });
 });
 
-router.delete("/{id}", function (req, res) {
+router.delete("/:id", function (req, res) {
     let id = req.params.id;
-    let deleted = service.deleteBridge(id);
-    res.send(deleted);
+    service.deleteBridge(id).then((result)=>{
+        res.send(result);
+    });
 });
 
-router.put("/{id}/metadata", function (req, res) {
+router.put("/:id/metadata", function (req, res) {
     let id = req.params.id;
     let metadata = req.body.metadata;
-    let updatedBridge = service.updateMetadata(id, metadata);
-    res.send(updatedBridge);
+    service.updateMetadata(id, metadata).then((result)=>{
+        res.send(result);
+    });
 });
 
 module.exports.getRouter = function(){
