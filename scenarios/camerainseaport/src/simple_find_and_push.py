@@ -19,11 +19,11 @@ an external bridge do the pull and push protocol interoperability pattern.
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--provider_url', default='http://localhost:3000/camera', help='URL of the IoT Camera Provider')
+parser.add_argument('--provider_url', default='http://104.155.93.219:3000/camera', help='URL of the IoT Camera Provider')
 parser.add_argument('--lon', default='108.1494449', help='longitude')
 parser.add_argument('--lat', default='16.0723458', help='latitude')
 parser.add_argument('--distance', default='10000', help='default in meters')
-parser.add_argument('--bridge_url',default='http://daredevil.infosys.tuwien.ac.at:8085/datastorageArtefact/dataurl',help='URL of an interoperability bridge')
+parser.add_argument('--bridge_url',default='http://104.155.93.219:8085/datastorageArtefact/dataurl',help='URL of an interoperability bridge')
 parser.add_argument('--user_email',help='Given an user emails indicate that the customer wants to use service pull_push')
 args = parser.parse_args()
 
@@ -86,6 +86,8 @@ def camera_data_handle(camera):
     Get url and timestamp
     '''
     print(response.text)
+    if not response.text:
+        return
     #should check response
     url =response.json()['name']
     timestamp=response.json()['timestamp']
