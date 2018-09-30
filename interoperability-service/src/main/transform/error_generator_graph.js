@@ -27,7 +27,7 @@ function getDependentNodes(startNode, currentNode, targetNode, graph, dependentN
             dependentNodes.push({node:nextNodes[i], direct:directConnection});
         }
 
-        if(nextNodes[i].resource.metadata.resource.category === "network_function"){
+        if(nextNodes[i].resource.metadata.resource.category.startsWith("network_function")){
             getDependentNodes(startNode, nextNodes[i], targetNode, graph, dependentNodes, false);
         }
     }

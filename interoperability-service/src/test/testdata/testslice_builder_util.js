@@ -65,7 +65,7 @@ function mqttBroker(name, mqttprotocol){
         target:[],
         metadata: {
             resource: {
-                category:"network_function",
+                category:"network_function_service",
                 type:{
                     prototype: "messagebroker",
                     protocols: [mqttprotocol],
@@ -85,7 +85,7 @@ function amqpBroker(name, amqpprotocol){
         target:[],
         metadata: {
             resource: {
-                category:"network_function",
+                category:"network_function_service",
                 type: {
                     prototype: "messagebroker",
                     protocols: [amqpprotocol],

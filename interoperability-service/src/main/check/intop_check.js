@@ -79,7 +79,7 @@ function checkConnectedNodes(startNode, currentNode, directConnection, path, sta
             indirectConnectionCheck(startNode, nextNodes[i], currentNode, startOutput, path, graph, errors, warnings, matches);
         }
 
-        if(nextNodes[i].resource.metadata.resource.category === "network_function"){
+        if(nextNodes[i].resource.metadata.resource.category.startsWith("network_function")){
             checkConnectedNodes(startNode, nextNodes[i], false, path, startOutput, graph, errors, warnings, matches);
         }
     }
@@ -239,7 +239,7 @@ function firstOutInputPair(source, target){
 
 
 function addBrokerOutinputs(outinputs, resource, type){
-    if(resource.metadata.resource.category === "network_function"){
+    if(resource.metadata.resource.category.startsWith("network_function")){
         if(resource.metadata.resource.type.prototype === "messagebroker"){
             for(let i = 0; i < resource.metadata.resource.type.protocols.length; i++){
 
