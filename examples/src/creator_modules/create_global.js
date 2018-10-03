@@ -8,6 +8,7 @@ module.exports = {create: createGlobal};
 function createGlobal(config, compositionConfig){
     let globalConfig = require("../configTemplates/global.json");
     globalConfig['spring.rabbitmq.addresses'] = config.broker_uri
+    configMongoDb(config, globalConfig);
 
     fs.writeFileSync(path.join(__dirname, "../../result/config/global.properties"), properties.stringify(globalConfig));
 
@@ -15,9 +16,12 @@ function createGlobal(config, compositionConfig){
         image: "rdsea/rsihubglobal",
         ports:[
             "8080:8080"
-        ],
-        depends_on:[]
+        ]
     };
+
+    if(config.global_mongo_db === ""){
+        service.depends_on = ["mongo"];
+    }
 
     addServiceConfigDocker(config, compositionConfig, service);
 
@@ -46,5 +50,11 @@ function addServiceConfigDocker(config, compositionConfig, service){
         service.volumes = [
             `${config_filepath}:${config_target}`
         ]
+    }
+}
+
+function configMongoDb(config, globalconfig){
+    if(config.global_mongo_db !== ""){
+        globalconfig["spring.data.mongodb.uri"] = config.global_mongo_db;
     }
 }

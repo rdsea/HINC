@@ -15,9 +15,13 @@ function createInteroperabilityService(config, compositionConfig){
         image: "rdsea/rsihubintop",
         ports:[
             `8081:${template.interoperability_service.SERVER_PORT}`
-        ],
-        depends_on:[]
+        ]
     };
+
+
+    if(config.intop_mongo_db === ""){
+        service.depends_on = ["mongo"];
+    }
 
     addServiceConfigDocker(config, compositionConfig, service);
 
@@ -26,23 +30,11 @@ function createInteroperabilityService(config, compositionConfig){
 
 
 function writeConfigFile(template, config){
-    template['GLOBAL_MANAGEMENT_URI'] = "http://rsihubglobal:8080";
-    template['SOFTWARE_ARTEFACT_URI'] = "http://rsihubsas:8082";
+    if(config.intop_mongo_db !== ""){
+        template["interoperability_service.MONGODB_URL"] = config.intop_mongo_db;
+    }
 
-    let interoperabilityConfig = `{
-        "interoperability_service": {
-            "SOFTWARE_ARTEFACT_URI": "${template.interoperability_service.SOFTWARE_ARTEFACT_URI}",
-            "GLOBAL_MANAGEMENT_URI": "${template.interoperability_service.GLOBAL_MANAGEMENT_URI}",
-            "SEARCH_ARTEFACTS": "${template.interoperability_service.SEARCH_ARTEFACTS}",
-            "SEARCH_RESOURCES": "${template.interoperability_service.SEARCH_RESOURCES}",
-            "SEARCH_BRIDGE": "${template.interoperability_service.SEARCH_BRIDGE}",
-            "SERVER_PORT": "${template.interoperability_service.SERVER_PORT}",
-            "MONGODB_URL": "${config.intop_mongo_db}",
-            "BRIDGE_COLLECTION_NAME": "${template.interoperability_service.BRIDGE_COLLECTION_NAME}"
-        }
-    }`;
-
-    fs.writeFileSync(path.join(__dirname, "../../result/config/interoperability_config.json"), interoperabilityConfig);
+    fs.writeFileSync(path.join(__dirname, "../../result/config/interoperability_config.json"), JSON.stringify(template,null,2));
 }
 
 

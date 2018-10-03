@@ -13,9 +13,13 @@ function createSoftwareArtefactService(config, compositionConfig){
         image: "rdsea/rsihubsas",
         ports:[
             "8082:8082"
-        ],
-        depends_on:[]
+        ]
     };
+
+
+    if(config.sas_mongo_db === ""){
+        service.depends_on = ["mongo"];
+    }
 
     addServiceConfigDocker(config, compositionConfig, service);
 
@@ -24,7 +28,9 @@ function createSoftwareArtefactService(config, compositionConfig){
 
 function writeConfigFile(template, config){
 
-    template['spring.data.mongodb.uri'] = config.sas_mongo_db;
+    if(config.sas_mongo_db !== "") {
+        template['spring.data.mongodb.uri'] = config.sas_mongo_db;
+    }
 
     fs.writeFileSync(path.join(__dirname, "../../result/config/sas.properties"), properties.stringify(template));
 }

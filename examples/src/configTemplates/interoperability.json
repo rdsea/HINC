@@ -1,12 +1,12 @@
 {
     "interoperability_service": {
-        "SOFTWARE_ARTEFACT_URI": "http://localhost:8082",
-        "GLOBAL_MANAGEMENT_URI": "http://localhost:8080",
+        "SOFTWARE_ARTEFACT_URI": "http://rsihubsas:8082",
+        "GLOBAL_MANAGEMENT_URI": "http://rsihubglobal:8080",
         "SEARCH_ARTEFACTS": "/softwareartefacts/search",
         "SEARCH_RESOURCES": "/resources/search",
         "SEARCH_BRIDGE": "/interoperabilitybridge/search",
         "SERVER_PORT": 8081,
-        "MONGODB_URL": "mongodb://user:password@server/rsihub_intop",
+        "MONGODB_URL": "mongodb://mongo:27017/rsihub_intop",
         "BRIDGE_COLLECTION_NAME": "interoperability_bridges"
     }
 }

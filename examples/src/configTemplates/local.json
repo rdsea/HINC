@@ -8,5 +8,7 @@
     "adaptor.amqp.output.broadcast": "adaptor_local_broadcast",
     "adaptor.amqp.output.unicast": "adaptor_local_unicast",
     "spring.jackson.deserialization.fail-on-unknown-properties": false,
-    "server.port": 12342
+    "server.port": 12342,
+    "spring.data.mongodb.uri": "mongodb://mongo:27017/localID",
+    "spring.data.mongodb.database": "localID"
 }

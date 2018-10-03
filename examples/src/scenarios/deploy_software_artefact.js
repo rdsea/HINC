@@ -27,40 +27,40 @@ let compositionConfig = {
     localConfigs: localConfigs
 }
 
-//prompt(questions).then((ans) => {
-{
-    //TODO config.sas_mongo_db
-    //TODO config.intop_mongo_db
-    //TODO docker compose vs docker stack deploy
+//{
+prompt(questions).then((config) => {
     clearResult()
 
-    let config = {
-        local_count:2,
-        provider_count:2,
-        broker_uri:"amqp://mgrpueon:5A9m3ovJBL18QQXQQll-hAFnTW9xX5wV@sheep.rmq.cloudamqp.com/mgrpueon",
-        database_uri:"",
-        sas_mongo_db:"mongodb://user:rsihub1@ds117540.mlab.com:17540/software_artefacts",
-        intop_mongo_db: "mongodb://user:rsihub1@ds127961.mlab.com:27961/recommendation_history",
-        is_docker_stack:true
-    };
+    /*let config = {
+        local_count: 2,
+        provider_count: 2,
+        broker_uri: "amqp://mgrpueon:5A9m3ovJBL18QQXQQll-hAFnTW9xX5wV@sheep.rmq.cloudamqp.com/mgrpueon",
+        database_uri: "",
+        global_mongo_db: "mongodb://mongo:27017/global",
+        local_mongo_db: "mongodb://mongo:27017/local",
+        sas_mongo_db: "mongodb://testing:testing1@ds161102.mlab.com:61102/testing_database",
+        intop_mongo_db: "mongodb://testing:testing1@ds161102.mlab.com:61102/testing_database",
+        is_docker_stack: false
+    };*/
 
-    if(config.is_docker_stack){
-        compositionConfig.docker.configs={};
+    if (config.is_docker_stack) {
+        compositionConfig.docker.configs = {};
     }
 
     console.log('parameters set :')
     console.log(JSON.stringify(config, null, 2));
+    dockerizedMongo(config,compositionConfig);
     create(config);
 
-    //setupBroker(exchanges, config.broker_uri);
+    setupBroker(exchanges, config.broker_uri);
 
-    if(config.is_docker_stack){
+    if (config.is_docker_stack) {
         fs.writeFileSync(path.join(__dirname, "../../result/docker-stack.yml"), yml.safeDump(compositionConfig.docker));
-    }else{
+    } else {
         fs.writeFileSync(path.join(__dirname, "../../result/docker-compose.yml"), yml.safeDump(compositionConfig.docker));
     }
-
-}
+//}
+});
 
 function create(config){
     createGlobal.create(config, compositionConfig);
@@ -79,6 +79,16 @@ function create(config){
     }else{
         console.log("navigate to the folder ./result and run the command:")
         console.log("$ docker-compose up");
+    }
+}
+
+function dockerizedMongo(config, compositionConfig){
+    if(config.local_mongo_db === "" || config.global_mongo_db === ""
+        || config.sas_mongo_db === "" || config.intop_mongo_db ===""){
+        compositionConfig.docker.services.mongo = {
+            image: "mongo",
+            ports: ["27017:27017"]
+        }
     }
 }
 

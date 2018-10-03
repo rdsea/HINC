@@ -20,10 +20,27 @@ let questions = [
     },
 
     {
-        name: "database_uri",
-        message: "mongodb connection string, if you don't provide one, dockerized mongodb will be provided",
-        default: "mongodb://root:example@mongodb:27017"
+        name: "global_mongo_db",
+        message: "mongodb connection string of rsihub-global. if you don't provide one, dockerized mongodb will be provided"
     },
+    {
+        name: "local_mongo_db",
+        message: "mongodb connection string of the locals. if you don't provide one, dockerized mongodb will be provided"
+    },
+    {
+        name: "sas_mongo_db",
+        message: "mongodb connection string of rsihub-sas (software artefact service). if you don't provide one, dockerized mongodb will be provided"
+    },
+    {
+        name: "intop_mongo_db",
+        message: "mongodb connection string of rsihub-intop (interoperability service). if you don't provide one, dockerized mongodb will be provided"
+    },
+    {
+        name: "is_docker_stack",
+        message: "do you need to deploy the stack to a docker swarm?",
+        type: "confirm",
+        default: true
+    }
 ]
 
 

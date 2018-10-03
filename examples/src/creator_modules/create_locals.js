@@ -20,6 +20,7 @@ function createLocal(localId, config, compositionConfig){
     localConfig["adaptor.amqp.input"] = `adaptor_${localId}_input`;
     localConfig["adaptor.amqp.output.broadcast"] = `adaptor_${localId}_broadcast`;
     localConfig["adaptor.amqp.output.unicast"] = `adaptor_${localId}_unicast`;
+    configMongoDb(config, localConfig, localId);
     fs.writeFileSync(path.join(__dirname, `../../result/config/local.${localId}.properties`), properties.stringify(localConfig));
 
     let service = {
@@ -28,6 +29,10 @@ function createLocal(localId, config, compositionConfig){
             "rsihubglobal"
         ]
     };
+
+    if(config.local_mongo_db === ""){
+        service.depends_on.push("mongo");
+    }
 
     addServiceConfigDocker(config, compositionConfig, service, localId);
 
@@ -63,5 +68,14 @@ function addServiceConfigDocker(config, compositionConfig, service, localId){
         service.volumes = [
             `${config_filepath}:${config_target}`
         ]
+    }
+}
+
+
+
+function configMongoDb(config, localconfig, localID){
+    localconfig["spring.data.mongodb.database"] = localID;
+    if(config.local_mongo_db !== ""){
+        localconfig["spring.data.mongodb.uri"] = config.global_mongo_db;
     }
 }
