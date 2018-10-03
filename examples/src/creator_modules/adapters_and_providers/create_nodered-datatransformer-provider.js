@@ -50,7 +50,7 @@ function createProvider(config, compositionConfig, localConfig){
 
     addServiceConfigDocker(compositionConfig, config.is_docker_stack, service, config_name, config_filepath, config_target);
 
-    compositionConfig.docker.services[`noderedprovider${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`nodered-provider-${localConfig["hinc.local.id"]}`] = service;
 }
 
 

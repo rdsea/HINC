@@ -1,5 +1,5 @@
 const scenarioCreator = require("../creator_modules/scenario_creator");
-const createSensor = require('../creator_modules/adapters_and_providers/create_sensor-provider');
+const createSensor = require('../creator_modules/adapters_and_providers/create_bts-sensor-provider');
 const createMQTT = require('../creator_modules/adapters_and_providers/create_mqtt-provider');
 const createBigQuery = require('../creator_modules/adapters_and_providers/create_bigquery-provider');
 const createIngestion = require('../creator_modules/adapters_and_providers/create_ingestion-provider');
