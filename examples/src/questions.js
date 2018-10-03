@@ -8,7 +8,7 @@ let questions = [
 
     {
         name: "provider_count",
-        message: "how many providers do you want per local managemen service?",
+        message: "how many providers do you want per local management service?",
         default: 4,
         validate: validateNumber,
     },

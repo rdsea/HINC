@@ -1,0 +1,4 @@
+{
+  "spring.data.mongodb.uri":"mongodb://user:password@server/rsihub_sas",
+  "server.port":8082
+}

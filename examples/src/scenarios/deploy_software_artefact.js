@@ -15,8 +15,7 @@ const createSas = require("../creator_modules/create_sas");
 
 let dockerComposeHinc = {
     version: '3.3',
-    services:{},
-    configs:{}
+    services:{}
 }
 
 let exchanges = {};
@@ -30,22 +29,37 @@ let compositionConfig = {
 
 //prompt(questions).then((ans) => {
 {
+    //TODO config.sas_mongo_db
+    //TODO config.intop_mongo_db
+    //TODO docker compose vs docker stack deploy
     clearResult()
 
     let config = {
-        local_count:1,
-        provider_count:1,
+        local_count:2,
+        provider_count:2,
         broker_uri:"amqp://mgrpueon:5A9m3ovJBL18QQXQQll-hAFnTW9xX5wV@sheep.rmq.cloudamqp.com/mgrpueon",
-        database_uri:""
+        database_uri:"",
+        sas_mongo_db:"mongodb://user:rsihub1@ds117540.mlab.com:17540/software_artefacts",
+        intop_mongo_db: "mongodb://user:rsihub1@ds127961.mlab.com:27961/recommendation_history",
+        is_docker_stack:true
     };
+
+    if(config.is_docker_stack){
+        compositionConfig.docker.configs={};
+    }
 
     console.log('parameters set :')
     console.log(JSON.stringify(config, null, 2));
     create(config);
 
-    setupBroker(exchanges, config.broker_uri);
-    fs.writeFileSync(path.join(__dirname, "../../result/docker-compose.yml"), yml.safeDump(compositionConfig.docker));
-    
+    //setupBroker(exchanges, config.broker_uri);
+
+    if(config.is_docker_stack){
+        fs.writeFileSync(path.join(__dirname, "../../result/docker-stack.yml"), yml.safeDump(compositionConfig.docker));
+    }else{
+        fs.writeFileSync(path.join(__dirname, "../../result/docker-compose.yml"), yml.safeDump(compositionConfig.docker));
+    }
+
 }
 
 function create(config){
@@ -55,8 +69,17 @@ function create(config){
     createIntop.create(config, compositionConfig);
     createSas.create(config, compositionConfig);
 
-    console.log("navigate to the folder ./result and run the command:")
-    console.log("$ docker-compose up");
+    if(config.is_docker_stack){
+        console.log("to deploy the stack to a docker swarm:")
+        console.log("   1. navigate to the folder ./result")
+        console.log("   2. Connect your shell to your swarm manager:");
+        console.log("       $ eval $(docker-machine env <swarm-manager-name>");
+        console.log("   3. run: ");
+        console.log("       $ docker stack deploy -c docker-stack.yml <stack-name>");
+    }else{
+        console.log("navigate to the folder ./result and run the command:")
+        console.log("$ docker-compose up");
+    }
 }
 
 

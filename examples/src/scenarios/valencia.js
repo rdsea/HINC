@@ -44,7 +44,7 @@ function create(config){
 }
 
 function createGlobal(config){
-    let globalConfig = require("../configTempates/global.json");
+    let globalConfig = require("../configTemplates/global.json");
     globalConfig['spring.rabbitmq.addresses'] = config.broker_uri
 
     fs.writeFileSync(path.join(__dirname, "../../result/config/global.properties"), properties.stringify(globalConfig));
@@ -76,7 +76,7 @@ function createAllLocals(config){
 }
 
 function createLocal(localId, config){
-    let localConfig = require("../configTempates/local.json");
+    let localConfig = require("../configTemplates/local.json");
     localConfig["spring.rabbitmq.addresses"] = config.broker_uri;
     localConfig["hinc.local.id"] = localId;
     localConfig["adaptor.amqp.input"] = `adaptor_${localId}_input`;
@@ -113,7 +113,7 @@ function createAllAdaptorsAndProviders(config){
 }
 
 function createAdaptorsAndProviders(config, localConfig){
-    let adaptorConfigBase = require('../configTempates/adaptor.json');
+    let adaptorConfigBase = require('../configTemplates/adaptor.json');
     adaptorConfigBase.URI = config.broker_uri;
     adaptorConfigBase.EXCHANGE =  localConfig["adaptor.amqp.input"];
     
@@ -206,7 +206,7 @@ function writeAdaptorConfig(adaptorConfig){
 
 
 function createInteroperabilityService(config){
-    let template = require("../configTempates/interoperability.json");
+    let template = require("../configTemplates/interoperability.json");
     template['GLOBAL_MANAGEMENT_URI'] = "http://global:8080";
     template['SOFTWARE_ARTEFACT_URI'] = "http://software-artefact-service:8082";
 

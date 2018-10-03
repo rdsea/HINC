@@ -14,7 +14,7 @@ function createAllLocals(config, compositionConfig){
 }
 
 function createLocal(localId, config, compositionConfig){
-    let localConfig = require("../configTempates/local.json");
+    let localConfig = JSON.parse(JSON.stringify(require("../configTemplates/local.json")));
     localConfig["spring.rabbitmq.addresses"] = config.broker_uri;
     localConfig["hinc.local.id"] = localId;
     localConfig["adaptor.amqp.input"] = `adaptor_${localId}_input`;
@@ -24,14 +24,13 @@ function createLocal(localId, config, compositionConfig){
 
     let service = {
         image: "rdsea/rsihublocal",
-        //TODO change to config
-        volumes: [
-            `./config/local.${localId}.properties:/application.properties`
-        ],
         depends_on:[
-            "global"
+            "rsihubglobal"
         ]
     };
+
+    addServiceConfigDocker(config, compositionConfig, service, localId);
+
 
     compositionConfig.docker.services[`local${localId}`] = service;
 
@@ -43,4 +42,26 @@ function createLocal(localId, config, compositionConfig){
     }
 
     compositionConfig.localConfigs.push(localConfig);
+}
+
+
+
+
+function addServiceConfigDocker(config, compositionConfig, service, localId){
+    let config_name = `local.${localId}_config`;
+    let config_filepath = `./config/local.${localId}.properties`;
+    let config_target = '/rsihublocal/application.properties';
+
+    if(config.is_docker_stack){
+        service.configs = [{source: config_name,
+            target: config_target}];
+
+        compositionConfig.docker.configs[config_name] = {
+            file: config_filepath
+        };
+    }else{
+        service.volumes = [
+            `${config_filepath}:${config_target}`
+        ]
+    }
 }
