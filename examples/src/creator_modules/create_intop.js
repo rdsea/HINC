@@ -31,7 +31,7 @@ function createInteroperabilityService(config, compositionConfig){
 
 function writeConfigFile(template, config){
     if(config.intop_mongo_db !== ""){
-        template["interoperability_service.MONGODB_URL"] = config.intop_mongo_db;
+        template.interoperability_service.MONGODB_URL = config.intop_mongo_db;
     }
 
     fs.writeFileSync(path.join(__dirname, "../../result/config/interoperability_config.json"), JSON.stringify(template,null,2));
