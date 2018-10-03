@@ -6,8 +6,11 @@ const createNodeRed = require('./adapters_and_providers/create_nodered-datatrans
 
 
 module.exports = {
-    create:createAllAdaptorsAndProviders
+    create:createAllAdaptorsAndProviders,
+    add:addAdapterProviderCreator
 }
+
+let adapterProviderCreators = [];
 
 function createAllAdaptorsAndProviders(config, compositionConfig){
     compositionConfig.localConfigs.forEach((localConfig) => {
@@ -16,5 +19,12 @@ function createAllAdaptorsAndProviders(config, compositionConfig){
 }
 
 function createAdaptorsAndProviders(config, compositionConfig, localConfig){
-    createNodeRed.create(config,compositionConfig,localConfig);
+    adapterProviderCreators.forEach((apCreator) => {
+        apCreator.create(config,compositionConfig,localConfig);
+    });
+    //createNodeRed.create(config,compositionConfig,localConfig);
+}
+
+function addAdapterProviderCreator(creator) {
+    adapterProviderCreators.push(creator);
 }

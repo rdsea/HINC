@@ -1,5 +1,5 @@
 const prompt = require('inquirer').createPromptModule();
-const questions = require('../questions');
+const questions = require('../questions_base');
 const properties = require('properties');
 const fs = require('fs');
 const yml = require('js-yaml');
