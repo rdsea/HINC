@@ -41,7 +41,7 @@ function createProvider(config, compositionConfig, localConfig){
         image: "rdsea/mqtt-provider"
     };
 
-    compositionConfig.docker.services[`mqtt-provider-${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`mqttprovider${localConfig["hinc.local.id"]}`] = service;
 }
 
 

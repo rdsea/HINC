@@ -19,7 +19,7 @@ function createAdapter(config, compositionConfig, localConfig){
 
     let sensorAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
     sensorAdaptorConfig.ADAPTOR_NAME = `sensor${localConfig["hinc.local.id"]}`;
-    sensorAdaptorConfig.ENDPOINT = `http://sensorprovider${localConfig["hinc.local.id"]}:3004`;
+    sensorAdaptorConfig.ENDPOINT = `http://sensorprovidervalencia${localConfig["hinc.local.id"]}:3004`;
 
     writeAdaptorConfig(sensorAdaptorConfig);
     let service = {
@@ -40,7 +40,7 @@ function createProvider(config, compositionConfig, localConfig){
         image: "rdsea/sensor-provider-valencia"
     };
 
-    compositionConfig.docker.services[`sensor-provider-valencia-${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`sensorprovidervalencia${localConfig["hinc.local.id"]}`] = service;
 }
 
 

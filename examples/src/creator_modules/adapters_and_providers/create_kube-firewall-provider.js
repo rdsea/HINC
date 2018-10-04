@@ -40,7 +40,7 @@ function createProvider(config, compositionConfig, localConfig){
         image: "rdsea/kube-firewall-provider"
     };
 
-    compositionConfig.docker.services[`kube-firewall-provider-${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`firewallprovider${localConfig["hinc.local.id"]}`] = service;
 }
 
 

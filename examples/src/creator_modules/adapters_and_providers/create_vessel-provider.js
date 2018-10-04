@@ -40,7 +40,7 @@ function createProvider(config, compositionConfig, localConfig){
         image: "rdsea/vessel-provider"
     };
 
-    compositionConfig.docker.services[`vessel-provider-${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`vesselprovider${localConfig["hinc.local.id"]}`] = service;
 }
 
 function writeAdaptorConfig(adaptorConfig){

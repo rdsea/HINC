@@ -40,7 +40,7 @@ function createProvider(config, compositionConfig, localConfig){
         image: "rdsea/bigquery-provider"
     };
 
-    compositionConfig.docker.services[`bigquery-provider-${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`bigqueryprovider${localConfig["hinc.local.id"]}`] = service;
 }
 
 

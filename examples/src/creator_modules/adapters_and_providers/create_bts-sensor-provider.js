@@ -40,7 +40,7 @@ function createProvider(config, compositionConfig, localConfig){
         image: "rdsea/sensor-provider"
     };
 
-    compositionConfig.docker.services[`sensor-provider-${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`sensorprovider${localConfig["hinc.local.id"]}`] = service;
 }
 
 

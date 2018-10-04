@@ -40,7 +40,7 @@ function createProvider(config, compositionConfig, localConfig){
         image: "rdsea/ingestion-provider"
     };
 
-    compositionConfig.docker.services[`ingestion-provider-${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`ingestionprovider${localConfig["hinc.local.id"]}`] = service;
 }
 
 

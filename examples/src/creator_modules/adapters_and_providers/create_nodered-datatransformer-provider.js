@@ -19,7 +19,7 @@ function createAdapter(config, compositionConfig, localConfig){
 
     let noderedAdaptorConfig = JSON.parse(JSON.stringify(adaptorConfigBase));
     noderedAdaptorConfig.ADAPTOR_NAME = `nodered_adapter_${localConfig["hinc.local.id"]}`;
-    noderedAdaptorConfig.ENDPOINT = `http://noderedadapter${localConfig["hinc.local.id"]}:3004`;
+    noderedAdaptorConfig.ENDPOINT = `http://noderedprovider${localConfig["hinc.local.id"]}:3004`;
 
     writeAdaptorConfig(noderedAdaptorConfig);
     let service = {
@@ -50,7 +50,7 @@ function createProvider(config, compositionConfig, localConfig){
 
     addServiceConfigDocker(compositionConfig, config.is_docker_stack, service, config_name, config_filepath, config_target);
 
-    compositionConfig.docker.services[`nodered-provider-${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`noderedprovider${localConfig["hinc.local.id"]}`] = service;
 }
 
 

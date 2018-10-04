@@ -40,7 +40,7 @@ function createProvider(config, compositionConfig, localConfig){
         image: "rdsea/alarmclient-provider"
     };
 
-    compositionConfig.docker.services[`alarmclient-provider-${localConfig["hinc.local.id"]}`] = service;
+    compositionConfig.docker.services[`alarmclientprovider${localConfig["hinc.local.id"]}`] = service;
 }
 
 
