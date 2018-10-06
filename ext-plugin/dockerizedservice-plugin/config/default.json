@@ -1,0 +1,9 @@
+{
+  "dockerizedservice": {
+    "ADAPTOR_NAME" : "dockerizedservice",
+    "URI" : "amqp://abc",
+    "EXCHANGE" : "adaptor_localeurope_input",
+    "ENDPOINT": "http://localhost:3009/docker",
+    "ADAPTOR_UUID":"8f3f18aa-c8de-11e8-9d56-536c7560bee4"
+  }
+}

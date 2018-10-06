@@ -25,4 +25,4 @@ the configuration file, production.json, must be mapped to the right configurati
 
 Example of running:
 
- docker run -v /var/temp/config:/cloudmqttadaptor/config/ -e "NODE_ENV=production" -e "CLOUDMQTT_KEY=aaa" cloudmqttadaptor npm start
+ docker run -v /var/temp/config:/cloudmqttadaptor/config/ -e "NODE_ENV=production" -e "CLOUDMQTT_KEY=aaa" rdsea/cloudmqtt-adaptor npm start

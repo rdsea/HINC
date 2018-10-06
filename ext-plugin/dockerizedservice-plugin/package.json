@@ -1,0 +1,30 @@
+{
+  "name": "dockerizedserviceplugin",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha src/test",
+    "start": "node src/index.js"
+  },
+  "author": {
+  "email": "linhsolar@gmail.com",
+  "url": "http://rdsea.github.io"
+},
+"license": "Apache-2.0",
+"licenses": [
+  {
+    "type": "Apache-2.0",
+    "url": "http://www.apache.org/licenses/LICENSE-2.0"
+  }
+],
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "axios": "^0.18.0",
+    "chai": "^4.1.2",
+    "config": "^2.0.1",
+    "qs": "^6.5.2",
+    "url-parse": "^1.4.3",
+    "uuid": "^3.2.1"
+  }
+}
