@@ -28,7 +28,6 @@ function init(){
             channel.bindQueue(queue, exchange, routingKey),
             channel.consume(queue, _handleMessage),
         ];
-  if(msg === null) return;
         return Promise.all(setup);
     }).then(() => {
         return register(routingKey);
