@@ -9,7 +9,6 @@ let channel = null;
 let queue = config.ADAPTOR_NAME;
 let exchange = config.EXCHANGE;
 let routingKey = config.ADAPTOR_NAME;
-let localRoutingKey = config.LOCAL_ROUTING_KEY;
 let uri = config.URI;
 
 function init(){
@@ -35,14 +34,14 @@ function init(){
 }
 
 function register(adaptorName){
-    console.log("Register ", adaptorName, "to rsiHubLocal");
+    console.log("Register ", adaptorName, " with id ", config.ADAPTOR_UUID, " to rsiHubLocal");
     let payload = JSON.stringify({
         adaptorName,
     });
 
     let msg = {
         msgType: 'REGISTER_ADAPTOR',
-        senderID: adaptorName,
+        senderID: config.ADAPTOR_UUID,
         receiverID: null,
         payload: payload,
         timeStamp: Math.floor((new Date()).getMilliseconds()/1000),
