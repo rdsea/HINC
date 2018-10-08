@@ -11,7 +11,12 @@ exports.handler = function (argv) {
     let query = argv.query;
 
     if(!_isJsonString(query)) {
-        query = require(path.resolve(query));
+        try {
+            query = require(path.resolve(query));
+        }catch(err){
+            console.err(`${query} is neither a valid JSON string nor a valid path`)
+            return;
+        }
     }else{
         query = JSON.parse(query);
     }
@@ -19,7 +24,7 @@ exports.handler = function (argv) {
     return _searchArtefacts(query).then((data) => {
         let artefacts = data;
         let table = new Table({
-            head: ['artefact ID', 'name', 'excecutionEnvironment', 'reference'],
+            head: ['artefact ID', 'name', 'executionEnvironment', 'reference'],
         });
         artefacts.forEach((artefact) => {
             table.push([
