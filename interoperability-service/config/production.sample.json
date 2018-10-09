@@ -6,7 +6,7 @@
     "SEARCH_RESOURCES": "/resources/search",
     "SEARCH_BRIDGE": "/interoperabilitybridge/search",
     "SERVER_PORT": 8081,
-    "MONGODB_URL": "mongodb://mlab.com/recommendation_history",
+    "MONGODB_URL": "mongodb://mlab.com/interoperability_service",
     "BRIDGE_COLLECTION_NAME": "interoperability_bridges"
   }
 }

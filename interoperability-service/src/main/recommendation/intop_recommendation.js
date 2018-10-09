@@ -373,8 +373,8 @@ function saveRecommendationToMongo(old_slice, result, contract){
                 resolve(result);
                 return;
             }
-            let dbo = db.db("recommendation_history");
-            dbo.collection("recommendations").updateMany({_id:db_item._id}, db_item, {upsert:true},  function (err, res) {
+            let dbo = db.db("interoperability_service");
+            dbo.collection("recommendation_history").updateMany({_id:db_item._id}, db_item, {upsert:true},  function (err, res) {
                 //if (err) throw err;
                 db.close();
                 resolve(result);
