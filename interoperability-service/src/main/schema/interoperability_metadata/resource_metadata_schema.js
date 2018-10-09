@@ -5,7 +5,7 @@ const QoData = require("./quality/qodata_schema").QoData;
 const QoService = require("./quality/qoservice_schema").QoService;
 
 const ResourceMetadata = new Schema({
-    category:{type:String, enum:["iot_resource", "network_function_service", "cloud_service", "iot", "network_function", "cloud"]},
+    category:{type:String, enum:["iot_resource", "network_function_service", "cloud_service", "iot", "network_function", "cloud", "intop_bridge"]},
     type:Schema.Types.Mixed,
     data_contract:DataContract,
     qod:QoData,
