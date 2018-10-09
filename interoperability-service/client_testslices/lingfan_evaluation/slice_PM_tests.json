@@ -27,7 +27,9 @@
       "controlPoints": [],
       "dataPoints": [],
       "uuid": null,
-      "providerUuid": "mqttlocal1set0"
+      "providerUuid": "mqttlocal1set0",
+      "source": ["temp_mqtt", "hum_mqtt"],
+      "target": ["mqtt_analytics"]
     },
     "analytics": {
       "name": "bts ingestion client",
@@ -99,7 +101,9 @@
       "controlPoints": [],
       "dataPoints": [],
       "uuid": null,
-      "providerUuid": "ingestionlocal1set0"
+      "providerUuid": "ingestionlocal1set0",
+      "source": ["mqtt_analytics"],
+      "target": ["analytics_datasink"]
     },
     "datasink": {
       "name": "bigQuery dataset",
@@ -170,7 +174,9 @@
               }
             ]
           }
-        ]
+        ],
+        "source": ["analytics_datasink"],
+        "target": []
       },
       "controlPoints": [],
       "dataPoints": [],
@@ -231,7 +237,9 @@
         }
       ],
       "uuid": null,
-      "providerUuid": "sensorlocal1set0"
+      "providerUuid": "sensorlocal1set0",
+      "source": [],
+      "target": ["temp_mqtt"]
     },
     "hum": {
       "name": "sensor humidity",
@@ -287,7 +295,9 @@
         }
       ],
       "uuid": null,
-      "providerUuid": "sensorlocal1set0"
+      "providerUuid": "sensorlocal1set0",
+      "source": [],
+      "target": ["hum_mqtt"]
     }
   },
   "connectivities": {
