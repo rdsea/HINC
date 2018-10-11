@@ -1,0 +1,113 @@
+{
+  "sliceId": "valencia_intop_06_qos_reliability",
+  "resources":{
+    "gateaccess_sensor1":{
+      "metadata":{
+        "resource":{
+          "category":"iot",
+          "qos":{
+            "reliability":90
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"sensordata"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }]
+      },
+      "source":[],
+      "target":["broker"]
+    },
+    "gateaccess_sensor2":{
+      "metadata":{
+        "resource":{
+          "category":"iot",
+          "qos":{
+            "reliability":50
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"sensordata"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }]
+      },
+      "source":[],
+      "target":["broker"]
+    },
+    "analytics":{
+      "metadata":{
+        "resource":{
+          "category":"iot",
+          "required":{
+            "qos":{
+              "reliability":80
+            }
+          }
+        },
+        "inputs":[{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"sensordata"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs":[]
+      },
+      "source":["broker"],
+      "target":[]
+    },
+    "broker": {
+      "metadata": {
+        "resource": {
+          "category":"network_function_service",
+          "type":{
+            "prototype":"messagebroker",
+            "topics":["sensordata"],
+            "auto_create":true
+          }
+        },
+        "inputs": [],
+        "outputs": []
+      },
+      "source": ["gateaccess_sensor1","gateaccess_sensor2"],
+      "target": ["analytics"]
+    }
+  },
+  "connectivities":{
+    "sensor1_to_broker":{
+      "in":"gateaccess_sensor1",
+      "out":"broker"
+    },
+    "sensor2_to_broker":{
+      "in":"gateaccess_sensor2",
+      "out":"broker"
+    },
+    "broker_to_analytics":{
+      "in":"broker",
+      "out":"analytics"
+    }
+  },
+  "createdAt": 1534059245
+}

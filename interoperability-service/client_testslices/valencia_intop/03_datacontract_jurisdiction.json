@@ -1,0 +1,96 @@
+{
+  "sliceId": "valencia_intop_03_datacontract_jurisdiction",
+  "resources": {
+    "camera": {
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "data_contract": {
+            "jurisdiction": "EU"
+          },
+          "required": {
+            "data_contract": {
+              "jurisdiction": [
+                "EU"
+              ]
+            }
+          }
+        },
+        "inputs": [],
+        "outputs": [
+          {
+            "push_pull": "pull",
+            "protocol": {
+              "protocol_name": "http",
+              "http_method": "get"
+            }
+          }
+        ]
+      },
+      "source": [],
+      "target": [
+        "eu_storage",
+        "us_storage"
+      ]
+    },
+    "eu_storage": {
+      "metadata": {
+        "resource": {
+          "category": "cloud_service",
+          "data_contract": {
+            "jurisdiction": "EU"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "pull",
+            "protocol": {
+              "protocol_name": "http",
+              "http_method": "get"
+            }
+          }
+        ],
+        "outputs": []
+      },
+      "source": [
+        "camera"
+      ],
+      "target": []
+    },
+    "us_storage": {
+      "metadata": {
+        "resource": {
+          "category": "cloud_service",
+          "data_contract": {
+            "jurisdiction": "EU"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "pull",
+            "protocol": {
+              "protocol_name": "http",
+              "http_method": "get"
+            }
+          }
+        ],
+        "outputs": []
+      },
+      "source": [
+        "camera"
+      ],
+      "target": []
+    }
+  },
+  "connectivities": {
+    "camera_to_eu_storage": {
+      "in": "camera",
+      "out": "eu_storage"
+    },
+    "camera_to_us_storage": {
+      "in": "camera",
+      "out": "us_storage"
+    }
+  },
+  "createdAt": 1534059245
+}
