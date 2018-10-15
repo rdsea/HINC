@@ -9,7 +9,7 @@ const configModule = require('config');
 const config = configModule.get('interoperability_service');
 
 const SEARCH_SOFTWARE_ARTEFACT = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_ARTEFACTS;
-const SEARCH_INTEROPERABILITY_BRIDGE = config.SOFTWARE_ARTEFACT_URI + config.SEARCH_BRIDGE;
+const SEARCH_INTEROPERABILITY_BRIDGE = "http://localhost:8081/interoperability/bridges/search";
 const SEARCH_RESOURCES = config.GLOBAL_MANAGEMENT_URI + config.SEARCH_RESOURCES;
 
 exports.getRecommendations = function(slice){
@@ -291,6 +291,7 @@ exports.queryServices = function(query){
             allResources = allResources.concat(software_artefacts);
         }));
 
+        //TODO change to bridge_service.query
         promises.push(request.post({url: SEARCH_INTEROPERABILITY_BRIDGE, body: jsonQuery}).then((result)=>{
             console.log(result);
             let bridges = JSON.parse(result);
