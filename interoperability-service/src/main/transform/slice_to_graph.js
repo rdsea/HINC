@@ -36,6 +36,9 @@ exports.nextNodes = function (graph, node){
 
     for(let i = 0; i< node.resource.target.length; i++){
         let targetNode = graph.edges[node.resource.target[i]].out;
+        if(typeof targetNode === "object" && targetNode.label){
+            targetNode = targetNode.label;
+        }
         nextnodes.push(graph.nodes[targetNode]);
     }
 
@@ -54,6 +57,9 @@ exports.previousNodes = function (graph, node){
 
     for(let i = 0; i< node.resource.source.length; i++){
         let targetNode = graph.edges[node.resource.source[i]].in;
+        if(typeof targetNode === "object" && targetNode.label){
+            targetNode = targetNode.label;
+        }
         previousNodes.push(graph.nodes[targetNode]);
     }
 

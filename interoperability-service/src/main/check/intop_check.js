@@ -240,7 +240,7 @@ function firstOutInputPair(source, target){
 
 function addBrokerOutinputs(outinputs, resource, type){
     if(resource.metadata.resource.category.startsWith("network_function")){
-        if(resource.metadata.resource.type.prototype === "messagebroker"){
+        if(resource.metadata.resource.type.prototype.toLowerCase() === "messagebroker"){
             for(let i = 0; i < resource.metadata.resource.type.protocols.length; i++){
 
                 //mqtt || amqp

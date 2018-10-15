@@ -10,7 +10,7 @@
         "resource":{
           "category":"network_function_service",
           "type":{
-            "prototype":"MessageBroker",
+            "prototype":"messagebroker",
             "protocols":[{
               "protocol_name":"mqtt"
             }],
@@ -26,7 +26,9 @@
       "controlPoints": [],
       "dataPoints": [],
       "uuid": null,
-      "providerUuid": "mqttlocal1set0"
+      "providerUuid": "mqttlocal1set0",
+      "source":["hum_mqtt","temp_mqtt"],
+      "target":["mqtt_analytics"]
     },
     "analytics": {
       "name": "bts ingestion client",
@@ -81,7 +83,9 @@
       "controlPoints": [],
       "dataPoints": [],
       "uuid": null,
-      "providerUuid": "ingestionlocal1set0"
+      "providerUuid": "ingestionlocal1set0",
+      "source":["mqtt_analytics"],
+      "target":[]
     },
     "temp": {
       "name": "sensor temperature",
@@ -107,7 +111,7 @@
             "qos":0
           },
           "dataformat":{
-            "dataformat_name":"JSON",
+            "dataformat_name":"json",
             "encoding":"utf-8"
           }
         }]
@@ -137,7 +141,9 @@
         }
       ],
       "uuid": null,
-      "providerUuid": "sensorlocal1set0"
+      "providerUuid": "sensorlocal1set0",
+      "source":[],
+      "target":["temp_mqtt"]
     },
     "hum": {
       "name": "sensor humidity",
@@ -163,7 +169,7 @@
             "qos":0
           },
           "dataformat":{
-            "dataformat_name":"JSON",
+            "dataformat_name":"json",
             "encoding":"utf-8"
           }
         }]
@@ -193,7 +199,9 @@
         }
       ],
       "uuid": null,
-      "providerUuid": "sensorlocal1set0"
+      "providerUuid": "sensorlocal1set0",
+      "source":[],
+      "target":["hum_mqtt"]
     }
   },
   "connectivities": {
@@ -240,14 +248,6 @@
       "out": {
         "label": "broker",
         "accessPoint": 0
-      }
-    },
-    "analytics_datasink": {
-      "in": {
-        "label": "analytics"
-      },
-      "out": {
-        "label": "datasink"
       }
     }
   },

@@ -10,7 +10,7 @@
         "resource":{
           "category":"network_function_service",
           "type":{
-            "prototype":"MessageBroker",
+            "prototype":"messagebroker",
             "protocols":[{
               "protocol_name":"mqtt"
             }],
@@ -26,7 +26,9 @@
       "controlPoints": [],
       "dataPoints": [],
       "uuid": null,
-      "providerUuid": "mqttlocal1set0"
+      "providerUuid": "mqttlocal1set0",
+      "source": [],
+      "target": ["mqtt_analytics"]
     },
     "analytics": {
       "name": "bts ingestion client",
@@ -98,7 +100,9 @@
       "controlPoints": [],
       "dataPoints": [],
       "uuid": null,
-      "providerUuid": "ingestionlocal1set0"
+      "providerUuid": "ingestionlocal1set0",
+      "source": ["mqtt_analytics"],
+      "target": ["analytics_datasink"]
     },
     "datasink": {
       "name": "bigQuery dataset",
@@ -174,7 +178,9 @@
       "controlPoints": [],
       "dataPoints": [],
       "uuid": null,
-      "providerUuid": "bigquerylocal1set0"
+      "providerUuid": "bigquerylocal1set0",
+      "source": ["analytics_datasink"],
+      "target": []
     }
   },
   "connectivities": {

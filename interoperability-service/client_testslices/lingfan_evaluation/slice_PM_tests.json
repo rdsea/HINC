@@ -10,7 +10,7 @@
         "resource":{
           "category":"network_function_service",
           "type":{
-            "prototype":"MessageBroker",
+            "prototype":"messagebroker",
             "protocols":[{
               "protocol_name":"mqtt"
             }],
@@ -207,7 +207,7 @@
             "qos":0
           },
           "dataformat":{
-            "dataformat_name":"JSON",
+            "dataformat_name":"json",
             "encoding":"utf-8"
           }
         }]
@@ -265,7 +265,7 @@
             "qos":0
           },
           "dataformat":{
-            "dataformat_name":"JSON",
+            "dataformat_name":"json",
             "encoding":"utf-8"
           }
         }]
