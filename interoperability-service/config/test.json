@@ -4,7 +4,7 @@
     "GLOBAL_MANAGEMENT_URI": "http://localhost:8080",
     "SEARCH_ARTEFACTS": "/softwareartefacts/search",
     "SEARCH_RESOURCES": "/resources/search",
-    "SEARCH_BRIDGE": "/interoperabilitybridge/search",
+    "SEARCH_BRIDGE": "/interoperability/bridges/search",
     "SERVER_PORT": 8081,
     "MONGODB_URL": "mongodb://localhost:27017/recommendation_test",
     //"MONGODB_URL": "mongodb://testing:testing1@ds052978.mlab.com:52978/bridge_test",

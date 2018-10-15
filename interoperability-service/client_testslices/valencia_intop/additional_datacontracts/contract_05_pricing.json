@@ -1,0 +1,9 @@
+{
+  "data_contract": {
+    "pricing": {
+      "price": "0.01",
+      "currency": "EUR",
+      "unit": "request"
+    }
+  }
+}

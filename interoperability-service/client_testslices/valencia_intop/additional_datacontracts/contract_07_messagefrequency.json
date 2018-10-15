@@ -1,0 +1,5 @@
+{
+  "qos":{
+    "message_frequency":1
+  }
+}

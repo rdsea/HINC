@@ -1,0 +1,105 @@
+{
+  "sliceId": "valencia_intop_01_protocol",
+  "resources": {
+    "pcs": {
+      "metadata": {
+        "resource": {
+          "category":"iot"
+        },
+        "inputs": [{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"pcs_in"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs": [{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"pcs_out"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }]
+      },
+      "source": ["broker"],
+      "target": ["broker"]
+    },
+    "vessel": {
+      "metadata": {
+        "resource": {
+          "category":"iot"
+        },
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "protocol_name": "amqp",
+              "queue": "pcs_out"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            }
+          }],
+        "outputs": [{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"amqp",
+            "exchange":"pcs_in"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }]
+      },
+      "source": ["broker"],
+      "target": ["broker"]
+    },
+    "broker": {
+      "metadata": {
+        "resource": {
+          "category":"network_function_service",
+          "type":{
+            "prototype":"messagebroker",
+            "topics":["pcs_in", "pcs_out"],
+            "auto_create":true
+          }
+        },
+        "inputs": [],
+        "outputs": []
+      },
+      "source": ["pcs", "vessel"],
+      "target": ["vessel", "pcs"]
+    }
+  },
+  "connectivities": {
+    "pcs_to_broker": {
+      "in": "pcs",
+      "out": "broker"
+    },
+    "broker_to_vessel": {
+      "in": "broker",
+      "out": "vessel"
+    },
+    "vessel_to_broker": {
+      "in": "vessel",
+      "out": "broker"
+    },
+    "broker_to_pcs": {
+      "in": "broker",
+      "out": "pcs"
+    }
+  },
+  "createdAt": 1534059245
+}

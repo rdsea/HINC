@@ -1,0 +1,62 @@
+{
+  "sliceId": "valencia_intop_09_qod_averagemeasurementage",
+  "resources":{
+    "pcs-trackings":{
+      "metadata":{
+        "resource":{
+          "category":"cloud_service"
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull": "pull",
+          "protocol": {
+            "protocol_name": "http",
+            "http_method": "get"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          },
+          "qod":{
+            "average_measurement_age":100
+          }
+        }]
+      },
+      "source":[],
+      "target":["pcs-trackings"]
+    },
+    "logistics_analytics":{
+      "metadata":{
+        "resource":{
+          "category":"cloud_service",
+          "required":{
+            "qod":{
+              "average_measurement_age":60
+            }
+          }
+        },
+        "inputs":[{
+          "push_pull": "pull",
+          "protocol": {
+            "protocol_name": "http",
+            "http_method": "get"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs":[]
+      },
+      "source":["logistics_analytics"],
+      "target":[]
+    },
+  },
+  "connectivities":{
+    "pcs_to_logistics":{
+      "in":"pcs-trackings",
+      "out":"logistics_analytics"
+    }
+  },
+  "createdAt": 1534059245
+}
