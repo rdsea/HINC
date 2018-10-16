@@ -50,7 +50,7 @@
       },
       "source":["pcs_to_logistics"],
       "target":[]
-    },
+    }
   },
   "connectivities":{
     "pcs_to_logistics":{
