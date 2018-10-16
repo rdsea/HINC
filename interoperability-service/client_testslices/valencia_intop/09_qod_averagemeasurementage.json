@@ -23,7 +23,7 @@
         }]
       },
       "source":[],
-      "target":["pcs-trackings"]
+      "target":["pcs_to_logistics"]
     },
     "logistics_analytics":{
       "metadata":{
@@ -48,14 +48,14 @@
         }],
         "outputs":[]
       },
-      "source":["logistics_analytics"],
+      "source":["pcs_to_logistics"],
       "target":[]
     },
   },
   "connectivities":{
     "pcs_to_logistics":{
-      "in":"pcs-trackings",
-      "out":"logistics_analytics"
+      "in":{"label":"pcs-trackings"},
+      "out":{"label":"logistics_analytics"}
     }
   },
   "createdAt": 1534059245

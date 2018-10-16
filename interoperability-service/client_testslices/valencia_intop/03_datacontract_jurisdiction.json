@@ -29,8 +29,8 @@
       },
       "source": [],
       "target": [
-        "eu_storage",
-        "us_storage"
+        "camera_to_eu_storage",
+        "camera_to_us_storage"
       ]
     },
     "eu_storage": {
@@ -53,7 +53,7 @@
         "outputs": []
       },
       "source": [
-        "camera"
+        "camera_to_eu_storage"
       ],
       "target": []
     },
@@ -77,19 +77,19 @@
         "outputs": []
       },
       "source": [
-        "camera"
+        "camera_to_us_storage"
       ],
       "target": []
     }
   },
   "connectivities": {
     "camera_to_eu_storage": {
-      "in": "camera",
-      "out": "eu_storage"
+      "in": {"label":"camera"},
+      "out": {"label":"eu_storage"}
     },
     "camera_to_us_storage": {
-      "in": "camera",
-      "out": "us_storage"
+      "in": {"label":"camera"},
+      "out": {"label":"us_storage"}
     }
   },
   "createdAt": 1534059245

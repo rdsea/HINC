@@ -24,7 +24,7 @@
         }]
       },
       "source":[],
-      "target":["broker"]
+      "target":["sensor1_to_broker"]
     },
     "gateaccess_sensor2":{
       "metadata":{
@@ -49,7 +49,7 @@
         }]
       },
       "source":[],
-      "target":["broker"]
+      "target":["sensor2_to_broker"]
     },
     "analytics":{
       "metadata":{
@@ -75,7 +75,7 @@
         }],
         "outputs":[]
       },
-      "source":["broker"],
+      "source":["broker_to_analytics"],
       "target":[]
     },
     "broker": {
@@ -84,6 +84,7 @@
           "category":"network_function_service",
           "type":{
             "prototype":"messagebroker",
+            "protocols":[{"protocol_name":"mqtt"}],
             "topics":["sensordata"],
             "auto_create":true
           }
@@ -91,22 +92,22 @@
         "inputs": [],
         "outputs": []
       },
-      "source": ["gateaccess_sensor1","gateaccess_sensor2"],
-      "target": ["analytics"]
+      "source": ["sensor2_to_broker","sensor1_to_broker"],
+      "target": ["broker_to_analytics"]
     }
   },
   "connectivities":{
     "sensor1_to_broker":{
-      "in":"gateaccess_sensor1",
-      "out":"broker"
+      "in":{"label":"gateaccess_sensor1"},
+      "out":{"label":"broker"}
     },
     "sensor2_to_broker":{
-      "in":"gateaccess_sensor2",
-      "out":"broker"
+      "in":{"label":"gateaccess_sensor2"},
+      "out":{"label":"broker"}
     },
     "broker_to_analytics":{
-      "in":"broker",
-      "out":"analytics"
+      "in":{"label":"broker"},
+      "out":{"label":"analytics"}
     }
   },
   "createdAt": 1534059245

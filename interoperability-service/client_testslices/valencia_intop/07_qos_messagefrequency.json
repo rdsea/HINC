@@ -24,7 +24,7 @@
         }]
       },
       "source":[],
-      "target":["broker"]
+      "target":["sensor_to_broker"]
     },
     "analytics":{
       "metadata":{
@@ -48,7 +48,7 @@
         }],
         "outputs":[]
       },
-      "source":["broker"],
+      "source":["broker_to_analytics"],
       "target":[]
     },
     "broker": {
@@ -57,6 +57,7 @@
           "category":"network_function_service",
           "type":{
             "prototype":"messagebroker",
+            "protocols":[{"protocol_name":"mqtt"}],
             "topics":["sensordata"],
             "auto_create":true
           }
@@ -64,18 +65,18 @@
         "inputs": [],
         "outputs": []
       },
-      "source": ["sensor"],
-      "target": ["analytics"]
+      "source": ["sensor_to_broker"],
+      "target": ["broker_to_analytics"]
     }
   },
   "connectivities":{
     "sensor_to_broker":{
-      "in":"sensor",
-      "out":"broker"
+      "in":{"label":"sensor"},
+      "out":{"label":"broker"}
     },
     "broker_to_analytics":{
-      "in":"broker",
-      "out":"analytics"
+      "in":{"label":"broker"},
+      "out":{"label":"analytics"}
     }
   },
   "createdAt": 1534059245
