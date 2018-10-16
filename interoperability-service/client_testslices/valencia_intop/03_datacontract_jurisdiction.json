@@ -62,7 +62,7 @@
         "resource": {
           "category": "cloud_service",
           "data_contract": {
-            "jurisdiction": "EU"
+            "jurisdiction": "US"
           }
         },
         "inputs": [

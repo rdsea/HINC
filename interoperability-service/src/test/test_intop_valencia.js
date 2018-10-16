@@ -28,10 +28,10 @@ describe("valencia slices - intop check", function(){
         assert.equal(result.errors.length, 3);
         assert.equal(result.matches.length, 7);
     });
-    xit("03_datacontract_jurisdiction",function(){
+    it("03_datacontract_jurisdiction",function(){
         const testslice = require('../../client_testslices/valencia_intop/03_datacontract_jurisdiction');
         let result = check.checkSlice(testslice);
-        assert.equal(result.errors.length, 0);
+        assert.equal(result.errors.length, 1);
         assert.equal(result.matches.length, 1);
     });
     xit("04_datacontract_datarights",function(){

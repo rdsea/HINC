@@ -3,7 +3,9 @@ const check_protocol = require('./connection_checks/check_protocol');
 const check_dataformat = require('./connection_checks/check_dataformat');
 const check_qod = require('./connection_checks/check_qod');
 const check_qos = require('./connection_checks/check_qos');
-const check_datacontract_qos = require('./datacontract_checks/check_datacontract_qos');
+const check_slicecontract_qos = require('./slicecontract_checks/check_slicecontract_qos');
+const check_datacontract_jurisdiction = require('./datacontract_checks/check_datacontract_jurisdiction');
+
 const util = require('../util/slice_util');
 
 
@@ -57,7 +59,7 @@ function traverseGraph(node, graph, errors, warnings, matches, datacontract, con
 }
 
 function checkDataContract(node, datacontract, contract_violations){
-    let checkFunctions = [check_datacontract_qos.checkDataContractQos];
+    let checkFunctions = [check_slicecontract_qos.checkDataContractQos];
 
     for(let i = 0; i < checkFunctions.length; i++){
         let contractCheck = checkFunctions[i];
@@ -98,6 +100,7 @@ function checkDirectConnection(sourceNode, targetNode, path, graph, errors, warn
     metadataConnectionChecks.push(check_dataformat.checkDataFormat);
     metadataConnectionChecks.push(check_qod.checkQoD);
     metadataConnectionChecks.push(check_qos.checkQoS);
+    metadataConnectionChecks.push(check_datacontract_jurisdiction.checkJurisdiction);
 
     let checkErrors = checkMetadataConnection(sourceNode, connection.output, targetNode, connection.input, metadataConnectionChecks);
 
@@ -125,6 +128,7 @@ function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutp
     metadataConnectionChecks.push(check_dataformat.checkDataFormat);
     metadataConnectionChecks.push(check_qod.checkQoD);
     metadataConnectionChecks.push(check_qos.checkQoS);
+    metadataConnectionChecks.push(check_datacontract_jurisdiction.checkJurisdiction);
 
     let checkErrors = checkMetadataConnection(sourceNode, sourceOutput, targetNode, networkToTarget.input, metadataConnectionChecks);
 
