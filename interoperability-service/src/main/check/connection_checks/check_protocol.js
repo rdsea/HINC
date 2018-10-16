@@ -3,13 +3,20 @@ const errorGenerator = require('../../transform/error_generator_graph');
 
 exports.checkProtocols = function (sourceMetadata, sourceOutput, targetMetadata, targetInput, errors, warnings) {
     //TODO structural error if amqp and mqtt do not communicate via broker)
-    if(sourceOutput.protocol.protocol_name === targetInput.protocol.protocol_name) {
-        if(arrayContains(["mqtt", "mqtts", "amqp", "amqps"],sourceOutput.protocol.protocol_name)){
-            if(sourceMetadata.resource.type.prototype !== "messagebroker" && targetMetadata.resource.type.prototype !== "messagebroker") {
-                errors.push({key:"metadata.resource.type.prototype", value:"messagebroker"});
-                errors.push({key:"metadata.resource.type.protocols.protocol_name", value:sourceOutput.protocol.protocol_name});
+    try {
+        if (sourceOutput.protocol.protocol_name === targetInput.protocol.protocol_name) {
+            if (arrayContains(["mqtt", "mqtts", "amqp", "amqps"], sourceOutput.protocol.protocol_name)) {
+                if (sourceMetadata.resource.type.prototype !== "messagebroker" && targetMetadata.resource.type.prototype !== "messagebroker") {
+                    errors.push({key: "metadata.resource.type.prototype", value: "messagebroker"});
+                    errors.push({
+                        key: "metadata.resource.type.protocols.protocol_name",
+                        value: sourceOutput.protocol.protocol_name
+                    });
+                }
             }
         }
+    }catch (e) {
+        
     }
 
     if(sourceOutput.protocol.protocol_name !== targetInput.protocol.protocol_name){

@@ -1,6 +1,17 @@
 exports.createCheckErrorLog = function (error){
     let log = {};
-    log.nodes = error.cause.source.resource.name + "  -/->  " + error.cause.target.resource.name;
+
+    let source_nodename = error.cause.source.resource.name;
+    let target_nodename = error.cause.target.resource.name;
+
+    if(source_nodename === undefined){
+        source_nodename = error.cause.source.nodename;
+    }
+    if(target_nodename === undefined){
+        target_nodename = error.cause.target.nodename;
+    }
+
+    log.nodes = source_nodename + "  -/->  " + target_nodename;
     log.metadata= error.cause.metadataInvolved;
     /*for(let i = 0; i < error.cause.metadataInvolved.length; i++){
         log.metadata += error.cause.metadataInvolved[i].key + " = " + error.cause.metadataInvolved[i].value + "\n";
@@ -8,9 +19,13 @@ exports.createCheckErrorLog = function (error){
 
     log.path = "";
     for(let i = 0; i < error.cause.path.length; i ++){
-        log.path += error.cause.path[i].resource.name + " -> ";
+        let path_nodename = error.cause.path[i].resource.name;
+        if(path_nodename === undefined){
+            path_nodename = error.cause.path[i].nodename;
+        }
+        log.path += path_nodename + " -> ";
     }
-    log.path += error.cause.target.resource.name;
+    log.path += target_nodename;
     return log;
 };
 
