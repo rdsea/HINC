@@ -33,16 +33,22 @@ describe("valencia slices - intop check", function(){
         let result = check.checkSlice(testslice);
         assert.equal(result.errors.length, 1);
         assert.equal(result.matches.length, 1);
-
-        //TODO extra contract
+    });
+    it("03contract_datacontract_jurisdiction",function(){
+        const testslice = require('../../client_testslices/valencia_intop/03_datacontract_jurisdiction');
+        const contract = require('../../client_testslices/valencia_intop/additional_datacontracts/contract_03_jurisdiction');
+        let result = check.checkWithContract(testslice,contract);
+        assert.equal(result.contract_violations.length, 1);
+        assert.equal(result.errors.length, 1);
+        assert.equal(result.matches.length, 1);
 
     });
     it("04_datacontract_datarights",function(){
         const testslice = require('../../client_testslices/valencia_intop/04_datacontract_datarights');
         const contract = require('../../client_testslices/valencia_intop/additional_datacontracts/contract_04_datarights');
         let result = check.checkWithContract(testslice,contract);
-        assert.equal(result.errors.length, 0);
         assert.equal(result.contract_violations.length, 1);
+        assert.equal(result.errors.length, 0);
         assert.equal(result.matches.length, 3);
     });
     it("05_datacontract_pricing",function(){
@@ -66,7 +72,14 @@ describe("valencia slices - intop check", function(){
         let result = check.checkSlice(testslice);
         assert.equal(result.errors.length, 1);
         assert.equal(result.matches.length, 2);
-        //TODO extra contract
+    });
+    it("07contract_qos_messagefrequency",function(){
+        const testslice = require('../../client_testslices/valencia_intop/07_qos_messagefrequency');
+        const contract = require('../../client_testslices/valencia_intop/additional_datacontracts/contract_07_messagefrequency');
+        let result = check.checkWithContract(testslice,contract);
+        assert.equal(result.contract_violations.length, 1);
+        assert.equal(result.errors.length, 1);
+        assert.equal(result.matches.length, 2);
     });
     it("08_qod_precision",function(){
         const testslice = require('../../client_testslices/valencia_intop/08_qod_precision');
@@ -74,9 +87,25 @@ describe("valencia slices - intop check", function(){
         assert.equal(result.errors.length, 1);
         assert.equal(result.matches.length, 2);
     });
+    it("08contract_qod_precision",function(){
+        const testslice = require('../../client_testslices/valencia_intop/08_qod_precision');
+        const contract = require('../../client_testslices/valencia_intop/additional_datacontracts/contract_08_precision');
+        let result = check.checkWithContract(testslice,contract);
+        assert.equal(result.contract_violations.length, 1);
+        assert.equal(result.errors.length, 1);
+        assert.equal(result.matches.length, 2);
+    });
     it("09_qod_averagemeasurementage",function(){
         const testslice = require('../../client_testslices/valencia_intop/09_qod_averagemeasurementage');
         let result = check.checkSlice(testslice);
+        assert.equal(result.errors.length, 1);
+        assert.equal(result.matches.length, 0);
+    });
+    it("09contract_qod_averagemeasurementage",function(){
+        const testslice = require('../../client_testslices/valencia_intop/09_qod_averagemeasurementage');
+        const contract = require('../../client_testslices/valencia_intop/additional_datacontracts/contract_09_averagemeasurementage');
+        let result = check.checkWithContract(testslice,contract);
+        assert.equal(result.contract_violations.length, 1);
         assert.equal(result.errors.length, 1);
         assert.equal(result.matches.length, 0);
     });

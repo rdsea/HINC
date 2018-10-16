@@ -6,8 +6,10 @@ const check_qos = require('./connection_checks/check_qos');
 const check_datacontract_jurisdiction = require('./connection_checks/check_datacontract_jurisdiction');
 
 const check_slicecontract_qos = require('./slicecontract_checks/check_slicecontract_qos');
+const check_slicecontract_qod = require('./slicecontract_checks/check_slicecontract_qod');
 const check_slicecontract_commercial_usage = require('./slicecontract_checks/check_slicecontract_commercial_usage');
 const check_slicecontract_pricing = require('./slicecontract_checks/check_slicecontract_pricing');
+const check_slicecontract_jurisdiction = require('./slicecontract_checks/check_slicecontract_jurisdiction');
 
 
 const util = require('../util/slice_util');
@@ -67,6 +69,8 @@ function checkDataContract(node, datacontract, contract_violations){
     checkFunctions.push(check_slicecontract_qos.checkSliceContractQos);
     checkFunctions.push(check_slicecontract_commercial_usage.checkSliceContractCommercialUsage);
     checkFunctions.push(check_slicecontract_pricing.checkSliceContractPricing);
+    checkFunctions.push(check_slicecontract_jurisdiction.checkSliceContractJurisdiction);
+    checkFunctions.push(check_slicecontract_qod.checkSliceContractQod);
 
 
     for(let i = 0; i < checkFunctions.length; i++){

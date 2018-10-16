@@ -6,14 +6,16 @@
         "resource": {
           "category": "iot",
           "data_contract": {
-            "jurisdiction": "EU"
+            "regulation":{
+            "jurisdiction": "EU"}
           },
           "required": {
             "data_contract": {
+              "regulation":{
               "jurisdiction": [
                 "EU"
               ]
-            }
+            }}
           }
         },
         "inputs": [],
@@ -38,7 +40,8 @@
         "resource": {
           "category": "cloud_service",
           "data_contract": {
-            "jurisdiction": "EU"
+            "regulation":{
+            "jurisdiction": "EU"}
           }
         },
         "inputs": [
@@ -62,7 +65,8 @@
         "resource": {
           "category": "cloud_service",
           "data_contract": {
-            "jurisdiction": "US"
+            "regulation":{
+            "jurisdiction": "US"}
           }
         },
         "inputs": [
