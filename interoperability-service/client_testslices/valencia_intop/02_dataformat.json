@@ -31,8 +31,8 @@
           }
         }]
       },
-      "source": ["broker"],
-      "target": ["broker"]
+      "source": ["broker_to_pcs"],
+      "target": ["pcs_to_broker"]
     },
     "vessel": {
       "metadata": {
@@ -65,8 +65,8 @@
           }
         }]
       },
-      "source": ["broker"],
-      "target": ["broker"]
+      "source": ["broker_to_vessel"],
+      "target": ["vessel_to_broker"]
     },
     "broker": {
       "metadata": {
@@ -74,6 +74,7 @@
           "category":"network_function_service",
           "type":{
             "prototype":"messagebroker",
+            "protocols":[{"protocol_name":"mqtt"}],
             "topics":["pcs_in", "pcs_out"],
             "auto_create":true
           }
@@ -81,26 +82,26 @@
         "inputs": [],
         "outputs": []
       },
-      "source": ["pcs", "vessel"],
-      "target": ["vessel", "pcs"]
+      "source": ["vessel_to_broker", "pcs_to_broker"],
+      "target": ["broker_to_pcs", "broker_to_vessel"]
     }
   },
   "connectivities": {
     "pcs_to_broker": {
-      "in": "pcs",
-      "out": "broker"
+      "in": {"label":"pcs"},
+      "out": {"label":"broker"}
     },
     "broker_to_vessel": {
-      "in": "broker",
-      "out": "vessel"
+      "in": {"label":"broker"},
+      "out": {"label":"vessel"}
     },
     "vessel_to_broker": {
-      "in": "vessel",
-      "out": "broker"
+      "in": {"label":"vessel"},
+      "out": {"label":"broker"}
     },
     "broker_to_pcs": {
-      "in": "broker",
-      "out": "pcs"
+      "in": {"label":"broker"},
+      "out": {"label":"pcs"}
     }
   },
   "createdAt": 1534059245

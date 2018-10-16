@@ -3,6 +3,7 @@ const log_util = require('../util/log_util');
 
 
 exports.generateErrorObject = function(sourceNode, targetNode, checkErrors, isDirectConnection, path, graph){
+    //TODO check for duplicates
     let error = {};
     let cause = {source:sourceNode, target: targetNode, isDirect:isDirectConnection, path:path};
 

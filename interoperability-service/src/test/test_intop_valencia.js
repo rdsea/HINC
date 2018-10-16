@@ -20,13 +20,13 @@ describe("valencia slices - intop check", function(){
         const testslice = require('../../client_testslices/valencia_intop/01_protocol');
         let result = check.checkSlice(testslice);
         assert.equal(result.errors.length, 4);
-        assert.equal(result.matches.length, 4);
+        assert.equal(result.matches.length, 6);
     });
-    xit("02_dataformat",function(){
+    it("02_dataformat",function(){
         const testslice = require('../../client_testslices/valencia_intop/02_dataformat');
         let result = check.checkSlice(testslice);
-        assert.equal(result.errors.length, 0);
-        assert.equal(result.matches.length, 1);
+        assert.equal(result.errors.length, 3);
+        assert.equal(result.matches.length, 7);
     });
     xit("03_datacontract_jurisdiction",function(){
         const testslice = require('../../client_testslices/valencia_intop/03_datacontract_jurisdiction');
