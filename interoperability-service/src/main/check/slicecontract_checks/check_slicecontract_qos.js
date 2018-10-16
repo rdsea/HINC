@@ -1,5 +1,5 @@
 
-exports.checkDataContractQos = function (node, nodeMetadata, datacontract, contract_violations) {
+exports.checkSliceContractQos = function (node, nodeMetadata, datacontract, contract_violations) {
 
     try {
         if (nodeMetadata.resource.qos.reliability < datacontract.qos.reliability) {

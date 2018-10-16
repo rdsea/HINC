@@ -34,11 +34,13 @@ describe("valencia slices - intop check", function(){
         assert.equal(result.errors.length, 1);
         assert.equal(result.matches.length, 1);
     });
-    xit("04_datacontract_datarights",function(){
+    it("04_datacontract_datarights",function(){
         const testslice = require('../../client_testslices/valencia_intop/04_datacontract_datarights');
-        let result = check.checkSlice(testslice);
+        const contract = require('../../client_testslices/valencia_intop/additional_datacontracts/contract_04_datarights');
+        let result = check.checkWithContract(testslice,contract);
         assert.equal(result.errors.length, 0);
-        assert.equal(result.matches.length, 1);
+        assert.equal(result.contract_violations.length, 1);
+        assert.equal(result.matches.length, 3);
     });
     xit("05_datacontract_pricing",function(){
         const testslice = require('../../client_testslices/valencia_intop/05_datacontract_pricing');
