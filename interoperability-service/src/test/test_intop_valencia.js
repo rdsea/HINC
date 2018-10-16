@@ -68,11 +68,11 @@ describe("valencia slices - intop check", function(){
         assert.equal(result.matches.length, 2);
         //TODO extra contract
     });
-    xit("08_qod_precision",function(){
+    it("08_qod_precision",function(){
         const testslice = require('../../client_testslices/valencia_intop/08_qod_precision');
         let result = check.checkSlice(testslice);
-        assert.equal(result.errors.length, 0);
-        assert.equal(result.matches.length, 1);
+        assert.equal(result.errors.length, 1);
+        assert.equal(result.matches.length, 2);
     });
     xit("09_qod_averagemeasurementage",function(){
         const testslice = require('../../client_testslices/valencia_intop/09_qod_averagemeasurementage');
