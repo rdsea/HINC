@@ -33,6 +33,9 @@ describe("valencia slices - intop check", function(){
         let result = check.checkSlice(testslice);
         assert.equal(result.errors.length, 1);
         assert.equal(result.matches.length, 1);
+
+        //TODO extra contract
+
     });
     it("04_datacontract_datarights",function(){
         const testslice = require('../../client_testslices/valencia_intop/04_datacontract_datarights');
@@ -58,11 +61,12 @@ describe("valencia slices - intop check", function(){
         assert.equal(result.contract_violations.length, 2);
         assert.equal(result.matches.length, 5);
     });
-    xit("07_qos_messagefrequency",function(){
+    it("07_qos_messagefrequency",function(){
         const testslice = require('../../client_testslices/valencia_intop/07_qos_messagefrequency');
         let result = check.checkSlice(testslice);
-        assert.equal(result.errors.length, 0);
-        assert.equal(result.matches.length, 1);
+        assert.equal(result.errors.length, 1);
+        assert.equal(result.matches.length, 2);
+        //TODO extra contract
     });
     xit("08_qod_precision",function(){
         const testslice = require('../../client_testslices/valencia_intop/08_qod_precision');

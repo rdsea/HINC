@@ -3,7 +3,7 @@ const check_protocol = require('./connection_checks/check_protocol');
 const check_dataformat = require('./connection_checks/check_dataformat');
 const check_qod = require('./connection_checks/check_qod');
 const check_qos = require('./connection_checks/check_qos');
-const check_datacontract_jurisdiction = require('./datacontract_checks/check_datacontract_jurisdiction');
+const check_datacontract_jurisdiction = require('./connection_checks/check_datacontract_jurisdiction');
 
 const check_slicecontract_qos = require('./slicecontract_checks/check_slicecontract_qos');
 const check_slicecontract_commercial_usage = require('./slicecontract_checks/check_slicecontract_commercial_usage');
