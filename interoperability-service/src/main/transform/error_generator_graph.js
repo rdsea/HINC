@@ -24,6 +24,9 @@ function getDependentNodes(startNode, currentNode, targetNode, graph, dependentN
     let nextNodes = graph_util.nextNodes(graph, currentNode);
 
     for(let i = 0; i<nextNodes.length;i++){
+        if(dependentNodesContains(dependentNodes, nextNodes[i])){
+            continue;
+        }
         if(nextNodes[i] !== targetNode){
             dependentNodes.push({node:nextNodes[i], direct:directConnection});
         }
@@ -32,4 +35,13 @@ function getDependentNodes(startNode, currentNode, targetNode, graph, dependentN
             getDependentNodes(startNode, nextNodes[i], targetNode, graph, dependentNodes, false);
         }
     }
+}
+
+function dependentNodesContains(dependentNodes, node){
+    for(let i = 0; i<dependentNodes.length; i++){
+        if(dependentNodes[i].node === node){
+            return true;
+        }
+    }
+    return false;
 }

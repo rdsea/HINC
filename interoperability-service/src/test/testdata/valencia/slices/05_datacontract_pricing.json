@@ -2,6 +2,7 @@
   "sliceId": "valencia_intop_05_datacontract_pricing",
   "resources":{
     "pcs-trackings":{
+      "name":"pcs-trackings",
       "metadata":{
         "resource":{
           "category":"cloud_service",
@@ -30,6 +31,7 @@
       "target":["pcs_to_logistics"]
     },
     "logistics_analytics":{
+      "name":"logistics_analytics",
       "metadata":{
         "resource":{
           "category":"cloud_service"

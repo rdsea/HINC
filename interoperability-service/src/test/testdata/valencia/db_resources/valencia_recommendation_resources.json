@@ -38,6 +38,62 @@
       }
     ]
   }
+}, {
+  "name": "mqtt_to_amqp",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "network_function_service",
+      "type": {
+        "prototype": "software_artefact"
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "protocol_name": "mqtt"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "protocol_name": "amqp"
+        }
+      }
+    ]
+  }
+}, {
+  "name": "amqp_to_mqtt",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "network_function_service",
+      "type": {
+        "prototype": "software_artefact"
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "protocol_name": "amqp"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "protocol_name": "mqtt"
+        }
+      }
+    ]
+  }
 },{
   "name": "mqttbroker",
   "source": [],
@@ -61,7 +117,31 @@
       }
     }
   }
-},{
+},
+  {
+    "name": "amqpbroker",
+    "source": [],
+    "target": [],
+    "metadata": {
+      "resource": {
+        "category": "network_function_service",
+        "type": {
+          "prototype": "messagebroker",
+          "protocols": [
+            {
+              "protocol_name": "amqp"
+            }
+          ],
+          "exchanges": [
+            "pcs_in"
+          ],
+          "queues":[
+            "pcs_out"
+          ]
+        }
+      }
+    }
+  },{
   "name": "mqtt_transformer_csv_to_json",
   "source": [],
   "target": [],

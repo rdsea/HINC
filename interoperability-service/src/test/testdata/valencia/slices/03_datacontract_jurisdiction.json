@@ -2,6 +2,7 @@
   "sliceId": "valencia_intop_03_datacontract_jurisdiction",
   "resources": {
     "camera": {
+      "name":"camera",
       "metadata": {
         "resource": {
           "category": "iot",
@@ -36,6 +37,7 @@
       ]
     },
     "eu_storage": {
+      "name":"eu_storage",
       "metadata": {
         "resource": {
           "category": "cloud_service",
@@ -61,6 +63,7 @@
       "target": []
     },
     "us_storage": {
+      "name":"us_storage",
       "metadata": {
         "resource": {
           "category": "cloud_service",

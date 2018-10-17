@@ -2,6 +2,7 @@
   "sliceId": "valencia_intop_02_dataformat",
   "resources": {
     "pcs": {
+      "name":"pcs",
       "metadata": {
         "resource": {
           "category":"iot"
@@ -35,6 +36,7 @@
       "target": ["pcs_to_broker"]
     },
     "vessel": {
+      "name":"vessel",
       "metadata": {
         "resource": {
           "category":"iot"
@@ -69,6 +71,7 @@
       "target": ["vessel_to_broker"]
     },
     "broker": {
+      "name":"broker",
       "metadata": {
         "resource": {
           "category":"network_function_service",

@@ -1,7 +1,7 @@
 {
   "sliceId": "valencia_intop_01_protocol",
   "resources": {
-    "pcs": {
+    "pcs": {"name":"pcs",
       "metadata": {
         "resource": {
           "category":"iot"
@@ -34,7 +34,7 @@
       "source": ["broker_to_pcs"],
       "target": ["pcs_to_broker"]
     },
-    "vessel": {
+    "vessel": {"name":"vessel",
       "metadata": {
         "resource": {
           "category":"iot"
@@ -66,7 +66,7 @@
       "source": ["broker_to_vessel"],
       "target": ["vessel_to_broker"]
     },
-    "broker": {
+    "broker": {"name":"broker",
       "metadata": {
         "resource": {
           "category":"network_function_service",

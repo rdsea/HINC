@@ -10,7 +10,6 @@ let config = configModule.get('interoperability_service');
 
 
 //TODO set solution resources
-const solutionResourcesDB = require('./testdata/testslices/intop_recommendation_db_dump');
 const valenciaTestResourcesDB = require('./testdata/valencia/db_resources/valencia_recommendation_resources');
 
 let MongoClient = require("mongodb").MongoClient;
@@ -115,7 +114,7 @@ describe("valencia slices - intop check", function(){
 
 describe("valencia slices - intop recommendation", function(){
     before(function() {
-        setUpTestDB();
+        setUpTestDB(valenciaTestResourcesDB);
     });
     after(function() {
         teardownTestDB();
@@ -134,7 +133,17 @@ describe("valencia slices - intop recommendation", function(){
             let slice = result.slice;
             let logs = result.logs;
 
-            assert.deepEqual(slice, old_slice);
+            assert.equal(util.contains(slice, "amqp_to_mqtt"), true);
+            assert.equal(util.contains(slice, "mqtt_to_amqp"), true);
+            assert.equal(util.contains(slice, "amqpbroker"), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.intop_mqtt_to_amqp), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_mqtt_to_amqp, slice.resources.amqpbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.amqpbroker, slice.resources.vessel), true);
+
+            assert.equal(util.isConnected(slice, slice.resources.intop_amqp_to_mqtt, slice.resources.broker), true);
+            assert.equal(util.isConnected(slice, slice.resources.amqpbroker_1, slice.resources.intop_amqp_to_mqtt), true);
+            assert.equal(util.isConnected(slice, slice.resources.vessel, slice.resources.amqpbroker_1), true);
+
 
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
@@ -185,7 +194,7 @@ describe("valencia slices - intop recommendation", function(){
 
 xdescribe("valencia slices - intop find substitution resources", function() {
     before(function () {
-        setUpTestDB();
+        setUpTestDB(valenciaTestResourcesDB);
     });
     after(function () {
         teardownTestDB();
@@ -314,7 +323,7 @@ xdescribe("valencia slices - intop find substitution resources", function() {
 });
 
 
-function setUpTestDB(){
+function setUpTestDB(testdata){
     MongoClient = require("mongodb").MongoClient;
     recommendation.queryServices = function (query) {
         return new Promise((resolve, reject) => {
@@ -338,7 +347,7 @@ function setUpTestDB(){
         MongoClient.connect(config.MONGODB_URL, {useNewUrlParser: true}, function (err, db) {
             if (err) return reject(err);
             let dbo = db.db("recommendation_test");
-            dbo.collection("test").insertMany(solutionResourcesDB, function (err, res) {
+            dbo.collection("test").insertMany(testdata, function (err, res) {
                 if (err) throw err;
                 console.log("Number of documents inserted: " + res.insertedCount);
                 db.close();

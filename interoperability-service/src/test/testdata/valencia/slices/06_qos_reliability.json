@@ -2,6 +2,7 @@
   "sliceId": "valencia_intop_06_qos_reliability",
   "resources":{
     "gateaccess_sensor1":{
+      "name":"gateaccess_sensor1",
       "metadata":{
         "resource":{
           "category":"iot",
@@ -27,6 +28,7 @@
       "target":["sensor1_to_broker"]
     },
     "gateaccess_sensor2":{
+      "name":"gateaccess_sensor2",
       "metadata":{
         "resource":{
           "category":"iot",
@@ -52,6 +54,7 @@
       "target":["sensor2_to_broker"]
     },
     "analytics":{
+      "name":"analytics",
       "metadata":{
         "resource":{
           "category":"iot",
@@ -79,6 +82,7 @@
       "target":[]
     },
     "broker": {
+      "name":"broker",
       "metadata": {
         "resource": {
           "category":"network_function_service",

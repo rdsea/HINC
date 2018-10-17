@@ -2,6 +2,7 @@
   "sliceId": "valencia_intop_08_qod_precision",
   "resources":{
     "sensor":{
+      "name":"sensor",
       "metadata":{
         "resource":{
           "category":"iot",
@@ -27,6 +28,7 @@
       "target":["sensor_to_broker"]
     },
     "analytics":{
+      "name":"analytics",
       "metadata":{
         "resource":{
           "category":"iot",
@@ -54,6 +56,7 @@
       "target":[]
     },
     "broker": {
+      "name":"broker",
       "metadata": {
         "resource": {
           "category":"network_function_service",

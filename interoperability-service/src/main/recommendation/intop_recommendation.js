@@ -182,7 +182,11 @@ function isMatching(source, dest, checkresults){
 }
 
 function isBroker(resource){
-    return (resource.metadata.resource.type.prototype === "messagebroker");
+    try{
+        return (resource.metadata.resource.type.prototype === "messagebroker");
+    }catch(e){
+        return false;
+    }
 }
 
 function reconnectResources(slice, resourceArray, connectionName){
