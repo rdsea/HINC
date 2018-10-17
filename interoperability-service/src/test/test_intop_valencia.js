@@ -114,10 +114,10 @@ describe("valencia slices - intop check", function(){
 
 describe("valencia slices - intop recommendation", function(){
     before(function() {
-        setUpTestDB(valenciaTestResourcesDB);
+        return setUpTestDB(valenciaTestResourcesDB);
     });
     after(function() {
-        teardownTestDB();
+        return teardownTestDB();
     });
 
     it("01_protocol",function(){
@@ -150,20 +150,30 @@ describe("valencia slices - intop recommendation", function(){
             assert.equal(errors.length, 0);
         });
     });
-    xit("02_dataformat",function(){
+    it("02_dataformat",function(){
         let slice = require('./testdata/valencia/slices/02_dataformat');
         let old_slice = util.deepcopy(slice);
         //intopcheck returns no errors (and warnings)
         let checkresults = check.checkSlice(slice);
         let errors = checkresults.errors;
-        assert.equal(errors.length, 0);
+        assert.equal(errors.length, 3);
         //slice after recommendation equals before recommendation
 
         return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
             let slice = result.slice;
             let logs = result.logs;
 
-            assert.deepEqual(slice, old_slice);
+            assert.equal(util.contains(slice, "mqtt_transformer_csv_to_json"), true);
+            assert.equal(util.contains(slice, "mqtt_transformer_json_to_csv"), true);
+            assert.equal(util.contains(slice, "mqttbroker"), true);
+            assert.equal(util.isConnected(slice, slice.resources.broker, slice.resources.intop_mqtt_transformer_csv_to_json), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_mqtt_transformer_csv_to_json, slice.resources.mqttbroker_1), true);
+            assert.equal(util.isConnected(slice, slice.resources.mqttbroker_1, slice.resources.pcs), true);
+
+            assert.equal(util.isConnected(slice, slice.resources.pcs, slice.resources.mqttbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.mqttbroker, slice.resources.intop_mqtt_transformer_json_to_csv), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_mqtt_transformer_json_to_csv, slice.resources.broker), true);
+
 
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;
@@ -194,10 +204,10 @@ describe("valencia slices - intop recommendation", function(){
 
 xdescribe("valencia slices - intop find substitution resources", function() {
     before(function () {
-        setUpTestDB(valenciaTestResourcesDB);
+        return setUpTestDB(valenciaTestResourcesDB);
     });
     after(function () {
-        teardownTestDB();
+        return teardownTestDB();
     });
 
     xit("03_datacontract_jurisdiction",function(){
