@@ -338,7 +338,7 @@ xdescribe("valencia slices - intop find substitution resources", function() {
 
 
 function setUpTestDB(testdata){
-    MongoClient = require("mongodb").MongoClient;
+    //MongoClient = require("mongodb").MongoClient;
     recommendation.queryServices = function (query) {
         return new Promise((resolve, reject) => {
             MongoClient.connect(config.MONGODB_URL, {useNewUrlParser: true}, function (err, db) {
@@ -363,7 +363,7 @@ function setUpTestDB(testdata){
             let dbo = db.db("recommendation_test");
             dbo.collection("test").insertMany(testdata, function (err, res) {
                 if (err) throw err;
-                console.log("Number of documents inserted: " + res.insertedCount);
+                console.log(`Number of documents inserted: ${res.insertedCount}` + "\n");
                 db.close();
                 resolve();
             });
@@ -392,10 +392,11 @@ function teardownTestDB(){
                 return reject(err);
             }
             let dbo = db.db("recommendation_test");
-            dbo.collection("test").drop(function (err, delOK) {
+            let collectionname = "test";
+            dbo.collection(collectionname).drop(function (err, delOK) {
                 db.close();
                 if (err) return reject(err);
-                if (delOK) console.log("Collection deleted");
+                if (delOK) console.log(`Collection ${collectionname} deleted`);
                 resolve();
             });
         });
@@ -407,10 +408,11 @@ function teardownTestDB(){
                 return reject(err);
             }
             let dbo = db.db("recommendation_test");
-            dbo.collection("recommendations").drop(function (err, delOK) {
+            let collectionname = "recommendations";
+            dbo.collection(collectionname).drop(function (err, delOK) {
                 db.close();
                 if (err) return reject(err);
-                if (delOK) console.log("Collection deleted");
+                if (delOK) console.log(`Collection ${collectionname} deleted`);
                 resolve();
             });
         });
