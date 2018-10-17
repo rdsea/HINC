@@ -6,11 +6,7 @@ exports.checkQoS = function (sourceMetadata, sourceOutput, targetMetadata, targe
         if (sourceOutput.qos.message_frequency > targetMetadata.resource.qos.message_frequency) {
 
             errors.push({
-                key: "sourceOutput.qos.message_frequency",
-                value: sourceOutput.qos.message_frequency
-            });
-            errors.push({
-                key: "targetMetadata.resource.qos.message_frequency",
+                key: "metadata.outputs.qos.message_frequency",
                 value: targetMetadata.resource.qos.message_frequency
             });
 

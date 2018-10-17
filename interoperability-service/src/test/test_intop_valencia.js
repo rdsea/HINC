@@ -180,20 +180,24 @@ describe("valencia slices - intop recommendation", function(){
             assert.equal(errors.length, 0);
         });
     });
-    xit("07_qos_messagefrequency",function(){
+    it("07_qos_messagefrequency",function(){
         let slice = require('./testdata/valencia/slices/07_qos_messagefrequency');
         let old_slice = util.deepcopy(slice);
         //intopcheck returns no errors (and warnings)
         let checkresults = check.checkSlice(slice);
         let errors = checkresults.errors;
-        assert.equal(errors.length, 0);
+        assert.equal(errors.length, 1);
         //slice after recommendation equals before recommendation
 
         return recommendation.getRecommendationsWithoutCheck(slice, checkresults).then(function(result) {
             let slice = result.slice;
             let logs = result.logs;
 
-            assert.deepEqual(slice, old_slice);
+            assert.equal(util.contains(slice, "mqtt_messagebuffer"), true);
+            assert.equal(util.contains(slice, "mqttbroker"), true);
+            assert.equal(util.isConnected(slice, slice.resources.sensor, slice.resources.mqttbroker), true);
+            assert.equal(util.isConnected(slice, slice.resources.mqttbroker, slice.resources.intop_mqtt_messagebuffer), true);
+            assert.equal(util.isConnected(slice, slice.resources.intop_mqtt_messagebuffer, slice.resources.broker), true);
 
             //intopcheck returns 0 error
             errors = check.checkSlice(slice).errors;

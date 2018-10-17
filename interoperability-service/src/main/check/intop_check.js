@@ -83,7 +83,7 @@ function checkConnectedNodes(startNode, currentNode, directConnection, path, sta
     path.push(currentNode);
     let nextNodes = graph_util.nextNodes(graph,currentNode);
     for(let i = 0; i<nextNodes.length; i++){
-        //TODO fix circles
+
         if(nextNodes[i] === startNode){
             continue;
         }

@@ -1,44 +1,4 @@
 [{
-  "name": "http_transformer_csv_to_json",
-  "source": [],
-  "target": [],
-  "metadata": {
-    "resource": {
-      "category": "iot",
-      "type": {
-        "prototype": "software_artefact"
-      }
-    },
-    "inputs": [
-      {
-        "push_pull": "push",
-        "protocol": {
-          "uri": "http://test:80",
-          "protocol_name": "http",
-          "http_method": "get"
-        },
-        "dataformat": {
-          "encoding": "utf-8",
-          "dataformat_name": "csv"
-        }
-      }
-    ],
-    "outputs": [
-      {
-        "push_pull": "push",
-        "protocol": {
-          "uri": "http://test:80",
-          "protocol_name": "http",
-          "http_method": "get"
-        },
-        "dataformat": {
-          "encoding": "utf-8",
-          "dataformat_name": "json"
-        }
-      }
-    ]
-  }
-}, {
   "name": "mqtt_to_amqp",
   "source": [],
   "target": [],
@@ -90,6 +50,37 @@
         "push_pull": "push",
         "protocol": {
           "protocol_name": "mqtt"
+        }
+      }
+    ]
+  }
+},{
+  "name": "mqtt_messagebuffer",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type": {
+        "prototype": "software_artefact"
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "protocol_name": "mqtt"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "protocol_name": "mqtt"
+        },
+        "qos":{
+          "message_frequency":1
         }
       }
     ]
@@ -184,88 +175,6 @@
     ]
   }
 },{
-  "name": "http_mqtt_poller",
-  "source": [],
-  "target": [],
-  "metadata": {
-    "resource": {
-      "category": "iot",
-      "type": {
-        "prototype": "software_artefact"
-      }
-    },
-    "inputs": [
-      {
-        "push_pull": "pull",
-        "protocol": {
-          "uri": "http://test:80",
-          "protocol_name": "http",
-          "http_method": "get"
-        },
-        "dataformat": {
-          "encoding": "utf-8",
-          "dataformat_name": "json"
-        }
-      }
-    ],
-    "outputs": [
-      {
-        "push_pull": "push",
-        "protocol": {
-          "uri": "mqtt://test:1883",
-          "protocol_name": "mqtt",
-          "topic": "basic_test",
-          "qos": 0
-        },
-        "dataformat": {
-          "encoding": "utf-8",
-          "dataformat_name": "json"
-        }
-      }
-    ]
-  }
-},{
-  "name": "mqtt_http_buffer",
-  "source": [],
-  "target": [],
-  "metadata": {
-    "resource": {
-      "category": "iot",
-      "type": {
-        "prototype": "software_artefact"
-      }
-    },
-    "inputs": [
-      {
-        "push_pull": "push",
-        "protocol": {
-          "uri": "mqtt://test:1883",
-          "protocol_name": "mqtt",
-          "topic": "basic_test",
-          "qos": 0
-        },
-        "dataformat": {
-          "encoding": "utf-8",
-          "dataformat_name": "json"
-        }
-      }
-    ],
-    "outputs": [
-      {
-        "push_pull": "pull",
-        "protocol": {
-          "uri": "http://test:80",
-          "protocol_name": "http",
-          "http_method": "get"
-        },
-        "dataformat": {
-          "encoding": "utf-8",
-          "dataformat_name": "json"
-        }
-      }
-    ]
-  }
-},{
   "name": "mqtt_transformer_json_to_csv",
   "source": [],
   "target": [],
@@ -306,66 +215,5 @@
         }
       }
     ]
-  }
-},
-{
-  "name": "reliable_httpsource",
-  "source": [],
-  "target": [],
-  "metadata": {
-    "resource": {
-      "category": "iot",
-      "type": {
-        "prototype": "sensor"
-      },
-      "qos": {
-        "reliability": 99.9
-      }
-    },
-    "inputs": [],
-    "outputs": [
-      {
-        "push_pull": "push",
-        "protocol": {
-          "uri": "http://test:80",
-          "protocol_name": "http",
-          "http_method": "get"
-        },
-        "dataformat": {
-          "encoding": "utf-8",
-          "dataformat_name": "json"
-        }
-      }
-    ]
-  }
-},{
-  "name": "reliable_httpdest",
-  "source": [],
-  "target": [],
-  "metadata": {
-    "resource": {
-      "category": "iot",
-      "type": {
-        "prototype": "storage"
-      },
-      "qos": {
-        "reliability": 99.9
-      }
-    },
-    "inputs": [
-      {
-        "push_pull": "push",
-        "protocol": {
-          "uri": "http://test:80",
-          "protocol_name": "http",
-          "http_method": "get"
-        },
-        "dataformat": {
-          "encoding": "utf-8",
-          "dataformat_name": "json"
-        }
-      }
-    ],
-    "outputs": []
   }
 }]
