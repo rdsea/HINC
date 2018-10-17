@@ -1,0 +1,82 @@
+{
+  "sliceId": "valencia_intop_04_datacontract_datarights",
+  "resources":{
+    "sensor":{
+      "metadata":{
+        "resource":{
+          "category":"iot",
+          "data_contract":{
+            "data_rights":{
+              "commercial_usage":false
+            }
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"sensordata"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }]
+      },
+      "source":[],
+      "target":["sensor_to_broker"]
+    },
+    "analytics":{
+      "metadata":{
+        "resource":{
+          "category":"iot"
+        },
+        "inputs":[{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"sensordata"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs":[]
+      },
+      "source":["broker_to_analytics"],
+      "target":[]
+    },
+    "broker": {
+      "metadata": {
+        "resource": {
+          "category":"network_function_service",
+          "type":{
+            "prototype":"messagebroker",
+            "protocols":[{"protocol_name":"mqtt"}],
+            "topics":["sensordata"],
+            "auto_create":true
+          }
+        },
+        "inputs": [],
+        "outputs": []
+      },
+      "source": ["sensor_to_broker"],
+      "target": ["broker_to_analytics"]
+    }
+  },
+  "connectivities":{
+    "sensor_to_broker":{
+      "in": {"label":"sensor"},
+      "out":{"label":"broker"}
+    },
+    "broker_to_analytics":{
+      "in": {"label":"broker"},
+      "out":{"label":"analytics"}
+    }
+  },
+  "createdAt": 1534059245
+}

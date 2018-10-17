@@ -1,0 +1,5 @@
+{
+  "qos":{
+    "reliability":95
+  }
+}

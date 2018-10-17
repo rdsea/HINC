@@ -1,0 +1,114 @@
+{
+  "sliceId": "valencia_intop_06_qos_reliability",
+  "resources":{
+    "gateaccess_sensor1":{
+      "metadata":{
+        "resource":{
+          "category":"iot",
+          "qos":{
+            "reliability":90
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"sensordata"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }]
+      },
+      "source":[],
+      "target":["sensor1_to_broker"]
+    },
+    "gateaccess_sensor2":{
+      "metadata":{
+        "resource":{
+          "category":"iot",
+          "qos":{
+            "reliability":50
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"sensordata"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }]
+      },
+      "source":[],
+      "target":["sensor2_to_broker"]
+    },
+    "analytics":{
+      "metadata":{
+        "resource":{
+          "category":"iot",
+          "required":{
+            "qos":{
+              "reliability":80
+            }
+          }
+        },
+        "inputs":[{
+          "push_pull":"push",
+          "protocol":{
+            "protocol_name":"mqtt",
+            "qos":2,
+            "topic":"sensordata"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs":[]
+      },
+      "source":["broker_to_analytics"],
+      "target":[]
+    },
+    "broker": {
+      "metadata": {
+        "resource": {
+          "category":"network_function_service",
+          "type":{
+            "prototype":"messagebroker",
+            "protocols":[{"protocol_name":"mqtt"}],
+            "topics":["sensordata"],
+            "auto_create":true
+          }
+        },
+        "inputs": [],
+        "outputs": []
+      },
+      "source": ["sensor2_to_broker","sensor1_to_broker"],
+      "target": ["broker_to_analytics"]
+    }
+  },
+  "connectivities":{
+    "sensor1_to_broker":{
+      "in":{"label":"gateaccess_sensor1"},
+      "out":{"label":"broker"}
+    },
+    "sensor2_to_broker":{
+      "in":{"label":"gateaccess_sensor2"},
+      "out":{"label":"broker"}
+    },
+    "broker_to_analytics":{
+      "in":{"label":"broker"},
+      "out":{"label":"analytics"}
+    }
+  },
+  "createdAt": 1534059245
+}

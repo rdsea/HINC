@@ -1,0 +1,100 @@
+{
+  "sliceId": "valencia_intop_03_datacontract_jurisdiction",
+  "resources": {
+    "camera": {
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "data_contract": {
+            "regulation":{
+            "jurisdiction": "EU"}
+          },
+          "required": {
+            "data_contract": {
+              "regulation":{
+              "jurisdiction": [
+                "EU"
+              ]
+            }}
+          }
+        },
+        "inputs": [],
+        "outputs": [
+          {
+            "push_pull": "pull",
+            "protocol": {
+              "protocol_name": "http",
+              "http_method": "get"
+            }
+          }
+        ]
+      },
+      "source": [],
+      "target": [
+        "camera_to_eu_storage",
+        "camera_to_us_storage"
+      ]
+    },
+    "eu_storage": {
+      "metadata": {
+        "resource": {
+          "category": "cloud_service",
+          "data_contract": {
+            "regulation":{
+            "jurisdiction": "EU"}
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "pull",
+            "protocol": {
+              "protocol_name": "http",
+              "http_method": "get"
+            }
+          }
+        ],
+        "outputs": []
+      },
+      "source": [
+        "camera_to_eu_storage"
+      ],
+      "target": []
+    },
+    "us_storage": {
+      "metadata": {
+        "resource": {
+          "category": "cloud_service",
+          "data_contract": {
+            "regulation":{
+            "jurisdiction": "US"}
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "pull",
+            "protocol": {
+              "protocol_name": "http",
+              "http_method": "get"
+            }
+          }
+        ],
+        "outputs": []
+      },
+      "source": [
+        "camera_to_us_storage"
+      ],
+      "target": []
+    }
+  },
+  "connectivities": {
+    "camera_to_eu_storage": {
+      "in": {"label":"camera"},
+      "out": {"label":"eu_storage"}
+    },
+    "camera_to_us_storage": {
+      "in": {"label":"camera"},
+      "out": {"label":"us_storage"}
+    }
+  },
+  "createdAt": 1534059245
+}

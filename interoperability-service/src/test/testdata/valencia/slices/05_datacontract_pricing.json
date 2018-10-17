@@ -1,0 +1,61 @@
+{
+  "sliceId": "valencia_intop_05_datacontract_pricing",
+  "resources":{
+    "pcs-trackings":{
+      "metadata":{
+        "resource":{
+          "category":"cloud_service",
+          "data_contract":{
+            "pricing":{
+              "price":"0.1",
+              "currency":"EUR",
+              "unit":"request"
+            }
+          }
+        },
+        "inputs":[],
+        "outputs":[{
+          "push_pull": "pull",
+          "protocol": {
+            "protocol_name": "http",
+            "http_method": "get"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }]
+      },
+      "source":[],
+      "target":["pcs_to_logistics"]
+    },
+    "logistics_analytics":{
+      "metadata":{
+        "resource":{
+          "category":"cloud_service"
+        },
+        "inputs":[{
+          "push_pull": "pull",
+          "protocol": {
+            "protocol_name": "http",
+            "http_method": "get"
+          },
+          "dataformat":{
+            "encoding":"utf-8",
+            "dataformat_name":"json"
+          }
+        }],
+        "outputs":[]
+      },
+      "source":["pcs_to_logistics"],
+      "target":[]
+    }
+  },
+  "connectivities":{
+    "pcs_to_logistics":{
+      "in":{"label":"pcs-trackings"},
+      "out":{"label":"logistics_analytics"}
+    }
+  },
+  "createdAt": 1534059245
+}
