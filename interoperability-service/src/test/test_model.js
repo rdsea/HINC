@@ -14,14 +14,18 @@ describe('mongoose model tests', function(){
     const service = require("../main/bridges/bridges_service");
 
     before(()=>{
-        _populateDB(service);
+        return _populateDB(service);
     });
 
     after(()=>{
         if(process.env.NODE_ENV === "test" && testconfig.drop_bridge_collection){
-            mongoose.connection.db.dropCollection(config.BRIDGE_COLLECTION_NAME);
+
+            return mongoose.connection.db.dropCollection(config.BRIDGE_COLLECTION_NAME).then(()=>{
+                mongoose.disconnect();
+            })
+        }else{
+            return mongoose.disconnect();
         }
-        mongoose.disconnect();
     });
 
     it('test create', function () {
@@ -87,11 +91,13 @@ describe('mongoose model tests', function(){
 });
 
 function _populateDB(service) {
+    let promises = [];
     for(let i=0;i<3;i++){
         let bridge = _examplebridge();
         bridge.slice.sliceId = `bridge ${i+1}`;
-        service.create(bridge);
+        promises.push(service.create(bridge));
     }
+    return Promise.all(promises);
 }
 
 
