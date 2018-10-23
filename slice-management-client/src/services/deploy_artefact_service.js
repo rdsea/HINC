@@ -122,7 +122,7 @@ function _getNodeRedFlow(software_artefact) {
 
 function _deployFlow(resource, nodered_flow) {
     console.log("deploy nodered flow to: " + resource.parameters.ingressAccessPoints[0].host);
-    let nodered_resource_uri = `${resource.parameters.ingressAccessPoints[0].host}/flows`;
+    let nodered_resource_uri = `${resource.parameters.ingressAccessPoints[0].host}:${resource.parameters.ingressAccessPoints[0].port}/flows`;
     let options = {
         method: 'POST',
         uri: nodered_resource_uri,
