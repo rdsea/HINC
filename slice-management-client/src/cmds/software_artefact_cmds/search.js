@@ -5,7 +5,14 @@ const path = require("path");
 
 exports.command = 'search <query>'
 exports.desc = 'search interoperability software artefacts with a mongo db query document'
-exports.builder = {}
+exports.builder = {
+    reference:{
+        alias: 'r',
+        describe: 'get only the artefact references',
+        type: 'boolean',
+        demandOption: false
+    }
+}
 exports.handler = function (argv) {
 
     let query = argv.query;
@@ -23,19 +30,25 @@ exports.handler = function (argv) {
 
     return _searchArtefacts(query).then((data) => {
         let artefacts = data;
-        let table = new Table({
-            head: ['artefact ID', 'name', 'executionEnvironment', 'reference'],
-        });
-        artefacts.forEach((artefact) => {
-            table.push([
-                artefact.uuid,
-                artefact.name,
-                artefact.executionEnvironment,
-                artefact.artefactReference
-            ]);
-        });
+        if(argv.reference){
+            artefacts.forEach(artefact => {
+                console.log(artefact.artefactReference);
+            });
+        }else {
+            let table = new Table({
+                head: ['artefact ID', 'name', 'executionEnvironment', 'reference'],
+            });
+            artefacts.forEach((artefact) => {
+                table.push([
+                    artefact.uuid,
+                    artefact.name,
+                    artefact.executionEnvironment,
+                    artefact.artefactReference
+                ]);
+            });
 
-        console.log(table.toString());
+            console.log(table.toString());
+        }
     })
 };
 

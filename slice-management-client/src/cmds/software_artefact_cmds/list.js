@@ -18,6 +18,12 @@ exports.builder = {
         describe: 'display detailed JSON artefact specification',
         type: 'boolean',
         demandOption: false
+    },
+    reference:{
+        alias: 'r',
+        describe: 'get only the artefact references',
+        type: 'boolean',
+        demandOption: false
     }
 }
 
@@ -31,7 +37,12 @@ exports.handler = function (argv) {
         if (err) {
             return console.err(err);
         }
-        if(argv.detailed){
+        if(argv.reference){
+            let artefacts = JSON.parse(body);
+            artefacts.forEach(artefact => {
+               console.log(artefact.artefactReference);
+            });
+        }else if(argv.detailed){
             console.log(JSON.stringify(JSON.parse(body), null, 2));
         }else{
             _displayOverview(body);

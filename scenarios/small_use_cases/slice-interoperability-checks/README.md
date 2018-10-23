@@ -1,64 +1,102 @@
-# Develop Interoperability Solutions - Protocol Interoperability with Camera Data
+# Under construction
 
-We show one example of protocol interoperability with camera data
+# Check SliceInformation for Interoperability Issues
 
-## Camera Data
-
-In this example, we assume that we know there is an IoTCameraProvider which offers access to many cameras (as resources), each camera has its own capabilities. We have one example of such IoTCamera in (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/IoTCameraDataProvider)
+We show a couple of interoperability-check examples on fictitious SliceInformation that is possible with interoperability metadata.
 
 ### For deployment
 
-### For this tutorial
+### For this tutorial, we
 
-We deploy one IoTCameraProvider in Google. Check with the organizer to obtain the URL.
+* check the interoperability of fictive slices based on the interoperability metadata
+
+### Preconditions
+
+* rsiHub CLI (pizza) installed. check with: ```$pizza --version```
+* rsiHub Interoperability Service running 
 
 ## Developers/User Story
 
-### Want to obtain data directly.
+Assume that a developer wants to check if the SliceInformation is interoperable before actually provisioning the Slice. This can be done manually, but in order to decrease the effort of checking the SliceInformation, rsiHub's interoperability check assists the developer in checking for interoperability.
 
-In this situation: assume that the camera provider has APIs for obtain the camera. Check the IoTCameraProvider code to see how.
+Interoperability can fail on multiple levels, some of which are too complex to clear automatically and require human intelligence. Our focus lies on assisting users with detecting problems on the level of:
+* protocol interoperability
+* dataformat interoperability
+* data contract interoperability
+* quality of service interoperability
+* quality of data interoperability
 
+For this use case we provided a couple of exemplary SliceInformations that contain problems on the respective interoperability levels. While they all showcase one tiny particular interoperability problem, a multitude of interoperability problems exist for each level.
 
-### The data should be pushed to a specific place.
+### Protocol Interoperability
+Protocol interoperability describes the failure to communicate on the protocol layer, which is right above the physical layer. Protocol interoperability can be violated if two components implement different communication protocols, but misconfiguration of protocols can also be an issue.
 
-Due to some specific conditions, we need pull-push w.r.t protocol to act as a bridge that asks the IoTCameraProvider to provide data and send to a specific location. Solutions:
-
-* Develop own code
-* Find if there is a component doing this
-
-#### Search component
-
-By searching through rsiHub, we find a component doing this (software-artifact) that can be deployed. Such a component might be also deployed already so available as a resource so we could just use it.
-
-#### Deploy the component
-
-One example of such pull-push bridge is (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/datastorageArtefact) for REST GET API to Google Storage.
-One can do the self-deployment, ask a specific provider to do this or call rsiHub to create a docker for pull-push
-
+To run this example use:
 ```
-$docker pull rdsea/http2datastorage
+$pizza intop check 01_protocol.json
 ```
 
-We have one deployment and the data will be stored into the bucket "userexchangedata"
+### Dataformat Interoperability
+Dataformat interoperability is violated if two components of a slice fail to use the same dataformat. Thus, the binary data is delivered correctly but it is not interpreted correctly. Dataformat interoperability might also be violated between components that are not directly connected with each other (for instance consider two components that communicate via messagebroker).
 
-#### Run an example
-
-See some python examples in [rsiHub scenarios](https://github.com/SINCConcept/HINC/tree/master/scenarios/camerainseaport)
-
+To run this example use:
 ```
-$python3 src/simple_find_and_push.py --provider_url http://104.155.93.219:3000/camera
-
-{"name":"http://4co2.vp9.tv/chn/DNG57/v204117.ts","timestamp":"1537981980"}
-We will call an external program to store
-https://storage.googleapis.com/userexchangedata/1537956804387_v204117.ts
-
+$pizza intop check 02_dataformat.json
 ```
 
+### DataContract Interoperability
+If the datacontract between slice components or even the slice in general is violated, then we also view the datacontract interoperability to be violated.
 
+For rsiHub we currently consider three different categories of DataContract interoperability:
 
-#### Notes
--why do we need it?
--examples and descriptions
--preconditions
--how to run?
-    - run ...
+* **Jurisdiction**
+
+    To run this example use:
+    ```
+    $pizza intop 03_datacontract_jurisdiction.json
+    ```
+
+* **Data Rights**
+
+    To run this example use:
+    ```
+    $pizza intop 04_datacontract_datarights.json
+    ```
+    
+* **Pricing**
+
+    To run this example use:
+    ```
+    $pizza intop 05_datacontract_pricing.json
+    ```
+
+### Quality of Service Interoperability
+
+* **Reliability**
+    To run this example use:
+    ```
+    $pizza intop check 06_qos_reliability.json
+    ```
+
+* **Message Frequency**
+
+    To run this example use:
+    ```
+    $pizza intop check 07_qos_messagefrequency.json
+    ```
+
+### Quality of Data Interoperability
+
+* **Precision**
+
+    To run this example use:
+    ```
+    $pizza intop check 08_qod_precision.json
+    ```
+    
+* **Average Measurement Age**
+
+    To run this example use:
+    ```
+    $pizza intop check 09_qod_averagemeasurementage.json
+    ```

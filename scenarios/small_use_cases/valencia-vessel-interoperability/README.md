@@ -1,3 +1,5 @@
+# Under construction
+
 #TODO: 
 * prepare the files for the use case
 * add the actual commands
@@ -24,7 +26,7 @@ We deploy a docker stack or use docker-compose on a local machine. After that, w
 - update a Slice
 
 ### Preconditions
-* slice management client (pizza) installed. check with: ```$pizza --version```
+* rsiHub CLI (pizza) installed. check with: ```$pizza --version```
 * docker installed. check with: ```$docker --version```
 
 ## Developers/User Story
