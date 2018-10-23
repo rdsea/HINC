@@ -8,8 +8,11 @@ exports.builder = {}
 
 exports.handler = function (argv) {
     let slice = null;
+    console.log("TO BE IMPLEMENTED");
+    /*refactor old code
     db.resourceDao().findOne({uuid: argv.resourceUuid}).then((resource) => {
         if(!(resource)) throw new Error(`could not find resource ${argv.resourceUuid}, please try again`);
         console.log(JSON.stringify(resource, null, 2));
     })
+    */
 }
