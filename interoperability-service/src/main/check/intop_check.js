@@ -273,6 +273,13 @@ function addBrokerOutinputs(outinputs, resource, type){
                         outinput.topic = resource.metadata.resource.type.topics[m];
                         outinputs.push(outinput);
                     }
+                    if(resource.metadata.resource.type.auto_create === true){
+                        let outinput = {};
+                        outinput.push_pull = "push";
+                        outinput.protocol = resource.metadata.resource.type.protocols[i];
+                        outinput.auto_create = true;
+                        outinputs.push(outinput);
+                    }
                 }
                 if(resource.metadata.resource.type.protocols[i].protocol_name === "amqp" ||
                     resource.metadata.resource.type.protocols[i].protocol_name === "amqps"){

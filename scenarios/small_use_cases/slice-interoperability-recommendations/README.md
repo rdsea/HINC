@@ -1,64 +1,121 @@
-# Under construction
+#Under construction
 
-# Develop Interoperability Solutions - Protocol Interoperability with Camera Data
+#TODO
+* setup
+* verify commands and run examples
 
-We show one example of protocol interoperability with camera data
+# Get Interoperability Recommendations for a SliceInformation
 
-## Camera Data
-
-In this example, we assume that we know there is an IoTCameraProvider which offers access to many cameras (as resources), each camera has its own capabilities. We have one example of such IoTCamera in (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/IoTCameraDataProvider)
+We show a couple of interoperability-recommendation examples on fictitious SliceInformation that is possible with interoperability metadata.
 
 ### For deployment
 
-### For this tutorial
+### For this tutorial, we
 
-We deploy one IoTCameraProvider in Google. Check with the organizer to obtain the URL.
+* get automatic interoperability solutions for fictive slices based on the interoperability metadata
+
+### Preconditions
+
+* rsiHub CLI (pizza) installed. check with: ```$pizza --version```
+* rsiHub Interoperability Service running 
 
 ## Developers/User Story
 
-### Want to obtain data directly.
+Assume that a developer wants to check if the SliceInformation is interoperable before actually provisioning the Slice. This can be done manually, but in order to decrease the effort of checking the SliceInformation, rsiHub's interoperability check assists the developer in checking for interoperability.
 
-In this situation: assume that the camera provider has APIs for obtain the camera. Check the IoTCameraProvider code to see how.
+Interoperability can fail on multiple levels, some of which are too complex to clear automatically and require human intelligence. Our focus lies on assisting users with detecting problems on the level of:
+* protocol interoperability
+* dataformat interoperability
+* data contract interoperability
+* quality of service interoperability
+* quality of data interoperability
 
+For this use case we provided a couple of exemplary SliceInformations that contain problems on the respective interoperability levels. While they all showcase one tiny particular interoperability problem, a multitude of interoperability problems exist for each level.
 
-### The data should be pushed to a specific place.
+### Protocol Interoperability
+Protocol interoperability describes the failure to communicate on the protocol layer, which is right above the physical layer. Protocol interoperability can be violated if two components implement different communication protocols, but misconfiguration of protocols can also be an issue.
 
-Due to some specific conditions, we need pull-push w.r.t protocol to act as a bridge that asks the IoTCameraProvider to provide data and send to a specific location. Solutions:
-
-* Develop own code
-* Find if there is a component doing this
-
-#### Search component
-
-By searching through rsiHub, we find a component doing this (software-artifact) that can be deployed. Such a component might be also deployed already so available as a resource so we could just use it.
-
-#### Deploy the component
-
-One example of such pull-push bridge is (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/datastorageArtefact) for REST GET API to Google Storage.
-One can do the self-deployment, ask a specific provider to do this or call rsiHub to create a docker for pull-push
-
+To run this example use:
 ```
-$docker pull rdsea/http2datastorage
+$pizza intop check 01_protocol.json
 ```
 
-We have one deployment and the data will be stored into the bucket "userexchangedata"
+### Dataformat Interoperability
+Dataformat interoperability is violated if two components of a slice fail to use the same dataformat. Thus, the binary data is delivered correctly but it is not interpreted correctly. Dataformat interoperability might also be violated between components that are not directly connected with each other (for instance consider two components that communicate via messagebroker).
 
-#### Run an example
-
-See some python examples in [rsiHub scenarios](https://github.com/SINCConcept/HINC/tree/master/scenarios/camerainseaport)
-
+To run this example use:
 ```
-$python3 src/simple_find_and_push.py --provider_url http://104.155.93.219:3000/camera
-
-{"name":"http://4co2.vp9.tv/chn/DNG57/v204117.ts","timestamp":"1537981980"}
-We will call an external program to store
-https://storage.googleapis.com/userexchangedata/1537956804387_v204117.ts
-
+$pizza intop check 02_dataformat.json
 ```
 
-#### Notes
--why do we need it?
--examples and descriptions
--preconditions
--how to run?
-    - run ...
+### DataContract Interoperability
+If the datacontract between slice components or even the slice in general is violated, then we also view the datacontract interoperability to be violated.
+
+For rsiHub we currently consider three different categories of DataContract interoperability:
+
+* **Jurisdiction**
+    contains contract information about the regulation acts and laws that apply to a component of a slice. In this fictitious example the camera resource requires that the data is only sent to components that fall under the law enforcement of the European Union. As one datastorage is located in the US, the interoperability check prototype will report a problem.
+
+    To run this example use:
+    ```
+    $pizza intop 03_datacontract_jurisdiction.json
+    ```
+
+* **Data Rights**
+     is the subcategory that information about how the data is allowed to be used. In the example, the sensor data can only be used non-commercially. If the creator of the Slice wants to use it for a commercial purpose, the Data Contract interoperability is violated.
+    
+    To run this example use:
+    ```
+    $pizza intop 04_datacontract_datarights.json
+    ```
+    
+* **Pricing**
+    information is needed when resources require payment to access them. This fairly simplified example shows that pricing also plays a role when analysing the interoperability of slices.
+
+    To run this example use:
+    ```
+    $pizza intop 05_datacontract_pricing.json
+    ```
+
+### Quality of Service Interoperability
+when Quality of Service measures are not met, the slice or some components of the slice might fail to work. We regard such failures as problems in Quality of Service Interoperability. 
+
+* **Reliability**
+
+    Critical slices or slice components might require reliable datasources in order to work properly. The reliability of a component might determine the usefulness of a component. As is in this example, where Gate Access Sensors of a certain reliability are required to get a reliable stream of information that can then be used to create time- and money-efficient logistics schedules. 
+    
+    To run this example use:
+    ```
+    $pizza intop check 06_qos_reliability.json
+    ```
+
+* **Message Frequency**
+
+    Some components might only be able to handle a certain amount of messages per second in order to work properly. This example models a weather analytics application that requests sensor data but can not handle the amount of messages it receives.   
+
+    To run this example use:
+    ```
+    $pizza intop check 07_qos_messagefrequency.json
+    ```
+
+### Quality of Data Interoperability
+
+Quality of Data measures can determine if data is actually valuable and can or can not be used for a certain application. If the data does not satisfy required quality measures, the Quality of Data Interoperability is violated. 
+
+* **Precision**
+    
+    In this fictitious example, an analytics application requires that the data sources, for instance temperature sensors, measure with a certion precision in order to get precise analytics results. The prototype should therefore report problems for all datasources that have a lower measuring precision.
+
+    To run this example use:
+    ```
+    $pizza intop check 08_qod_precision.json
+    ```
+    
+* **Average Measurement Age**
+
+    The average measurement age might determine if data is still relevant and can therefore be used, once the data has been received. This example models a logistics application that requires tracking data from a seaport. The logistics application requires that the data it uses for scheduling certain tasks is actually relevant within the current time frame.   
+
+    To run this example use:
+    ```
+    $pizza intop check 09_qod_averagemeasurementage.json
+    ```

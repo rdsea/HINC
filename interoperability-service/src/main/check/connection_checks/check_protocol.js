@@ -29,9 +29,13 @@ exports.checkProtocols = function (sourceMetadata, sourceOutput, targetMetadata,
         errors.push({key:"metadata.outputs.push_pull", value:targetInput.push_pull});
     }
 
-    if(sourceOutput.protocol.qos !== targetInput.protocol.qos){
-        warnings.push({key:"metadata.inputs.protocol.qos", value:sourceOutput.protocol.qos});
-        warnings.push({key:"metadata.outputs.protocol.qos", value:targetInput.protocol.qos});
+    try {
+        if (sourceOutput.protocol.qos !== targetInput.protocol.qos) {
+            warnings.push({key: "metadata.inputs.protocol.qos", value: sourceOutput.protocol.qos});
+            warnings.push({key: "metadata.outputs.protocol.qos", value: targetInput.protocol.qos});
+        }
+    }catch (e) {
+
     }
 };
 
