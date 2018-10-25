@@ -1,68 +1,55 @@
 # Under construction
+# TODO
+* setup
+* verify commands
 
-# Develop Interoperability Solutions - Protocol Interoperability with Camera Data
+# Search rsiHub Resources, Software Artefacts and Interoperability Bridges
 
-We show one example of protocol interoperability with camera data
-
-## Camera Data
-
-In this example, we assume that we know there is an IoTCameraProvider which offers access to many cameras (as resources), each camera has its own capabilities. We have one example of such IoTCamera in (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/IoTCameraDataProvider)
+We show a couple of examples on how to search rsiHub Resources, Software Artefacts and Interoperability Bridges using rsiHub's CLI **pizza.js**
 
 ### For deployment
 
-### For this tutorial
+### For this tutorial, we
 
-We deploy one IoTCameraProvider in Google. Check with the organizer to obtain the URL.
+* use rsiHub's CLI pizza.js to search resources and software artefacts
+* search software artefacts with rsiHub's interoperability metadata
+
 
 ## Developers/User Story
 
-### Want to obtain data directly.
+Assume you want to search Resources or Software Artefacts, for instance to solve an interoperability issue. By using rsiHub's CLI **pizza.js**, developers can search rsiHub entities with document queries that use mongodb query syntax. In particular, when searching for rsiHub components for interoperability purposes, rsiHub's interoperability metadata can help finding suitable components. 
 
-In this situation: assume that the camera provider has APIs for obtain the camera. Check the IoTCameraProvider code to see how.
+### Search resources
 
+* **search all mqttbroker resources**
 
-### The data should be pushed to a specific place.
-
-Due to some specific conditions, we need pull-push w.r.t protocol to act as a bridge that asks the IoTCameraProvider to provide data and send to a specific location. Solutions:
-
-* Develop own code
-* Find if there is a component doing this
-
-#### Search component
-
-By searching through rsiHub, we find a component doing this (software-artifact) that can be deployed. Such a component might be also deployed already so available as a resource so we could just use it.
-
-#### Deploy the component
-
-One example of such pull-push bridge is (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/datastorageArtefact) for REST GET API to Google Storage.
-One can do the self-deployment, ask a specific provider to do this or call rsiHub to create a docker for pull-push
-
+  
 ```
-$docker pull rdsea/http2datastorage
-```
-
-We have one deployment and the data will be stored into the bucket "userexchangedata"
-
-#### Run an example
-
-See some python examples in [rsiHub scenarios](https://github.com/SINCConcept/HINC/tree/master/scenarios/camerainseaport)
-
-```
-$python3 src/simple_find_and_push.py --provider_url http://104.155.93.219:3000/camera
-
-{"name":"http://4co2.vp9.tv/chn/DNG57/v204117.ts","timestamp":"1537981980"}
-We will call an external program to store
-https://storage.googleapis.com/userexchangedata/1537956804387_v204117.ts
-
+$pizza resource query '{"metadata.resource.type.prototype":"messagebroker", "metadata.resource.type.protocols.protocol_name":"mqtt"}'
 ```
 
 
+### Search interoperability software artefacts
 
-#### Notes
--why do we need it?
--search api
--preconditions
--how to run?
-    - run ...
-    - create docker swarm
-    - run docker swarm deploy
+* **search all software artefacts that are executed with docker**
+```
+$pizza artefact search '{"executionEnvironment":"docker"}'
+```
+
+* **search all software artefacts of which the name starts with 'nodered_json_to'**
+```
+$pizza artefact search '{"name":{"$regex":"nodered_json_to_.*"}}'
+```
+
+* **search all software artefacts that are executed with nodered, have an json-Input and an csv-Output**
+```
+$pizza artefact search '{"executionEnvironment":"nodered", "metadata.inputs.dataformat.dataformat_name":"json", "metadata.outputs.dataformat.dataformat_name":"csv", "metadata.outputs.dataformat.headers_included":true, "name":{"$regex":"nodered_json_to_.*"}}'
+```
+
+### Show the interoperability software artefact, using the artefact reference
+
+Suppose that the developer wants to view the previously searched nodered flow directly in the command line. This can be done by adding ```-r``` or ```--reference``` to the command, and additionally wrapping it in a ```curl call```. The complete example will then look like this:
+
+```
+curl -X GET $(pizza artefact search '{"name":"nodered_json_to_csv_flow"}' -r)
+```

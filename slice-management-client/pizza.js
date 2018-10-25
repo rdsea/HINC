@@ -26,6 +26,7 @@ if(config.hasConfig()){
     .demandCommand()
     .help()
     .version(pkg.version)
+    .locale('en')
     .argv;
 }else{
     config.setConfig();
