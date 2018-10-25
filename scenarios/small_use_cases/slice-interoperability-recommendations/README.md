@@ -21,16 +21,9 @@ We show a couple of interoperability-recommendation examples on fictitious Slice
 
 ## Developers/User Story
 
-Assume that a developer wants to check if the SliceInformation is interoperable before actually provisioning the Slice. This can be done manually, but in order to decrease the effort of checking the SliceInformation, rsiHub's interoperability check assists the developer in checking for interoperability.
+Assume that a developer wants to solve the interoperability problems that a previous interoperability check has found. This could be done manually, but in order to decrease the effort of solving interoperability problems of SliceInformations, rsiHub's interoperability recommendation is capable of solving certain interoperability problems automatically. Before solving the issue manually, the developer therefore will try to solve the problem automatically, as this requires less effort if a solution can be found.
 
-Interoperability can fail on multiple levels, some of which are too complex to clear automatically and require human intelligence. Our focus lies on assisting users with detecting problems on the level of:
-* protocol interoperability
-* dataformat interoperability
-* data contract interoperability
-* quality of service interoperability
-* quality of data interoperability
-
-For this use case we provided a couple of exemplary SliceInformations that contain problems on the respective interoperability levels. While they all showcase one tiny particular interoperability problem, a multitude of interoperability problems exist for each level.
+For this use case we provided a couple of exemplary SliceInformations containing interoperability problems that can be solved automatically if sufficient Resources and Interoperability Software Artefacts are available.
 
 ### Protocol Interoperability
 Protocol interoperability describes the failure to communicate on the protocol layer, which is right above the physical layer. Protocol interoperability can be violated if two components implement different communication protocols, but misconfiguration of protocols can also be an issue.
