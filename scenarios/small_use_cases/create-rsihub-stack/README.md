@@ -1,68 +1,79 @@
-# Under construction
+# Create and Deploy an rsiHub Stack 
 
+In this example, we show how to create and deploy an rsiHub Stack for testing purposes. We developed a stack generator that minimises the configuration effort. The stack can either be deployed to a running docker swarm or it can be run locally using docker-compose.
 
-# Develop Interoperability Solutions - Protocol Interoperability with Camera Data
+### For this tutorial, we
 
-We show one example of protocol interoperability with camera data
-
-## Camera Data
-
-In this example, we assume that we know there is an IoTCameraProvider which offers access to many cameras (as resources), each camera has its own capabilities. We have one example of such IoTCamera in (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/IoTCameraDataProvider)
-
-### For deployment
-
-### For this tutorial
-
-We deploy one IoTCameraProvider in Google. Check with the organizer to obtain the URL.
+* create a rsiHub stack, containing rsiHub's Global Management Service, Software Artefact Service, Interoperability Service, Local Management Services, Providers and Adapters. The entities of the stack are based on a scenario (*BTS*, *Valencia Seaport* or *Deploy Software Artefact*). 
 
 ## Developers/User Story
 
-### Want to obtain data directly.
+### Generate the Stack and Configuration Files
 
-In this situation: assume that the camera provider has APIs for obtain the camera. Check the IoTCameraProvider code to see how.
+1. To generate the different scenario stack, change to the directory `HINC/examples` and install the node-dependencies.
+    ```
+    $ cd <HINC-path>/examples
+    $ npm install
+    ``` 
 
+2. Run one of the scenario-commands mentioned below and answer the questions of the generator. The generated stack and configuration files will be in `HINC/examples/result`.
 
-### The data should be pushed to a specific place.
+    ***BTS***
+    ```
+    $ node src/scenarios/bts.js
+    ```
 
-Due to some specific conditions, we need pull-push w.r.t protocol to act as a bridge that asks the IoTCameraProvider to provide data and send to a specific location. Solutions:
+    ***Valencia***
+    ```
+    $ node src/scenarios/bts.js
+    ```
+    ***Deploy Software Artefact***
+    ```
+    $ node src/scenarios/bts.js
+    ```
 
-* Develop own code
-* Find if there is a component doing this
+### Deploy the Stack...
 
-#### Search component
+#### ... to a Docker Swarm
+1. Change to the results directory:
+    ```
+    $ cd results
+    ```
 
-By searching through rsiHub, we find a component doing this (software-artifact) that can be deployed. Such a component might be also deployed already so available as a resource so we could just use it.
+2. Ensure that docker is set to the swarm-manager:
+    ```
+    $ docker eval $(docker env <swarm-manager-id>)
+    ```
 
-#### Deploy the component
+3. Deploy the stack:
+    ```
+    $ docker stack deploy -c docker-stack.yml
+    ```
 
-One example of such pull-push bridge is (https://github.com/rdsea/IoTCloudSamples/tree/master/IoTCloudUnits/datastorageArtefact) for REST GET API to Google Storage.
-One can do the self-deployment, ask a specific provider to do this or call rsiHub to create a docker for pull-push
+#### ... locally, with docker-dompose 
 
+In the results directory run:
 ```
-$docker pull rdsea/http2datastorage
+$ docker-compose up
 ```
 
-We have one deployment and the data will be stored into the bucket "userexchangedata"
+### Check if the stack is running
 
-#### Run an example
+In the following commands `<stack-ip>` refers to `localhost`, if the stack is deployed locally using docker-compose. Otherwise it refers to the public, external IP of the swarm manager.
 
-See some python examples in [rsiHub scenarios](https://github.com/SINCConcept/HINC/tree/master/scenarios/camerainseaport)
+#### Access the OpenAPIs (resp. Swagger APIs) of the rsiHub Services
 
-```
-$python3 src/simple_find_and_push.py --provider_url http://104.155.93.219:3000/camera
+In a browser open following URLs:
 
-{"name":"http://4co2.vp9.tv/chn/DNG57/v204117.ts","timestamp":"1537981980"}
-We will call an external program to store
-https://storage.googleapis.com/userexchangedata/1537956804387_v204117.ts
+1. Global Management Service
 
-```
+    `http://<stack-ip>:8080/swagger-ui.html`
+    
+2. Interoperability Service
 
+    `http://<stack-ip>:8081/api-docs`
+    
+3. Software Artefact Service
 
-#### Notes
--why do we need it?
--how to run?
-    - run ...
-    - example descriptions
-    - answer questions
-    - create docker swarm
-    - run docker swarm deploy
+    `http://<stack-ip>:8082/swagger-ui.html`
+        
