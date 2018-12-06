@@ -1,0 +1,113 @@
+{
+  "sliceId": "direct_instance_OK_1_1",
+  "resources": {
+    "component_0": {
+      "name": "component_0",
+      "source": [],
+      "target": [
+        "con_0_to_1"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "sensor"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            },
+            "performance_direct": {
+              "count": 1,
+              "direct_performance_0": true
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            },
+            "performance_direct": {
+              "count": 1,
+              "direct_performance_0": true
+            }
+          }
+        ]
+      }
+    },
+    "component_1": {
+      "name": "component_1",
+      "source": [
+        "con_0_to_1"
+      ],
+      "target": [],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "sensor"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            },
+            "performance_direct": {
+              "count": 1,
+              "direct_performance_0": true
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            },
+            "performance_direct": {
+              "count": 1,
+              "direct_performance_0": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "connectivities": {
+    "con_0_to_1": {
+      "in": "component_0",
+      "out": "component_1"
+    }
+  }
+}

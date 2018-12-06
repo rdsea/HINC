@@ -12,10 +12,12 @@ const publicIp = require('public-ip');
 const PORT = config.SERVER_PORT;
 
 mongoose.connect(config.MONGODB_URL, { useNewUrlParser: true });
-
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/', router);
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+
+//app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
 
 app.listen(PORT);
 //TODO revert

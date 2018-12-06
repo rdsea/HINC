@@ -1,0 +1,185 @@
+{
+  "sliceId": "indirect_instance_OK_1_10",
+  "resources": {
+    "source": {
+      "name": "source",
+      "source": [],
+      "target": [
+        "source_to_broker"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "sensor"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "mqtt://test:1883",
+              "protocol_name": "mqtt",
+              "topic": "basic_test",
+              "qos": 0
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            },
+            "performance_indirect": {
+              "count": 10,
+              "indirect_performance_0": true,
+              "indirect_performance_1": true,
+              "indirect_performance_2": true,
+              "indirect_performance_3": true,
+              "indirect_performance_4": true,
+              "indirect_performance_5": true,
+              "indirect_performance_6": true,
+              "indirect_performance_7": true,
+              "indirect_performance_8": true,
+              "indirect_performance_9": true
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "mqtt://test:1883",
+              "protocol_name": "mqtt",
+              "topic": "basic_test",
+              "qos": 0
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            },
+            "performance_indirect": {
+              "count": 10,
+              "indirect_performance_0": true,
+              "indirect_performance_1": true,
+              "indirect_performance_2": true,
+              "indirect_performance_3": true,
+              "indirect_performance_4": true,
+              "indirect_performance_5": true,
+              "indirect_performance_6": true,
+              "indirect_performance_7": true,
+              "indirect_performance_8": true,
+              "indirect_performance_9": true
+            }
+          }
+        ]
+      }
+    },
+    "broker": {
+      "name": "broker",
+      "source": [
+        "source_to_broker"
+      ],
+      "target": [
+        "broker_to_dest1"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "network_function_service",
+          "type": {
+            "prototype": "messagebroker",
+            "protocols": [
+              {
+                "uri": "mqtt://test:1883",
+                "protocol_name": "mqtt",
+                "topic": "basic_test",
+                "qos": 0
+              }
+            ],
+            "topics": [
+              "basic_test"
+            ]
+          }
+        }
+      }
+    },
+    "dest_1": {
+      "name": "dest_1",
+      "source": [
+        "broker_to_dest1"
+      ],
+      "target": [],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "sensor"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "mqtt://test:1883",
+              "protocol_name": "mqtt",
+              "topic": "basic_test",
+              "qos": 0
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            },
+            "performance_indirect": {
+              "count": 10,
+              "indirect_performance_0": true,
+              "indirect_performance_1": true,
+              "indirect_performance_2": true,
+              "indirect_performance_3": true,
+              "indirect_performance_4": true,
+              "indirect_performance_5": true,
+              "indirect_performance_6": true,
+              "indirect_performance_7": true,
+              "indirect_performance_8": true,
+              "indirect_performance_9": true
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "mqtt://test:1883",
+              "protocol_name": "mqtt",
+              "topic": "basic_test",
+              "qos": 0
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            },
+            "performance_indirect": {
+              "count": 10,
+              "indirect_performance_0": true,
+              "indirect_performance_1": true,
+              "indirect_performance_2": true,
+              "indirect_performance_3": true,
+              "indirect_performance_4": true,
+              "indirect_performance_5": true,
+              "indirect_performance_6": true,
+              "indirect_performance_7": true,
+              "indirect_performance_8": true,
+              "indirect_performance_9": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "connectivities": {
+    "source_to_broker": {
+      "in": "source",
+      "out": "broker"
+    },
+    "broker_to_dest1": {
+      "in": "broker",
+      "out": "dest_1"
+    }
+  }
+}

@@ -1,21 +1,53 @@
 const fs = require("fs");
+const path = require("path");
 const slice_util = require("../../main/util/slice_util");
 const builder = require("../testdata/testslice_builder_util");
 
-let slice = {};
 
-//slice = direct_instance("direct_instance", 4, 1, metadata_parameters_OK());
-//slice = direct_instance("direct_instance", 4,1, metadata_parameters_ERROR());
-slice = indirect_instance("indirect_instance", 4,1, metadata_parameters_OK());
-slice = indirect_instance("indirect_instance", 4,1, metadata_parameters_ERROR());
+clearResults();
 
 
-slice = direct_instance("direct_performance_metadata_only", 2, 10, metadata_parameters_OK());
-slice = direct_instance("direct_performance_metadata_only", 2,10, metadata_parameters_ERROR());
-slice = indirect_instance("indirect_performance_metadata_only", 1,10, metadata_parameters_OK());
-slice = indirect_instance("indirect_performance_metadata_only", 1,10, metadata_parameters_ERROR());
+for(let nodenumber = 1; nodenumber<=10; nodenumber=nodenumber*10){
+    for(let metadatanumber = 1; metadatanumber<=10; metadatanumber=metadatanumber*10){
+        let slice1 = direct_instance("direct_instance", nodenumber, metadatanumber, metadata_parameters_OK());
+        let slice2 = direct_instance("direct_instance", nodenumber,metadatanumber, metadata_parameters_ERROR());
+        let slice3 = indirect_instance("indirect_instance", nodenumber,metadatanumber, metadata_parameters_OK());
+        let slice4 = indirect_instance("indirect_instance", nodenumber,metadatanumber, metadata_parameters_ERROR());
+
+        create_file_from_slice(slice1);
+        create_file_from_slice(slice2);
+        create_file_from_slice(slice3);
+        create_file_from_slice(slice4);
+    }
+}
 
 
+
+function create_file_from_slice(slice){
+    fs.writeFileSync(path.join(__dirname, `results/${slice.sliceId}.json`), JSON.stringify(slice, null, 2));
+}
+
+function clearResults(){
+    if(fs.existsSync('results')){
+        var deleteFolderRecursive = function(path) {
+            if (fs.existsSync(path)) {
+                fs.readdirSync(path).forEach(function(file, index){
+                    var curPath = path + "/" + file;
+                    if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                        deleteFolderRecursive(curPath);
+                    } else { // delete file
+                        fs.unlinkSync(curPath);
+                    }
+                });
+                fs.rmdirSync(path);
+            }
+        };
+
+        deleteFolderRecursive('results');
+    }
+
+    fs.mkdirSync('results');
+}
 
 function metadata_parameters_OK(){
     return copy({
@@ -74,11 +106,11 @@ function generate_direct_instance(basename, number_nodes, number_performance_met
 
     let slice = builder.empty_slice(`${basename}_${metadata_parameters.setname}_${number_nodes}_${number_performance_metadata}`);
 
-    for(let i = 0; i<number_nodes; i++){
-        let component = create_direct_metadata_component(`component_${i+1}`, number_performance_metadata,output_value, output_format, input_value, input_format);
+    for(let i = 0; i<=number_nodes; i++){
+        let component = create_direct_metadata_component(`component_${i}`, number_performance_metadata,output_value, output_format, input_value, input_format);
         slice_util.sliceAddResource(slice, component, component.name);
     }
-    for(let i = 1; i<number_nodes; i++){
+    for(let i = 0; i<number_nodes; i++){
         slice_util.sliceConnectById(slice,`component_${i}`,`component_${i+1}`, `con_${i}_to_${i+1}`);
     }
     return copy(slice);
