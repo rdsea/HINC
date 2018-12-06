@@ -5,6 +5,10 @@ const check_qod = require('./connection_checks/check_qod');
 const check_qos = require('./connection_checks/check_qos');
 const check_datacontract_jurisdiction = require('./connection_checks/check_datacontract_jurisdiction');
 
+const check_performance_direct = require('./connection_checks/check_performance_direct');
+const check_performance_indirect = require('./connection_checks/check_performance_indirect');
+
+
 const check_slicecontract_qos = require('./slicecontract_checks/check_slicecontract_qos');
 const check_slicecontract_qod = require('./slicecontract_checks/check_slicecontract_qod');
 const check_slicecontract_commercial_usage = require('./slicecontract_checks/check_slicecontract_commercial_usage');
@@ -113,6 +117,7 @@ function checkDirectConnection(sourceNode, targetNode, path, graph, errors, warn
     metadataConnectionChecks.push(check_qod.checkQoD);
     metadataConnectionChecks.push(check_qos.checkQoS);
     metadataConnectionChecks.push(check_datacontract_jurisdiction.checkJurisdiction);
+    metadataConnectionChecks.push(check_performance_direct.checkPerformanceMetadataIndirect);
 
     let checkErrors = checkMetadataConnection(sourceNode, connection.output, targetNode, connection.input, metadataConnectionChecks);
 
@@ -141,6 +146,7 @@ function indirectConnectionCheck(sourceNode, targetNode, currentNode, sourceOutp
     metadataConnectionChecks.push(check_qod.checkQoD);
     metadataConnectionChecks.push(check_qos.checkQoS);
     metadataConnectionChecks.push(check_datacontract_jurisdiction.checkJurisdiction);
+    metadataConnectionChecks.push(check_performance_indirect.checkPerformanceMetadataIndirect);
 
     let checkErrors = checkMetadataConnection(sourceNode, sourceOutput, targetNode, networkToTarget.input, metadataConnectionChecks);
 
