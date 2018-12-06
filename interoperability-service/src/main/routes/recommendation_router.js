@@ -11,7 +11,10 @@ router.post('/', function (req, res) {
     if(req.body.slice){
         slice =req.body.slice;
     }
+    let starttime = process.hrtime();
     recommendation.getRecommendations(slice).then(function (result) {
+        let diff = process.hrtime(starttime);
+        result.time = diff;
         res.send(result);
     })
 });
@@ -19,7 +22,11 @@ router.post('/', function (req, res) {
 router.post('/contract', function (req, res) {
     let slice = req.body.slice;
     let contract = req.body.contract;
+
+    let starttime = process.hrtime();
     recommendation.getContractRecommendations(slice, contract).then(function (result) {
+        let diff = process.hrtime(starttime);
+        result.time = diff;
         res.send(result);
     })
 });

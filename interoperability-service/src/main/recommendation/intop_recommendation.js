@@ -40,9 +40,10 @@ exports.getContractRecommendationsWithoutCheck = function(slice, contract, check
             })
             .then(function (slice) {
                 let result = {slice: slice, logs: logs};
-                saveRecommendationToMongo(old_slice, result, contract).then(() => {
+                /*saveRecommendationToMongo(old_slice, result, contract).then(() => {
                     resolve(result);
-                });
+                });*/
+                resolve(result);
         }).catch((error) => {
             console.log(error);
             resolve(error);

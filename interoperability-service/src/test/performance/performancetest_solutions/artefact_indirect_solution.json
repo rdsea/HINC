@@ -1,0 +1,78 @@
+{
+  "name": "artefact_indirect_solution",
+  "source": [],
+  "target": [],
+  "metadata": {
+    "resource": {
+      "category": "iot",
+      "type": {
+        "prototype": "sensor"
+      }
+    },
+    "inputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "mqtt://test:1883",
+          "protocol_name": "mqtt",
+          "topic": "basic_test",
+          "qos": 0
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "json"
+        },
+        "performance_indirect": {
+          "count": 10,
+          "indirect_performance_0": true,
+          "indirect_performance_1": true,
+          "indirect_performance_2": true,
+          "indirect_performance_3": true,
+          "indirect_performance_4": true,
+          "indirect_performance_5": true,
+          "indirect_performance_6": true,
+          "indirect_performance_7": true,
+          "indirect_performance_8": true,
+          "indirect_performance_9": true
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "push_pull": "push",
+        "protocol": {
+          "uri": "mqtt://test:1883",
+          "protocol_name": "mqtt",
+          "topic": "basic_test",
+          "qos": 0
+        },
+        "dataformat": {
+          "encoding": "utf-8",
+          "dataformat_name": "csv"
+        },
+        "performance_indirect": {
+          "count": 10,
+          "indirect_performance_0": false,
+          "indirect_performance_1": false,
+          "indirect_performance_2": false,
+          "indirect_performance_3": false,
+          "indirect_performance_4": false,
+          "indirect_performance_5": false,
+          "indirect_performance_6": false,
+          "indirect_performance_7": false,
+          "indirect_performance_8": false,
+          "indirect_performance_9": false
+        }
+      }
+    ]
+  },
+  "resource": {
+    "category": "iot",
+    "type": {
+      "prototype": "software_artefact",
+      "execution_env": "nodered"
+    }
+  },
+  "executionEnvironment": "nodered",
+  "artefactReference": "mocked"
+}
