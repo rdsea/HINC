@@ -12,18 +12,22 @@ const perform_util = require("../../util/performance_util");
 let createdArtefacts = [];
 let resultsarray = [];
 
-exports.command = 'performancetest <nodecount> <metadatacount> <iterations>'
+exports.command = 'performancetest'
 exports.desc = ''
 exports.builder = {}
 
+
+//const nodecounts = [1,2,3,5,7,10, 20,30,50,70,100, 200, 300, 500,700,1000];
+const nodecounts = [1,2,3,5,7];
+const metadatacounts = [1,10];
+const iterations = 3;
+
 exports.handler = function (argv) {
-    let nodecount = 10;
-    let metadatacount = 10;
-    let iteration = 3;
 
 
-    createArtefactMocks(metadatacount).then(()=>{
-        return perform_tests(nodecount,metadatacount,iteration)
+
+    createArtefactMocks(metadatacounts).then(()=>{
+        return perform_tests(nodecounts,metadatacounts,iterations)
     }).then(()=>{
         saveResultsToFiles();
     }).then(()=>{
@@ -35,8 +39,7 @@ function saveResultsToFiles(){
 
     let operations = ["check", "recommendation"];
     let testinstances = ["direct", "indirect"];
-    let nodecounts = [1,10];
-    let metadatacounts = [1,10];
+
 
 
     let sortedResults = perform_util.sortResults(resultsarray, operations, testinstances, nodecounts, metadatacounts);
@@ -63,11 +66,12 @@ function overwriteFile(filepath, content, callback){
     });
 }
 
-function createArtefactMocks(metadatacount){
+function createArtefactMocks(metadatacounts){
+    let max_metadatacount = Math.max.apply(Math, metadatacounts);
     //TODO add broker
 
-    let artefactDirect = performdg.solution_artefact_direct(metadatacount);
-    let artefactIndirect = performdg.solution_artefact_indirect(metadatacount);
+    let artefactDirect = performdg.solution_artefact_direct(max_metadatacount);
+    let artefactIndirect = performdg.solution_artefact_indirect(max_metadatacount);
 
     let promises= [];
     promises.push(artefact_service.createArtefact(artefactDirect).then((new_a)=>{createdArtefacts.push(new_a)}));
@@ -107,44 +111,44 @@ function saveResult(operation, instancename, nodecount, metadatacount, body){
     }
 }
 
-function perform_tests(nodecount, metadatacount, iterations){
-    return loopIterations(0,iterations-1,metadatacount,nodecount);
+function perform_tests(nodecounts, metadatacounts, iterations){
+    return loopIterations(0,iterations,metadatacounts,nodecounts);
 }
 
-function loopIterations(i, iterations, metadatacount, nodecount){
-    if(i<=iterations){
-        return loopMetadata(i,1,metadatacount,nodecount).then(()=>{
-            return loopIterations(i+1, iterations,metadatacount,nodecount);
+function loopIterations(i, iterations, metadatacounts, nodecounts){
+    if(i<iterations){
+        return loopMetadata(i,0,metadatacounts,nodecounts).then(()=>{
+            return loopIterations(i+1, iterations,metadatacounts,nodecounts);
         });
     }
 }
 
 
-function loopMetadata(i, m, metadatacount, nodecount){
-    if(m<=metadatacount){
-        return loopNodes(i,m,1,nodecount).then(()=>{
-            return loopMetadata(i,m*10,metadatacount,nodecount);
+function loopMetadata(i, m, metadatacounts, nodecounts){
+    if(m<metadatacounts.length){
+        return loopNodes(i,m,0,nodecounts).then(()=>{
+            return loopMetadata(i,m+1,metadatacounts,nodecounts);
         })
     }
 }
 
-function loopNodes(i, m, n, nodecount){
-    if(n<=nodecount){
-        return innerloop(n,m,i).then(()=>{
-            return loopNodes(i,m,n*10,nodecount);
+function loopNodes(i, m, n, nodecounts){
+    if(n<nodecounts.length){
+        return innerloop(i,m,n).then(()=>{
+            return loopNodes(i,m,n+1,nodecounts);
         });
     }
 }
 
-function innerloop(nodecount, metadatacount, iterations){
-    console.log(`i: ${iterations}  m:${metadatacount}  n:${nodecount}`);
+function innerloop(i,m,n){
+    console.log(`i: ${i}  m:${m}  n:${n}`);
 
-    let direct_slice = performdg.direct_instance("direct",nodecount, metadatacount, performdg.metadata_parameters_ERROR());
-    let indirect_slice = performdg.indirect_instance("indirect",nodecount, metadatacount, performdg.metadata_parameters_ERROR());
+    let direct_slice = performdg.direct_instance("direct",nodecounts[n], metadatacounts[m], performdg.metadata_parameters_ERROR());
+    let indirect_slice = performdg.indirect_instance("indirect",nodecounts[n], metadatacounts[m], performdg.metadata_parameters_ERROR());
 
-    return test(direct_slice, "direct", nodecount, metadatacount)
+    return test(direct_slice, "direct", nodecounts[n], metadatacounts[m])
         .then(()=>{
-            return test(indirect_slice, "indirect", nodecount, metadatacount);
+            return test(indirect_slice, "indirect", nodecounts[n], metadatacounts[m]);
         })
 }
 
@@ -152,10 +156,10 @@ function innerloop(nodecount, metadatacount, iterations){
 function test(slice, instancename, nodecount, metadatacount){
     return intop_service.check(slice, 300000).then((body)=>{
         return saveResult("check", instancename, nodecount, metadatacount, body);
-    }).then(()=>{
+    })/*.then(()=>{
         return intop_service.recommendation(slice, 300000);
     }).then((body)=>{
         return saveResult("recommendation", instancename, nodecount, metadatacount, body);
-    });
+    });*/
 
 }
