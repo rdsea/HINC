@@ -16,9 +16,9 @@ exports.desc = ''
 exports.builder = {}
 
 exports.handler = function (argv) {
-    let nodecount = 100;
-    let metadatacount = 100;
-    let iteration = 1;
+    let nodecount = 10;
+    let metadatacount = 10;
+    let iteration = 2;
 
 
     createArtefactMocks(metadatacount).then(()=>{
@@ -32,9 +32,54 @@ exports.handler = function (argv) {
 
 
 function saveResultsToFiles(){
-    let promises = [];
 
-    return Promise.all(promises);
+    let operations = ["check", "recommendation"];
+    let testinstances = ["direct", "indirect"];
+    let nodecounts = [1,10,100];
+    let metadatacounts = [1,10,100];
+
+    let sortedresults = {};
+
+    for(let o = 0; o<operations.length; o++) {
+        sortedresults[operations[o]]={};
+        for(let t = 0; t<testinstances.length; t++) {
+            sortedresults[operations[o]][testinstances[t]]={}
+            for (let n = 0; n < nodecounts.length; n++) {
+                sortedresults[operations[o]][testinstances[t]]["node_" + nodecounts[n]] = {};
+                for (let m = 0; m < metadatacounts.length; m++) {
+                    sortedresults[operations[o]][testinstances[t]]["node_" + nodecounts[n]]["metadata_" + metadatacounts[m]]
+                        = resultsarray.filter((result) => {
+                            return result.operation === operations[o]
+                         && result.instancename === testinstances[t]
+                         && result.nodecount === nodecounts[n]
+                         && result.metadatacount === metadatacounts[m]
+                        }).map(r => r.time_ms);
+                }
+            }
+        }
+    }
+
+    console.log("test");
+
+    /*let promises = [];
+
+    return Promise.all(promises);*/
+}
+
+function selectByNodecount(nodecount){
+}
+
+function selectByMetadatacount(metadatacount){
+
+}
+function selectByOperation(metadatacount){
+
+}
+function selectByInstance(instance){
+
+}
+function selectByHasError(has_error){
+
 }
 
 
@@ -45,6 +90,7 @@ function overwriteFile(filepath, content, callback){
 }
 
 function createArtefactMocks(metadatacount){
+    //TODO add broker
 
     let artefactDirect = performdg.solution_artefact_direct(metadatacount);
     let artefactIndirect = performdg.solution_artefact_indirect(metadatacount);
@@ -119,22 +165,12 @@ function loopNodes(i, m, n, nodecount){
 function innerloop(nodecount, metadatacount, iterations){
     console.log(`i: ${iterations}  m:${metadatacount}  n:${nodecount}`);
 
-    let slice1 = performdg.direct_instance("direct_instance",nodecount, metadatacount, performdg.metadata_parameters_OK());
-    let slice3 = performdg.indirect_instance("indirect_instance",nodecount, metadatacount, performdg.metadata_parameters_OK());
+    let direct_slice = performdg.direct_instance("direct",nodecount, metadatacount, performdg.metadata_parameters_ERROR());
+    let indirect_slice = performdg.indirect_instance("indirect",nodecount, metadatacount, performdg.metadata_parameters_ERROR());
 
-
-    let slice2 = performdg.direct_instance("direct_instance",nodecount, metadatacount, performdg.metadata_parameters_ERROR());
-    let slice4 = performdg.indirect_instance("indirect_instance",nodecount, metadatacount, performdg.metadata_parameters_ERROR());
-
-    return test(slice1, slice1.sliceId, nodecount, metadatacount)
+    return test(direct_slice, "direct", nodecount, metadatacount)
         .then(()=>{
-            return test(slice3, slice3.sliceId, nodecount, metadatacount);
-        })
-        .then(()=>{
-            return test(slice2, slice2.sliceId, nodecount, metadatacount);
-        })
-        .then(()=>{
-            return test(slice4, slice4.sliceId, nodecount, metadatacount);
+            return test(indirect_slice, "indirect", nodecount, metadatacount);
         })
 }
 
