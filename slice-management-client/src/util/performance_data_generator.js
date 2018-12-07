@@ -10,7 +10,8 @@ module.exports = {
     metadata_parameters_ERROR:metadata_parameters_ERROR,
     metadata_parameters_OK:metadata_parameters_OK,
     solution_artefact_direct:solution_artefact_direct,
-    solution_artefact_indirect:solution_artefact_indirect
+    solution_artefact_indirect:solution_artefact_indirect,
+    solution_artefact_broker:solution_artefact_broker
 };
 
 
@@ -18,7 +19,7 @@ module.exports = {
 function solution_artefact_direct(metadatanumber){
     let artefact_parameters = artefact_solution_parameters();
     let artefact = create_direct_metadata_component("artefact_direct_solution", metadatanumber, artefact_parameters);
-    artefact.resource = {
+    artefact.metadata.resource = {
         "category": "iot",
             "type": {
             "prototype": "software_artefact",
@@ -34,7 +35,7 @@ function solution_artefact_direct(metadatanumber){
 function solution_artefact_indirect(metadatanumber){
     let artefact_parameters = artefact_solution_parameters();
     let artefact = create_indirect_metadata_component("artefact_indirect_solution", metadatanumber, artefact_parameters);
-    artefact.resource = {
+    artefact.metadata.resource = {
         "category": "iot",
         "type": {
             "prototype": "software_artefact",
@@ -46,6 +47,17 @@ function solution_artefact_indirect(metadatanumber){
 
     return copy(artefact);
 }
+
+
+function solution_artefact_broker(){
+    let artefact = builder.mqttBroker("mocked_broker", builder.mqttProtocol());
+
+    artefact.executionEnvironment = "nodered";
+    artefact.artefactReference = "mocked";
+
+    return copy(artefact);
+}
+
 
 function create_file(object,name){
     fs.writeFileSync(path.join(__dirname, `results/${name}.json`), JSON.stringify(object, null, 2));

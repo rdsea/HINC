@@ -18,13 +18,11 @@ exports.builder = {}
 
 
 //const nodecounts = [1,2,3,5,7,10, 20,30,50,70,100, 200, 300, 500,700,1000];
-const nodecounts = [1,2,3,5,7];
-const metadatacounts = [1,10];
+const nodecounts = [1,2];
+const metadatacounts = [1,2];
 const iterations = 3;
 
 exports.handler = function (argv) {
-
-
 
     createArtefactMocks(metadatacounts).then(()=>{
         return perform_tests(nodecounts,metadatacounts,iterations)
@@ -36,22 +34,28 @@ exports.handler = function (argv) {
 };
 
 function saveResultsToFiles(){
-
     let operations = ["check", "recommendation"];
     let testinstances = ["direct", "indirect"];
 
-
-
     let sortedResults = perform_util.sortResults(resultsarray, operations, testinstances, nodecounts, metadatacounts);
 
-    let instance = sortedResults[operations[0]][testinstances[0]];
-    let perNodeCsvArray = perform_util.nodesSpreadsheetCsv(instance,nodecounts,metadatacounts);
-    let perMetadataCsvArray = perform_util.metadataSpreadsheetCsv(instance,nodecounts,metadatacounts);
+
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync("performance_results");
+    }
+
+
     let promises = [];
-    promises.push(perform_util.toCsvFile(perNodeCsvArray, "pernode.csv"));
-    promises.push(perform_util.toCsvFile(perMetadataCsvArray, "permetadata.csv"));
 
-
+    for(let o = 0; o<operations.length; o++){
+        for(let t = 0; t< testinstances.length; t++){
+            let instance = sortedResults[operations[o]][testinstances[t]];
+            let perNodeCsvArray = perform_util.nodesSpreadsheetCsv(instance,nodecounts,metadatacounts);
+            let perMetadataCsvArray = perform_util.metadataSpreadsheetCsv(instance,nodecounts,metadatacounts);
+            promises.push(perform_util.toCsvFile(perNodeCsvArray, `performance_results/${operations[o]}_${testinstances[t]}_nodes.csv`));
+            promises.push(perform_util.toCsvFile(perMetadataCsvArray, `performance_results/${operations[o]}_${testinstances[t]}_metadata.csv`));
+        }
+    }
 
 
     return Promise.all(promises);
@@ -59,23 +63,18 @@ function saveResultsToFiles(){
 }
 
 
-
-function overwriteFile(filepath, content, callback){
-    fs.truncate(filepath, 0, function() {
-        fs.writeFile(filepath, content, callback);
-    });
-}
-
 function createArtefactMocks(metadatacounts){
     let max_metadatacount = Math.max.apply(Math, metadatacounts);
     //TODO add broker
 
     let artefactDirect = performdg.solution_artefact_direct(max_metadatacount);
     let artefactIndirect = performdg.solution_artefact_indirect(max_metadatacount);
+    let artefactBroker = performdg.solution_artefact_broker();
 
     let promises= [];
     promises.push(artefact_service.createArtefact(artefactDirect).then((new_a)=>{createdArtefacts.push(new_a)}));
     promises.push(artefact_service.createArtefact(artefactIndirect).then((new_a)=>{createdArtefacts.push(new_a)}));
+    promises.push(artefact_service.createArtefact(artefactBroker).then((new_a)=>{createdArtefacts.push(new_a)}));
     return Promise.all(promises);
 }
 
@@ -141,8 +140,6 @@ function loopNodes(i, m, n, nodecounts){
 }
 
 function innerloop(i,m,n){
-    console.log(`i: ${i}  m:${m}  n:${n}`);
-
     let direct_slice = performdg.direct_instance("direct",nodecounts[n], metadatacounts[m], performdg.metadata_parameters_ERROR());
     let indirect_slice = performdg.indirect_instance("indirect",nodecounts[n], metadatacounts[m], performdg.metadata_parameters_ERROR());
 
@@ -156,10 +153,10 @@ function innerloop(i,m,n){
 function test(slice, instancename, nodecount, metadatacount){
     return intop_service.check(slice, 300000).then((body)=>{
         return saveResult("check", instancename, nodecount, metadatacount, body);
-    })/*.then(()=>{
+    }).then(()=>{
         return intop_service.recommendation(slice, 300000);
     }).then((body)=>{
         return saveResult("recommendation", instancename, nodecount, metadatacount, body);
-    });*/
+    });
 
 }
