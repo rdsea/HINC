@@ -7,6 +7,7 @@ const fs = require("fs");
 const performdg = require("../../util/performance_data_generator");
 const artefact_service = require("../../services/crud_artefact_service");
 const intop_service = require("../../services/intop_service");
+const perform_util = require("../../util/performance_util");
 
 let createdArtefacts = [];
 let resultsarray = [];
@@ -18,7 +19,7 @@ exports.builder = {}
 exports.handler = function (argv) {
     let nodecount = 10;
     let metadatacount = 10;
-    let iteration = 2;
+    let iteration = 3;
 
 
     createArtefactMocks(metadatacount).then(()=>{
@@ -30,57 +31,30 @@ exports.handler = function (argv) {
     })
 };
 
-
 function saveResultsToFiles(){
 
     let operations = ["check", "recommendation"];
     let testinstances = ["direct", "indirect"];
-    let nodecounts = [1,10,100];
-    let metadatacounts = [1,10,100];
+    let nodecounts = [1,10];
+    let metadatacounts = [1,10];
 
-    let sortedresults = {};
 
-    for(let o = 0; o<operations.length; o++) {
-        sortedresults[operations[o]]={};
-        for(let t = 0; t<testinstances.length; t++) {
-            sortedresults[operations[o]][testinstances[t]]={}
-            for (let n = 0; n < nodecounts.length; n++) {
-                sortedresults[operations[o]][testinstances[t]]["node_" + nodecounts[n]] = {};
-                for (let m = 0; m < metadatacounts.length; m++) {
-                    sortedresults[operations[o]][testinstances[t]]["node_" + nodecounts[n]]["metadata_" + metadatacounts[m]]
-                        = resultsarray.filter((result) => {
-                            return result.operation === operations[o]
-                         && result.instancename === testinstances[t]
-                         && result.nodecount === nodecounts[n]
-                         && result.metadatacount === metadatacounts[m]
-                        }).map(r => r.time_ms);
-                }
-            }
-        }
-    }
+    let sortedResults = perform_util.sortResults(resultsarray, operations, testinstances, nodecounts, metadatacounts);
 
-    console.log("test");
+    let instance = sortedResults[operations[0]][testinstances[0]];
+    let perNodeCsvArray = perform_util.nodesSpreadsheetCsv(instance,nodecounts,metadatacounts);
+    let perMetadataCsvArray = perform_util.metadataSpreadsheetCsv(instance,nodecounts,metadatacounts);
+    let promises = [];
+    promises.push(perform_util.toCsvFile(perNodeCsvArray, "pernode.csv"));
+    promises.push(perform_util.toCsvFile(perMetadataCsvArray, "permetadata.csv"));
 
-    /*let promises = [];
 
-    return Promise.all(promises);*/
-}
 
-function selectByNodecount(nodecount){
-}
 
-function selectByMetadatacount(metadatacount){
+    return Promise.all(promises);
 
 }
-function selectByOperation(metadatacount){
 
-}
-function selectByInstance(instance){
-
-}
-function selectByHasError(has_error){
-
-}
 
 
 function overwriteFile(filepath, content, callback){
