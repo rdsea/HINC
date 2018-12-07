@@ -1,7 +1,9 @@
 const reqprom = require('request-promise');
-const config = require("../config");
+const configModule = require('config');
 
-let baseUri = config.software_artefact_service_uri + "/softwareartefacts";
+const config = configModule.get('interoperability_service');
+
+const baseUri = config.SOFTWARE_ARTEFACT_URI+"/softwareartefacts";
 
 module.exports = {
     createArtefact:_createArtefact,

@@ -1,5 +1,4 @@
 const fs = require("fs");
-const storage_service = require("../../main/services/storage_service");
 
 module.exports = {sortResults:sortResults,
                     nodeAxisCsv:nodeAxisCsv,
@@ -127,11 +126,6 @@ function toCsvFile(data, filename){
 
         let csvString = data.map(row => row.join(seperator)).join(lineseperator);
 
-        //TODO send to bucket
         fs.writeFile(filename, csvString, resolve);
-    }).then(()=>{
-        return new Promise((resolve,reject)=>{
-            resolve(storage_service.upload(filename));
-        })
     });
 }

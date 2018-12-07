@@ -5,11 +5,13 @@ const bodyParser = require('body-parser');
 const bridgeRouter = require("./routes/bridges_router").getRouter();
 const recommendationRouter = require("./routes/recommendation_router").getRouter();
 const checkRouter = require("./routes/check_router").getRouter();
+const perfomanceRouter = require("./routes/performance_router").getRouter();
 
 router.use(bodyParser.json());
 
 router.use('/interoperability/bridges', bridgeRouter);
 router.use('/interoperability/recommendation', recommendationRouter);
 router.use('/interoperability/check', checkRouter);
+router.use("/performance/suite",perfomanceRouter);
 
 module.exports = router;

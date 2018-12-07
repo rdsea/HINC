@@ -10,7 +10,6 @@ let configModule = require('config');
 let config = configModule.get('interoperability_service');
 const publicIp = require('public-ip');
 const PORT = config.SERVER_PORT;
-var timeout = require('connect-timeout'); //express v4
 
 
 
@@ -19,12 +18,6 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/', router);
 
-app.use(timeout(3000000));
-app.use(haltOnTimedout);
-
-function haltOnTimedout(req, res, next){
-    if (!req.timedout) next();
-}
 
 //app.use(bodyParser.json());
 

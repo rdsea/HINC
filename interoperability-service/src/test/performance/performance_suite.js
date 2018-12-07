@@ -1,39 +1,33 @@
-const request = require('request');
-const config = require("../../../../slice-management-client/src/config");
-const path = require("path");
-const prompt =require('inquirer').createPromptModule();
 const fs = require("fs");
 
 const performdg = require("../../main/util/performance_data_generator");
-const artefact_service = require("../../../../slice-management-client/src/services/crud_artefact_service");
-const intop_service = require("../../../../slice-management-client/src/services/intop_service");
+const artefact_service = require("../../main/services/crud_artefact_service");
+const performance_intop_service = require("./performance_intop_service");
 const perform_util = require("../../main/util/performance_util");
 
 let createdArtefacts = [];
 let resultsarray = [];
 
-exports.command = 'performancetest'
-exports.desc = ''
-exports.builder = {}
-
 
 //const nodecounts = [1,2,3,5,7,10, 20,30,50,70,100, 200, 300, 500,700,1000];
-const nodecounts = [1,2,3,600];
+const nodecounts = [1,2,700];
 //const nodecounts = [1,3];
 const metadatacounts = [1];
 //const metadatacounts = [1,2,3,5,7,10, 20,30,50,70,100];
 const iterations = 2;
 
-exports.handler = function (argv) {
+module.exports={startSuite:startSuite}
+
+function startSuite() {
 
     createArtefactMocks(metadatacounts).then(()=>{
         return perform_tests(nodecounts,metadatacounts,iterations);
     }).then(()=>{
         saveResultsToFiles();
-    }).catch(()=>{
-        saveResultsToFiles();
     }).then(()=>{
         cleanUpArtefactMocks();
+    }).catch((e)=>{
+        console.info(e);
     })
 };
 
@@ -97,9 +91,9 @@ function saveResult(operation, instancename, nodecount, metadatacount, body){
         const MS_PER_NS = 1e-6
         let diff = body.time;
 
-        /*console.log("Performance: ");
-        console.log(`Benchmark took ${diff[0] * NS_PER_SEC + diff[1]} nanoseconds`);
-        console.log(`Benchmark took ${(diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS} milliseconds`);*/
+        /*console.info("Performance: ");
+        console.info(`Benchmark took ${diff[0] * NS_PER_SEC + diff[1]} nanoseconds`);
+        console.info(`Benchmark took ${(diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS} milliseconds`);*/
         let ms = ((diff[0] * NS_PER_SEC + diff[1]) * MS_PER_NS);
         resultsarray.push({
             operation: operation,
@@ -109,7 +103,7 @@ function saveResult(operation, instancename, nodecount, metadatacount, body){
             time_ms:ms
         });
     }else{
-        console.log(`no body.time for:
+        console.info(`no body.time for:
                         operation ${operation}
                         instancename ${instancename}
                         nodecount ${nodecount}
@@ -122,7 +116,7 @@ function perform_tests(nodecounts, metadatacounts, iterations){
 }
 
 function loopIterations(i, iterations, metadatacounts, nodecounts){
-    console.log("iteration " + (i+1) + "/" + iterations);
+    console.info("iteration " + (i+1) + "/" + iterations);
     if(i<iterations){
         return loopMetadata(i,0,metadatacounts,nodecounts).then(()=>{
             return loopIterations(i+1, iterations,metadatacounts,nodecounts);
@@ -159,13 +153,13 @@ function innerloop(i,m,n){
 
 
 function test(slice, instancename, nodecount, metadatacount){
-    console.log(`test \t ${instancename} \t nodes:${nodecount} \t mismatches: ${metadatacount}`);
-    return intop_service.check(slice, 3000000).then((body)=>{
+    console.info(`test \t ${instancename} \t nodes:${nodecount} \t mismatches: ${metadatacount}`);
+    return performance_intop_service.check(slice).then((body)=>{
         return saveResult("check", instancename, nodecount, metadatacount, body);
     }).then(()=>{
-        return intop_service.recommendation(slice, 3000000);
+        return performance_intop_service.recommendation(slice);
     }).then((body)=>{
         return saveResult("recommendation", instancename, nodecount, metadatacount, body);
-    }).catch((e)=>{console.log(e)});
+    }).catch((e)=>{console.info(e)});
 
 }

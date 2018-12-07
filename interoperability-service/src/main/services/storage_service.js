@@ -1,11 +1,10 @@
 const Promise = require('bluebird');
 const GoogleCloudStorage = Promise.promisifyAll(require('@google-cloud/storage'));
 const path = require('path');
-const config = require('../config');
 
 
 const storage = GoogleCloudStorage({
-    keyFilename: config.storage_keyfile
+    keyFilename: "google_storage_key.json"
 });
 
 const BUCKET_NAME = "mytestbucket_test";
@@ -20,7 +19,7 @@ function _getPublicThumbnailUrlForItem(filename) {
 
 function upload(filename){
     let filePath= path.resolve(filename);
-    return myBucket.uploadAsync(filePath).then(()=>{
+    return myBucket.uploadAsync(filePath, { destination: `results/${filename}` }).then(()=>{
         return _getPublicThumbnailUrlForItem(filename);
     });
 }
