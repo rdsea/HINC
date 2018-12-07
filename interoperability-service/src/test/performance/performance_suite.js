@@ -9,16 +9,25 @@ let createdArtefacts = [];
 let resultsarray = [];
 
 
-//const nodecounts = [1,2,3,5,7,10, 20,30,50,70,100, 200, 300, 500,700,1000];
-const nodecounts = [1,2,700];
-//const nodecounts = [1,3];
-const metadatacounts = [1];
-//const metadatacounts = [1,2,3,5,7,10, 20,30,50,70,100];
-const iterations = 2;
+let nodecounts = [1,2,10];
+let metadatacounts = [1,2];
+let iterations = 2;
+let instance_name = "";
 
 module.exports={startSuite:startSuite}
 
-function startSuite() {
+function startSuite(node_counts, metadata_counts, num, instancename) {
+    if(node_counts){
+        nodecounts= node_counts;
+    }
+    if(metadata_counts){
+        metadatacounts = metadata_counts;
+    }
+    if(num){
+        iterations = num;
+    }
+    instance_name = instancename;
+
 
     createArtefactMocks(metadatacounts).then(()=>{
         return perform_tests(nodecounts,metadatacounts,iterations);
@@ -38,12 +47,14 @@ function saveResultsToFiles(){
     let sortedResults = perform_util.sortResults(resultsarray, operations, testinstances, nodecounts, metadatacounts);
 
     let name_iterator = 0;
-    let directoryname =`performance_results`;
+    let directoryname =`performance_results_${instance_name}`;
     while(fs.existsSync(directoryname)){
         name_iterator++;
         directoryname = `performance_results_${name_iterator}`;
     }
-    fs.mkdirSync(directoryname);
+    if(!fs.existsSync(directoryname)){
+        fs.mkdirSync(directoryname);
+    }
 
 
     let promises = [];
@@ -116,8 +127,8 @@ function perform_tests(nodecounts, metadatacounts, iterations){
 }
 
 function loopIterations(i, iterations, metadatacounts, nodecounts){
-    console.info("iteration " + (i+1) + "/" + iterations);
     if(i<iterations){
+        console.info("iteration " + (i+1) + "/" + iterations);
         return loopMetadata(i,0,metadatacounts,nodecounts).then(()=>{
             return loopIterations(i+1, iterations,metadatacounts,nodecounts);
         });

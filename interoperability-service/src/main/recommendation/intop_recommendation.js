@@ -283,14 +283,14 @@ exports.queryServices = function(query){
         let promises = [];
 
         promises.push(request.post({url: SEARCH_RESOURCES, body: jsonQuery}).then((result)=>{
-            console.log(result);
+            //console.log(result);
             let resources = JSON.parse(result);
             resources.forEach(e=>{e._type = "resource"});
             allResources = allResources.concat(resources);
         }));
 
         promises.push(request.post({url: SEARCH_SOFTWARE_ARTEFACT, body: jsonQuery}).then((result)=>{
-            console.log(result);
+            //console.log(result);
             let software_artefacts = JSON.parse(result);
             software_artefacts.forEach(e=>{e._type = "software_artefact"});
             allResources = allResources.concat(software_artefacts);
@@ -298,7 +298,7 @@ exports.queryServices = function(query){
 
         //TODO change to bridge_service.query
         promises.push(request.post({url: SEARCH_INTEROPERABILITY_BRIDGE, body: jsonQuery}).then((result)=>{
-            console.log(result);
+            //console.log(result);
             let bridges = JSON.parse(result);
             bridges.forEach(e=>{e._type = "bridge"});
             allResources = allResources.concat(bridges);
