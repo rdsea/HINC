@@ -8,28 +8,29 @@ exports.desc = ''
 exports.builder = {}
 
 exports.handler = function (argv) {
-    const nodecounts = [1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90, 100,200,300,400,500,600,700,800,900, 1000];
+    const metadatacounts = [1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90, 100,200,300,400,500,600,700,800,900, 1000];
     //let nodecounts = [1000];
     //const nodecounts = [1,3];
-    let metadatacounts = [1];
+    let nodecounts = [1];
     //const metadatacounts = [1,2,3,5,7,10, 20,30,50,70,100];
     let iterations = 5;
     let instance_name = "fixed_"+argv.name;
 
 
-    if(argv.name === "m1000"){
-        metadatacounts = [1000];
+    if(argv.name === "node1000"){
+        nodecounts = [1000];
 
 
-    }else if(argv.name === "m100"){
-        metadatacounts = [100];
+    }else if(argv.name === "node100"){
+        nodecounts = [100];
 
-    }else if(argv.name === "m10"){
-        metadatacounts = [10];
+    }else if(argv.name === "node10"){
+        nodecounts = [10];
 
-    }else if(argv.name === "m1"){
-        metadatacounts = [1];
+    }else if(argv.name === "node1"){
+        nodecounts = [1];
     }else{
+        console.log("invalid instance name");
         return;
     }
 
