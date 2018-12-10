@@ -151,60 +151,7 @@
       }
     ]
   }
-},
-  {
-    "_id": {
-      "$oid": "5bcf22375d71560001b251ef"
-    },
-    "uuid": null,
-    "name": "nodered_json_to_csv_flow",
-    "executionEnvironment": "nodered",
-    "artefactReference": "https://raw.githubusercontent.com/rdsea/IoTCloudSamples/master/IoTCloudUnits/node_red_dataflows/json_to_csv_flow/flow_json_to_csv.json",
-    "metadata": {
-      "resource": {
-        "category": "iot",
-        "type": {
-          "prototype": "software_artefact",
-          "execution_env": "nodered"
-        }
-      },
-      "inputs": [
-        {
-          "push_pull": "push",
-          "protocol": {
-            "uri": "mqtt://localhost:1883",
-            "protocol_name": "mqtt",
-            "topic": "json_input",
-            "qos": 2
-          },
-          "dataformat": {
-            "encoding": "utf-8",
-            "dataformat_name": "json"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "push_pull": "push",
-          "protocol": {
-            "uri": "mqtt://localhost:1883",
-            "protocol_name": "mqtt",
-            "topic": "csv_output",
-            "qos": 2
-          },
-          "dataformat": {
-            "encoding": "utf-8",
-            "dataformat_name": "csv",
-            "headers": "",
-            "seperator": ";",
-            "newline_seperator": "\n",
-            "headers_included": true
-          }
-        }
-      ]
-    }
-  },
-  {
+}, {
     "_id": {
       "$oid": "5bcf22385d71560001b251f0"
     },
