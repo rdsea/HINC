@@ -1,0 +1,119 @@
+{
+  "sliceId": "test_0_13_multi_circle",
+  "resources": {
+    "source": {
+      "name": "source",
+      "source": [
+        "connectionId3"
+      ],
+      "target": [
+        "connectionId1"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "sensor"
+          }
+        },
+        "inputs": [],
+        "outputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "mqtt://test:1883",
+              "protocol_name": "mqtt",
+              "topic": "basic_test",
+              "qos": 0
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "csv"
+            }
+          }
+        ]
+      }
+    },
+    "dest": {
+      "name": "dest",
+      "source": [
+        "connectionId2"
+      ],
+      "target": [
+        "connectionId4"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "storage"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "mqtt://test:1883",
+              "protocol_name": "mqtt",
+              "topic": "basic_test",
+              "qos": 0
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            }
+          }
+        ],
+        "outputs": []
+      }
+    },
+    "broker": {
+      "name": "broker",
+      "source": [
+        "connectionId1",
+        "connectionId4"
+      ],
+      "target": [
+        "connectionId2",
+        "connectionId3"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "network_function_service",
+          "type": {
+            "prototype": "messagebroker",
+            "protocols": [
+              {
+                "uri": "mqtt://test:1883",
+                "protocol_name": "mqtt",
+                "topic": "basic_test",
+                "qos": 0
+              }
+            ],
+            "topics": [
+              "basic_test"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "connectivities": {
+    "connectionId1": {
+      "in": "source",
+      "out": "broker"
+    },
+    "connectionId2": {
+      "in": "broker",
+      "out": "dest"
+    },
+    "connectionId3": {
+      "in": "broker",
+      "out": "source"
+    },
+    "connectionId4": {
+      "in": "dest",
+      "out": "broker"
+    }
+  }
+}

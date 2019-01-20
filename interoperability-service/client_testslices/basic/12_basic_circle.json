@@ -1,0 +1,154 @@
+{
+  "sliceId": "test_0_12_basic_circle",
+  "resources": {
+    "source1": {
+      "name": "source1",
+      "source": [
+        "connectionId3"
+      ],
+      "target": [
+        "connectionId1"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "sensor"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            }
+          }
+        ]
+      }
+    },
+    "source2": {
+      "name": "source2",
+      "source": [
+        "connectionId1"
+      ],
+      "target": [
+        "connectionId2"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "sensor"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            }
+          }
+        ]
+      }
+    },
+    "source3": {
+      "name": "source3",
+      "source": [
+        "connectionId2"
+      ],
+      "target": [
+        "connectionId3"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "sensor"
+          }
+        },
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "csv"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "csv"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "connectivities": {
+    "connectionId1": {
+      "in": "source1",
+      "out": "source2"
+    },
+    "connectionId2": {
+      "in": "source2",
+      "out": "source3"
+    },
+    "connectionId3": {
+      "in": "source3",
+      "out": "source1"
+    }
+  }
+}

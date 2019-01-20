@@ -185,7 +185,7 @@ describe('intop_recommendation', function(){
             });
         });
         //TODO implement algorithm to pass test and activate it again (remove x from xit)
-        xit('0_3_substitution: wrong broker, should substitute broker', function () {
+        /*it('0_3_substitution: wrong broker, should substitute broker', function () {
             let slice = basic_data.test_0_3_substitution();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -198,11 +198,11 @@ describe('intop_recommendation', function(){
                 let slice = result.slice;
                 let logs = result.logs;
 
-                /* recommendation:
+                /!* recommendation:
                     - resourcecount equal
                     - broker.protocol == mqtt
                     - connection between: source->broker, broker->dest
-                 */
+                 *!/
                 let count = util.resourceCount(slice);
                 assert.equal(count, old_count);
                 assert.equal(util.contains(slice, "oldbroker"), false);
@@ -217,7 +217,7 @@ describe('intop_recommendation', function(){
             });
         });
         //TODO implement algorithm to pass test and activate it again (remove x from xit)
-        xit('0_4_reduction: broker not needed, should remove broker', function () {
+        it('0_4_reduction: broker not needed, should remove broker', function () {
             let slice = basic_data.test_0_4_reduction();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -230,10 +230,10 @@ describe('intop_recommendation', function(){
                 let slice = result.slice;
                 let logs = result.logs;
 
-                /* recommendation:
+                /!* recommendation:
                     - -1 resource (broker)
                     - connection between: source->dest
-                 */
+                 *!/
                 let count = util.resourceCount(slice);
                 assert.equal(count, old_count-1);
                 assert.equal(util.contains(slice, "broker"), false);
@@ -243,7 +243,7 @@ describe('intop_recommendation', function(){
                 errors = check.checkSlice(slice).errors;
                 assert.equal(errors.length, 0);
             });
-        });
+        });*/
         it('0_5_addition: multiple push-pull problem with needed broker, should add poller and buffer', function () {
             let slice = basic_data.test_0_5_push_pull();
             let old_slice = util.deepcopy(slice);
@@ -312,8 +312,8 @@ describe('intop_recommendation', function(){
                 assert.equal(errors.length, 0);
             });
         });
-        //TODO implement algorithm to pass test and activate it again (remove x from xit)
-        xit('0_7_addition: missing broker & direct dataformat mismatch, should add broker + transformer', function(){
+        /*//TODO implement algorithm to pass test and activate it again (remove x from xit)
+        it('0_7_addition: missing broker & direct dataformat mismatch, should add broker + transformer', function(){
             let slice = basic_data.test_0_7_missing_broker_and_dataformat_mismatch();
             let old_slice = util.deepcopy(slice);
             let old_count = util.resourceCount(old_slice);
@@ -326,11 +326,11 @@ describe('intop_recommendation', function(){
                 let slice = result.slice;
                 let logs = result.logs;
 
-                /* recommendation:
+                /!* recommendation:
                     - +3 resource (broker, transformer, broker)
                     - no connection between source and dest
                     - connection between: source->broker1->transformer->broker2->dest
-                 */
+                 *!/
                 let count = util.resourceCount(slice);
                 assert.equal(count, old_count+3);
                 assert.equal(util.contains(slice, "transformer"), true);
@@ -347,7 +347,7 @@ describe('intop_recommendation', function(){
                 errors = check.checkSlice(slice).errors;
                 assert.equal(errors.length, 0);
             });
-        });
+        });*/
         it('0_8_addition: indirect mismatch M:1, should add transformer at problematic source', function(){
             let slice = basic_data.test_0_8_indirect_mismatch_m1();
             let old_slice = util.deepcopy(slice);

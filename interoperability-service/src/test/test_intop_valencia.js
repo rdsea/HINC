@@ -206,7 +206,7 @@ describe("valencia slices - intop recommendation", function(){
     });
 });
 
-xdescribe("valencia slices - intop find substitution resources", function() {
+/*xdescribe("valencia slices - intop find substitution resources", function() {
     before(function () {
         return setUpTestDB(valenciaTestResourcesDB);
     });
@@ -334,7 +334,7 @@ xdescribe("valencia slices - intop find substitution resources", function() {
             assert.equal(errors.length, 0);
         });
     });
-});
+});*/
 
 
 function setUpTestDB(testdata){

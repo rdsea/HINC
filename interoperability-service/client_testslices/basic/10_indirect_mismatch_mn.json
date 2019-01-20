@@ -1,7 +1,7 @@
 {
   "resources": {
-    "source1": {
-      "name": "source1",
+    "source_json": {
+      "name": "source_json",
       "source": [],
       "target": [
         "connectionId1"
@@ -18,7 +18,7 @@
           {
             "push_pull": "push",
             "protocol": {
-              "uri": "mqtt://test:1883",
+              "uri": "<uri>",
               "protocol_name": "mqtt",
               "topic": "basic_test",
               "qos": 0
@@ -31,8 +31,8 @@
         ]
       }
     },
-    "source2": {
-      "name": "source2",
+    "source_csv": {
+      "name": "source_csv",
       "source": [],
       "target": [
         "connectionId2"
@@ -49,21 +49,25 @@
           {
             "push_pull": "push",
             "protocol": {
-              "uri": "mqtt://test:1883",
+              "uri": "<uri>",
               "protocol_name": "mqtt",
               "topic": "basic_test",
               "qos": 0
             },
             "dataformat": {
-              "encoding": "utf-8",
-              "dataformat_name": "csv"
+                "encoding": "utf-8",
+                "dataformat_name": "csv",
+                "headers": "",
+                "seperator": ";",
+                "newline_seperator": "\n",
+                "headers_included": true
             }
           }
         ]
       }
     },
-    "dest1": {
-      "name": "dest1",
+    "dest_json": {
+      "name": "dest_json",
       "source": [
         "connectionId3"
       ],
@@ -79,7 +83,7 @@
           {
             "push_pull": "push",
             "protocol": {
-              "uri": "mqtt://test:1883",
+              "uri": "<uri>",
               "protocol_name": "mqtt",
               "topic": "basic_test",
               "qos": 0
@@ -93,8 +97,8 @@
         "outputs": []
       }
     },
-    "dest2": {
-      "name": "dest2",
+    "dest_csv": {
+      "name": "dest_csv",
       "source": [
         "connectionId4"
       ],
@@ -110,14 +114,18 @@
           {
             "push_pull": "push",
             "protocol": {
-              "uri": "mqtt://test:1883",
+              "uri": "<uri>",
               "protocol_name": "mqtt",
               "topic": "basic_test",
               "qos": 0
             },
             "dataformat": {
-              "encoding": "utf-8",
-              "dataformat_name": "csv"
+                "encoding": "utf-8",
+                "dataformat_name": "csv",
+                "headers": "",
+                "seperator": ";",
+                "newline_seperator": "\n",
+                "headers_included": true
             }
           }
         ],
@@ -141,7 +149,7 @@
             "prototype": "messagebroker",
             "protocols": [
               {
-                "uri": "mqtt://test:1883",
+                "uri": "<uri>",
                 "protocol_name": "mqtt",
                 "topic": "basic_test",
                 "qos": 0
@@ -149,7 +157,8 @@
             ],
             "topics": [
               "basic_test"
-            ]
+            ],
+            "auto_create": true
           }
         }
       }
@@ -157,20 +166,20 @@
   },
   "connectivities": {
     "connectionId1": {
-      "in": "source1",
+      "in": "source_json",
       "out": "broker"
     },
     "connectionId2": {
-      "in": "source2",
+      "in": "source_csv",
       "out": "broker"
     },
     "connectionId3": {
       "in": "broker",
-      "out": "dest1"
+      "out": "dest_json"
     },
     "connectionId4": {
       "in": "broker",
-      "out": "dest2"
+      "out": "dest_csv"
     }
   }
 }

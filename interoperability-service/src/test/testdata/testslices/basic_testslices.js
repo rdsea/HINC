@@ -105,6 +105,38 @@ exports.test_0_10_indirect_mismatch_mn = function(){
     return slice;
 };
 
+
+exports.test_0_12_basic_circle = function(){
+    let slice = builder.empty_slice("test_0_12_basic_circle");
+    let jsonInputs = builder.dest("dest1", "push", builder.httpProtocol(), builder.jsonFormat()).metadata.inputs;
+    let csvInputs = builder.dest("dest2", "push", builder.httpProtocol(), builder.csvFormat()).metadata.inputs;
+    slice.resources["source1"] = builder.source("source1", "push", builder.httpProtocol(), builder.jsonFormat());
+    slice.resources["source2"] = builder.source("source2", "push", builder.httpProtocol(), builder.jsonFormat());
+    slice.resources["source3"] = builder.source("source3", "push", builder.httpProtocol(), builder.csvFormat());
+    slice.resources.source1.metadata.inputs = util.deepcopy(jsonInputs);
+    slice.resources.source2.metadata.inputs = util.deepcopy(jsonInputs);
+    slice.resources.source3.metadata.inputs = util.deepcopy(csvInputs);
+
+
+    util.sliceConnect(slice, slice.resources.source1, slice.resources.source2, "connectionId1");
+    util.sliceConnect(slice, slice.resources.source2, slice.resources.source3, "connectionId2");
+    util.sliceConnect(slice, slice.resources.source3, slice.resources.source1, "connectionId3");
+    return slice;
+};
+
+exports.test_0_13_multi_circle = function(){
+    let slice = builder.empty_slice("test_0_13_multi_circle");
+
+    slice.resources["source"] = builder.source("source", "push", builder.mqttProtocol(), builder.csvFormat());
+    slice.resources["dest"] = builder.dest("dest", "push", builder.mqttProtocol(), builder.jsonFormat());
+    slice.resources["broker"] = builder.mqttBroker("broker",builder.mqttProtocol());
+    util.sliceConnect(slice, slice.resources.source, slice.resources.broker, "connectionId1");
+    util.sliceConnect(slice, slice.resources.broker, slice.resources.dest, "connectionId2");
+    util.sliceConnect(slice, slice.resources.broker, slice.resources.source, "connectionId3");
+    util.sliceConnect(slice, slice.resources.dest, slice.resources.broker, "connectionId4");
+    return slice;
+};
+
 exports.test_2_0_datacontract_reliability = function () {
     let slice = builder.empty_slice("test_2_0_datacontract_reliability");
     slice.resources["source"] = builder.source("source", "push", builder.httpProtocol(), builder.jsonFormat());

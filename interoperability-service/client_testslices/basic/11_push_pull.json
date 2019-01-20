@@ -1,0 +1,73 @@
+{
+  "sliceId": "test_0_11_push_pull",
+  "resources": {
+    "source": {
+      "name": "source",
+      "source": [],
+      "target": [
+        "connectionId1"
+      ],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "sensor"
+          }
+        },
+        "inputs": [],
+        "outputs": [
+          {
+            "push_pull": "pull",
+            "protocol": {
+              "uri": "http://test:80",
+              "protocol_name": "http",
+              "http_method": "get"
+            },
+            "dataformat": {
+              "encoding": "utf-8",
+              "dataformat_name": "json"
+            }
+          }
+        ]
+      }
+    },
+    "gsbucket": {
+      "name": "gsbucket",
+      "source": [
+        "connectionId2"
+      ],
+      "target": [],
+      "metadata": {
+        "resource": {
+          "category": "iot",
+          "type": {
+            "prototype": "storage"
+          }
+        },
+        "outputs": [
+        ],
+        "inputs": [
+          {
+            "push_pull": "push",
+            "protocol": {
+              "uri": "client",
+              "protocol_name": "client",
+              "client": {
+                "name":"Google Cloud Storage",
+                "project_id": "testproject-214613",
+                "bucket": "mytestbucket_test"
+              }
+            }
+          }
+        ]
+      }
+
+    }
+  },
+  "connectivities": {
+    "connectionId1": {
+      "in": "source",
+      "out": "httpdest"
+    }
+  }
+}
