@@ -92,11 +92,11 @@ They are
 Navigate to the proect and run `$ npm install` to install dependencies, follow the provided README.md to start the module
 
 ## Contact
-Hong-Linh Truong <hong-linh.truong@tuwien.ac.at>
+Hong-Linh Truong <linh.truong@aalto.fi>
 
 ## Acknowledgement
 
-The work is initially supported by the U-TEST until 2016. Since 2017 the work is supported by H2020 INTER-IoT  through the INTER-HINC project.
+The work is initially supported by the U-TEST (until 2016) and by H2020 INTER-IoT  through the INTER-HINC project (until 2018). Google Cloud has provided credits for running tests.
 
 
 ------------------------
