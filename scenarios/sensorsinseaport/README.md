@@ -7,17 +7,24 @@ This document describes steps in running the  resource slice for the scenario of
 WARNING: Currently all artifacts can only be deployed in this way on our Google Cloud Platform account due to automated configurations. For access please contact the owners of this repository.
 To deploy all these services on your own deployment configuration, please read all the relevant documentation in this repository and the IoTCloudSamples repository.
 
-in the `deployment` folder you will find the docker-compose.yml file and relevant configuration mounts to deploy a basic instance of rsiHub which comprises of:
+in the `deployment` folder you will find the docker-compose.yml file and relevant configuration for deploying both management services (Global Management Service and Local Management Service) and resources in the resource slices.
+* Management Services:
+  -Global Management Service
+  - Local Management Service
+* Resource providers (our own providers or wrapped providers to real providers in the cloud)
+  - Sensor Provider
+  - Analysis/Ingestion Provider
+  - AMQP Provider (wrapped provider to Cloudamqp.com)
+  - MQTT Provider
+  - BigQuery Provider (wrapped provider to Google BigQuery)
+* Adaptors for controlling Resource providers
+  - Sensor Adaptor
+  - Ingestion Adaptor
+  - AMQP Adaptor
+  - MQTT Adaptor
+  - BigQuery Adaptor
 
-* Global Management Service
-* Local Management Service
-* Sensor Provider
-* Analysis/Ingestion Provider + Adaptor
-* AMQP Provider + Adaptor
-* MQTT Provider + Adaptor
-* BigQuery Provider + Adaptor
-
-simple in the target directory run `$ docker-compose up -d` to launch this rsiHub instace. Make sure to run on a relatively powerful machine due to the overhead of so many components
+simple in the target directory run `$ docker-compose up -d` to launch management services, providers and adaptors. Make sure to run on a relatively powerful machine due to the overhead of so many components
 
 
 
@@ -75,7 +82,7 @@ The intended functionality is hard coded in pizza. simple run the command
 node pizza.js query-intop input-data-format=JSON \
                 output-data-format=CSV \
                 input_protocol=HTTP \
-                output_protocol=AMQP    
+                output_protocol=AMQP
 ```
 
 to simulate an interperability query, the return will contain `available_artifact` which is a software artifact that reads data from http in JSON format and publishes the data in CSV format to and amqp queue. The configuration includes the broker url and amqp_queue in the parameters section.
