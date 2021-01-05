@@ -1,7 +1,8 @@
 const amqp = require('amqplib');
 const randomstring = require('randomstring');
 const config = require('./config');
-const uuid = require('uuid/v1');
+//const uuid = require('uuid/v1');
+const { v4: uuid } = require('uuid');
 
 let uri = config.uri
 let exchange = config.exchange;
@@ -56,7 +57,7 @@ function _pollMessage(timeout){
                  // run the operation again
                  return whileNotTimeout();
             } else {
-                console.debug('message received');  
+                console.debug('message received');
                 return res;
             }
         });
@@ -66,20 +67,20 @@ function _pollMessage(timeout){
 }
 
 function buildMessage(msgType, payload){
-    return  { 
+    return  {
         msgType: msgType,
         senderID: '',
         receiverID: null,
         payload: payload,
         timeStamp: Math.floor((new Date()).getTime()/1000),
         uuid: uuid(),
-        destination: { 
-            exchange: config.exchange, 
-            routingKey: config.localRoutingKey, 
+        destination: {
+            exchange: config.exchange,
+            routingKey: config.localRoutingKey,
         },
-        reply: { 
-            exchange: config.exchange, 
-            routingKey: config.routingKey, 
+        reply: {
+            exchange: config.exchange,
+            routingKey: config.routingKey,
         },
     }
 }
@@ -97,7 +98,3 @@ module.exports = {
     buildMessage,
     close,
 };
-
-
-
-

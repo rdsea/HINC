@@ -11,3 +11,8 @@ All commands can be accessed by the command `$ pizza <command>`, All commands ar
 
 ## Configuration
 First time configuration will be detected and prompted by pizza. Any future configuration can be done with `$ pizza config -s`
+
+Configuratin will be stored under
+```
+$HOME/.config/configstore/slice-management-client.json
+```
