@@ -14,7 +14,7 @@
   "dependencies": {
     "@google-cloud/storage": "^2.5.0",
     "amqplib": "^0.5.3",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bluebird": "^3.5.4",
     "cli-table": "^0.3.1",
     "clui": "^0.3.6",
