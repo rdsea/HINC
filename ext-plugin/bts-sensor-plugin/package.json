@@ -12,7 +12,7 @@
   "dependencies": {
     "amqplib": "^0.5.2",
     "axios": "^0.18.0",
-    "config": "^2.0.1",
+    "config": "^3.3.8",
     "randomstring": "^1.1.5",
     "uuid": "^3.2.1"
   }
